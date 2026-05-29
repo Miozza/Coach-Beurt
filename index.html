@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coach Bertin V33 — Épaules 3D</title>
+  <title>Coach Bertin V34 — Épaules 3D</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#111827" />
   <link rel="stylesheet" href="styles.css" />
@@ -12,9 +12,9 @@
   <div class="app">
     <header class="hero">
       <div>
-        <p class="eyebrow">Coach Bertin — V33</p>
+        <p class="eyebrow">Coach Bertin — V34</p>
         <h1>Épaules 3D — programme structuré 4 semaines</h1>
-        <p class="subtitle">Lecture seule. Blocs A-F, progression 4 semaines, mobilité stratégique.</p>
+        <p class="subtitle">Lecture seule pour les séances. Charges ajustables localement ou dans charges.js.</p>
       </div>
       <div class="stats">
         <div><strong>Reps</strong><span>plages</span></div>
@@ -122,6 +122,17 @@
             <label>DB incline press 10RM — poids/main</label><input id="prInclineDb10RM" type="number" disabled />
           </div>
         </div>
+
+        <section class="charge-settings">
+          <div class="section-title compact">
+            <div>
+              <h2>Charges ajustables</h2>
+              <p class="muted">Ces valeurs restent sur cet appareil. Laisse vide pour utiliser la base GitHub de <code>charges.js</code>.</p>
+            </div>
+            <button id="resetCustomChargesBtn" class="ghost danger">Réinitialiser charges locales</button>
+          </div>
+          <div id="chargeSettingsList" class="charge-grid"></div>
+        </section>
       </section>
     </main>
 
@@ -228,8 +239,9 @@
       <section class="panel"><h2>Résumé lisible</h2><pre id="aiSummary" class="summary-box"></pre></section>
     </main>
 
-    <footer class="footer">V30 : lecture seule avec poids suggérés + intentions coach. Aucune entrée de résultats.</footer>
+    <footer class="footer">V34 : entraînement lecture seule + charges personnalisables localement. Aucun résultat de séance enregistré.</footer>
   </div>
+  <script src="charges.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
