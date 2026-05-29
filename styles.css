@@ -106,3 +106,14 @@
 
 .readonly-note{margin-top:6px;color:#94a3b8;font-size:.92rem;line-height:1.35}
 .phone-exercise .phone-line{line-height:1.35}
+
+
+.charge-settings{margin-top:24px;border-top:1px solid rgba(148,163,184,.25);padding-top:18px}
+.section-title.compact{margin-bottom:12px}
+.charge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.charge-row{background:rgba(15,23,42,.55);border:1px solid rgba(148,163,184,.18);border-radius:14px;padding:12px}
+.charge-row label{display:flex;flex-direction:column;gap:3px;font-weight:800;margin-bottom:8px}
+.charge-row small{font-weight:500;color:#94a3b8}
+.charge-input{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid rgba(148,163,184,.35);background:#0f172a;color:#e5e7eb;padding:10px;font-size:15px}
+.charge-input:focus{outline:2px solid rgba(56,189,248,.55);border-color:rgba(56,189,248,.75)}
+@media(max-width:700px){.charge-grid{grid-template-columns:1fr}.charge-row{padding:14px}.charge-input{font-size:16px}}
