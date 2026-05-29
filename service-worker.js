@@ -1,4 +1,4 @@
-const CACHE_NAME = 'coach-bertin-v29-readonly';
+const CACHE_NAME = 'coach-bertin-v32-shoulders-4weeks';
 const FILES = ['./','./index.html','./styles.css','./app.js','./manifest.json'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES)));

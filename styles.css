@@ -103,3 +103,6 @@
 
 .phone-intention{border-color:rgba(251,191,36,.45);background:rgba(251,191,36,.08)}
 .phone-intention-title{font-size:22px;line-height:1.1;font-weight:900;color:#ffd99b;margin:0 0 10px;letter-spacing:.04em}
+
+.readonly-note{margin-top:6px;color:#94a3b8;font-size:.92rem;line-height:1.35}
+.phone-exercise .phone-line{line-height:1.35}
