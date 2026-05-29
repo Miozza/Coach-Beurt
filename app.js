@@ -391,7 +391,7 @@ function aiAnalysis(){
 }
 function renderAI(){var a=aiAnalysis(),cards=$("aiScoreCards");cards.innerHTML="";Object.keys(a.scores).forEach(function(k){var d=document.createElement("div");d.className="calc-item";d.innerHTML="<strong>"+k+"</strong><span>"+a.scores[k]+"</span>";cards.appendChild(d);});var list=$("aiSuggestions");list.innerHTML="";a.suggestions.forEach(function(s){var d=document.createElement("div");d.className="ai-item "+s.type;d.innerHTML="<strong>"+s.title+"</strong>"+s.text;list.appendChild(d);});$("aiSummary").textContent=a.summary;}
 function exportBackup(){
-  download("coach-bertin-programme-v32.json",JSON.stringify({version:"V32-readonly-shoulders-4weeks",exportedAt:new Date().toISOString(),week:state.week,day:state.day,cycle:state.cycle},null,2));
+  download("coach-bertin-programme-v33.json",JSON.stringify({version:"V33-readonly-shoulders-4weeks",exportedAt:new Date().toISOString(),week:state.week,day:state.day,cycle:state.cycle},null,2));
 }
 function importBackup(file){alert("Import désactivé : cette version ne restaure pas de résultats.");}
 
