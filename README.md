@@ -58,3 +58,7 @@ Il garde les mouvements CrossFit et l'haltéro, mais augmente fortement le volum
 - Plus de travail arrière d’épaule, trap inférieur, serratus et posture.
 - WOD du lundi sans press additionnel pour réduire la surcharge.
 - Version lecture seule : aucun poids ou résultat à entrer.
+
+
+## V33
+Warm-ups ciblés par journée et mobilité stratégique ajustée. Les blocs restent faits pour tenir dans environ 55-60 minutes; le bonus est optionnel seulement s'il reste du temps.
