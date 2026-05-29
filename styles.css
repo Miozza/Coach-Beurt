@@ -80,3 +80,26 @@
   .phone-line{font-size:25px}
   .phone-wod-text{font-size:27px}
 }
+.phone-exercise{
+  border-top:1px solid var(--line);
+  padding-top:16px;
+  margin-top:16px;
+}
+.phone-exercise:first-of-type{
+  border-top:none;
+  padding-top:0;
+  margin-top:0;
+}
+.phone-move{
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+@media(max-width:620px){
+  .phone-move{font-size:29px;line-height:1.15;margin-bottom:12px}
+  .phone-line{font-size:24px;line-height:1.22}
+}
+
+.phone-hints{background:rgba(100,210,255,.06);border:1px solid rgba(100,210,255,.25);border-radius:18px;padding:14px;margin-top:18px}.phone-wod-text{white-space:normal;overflow-wrap:anywhere}
+
+.phone-intention{border-color:rgba(251,191,36,.45);background:rgba(251,191,36,.08)}
+.phone-intention-title{font-size:22px;line-height:1.1;font-weight:900;color:#ffd99b;margin:0 0 10px;letter-spacing:.04em}

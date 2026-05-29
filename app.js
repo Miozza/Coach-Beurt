@@ -10,7 +10,8 @@ engine:{label:"Endurance CrossFit",impact:"Force en maintien, WOD plus long, acc
 recomp:{label:"Recomposition corporelle",impact:"Hypertrophie + densité, repos plus courts.",sets:["4 x 8","4 x 8","4 x 6","3 x 8"],targetReps:[8,8,6,8],mult:[0.62,0.65,0.70,0.55],rest:"1:15–1:45",tag:"densité"},
 maintenance:{label:"Maintien / récupération",impact:"Charges basses, technique, mobilité, zone 2.",sets:["3 x 5 facile","3 x 5 facile","3 x 3 propre","2 x 5 léger"],targetReps:[5,5,3,5],mult:[0.55,0.58,0.62,0.50],rest:"1:30–2:00",tag:"récupération"}};
 var defaultProfile={bench:300,frontSquat:215,strictPress:185,powerClean:225,backSquat5RM:235,hipThrust8RM:315,bulgarianDb:50,dbRdl:70,row8RM:185,chestRow8RM:160,latPulldown10RM:140,inclineDb10RM:55};
-var movements={bench:{name:"Bench press",profile:"bench"},inclineDb:{name:"Incline DB press",profile:"inclineDb10RM"},strictPress:{name:"Strict press",profile:"strictPress"},chestRow:{name:"Chest-supported row",profile:"chestRow8RM"},barbellRow:{name:"Barbell row",profile:"row8RM"},latPulldown:{name:"Weighted pull-up",profile:null},frontSquat:{name:"Front squat",profile:"frontSquat"},hipThrust:{name:"Hip thrust",profile:"hipThrust8RM"},bulgarian:{name:"Bulgarian split squat",profile:"bulgarianDb"},powerClean:{name:"Power clean",profile:"powerClean"},dbSnatch:{name:"DB snatch",profile:null},farmerCarry:{name:"Farmer carry",profile:null},lateralRaise:{name:"Lateral raise",profile:null},rearDeltFly:{name:"Rear delt fly",profile:null},ropePushdown:{name:"Rope pushdown",profile:null},facePull:{name:"Face pull",profile:null},pushPress:{name:"Push press léger",profile:"strictPress"}};
+var movements={bench:{name:"Bench press",profile:"bench"},inclineDb:{name:"Incline DB press",profile:"inclineDb10RM"},strictPress:{name:"Strict press",profile:"strictPress"},chestRow:{name:"Chest-supported row",profile:"chestRow8RM"},barbellRow:{name:"Barbell row",profile:"row8RM"},latPulldown:{name:"Weighted pull-up",profile:null},frontSquat:{name:"Front squat",profile:"frontSquat"},hipThrust:{name:"Hip thrust",profile:"hipThrust8RM"},bulgarian:{name:"Bulgarian split squat",profile:"bulgarianDb"},powerClean:{name:"Power clean",profile:"powerClean"},dbSnatch:{name:"DB snatch",profile:null},farmerCarry:{name:"Farmer carry",profile:null},lateralRaise:{name:"Lateral raise",profile:null},rearDeltFly:{name:"Rear delt fly",profile:null},ropePushdown:{name:"Triceps rope pushdown",profile:null},facePull:{name:"Face pull",profile:null},pushPress:{name:"Push press léger",profile:"strictPress"}};
+var estimatedDailyLoads={lateralRaise:25,rearDeltFly:25,ropePushdown:70,facePull:70,latPulldown:20,dbSnatch:50,farmerCarry:50};
 var baseDays={lundi:{label:"Lundi",base:"Push",focus:"Pectoraux, épaules, triceps, serratus.",progress:["bench","inclineDb"],warmup:"Bike 3 min + band pull-aparts + wall slides + activation serratus.",accessory:"Incline DB press + lateral raise + serratus cable punch.",wod:"10 cal row + 10 DB push press léger + 8 burpees"},mardi:{label:"Mardi",base:"Pull",focus:"Dos, biceps, scapula, posture.",progress:["chestRow","latPulldown"],warmup:"Row 3 min + dead hang + scap pull-ups + band rows.",accessory:"Weighted pull-up + face pull + DB curls.",wod:"12 cal SkiErg + 12 ring rows stricts"},jeudi:{label:"Jeudi",base:"Legs",focus:"Jambes, fessiers, chaîne postérieure.",progress:["frontSquat","bulgarian"],warmup:"Bike 3 min + air squats + glute bridge + mobilité hanches.",accessory:"Bulgarian split squat + DB RDL.",wod:"12 cal bike + 12 KB swings + 10 box step-ups"},vendredi:{label:"Vendredi",base:"Full body",focus:"Moteur, transitions, puissance.",progress:["powerClean","strictPress"],warmup:"Row 3 min + mobilité hanches/épaules + ramp-up technique.",accessory:"Farmer carry + reverse fly + hollow hold.",wod:"30 wall balls + 30 cal row + 30 DB snatch alternés"}};
 var wodBanks={push:["10 cal row + 10 DB push press + 8 burpees","12 cal row + 10 push-ups + 12 sit-ups","10 cal bike + 8 DB thrusters + 8 burpees"],pull:["12 cal SkiErg + 12 ring rows","10 cal row + 10 KB high pulls + 10 ring rows","40 cal row + 30 ring rows + 20 DB snatch"],legs:["12 cal bike + 12 KB swings + 10 box step-ups","14 cal bike + 12 goblet squats","50 cal bike + 40 KB swings + 30 step-ups"],weightlifting:["EMOM 10 : 2 power cleans légers","10 min qualité : 3 hang power clean + 6 burpees","8 min technique : clean pull + front squat léger"],engine:["AMRAP 14 : 10 wall balls + 12 cal row + 8 DB snatch","EMOM 16 : row/bike/ski/bodyweight","12 min pacing : bike + step-ups + ring rows"],lowimpact:["10 min bike zone 2","10 min row zone 2","AMRAP facile : 8 cal row + 8 air squats + 8 ring rows"]};
 var KEY="coachBertinV28Shoulders3D";
@@ -45,6 +46,9 @@ function referenceBase(mvKey,targetReps){
   var ref=state.movementRefs[key];
   if(ref && ref.load !== undefined && ref.load !== null && ref.load !== ""){
     return {value:Number(ref.load), source:"reference", ref:ref};
+  }
+  if(estimatedDailyLoads[mvKey]){
+    return {value:Number(estimatedDailyLoads[mvKey]), source:"estimate", ref:null};
   }
   var fallback=tmFromProfile(mvKey);
   return {value:fallback, source:fallback?"profile":"none", ref:null};
@@ -88,6 +92,7 @@ function profileMultiplier(index){
 function suggestLoad(mvKey,pct,targetReps){
   var base=referenceBase(mvKey,targetReps);
   if(!base.value){return 0;}
+  if(base.source==="estimate"){return base.value;}
   if(base.source==="reference"){
     return base.value*referenceMultiplier(base.ref,repRange(targetReps));
   }
@@ -160,7 +165,7 @@ if(state.cycle.goal==="weightlifting"&&day==="vendredi")progress=["powerClean","
 if(state.cycle.goal==="posture"&&day==="lundi")progress=["bench","chestRow","inclineDb"];var blocks=[{time:"8 min",title:"Warm-up",text:d.warmup,tag:"Préparation",progress:[],kind:"warmup"},{time:"25 min",title:"Bloc principal",text:movements[progress[0]].name+" "+cfg.sets[i]+".",tag:"Charge",progress:[progress[0]],kind:"main"},{time:state.cycle.goal==="engine"?"7 min":"12 min",title:"Accessoires",text:accessoryText(d),tag:"Accessoires",progress:progress.slice(1),kind:"accessory"},{time:state.cycle.goal==="engine"?"15 min":"10 min",title:"WOD",text:wodForDay(day),tag:"Conditioning",progress:wodProgress(day),kind:"wod"},{time:state.cycle.goal==="engine"?"0–5 min":"5 min",title:"Mobilité",text:mobilityText(),tag:"Reset",progress:[],kind:"mobility"}];return{day:d,blocks:blocks,progress:progress};}
 function accessoryText(d){var g=state.cycle.goal;if(g==="hypertrophy")return d.accessory+" — 10–15 reps, tempo contrôlé.";if(g==="shoulders3d")return shouldersAccessoryText(state.day);if(g==="strength")return d.accessory+" — 6–10 reps, lourd et simple.";if(g==="weightlifting")return"Positions haltéro + tirage technique + stabilité.";if(g==="posture")return d.accessory+" — ratio pull/push élevé, thorax ouvert.";if(g==="engine")return d.accessory+" — minimum efficace.";if(g==="maintenance")return d.accessory+" — léger, propre, aucun échec.";return d.accessory+" — densité et repos courts.";}
 function mobilityText(){var g=state.cycle.goal;if(g==="posture")return"Extension thoracique + respiration cage ouverte.";if(g==="weightlifting")return"Front rack, chevilles, thoracique.";if(g==="maintenance")return"Mobilité plus longue + respiration nasale.";return"Mobilité ciblée + retour au calme.";}
-function wodProgress(day){if(day==="vendredi")return["dbSnatch"];if(day==="lundi")return["strictPress"];return[];}
+function wodProgress(day){return[];}
 function resultDelta(status,rpe,quality){rpe=Number(rpe)||8;if(state.week===4)return 0;if(status==="pain")return -10;if(status==="fail")return -5;if(quality==="doubtful")return 0;if(status==="hard"||rpe>=9)return 0;if(status==="success_easy"&&rpe<=7&&quality==="clean")return 10;if(status==="success"&&rpe<=8&&quality!=="doubtful")return 5;return 0;}
 function shouldUpdate(status,load,reps,quality){
   var goodStatus=["success_easy","success","hard"].indexOf(status)>=0;
@@ -171,66 +176,30 @@ function shouldUpdate(status,load,reps,quality){
 }
 function renderWeeks(){var w=$("weekButtons");w.innerHTML="";Object.keys(weekInfo).forEach(function(k){var b=document.createElement("button");b.textContent=weekInfo[k].label;b.className=Number(k)===state.week?"":"secondary";b.onclick=function(){state.week=Number(k);save();render();};w.appendChild(b);});$("weekGoal").textContent=weekInfo[state.week].goal;$("cycleSummary").textContent="Focus : "+focus().label+" — "+focus().impact;}
 function renderDays(){var w=$("dayButtons");w.innerHTML="";Object.keys(baseDays).forEach(function(k){var d=baseDays[k];var b=document.createElement("button");b.textContent=d.label+" — "+d.base;b.className=k===state.day?"":"secondary";b.onclick=function(){state.day=k;save();render();};w.appendChild(b);});}
-function renderWorkout(){var w=buildWorkout(state.day,state.week);$("workoutTitle").textContent=weekInfo[state.week].label+" — "+w.day.label+" — "+w.day.base;$("workoutFocus").textContent=w.day.focus;$("focusImpact").textContent="Benchmark = capacité connue. L’app propose une charge d’entraînement sous-maximale, pas un PR à répéter.";var c=$("blocks");c.innerHTML="";w.blocks.forEach(function(b){var div=document.createElement("div");div.className="block";var html='<div class="time">'+b.time+'</div><div><h3>'+b.title+'</h3><p>'+b.text+'</p><span class="tag">'+b.tag+'</span><span class="focus-pill">'+focus().tag+'</span>';if(b.progress&&b.progress.length){b.progress.forEach(function(mvKey,idx){var reps=targetReps(idx,b.kind);var suggested=suggestLoad(mvKey,progressionPct(idx),reps);html+=resultBoxHtml(mvKey,idx,suggested,reps,b.kind);});}html+="</div>";div.innerHTML=html;c.appendChild(div);});$("progressionAdvice").textContent="Si qualité douteuse : aucune progression, même si réussi.";}
-function resultBoxHtml(mvKey,idx,suggested,reps,kind){var mv=movements[mvKey]||{name:mvKey};var key=refKey(mvKey,reps);var ref=state.movementRefs[key];var refText=ref?("Benchmark "+repRangeLabel(repRange(reps))+" : "+ref.load+" lb x "+ref.reps+" | "+ref.quality+" | "+ref.date+" → charge sous-maximale"):("Aucune référence pour "+repRangeLabel(repRange(reps))+" → fallback profil/PR si disponible");return '<div class="result-box" data-movement="'+mvKey+'" data-reps="'+reps+'"><div class="result-title">'+mv.name+'</div><span class="load-pill">'+lb(suggested)+' x '+reps+' | repos '+restFor(kind)+'</span><p class="muted">'+refText+'</p><div class="result-grid"><label>Charge<input class="actual" type="text" placeholder="'+lb(suggested)+'"></label><label>Reps<input class="reps" type="number" min="1" value="'+reps+'"></label><label>RPE<input class="rpe" type="number" min="1" max="10" value="8"></label><label>Résultat<select class="status"><option value="success">Réussi</option><option value="success_easy">Facile</option><option value="hard">Difficile</option><option value="fail">Échoué</option><option value="pain">Douleur</option></select></label><label>Technique<select class="quality"><option value="clean">Propre</option><option value="acceptable">Acceptable</option><option value="doubtful">Douteuse</option></select></label><label>Note<input class="note" type="text" placeholder="optionnel"></label></div></div>';}
+function dayIntention(day){
+  if(day==="lundi")return "Intention : pump épaules/triceps. Strict press jamais à l’échec. DB push press du WOD léger, pas une 2e séance de force.";
+  if(day==="mardi")return "Intention : posture parfaite. Scapulas contrôlées, thorax ouvert, aucun tirage croche avec l’ego.";
+  if(day==="jeudi")return "Intention : jambes propres, dos protégé. Front squat contrôlé, rappel épaules sans brûler le système.";
+  if(day==="vendredi")return "Intention : garder le CrossFit vivant sans redline. Haltéro propre, transitions efficaces, pas une compétition.";
+  return "Intention : qualité avant intensité.";
+}
+
+function renderWorkout(){var w=buildWorkout(state.day,state.week);$("workoutTitle").textContent=weekInfo[state.week].label+" — "+w.day.label+" — "+w.day.base;$("workoutFocus").textContent=w.day.focus;$("focusImpact").innerHTML="<strong>"+dayIntention(state.day)+"</strong><br>Poids suggérés affichés seulement. Aucune donnée de séance n’est entrée ni enregistrée.";var c=$("blocks");c.innerHTML="";w.blocks.forEach(function(b){var div=document.createElement("div");div.className="block";var html='<div class="time">'+b.time+'</div><div><h3>'+b.title+'</h3><p>'+b.text+'</p><span class="tag">'+b.tag+'</span><span class="focus-pill">'+focus().tag+'</span>';if(b.progress&&b.progress.length){b.progress.forEach(function(mvKey,idx){var reps=targetReps(idx,b.kind);var suggested=suggestLoad(mvKey,progressionPct(idx),reps);html+=resultBoxHtml(mvKey,idx,suggested,reps,b.kind);});}html+="</div>";div.innerHTML=html;c.appendChild(div);});$("progressionAdvice").textContent="Lecture seule : garde les poids suggérés comme repères. Pas de sauvegarde de résultats.";}
+function resultBoxHtml(mvKey,idx,suggested,reps,kind){
+  var mv=movements[mvKey]||{name:mvKey};
+  var key=refKey(mvKey,reps);
+  var ref=state.movementRefs[key];
+  var refText=ref?("Référence "+repRangeLabel(repRange(reps))+" : "+ref.load+" lb x "+ref.reps+" | source fixe"):(estimatedDailyLoads[mvKey]?("Estimation fixe selon ta force globale"):("Référence profil/PR fixe"));
+  return '<div class="result-box readonly-box" data-movement="'+mvKey+'" data-reps="'+reps+'"><div class="result-title">'+mv.name+'</div><span class="load-pill">Poids suggéré : '+lb(suggested)+' x '+reps+' | repos '+restFor(kind)+'</span><p class="muted">'+refText+'</p><p class="muted">Aucune donnée à entrer. Ajuste seulement si la forme se dégrade.</p></div>';
+}
 function saveResults(){
-  var boxes=document.querySelectorAll(".result-box");
-  var session={date:new Date().toLocaleDateString("fr-CA"),week:state.week,day:state.day,focus:state.cycle.goal,results:[]};
-  var updatedCount=0;
-
-  boxes.forEach(function(box){
-    var mvKey=box.getAttribute("data-movement");
-    var actual=box.querySelector(".actual").value.trim();
-    var reps=Number(box.querySelector(".reps").value)||0;
-    var rpe=Number(box.querySelector(".rpe").value)||8;
-    var status=box.querySelector(".status").value;
-    var quality=box.querySelector(".quality").value;
-    var note=box.querySelector(".note").value.trim();
-    var load=parseLoad(actual);
-    var delta=resultDelta(status,rpe,quality);
-    var accepted=shouldUpdate(status,load,reps,quality);
-    var key=refKey(mvKey,reps);
-
-    if(accepted){
-      state.movementRefs[key]={
-        movement:mvKey,
-        range:repRange(reps),
-        load:load,
-        reps:reps,
-        date:session.date,
-        lastActual:load,
-        status:status,
-        quality:quality,
-        rpe:rpe,
-        note:note,
-        plannedDelta:delta
-      };
-      updatedCount++;
-    }
-
-    session.results.push({
-      movement:mvKey,
-      name:(movements[mvKey]||{}).name||mvKey,
-      range:repRange(reps),
-      actual:actual,
-      reps:reps,
-      rpe:rpe,
-      status:status,
-      quality:quality,
-      note:note,
-      delta:delta,
-      referenceUpdated:accepted
-    });
-  });
-
-  state.history.push(session);
-  save();
-  render();
-  alert("Résultats sauvegardés. Références mises à jour : "+updatedCount+".");
+  alert("Version lecture seule : aucun poids, RPE, ressenti ou résultat n’est enregistré.");
 }
 function renderProfile(){var map=profileMap();Object.keys(map).forEach(function(id){$(id).value=state.profile[map[id]]||"";});$("trainingMaxPct").value=String(state.trainingMaxPct);}
 function profileMap(){return{prBench:"bench",prFrontSquat:"frontSquat",prStrictPress:"strictPress",prPowerClean:"powerClean",prBackSquat5RM:"backSquat5RM",prHipThrust8RM:"hipThrust8RM",prBulgarianDB:"bulgarianDb",prDbRdl:"dbRdl",prRow8RM:"row8RM",prChestRow8RM:"chestRow8RM",prLatPulldown10RM:"latPulldown10RM",prInclineDb10RM:"inclineDb10RM"};}
-function saveProfile(){var map=profileMap();Object.keys(map).forEach(function(id){state.profile[map[id]]=Number($(id).value)||0;});state.trainingMaxPct=Number($("trainingMaxPct").value);save();render();alert("Profil sauvegardé.");}
+function saveProfile(){
+  alert("Profil en lecture seule : les valeurs ne sont pas modifiables dans cette version.");
+}
 function renderCycle(){$("cycleGoal").value=state.cycle.goal;renderFocusDetails();}
 function renderFocusDetails(){var cfg=focus();$("focusDetails").innerHTML="<strong>"+cfg.label+"</strong><br>"+cfg.impact+"<br><br><strong>Reps :</strong> "+cfg.sets.join(" / ")+"<br><strong>Tag :</strong> "+cfg.tag;}
 function saveCycle(){state.cycle.goal=$("cycleGoal").value;save();render();alert("Cycle sauvegardé.");}
@@ -268,7 +237,7 @@ function rebuildReferencesFromHistory(){
   return changed;
 }
 
-function renderReferences(){var c=$("referencesList");c.innerHTML="";Object.keys(movements).forEach(function(mvKey){["strength","hypertrophy","endurance"].forEach(function(range){var key=mvKey+"__"+range;var ref=state.movementRefs[key];var div=document.createElement("div");div.className="calc-item";div.innerHTML="<strong>"+movements[mvKey].name+" — "+repRangeLabel(range)+"</strong><span>"+(ref?(ref.load+" lb x "+ref.reps):"—")+"</span><p class='muted'>"+(ref?("Réel : "+ref.lastActual+" lb x "+ref.reps+" | RPE "+ref.rpe+" | "+ref.quality+" | "+ref.date):"Aucune référence")+"</p>";c.appendChild(div);});});}
+function renderReferences(){var c=$("referencesList");c.innerHTML="";Object.keys(movements).forEach(function(mvKey){["strength","hypertrophy","endurance"].forEach(function(range){var key=mvKey+"__"+range;var ref=state.movementRefs[key];var div=document.createElement("div");div.className="calc-item";div.innerHTML="<strong>"+movements[mvKey].name+" — "+repRangeLabel(range)+"</strong><span>"+(ref?(ref.load+" lb x "+ref.reps):"—")+"</span><p class='muted'>"+(ref?("Fixe : "+ref.lastActual+" lb x "+ref.reps+" | RPE "+ref.rpe+" | "+ref.quality+" | "+ref.date):"Aucune référence")+"</p>";c.appendChild(div);});});}
 function resetRefs(){if(confirm("Réinitialiser toutes les références?")){state.movementRefs={};save();renderReferences();renderWorkout();}}
 function renderHistory(){var h=$("history");h.innerHTML="";if(!state.history.length){h.innerHTML='<p class="muted">Aucune séance sauvegardée.</p>';return;}state.history.slice().reverse().forEach(function(s){var div=document.createElement("div");div.className="history-item";var html="<strong>"+s.date+" — S"+s.week+" — "+baseDays[s.day].label+" — "+baseDays[s.day].base+"</strong><p>Focus : "+s.focus+"</p>";s.results.forEach(function(r){html+="<p>"+r.name+" — "+r.actual+" x "+r.reps+" | "+repRangeLabel(r.range)+" | RPE "+r.rpe+" | "+r.status+" | tech "+r.quality+" | réf "+(r.referenceUpdated?"mise à jour":"non modifiée")+"</p>";});div.innerHTML=html;h.appendChild(div);});}
 function movementLines(block){
@@ -309,7 +278,8 @@ function stableIphoneText(day,week){
 
   txt+=w.day.label.toUpperCase()+" - "+w.day.base.toUpperCase()+" - SEMAINE "+week+"\n";
   txt+="Focus: "+focus().label+"\n";
-  txt+="Duree: 60 min\n\n";
+  txt+="Duree: 60 min\n";
+  txt+=dayIntention(day)+"\n\n";
 
   w.blocks.forEach(function(b){
     txt+=b.title.toUpperCase()+" ("+b.time+")\n";
@@ -333,12 +303,6 @@ function stableIphoneText(day,week){
     }
   });
 
-  txt+="APRES LA SEANCE\n";
-  txt+="Charge reelle:\n";
-  txt+="Reps:\n";
-  txt+="RPE:\n";
-  txt+="Technique: propre / acceptable / douteuse\n";
-
   return txt;
 }
 function stableWeekIphoneText(){
@@ -353,11 +317,29 @@ function stableWeekIphoneText(){
 function shortText(day,week){return stableIphoneText(day,week);}
 function workoutText(day,week){return stableIphoneText(day,week);}
 function weekText(){return stableWeekIphoneText();}
-function historyText(){var txt="HISTORIQUE COACH BERTIN\\n\\n";state.history.forEach(function(s){txt+=s.date+" — S"+s.week+" — "+baseDays[s.day].label+"\\n";s.results.forEach(function(r){txt+="- "+r.name+" | "+r.actual+" x "+r.reps+" | "+repRangeLabel(r.range)+" | RPE "+r.rpe+" | "+r.status+" | tech "+r.quality+"\\n";});txt+="\\n";});return txt;}
-function aiAnalysis(){var total=0,success=0,fail=0,pain=0,doubtful=0;state.history.forEach(function(s){s.results.forEach(function(r){total++;if(["success_easy","success","hard"].indexOf(r.status)>=0)success++;if(r.status==="fail")fail++;if(r.status==="pain")pain++;if(r.quality==="doubtful")doubtful++;});});if(!total)return{scores:{Résultats:0,Réussite:"—"},suggestions:[{type:"warning",title:"Pas assez de données",text:"Sauvegarde des résultats avec charge, reps et qualité."}],summary:"Pas assez de données."};var suggestions=[];if(doubtful>0)suggestions.push({type:"warning",title:"Technique douteuse",text:"Les séries douteuses ne devraient pas augmenter les références."});if(fail>=2)suggestions.push({type:"warning",title:"Échecs répétés",text:"Baisse ou verrouille les mouvements échoués."});if(pain>0)suggestions.push({type:"critical",title:"Douleur signalée",text:"Ne construis pas de référence sur un mouvement douloureux."});if(!suggestions.length)suggestions.push({type:"good",title:"Données propres",text:"Les références par plage de reps sont exploitables."});var scores={Résultats:total,Réussite:Math.round(success/total*100)+"%",Échecs:fail,Douleurs:pain,"Technique douteuse":doubtful};var summary="Analyse V18\\nRésultats : "+total+"\\nRéussite : "+scores.Réussite+"\\nÉchecs : "+fail+"\\nDouleurs : "+pain+"\\nTechnique douteuse : "+doubtful+"\\n\\n";suggestions.forEach(function(s,i){summary+=(i+1)+". "+s.title+" — "+s.text+"\\n";});return{scores:scores,suggestions:suggestions,summary:summary};}
+function historyText(){return "Version lecture seule : aucun historique de résultats n’est enregistré.\n";}
+function aiAnalysis(){
+  return {scores:{Mode:"Lecture seule",Résultats:"non enregistrés"},suggestions:[{type:"good",title:"Simple et robuste",text:"Aucune donnée utilisateur à synchroniser. Les poids suggérés restent fixes."}],summary:"Version lecture seule : aucun poids, RPE, ressenti ou résultat n’est enregistré."};
+}
 function renderAI(){var a=aiAnalysis(),cards=$("aiScoreCards");cards.innerHTML="";Object.keys(a.scores).forEach(function(k){var d=document.createElement("div");d.className="calc-item";d.innerHTML="<strong>"+k+"</strong><span>"+a.scores[k]+"</span>";cards.appendChild(d);});var list=$("aiSuggestions");list.innerHTML="";a.suggestions.forEach(function(s){var d=document.createElement("div");d.className="ai-item "+s.type;d.innerHTML="<strong>"+s.title+"</strong>"+s.text;list.appendChild(d);});$("aiSummary").textContent=a.summary;}
-function exportBackup(){var data={version:"V18",exportedAt:new Date().toISOString(),state:state};download("coach-bertin-backup-v18.json",JSON.stringify(data,null,2));}
-function importBackup(file){if(!file)return;var reader=new FileReader();reader.onload=function(){try{var data=JSON.parse(reader.result);var s=data.state||data;state=s;state.profile=Object.assign(copy(defaultProfile),state.profile||{});state.cycle=Object.assign({goal:"hypertrophy"},state.cycle||{});state.movementRefs=state.movementRefs||{};state.history=state.history||[];save();render();alert("Backup importé.");}catch(e){alert("Fichier invalide.");}};reader.readAsText(file);}
+function exportBackup(){
+  download("coach-bertin-programme-v29.json",JSON.stringify({version:"V30-readonly-coach-intentions",exportedAt:new Date().toISOString(),week:state.week,day:state.day,cycle:state.cycle},null,2));
+}
+function importBackup(file){alert("Import désactivé : cette version ne restaure pas de résultats.");}
+
+function phoneWodLoadHints(text){
+  var t=(text||"").toLowerCase();
+  var hints=[];
+  if(t.indexOf("db push press")>=0){hints.push("Light DB push press : 35 lb / main");}
+  if(t.indexOf("hang power clean")>=0){hints.push("Hang power cleans légers : 115-135 lb");}
+  if(t.indexOf("wall balls")>=0){hints.push("Wall balls : 14 lb");}
+  if(t.indexOf("kb swings")>=0){hints.push("KB swings : 24 kg");}
+  if(!hints.length){return "";}
+  var html='<div class="phone-exercise phone-hints"><p class="phone-move">Charges du WOD</p>';
+  hints.forEach(function(h){html+='<p class="phone-line">'+h+'</p>';});
+  html+='</div>';
+  return html;
+}
 
 function renderPhoneWod(){
   var el=$("phoneWod");
@@ -368,20 +350,26 @@ function renderPhoneWod(){
   html+='<h1 class="phone-title">'+w.day.label.toUpperCase()+' - '+w.day.base.toUpperCase()+'</h1>';
   html+='<p class="phone-subtitle">Semaine '+state.week+' | '+focus().label+' | 60 min</p>';
   html+='</div>';
+  html+='<div class="phone-card phone-intention"><p class="phone-intention-title">INTENTION DU JOUR</p><p class="phone-wod-text">'+dayIntention(state.day)+'</p></div>';
 
   w.blocks.forEach(function(b){
     html+='<div class="phone-card">';
     html+='<h2 class="phone-block-title">'+b.title.toUpperCase()+' ('+b.time+')</h2>';
 
-    if(b.progress && b.progress.length){
+    if(b.kind==="wod"){
+      html+='<p class="phone-wod-text">'+cleanExportLine(b.text)+'</p>';
+      html+=phoneWodLoadHints(b.text);
+    } else if(b.progress && b.progress.length){
       b.progress.forEach(function(mvKey,j){
         var reps=targetReps(j,b.kind);
         var load=lb(suggestLoad(mvKey,progressionPct(j),reps));
         var format=setScheme(b.kind,j);
+        html+='<div class="phone-exercise">';
         html+='<p class="phone-move">'+movements[mvKey].name+'</p>';
         html+='<p class="phone-line"><span class="phone-label">Format:</span> '+format+'</p>';
-        html+='<p class="phone-line"><span class="phone-label">Poids:</span> '+load+'</p>';
+        html+='<p class="phone-line"><span class="phone-label">Poids suggéré:</span> '+load+'</p>';
         html+='<p class="phone-line"><span class="phone-label">Repos:</span> '+restFor(b.kind)+'</p>';
+        html+='</div>';
       });
     } else {
       html+='<p class="phone-wod-text">'+cleanExportLine(b.text)+'</p>';
@@ -393,14 +381,6 @@ function renderPhoneWod(){
     html+='</div>';
   });
 
-  html+='<div class="phone-card phone-after">';
-  html+='<h2 class="phone-block-title">APRÈS</h2>';
-  html+='<p>Charge réelle :</p>';
-  html+='<p>Reps :</p>';
-  html+='<p>RPE :</p>';
-  html+='<p>Technique : propre / acceptable / douteuse</p>';
-  html+='</div>';
-
   el.innerHTML=html;
 }
 
@@ -409,4 +389,5 @@ function resetHistory(){if(confirm("Effacer historique?")){state.history=[];save
 function switchView(v){["training","phone","profile","cycle","references","backup","history","ai"].forEach(function(x){$(x+"View").classList.toggle("hidden",v!==x);$(x+"Tab").classList.toggle("active",v===x);});if(v==="phone")renderPhoneWod();if(v==="profile")renderProfile();if(v==="cycle")renderCycle();if(v==="references")renderReferences();if(v==="history")renderHistory();if(v==="ai")renderAI();}
 function bind(){["training","phone","profile","cycle","references","backup","history","ai"].forEach(function(v){$(v+"Tab").onclick=function(){switchView(v);};});$("saveBtn").onclick=saveResults;$("phoneViewBtn").onclick=function(){switchView("phone");renderPhoneWod();};$("backTrainingBtn").onclick=function(){switchView("training");};$("copyPhoneBtn").onclick=function(){navigator.clipboard.writeText(stableIphoneText()).then(function(){alert("Texte copié.");}).catch(function(){alert("Copie bloquée.");});};$("saveProfileBtn").onclick=saveProfile;$("saveCycleBtn").onclick=saveCycle;$("newCycleBtn").onclick=newCycle;$("resetRefsBtn").onclick=resetRefs;$("resetHistoryBtn").onclick=resetHistory;$("copyIphoneBtn").onclick=function(){navigator.clipboard.writeText(stableIphoneText()).then(function(){alert("WOD copié pour iPhone.");}).catch(function(){alert("Copie bloquée.");});};$("exportIphoneBtn").onclick=function(){download("wod-iphone.txt",stableIphoneText());};$("exportTodayBtn").onclick=function(){download("coach-bertin-seance.txt",workoutText());};$("exportWeekBtn").onclick=function(){download("coach-bertin-semaine.txt",weekText());};$("exportHistoryBtn").onclick=function(){download("coach-bertin-historique.txt",historyText());};$("exportAiBtn").onclick=function(){download("coach-bertin-analyse.txt",aiAnalysis().summary);};$("exportBackupBtn").onclick=exportBackup;$("importBackupFile").onchange=function(e){importBackup(e.target.files[0]);};$("cycleGoal").onchange=function(){state.cycle.goal=$("cycleGoal").value;save();render();};}
 function render(){renderWeeks();renderDays();renderWorkout();renderHistory();renderAI();}
-load();rebuildReferencesFromHistory();bind();render();
+load();bind();render();
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("service-worker.js").catch(function(){});});}

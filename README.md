@@ -45,3 +45,9 @@ Objectif :
 
 Ce focus n'est pas un programme bodybuilding pur.
 Il garde les mouvements CrossFit et l'haltéro, mais augmente fortement le volume d’épaules.
+
+
+## V30
+- Ajout des intentions du jour dans la vue normale, export texte et vue iPhone.
+- Conservation des poids suggérés.
+- Toujours aucune entrée de poids, RPE, ressenti, note ou résultat.

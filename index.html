@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coach Bertin V28 — Épaules 3D</title>
+  <title>Coach Bertin V30 — Lecture seule</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#111827" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="app">
     <header class="hero">
       <div>
-        <p class="eyebrow">Coach Bertin — V28</p>
-        <h1>Smart Progression</h1>
-        <p class="subtitle">Version avec focus Épaules 3D : deltoïdes latéraux, arrière d’épaule, triceps et CrossFit.</p>
+        <p class="eyebrow">Coach Bertin — V30</p>
+        <h1>Programme lecture seule — intentions coach</h1>
+        <p class="subtitle">Poids suggérés conservés. Aucune entrée de poids, RPE, ressenti ou résultat.</p>
       </div>
       <div class="stats">
         <div><strong>Reps</strong><span>plages</span></div>
-        <div><strong>JSON</strong><span>backup</span></div>
+        <div><strong>Read</strong><span>only</span></div>
         <div><strong>WOD</strong><span>banque</span></div>
       </div>
     </header>
@@ -27,9 +29,9 @@
       <button id="profileTab" class="tab">Profil / PR</button>
       <button id="cycleTab" class="tab">Cycle</button>
       <button id="referencesTab" class="tab">Références</button>
-      <button id="backupTab" class="tab">Backup</button>
-      <button id="historyTab" class="tab">Historique</button>
-      <button id="aiTab" class="tab">Analyse IA</button>
+      <button id="backupTab" class="tab" style="display:none">Backup</button>
+      <button id="historyTab" class="tab" style="display:none">Historique</button>
+      <button id="aiTab" class="tab" style="display:none">Analyse IA</button>
     </nav>
 
     <main id="trainingView" class="profile">
@@ -63,7 +65,7 @@
         <div id="blocks" class="blocks"></div>
 
         <div class="savebar">
-          <button id="saveBtn">Sauvegarder les résultats de la séance</button>
+          <button id="saveBtn" style="display:none">Sauvegarder les résultats de la séance</button>
           <p id="progressionAdvice" class="advice"></p>
         </div>
       </section>
@@ -83,14 +85,14 @@
         <div class="section-title">
           <div>
             <h2>Profil / PR stratégiques</h2>
-            <p class="muted">Valeurs de départ. Les références par plage de reps prennent ensuite le relais.</p>
+            <p class="muted">Valeurs de départ en lecture seule. Elles servent seulement à afficher les poids suggérés.</p>
           </div>
-          <button id="saveProfileBtn">Sauvegarder profil</button>
+          <button id="saveProfileBtn" style="display:none">Sauvegarder profil</button>
         </div>
 
         <div class="settings-row">
           <label>Training max utilisé</label>
-          <select id="trainingMaxPct">
+          <select id="trainingMaxPct" disabled>
             <option value="0.90">90 % des PR</option>
             <option value="0.925">92.5 % des PR</option>
             <option value="0.95">95 % des PR</option>
@@ -100,24 +102,24 @@
         <div class="pr-grid">
           <div class="pr-card">
             <h3>Force principale</h3>
-            <label>Bench press 1RM</label><input id="prBench" type="number" />
-            <label>Front squat 1RM / référence</label><input id="prFrontSquat" type="number" />
-            <label>Strict press 1RM</label><input id="prStrictPress" type="number" />
-            <label>Power clean 1RM</label><input id="prPowerClean" type="number" />
+            <label>Bench press 1RM</label><input id="prBench" type="number" disabled />
+            <label>Front squat 1RM / référence</label><input id="prFrontSquat" type="number" disabled />
+            <label>Strict press 1RM</label><input id="prStrictPress" type="number" disabled />
+            <label>Power clean 1RM</label><input id="prPowerClean" type="number" disabled />
           </div>
           <div class="pr-card">
             <h3>Bas du corps</h3>
-            <label>Back squat 5RM</label><input id="prBackSquat5RM" type="number" />
-            <label>Hip thrust 8RM</label><input id="prHipThrust8RM" type="number" />
-            <label>DB Bulgarian — poids/main</label><input id="prBulgarianDB" type="number" />
-            <label>DB RDL — poids/main</label><input id="prDbRdl" type="number" />
+            <label>Back squat 5RM</label><input id="prBackSquat5RM" type="number" disabled />
+            <label>Hip thrust 8RM</label><input id="prHipThrust8RM" type="number" disabled />
+            <label>DB Bulgarian — poids/main</label><input id="prBulgarianDB" type="number" disabled />
+            <label>DB RDL — poids/main</label><input id="prDbRdl" type="number" disabled />
           </div>
           <div class="pr-card">
             <h3>Tirage / haut du dos</h3>
-            <label>Barbell row 8RM</label><input id="prRow8RM" type="number" />
-            <label>Chest-supported row 8RM</label><input id="prChestRow8RM" type="number" />
-            <label>Weighted pull-up 10RM</label><input id="prLatPulldown10RM" type="number" />
-            <label>DB incline press 10RM — poids/main</label><input id="prInclineDb10RM" type="number" />
+            <label>Barbell row 8RM</label><input id="prRow8RM" type="number" disabled />
+            <label>Chest-supported row 8RM</label><input id="prChestRow8RM" type="number" disabled />
+            <label>Weighted pull-up 10RM</label><input id="prLatPulldown10RM" type="number" disabled />
+            <label>DB incline press 10RM — poids/main</label><input id="prInclineDb10RM" type="number" disabled />
           </div>
         </div>
       </section>
@@ -128,7 +130,7 @@
         <div class="section-title">
           <div>
             <h2>Objectif du cycle</h2>
-            <p class="muted">Le focus change les séries, reps, charges, WOD et accessoires.</p>
+            <p class="muted">Le focus change les séries, reps, charges suggérées, WOD et accessoires.</p>
           </div>
           <button id="saveCycleBtn">Sauvegarder cycle</button>
         </div>
@@ -154,7 +156,7 @@
           </div>
           <div class="pr-card">
             <h3>Nouveau cycle</h3>
-            <p class="muted">Repart à la semaine 1. Les références sont conservées.</p>
+            <p class="muted">Repart à la semaine 1. Les références fixes sont conservées.</p>
             <button id="newCycleBtn">Démarrer cycle suivant</button>
           </div>
         </div>
@@ -166,9 +168,9 @@
         <div class="section-title">
           <div>
             <h2>Références par mouvement et plage de reps</h2>
-            <p class="muted">Force 1–5 reps, hypertrophie 6–12 reps, endurance 13+ reps.</p>
+            <p class="muted">Références fixes utilisées pour calculer les poids suggérés.</p>
           </div>
-          <button id="resetRefsBtn" class="ghost danger">Réinitialiser références</button>
+          <button id="resetRefsBtn" class="ghost danger" style="display:none">Réinitialiser références</button>
         </div>
         <div id="referencesList" class="calc-grid"></div>
       </section>
@@ -226,7 +228,7 @@
       <section class="panel"><h2>Résumé lisible</h2><pre id="aiSummary" class="summary-box"></pre></section>
     </main>
 
-    <footer class="footer">V28 : ajout du focus Épaules 3D avec progression corrigée.</footer>
+    <footer class="footer">V30 : lecture seule avec poids suggérés + intentions coach. Aucune entrée de résultats.</footer>
   </div>
   <script src="app.js"></script>
 </body>
