@@ -1,64 +1,21 @@
-# Coach Bertin V28 — Focus Épaules 3D
+# Coach Bertin V34 — Épaules 3D
 
-## Ajout principal
+Version lecture seule pour les séances, avec charges personnalisables.
 
-Nouveau focus principal : Épaules 3D
+## Nouveautés V34
 
-Objectif :
-- deltoïdes latéraux
-- arrière d’épaule
-- triceps
-- haut du dos
-- épaules rondes et larges
-- CrossFit conservé
-- haltérophilie légère conservée
+- `charges.js` contient les charges officielles de base.
+- Onglet `Profil / PR` > `Charges ajustables` permet de modifier les charges localement sur l'appareil.
+- Les charges locales sont sauvegardées dans le navigateur avec `localStorage`.
+- Si une charge locale est vide, l'app utilise la valeur de base dans `charges.js`.
+- Aucun résultat de séance n'est enregistré.
+- Cache PWA mis à jour pour forcer le rafraîchissement.
 
-## Effet dans l'app
+## Modifier les charges pour tous les appareils
 
-### Lundi — Push
-- Strict press / shoulder press sous-maximal
-- Lateral raise
-- Rear delt fly
-- Rope pushdown
-- AMRAP court avec burpees, row, DB push press léger
+Modifier le fichier `charges.js` dans GitHub, puis commit.
 
-### Mardi — Pull
-- Chest-supported row
-- Rear delt fly
-- Face pull
-- Trap-3 raise logique via accessoires
-- EMOM row/SkiErg + ring rows
+## Modifier les charges seulement sur un appareil
 
-### Jeudi — Legs
-- Front squat ou jambes
-- rappel épaules : lateral raise mécanique
-- WOD jambes court
+Ouvrir l'app > Profil / PR > Charges ajustables.
 
-### Vendredi — Full body
-- Power clean technique
-- Push press léger
-- Lateral raise
-- Farmer carry
-- AMRAP CrossFit avec hang power cleans, wall balls, row
-
-## Logique
-
-Ce focus n'est pas un programme bodybuilding pur.
-Il garde les mouvements CrossFit et l'haltéro, mais augmente fortement le volume d’épaules.
-
-
-## V31
-- Ajout des intentions du jour dans la vue normale, export texte et vue iPhone.
-- Conservation des poids suggérés.
-- Toujours aucune entrée de poids, RPE, ressenti, note ou résultat.
-
-
-## V31
-- Lateral raise limité à 2 stimulations/semaine.
-- Plus de travail arrière d’épaule, trap inférieur, serratus et posture.
-- WOD du lundi sans press additionnel pour réduire la surcharge.
-- Version lecture seule : aucun poids ou résultat à entrer.
-
-
-## V33
-Warm-ups ciblés par journée et mobilité stratégique ajustée. Les blocs restent faits pour tenir dans environ 55-60 minutes; le bonus est optionnel seulement s'il reste du temps.
