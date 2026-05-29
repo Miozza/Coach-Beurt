@@ -142,3 +142,49 @@
   .timer-display{font-size:54px}
   .timer-btn{font-size:13px;padding:8px 9px}
 }
+
+
+/* V37 — Mode entraînement optimisé iPhone 17 Pro: aucune largeur forcée, timer lisible sans dézoom */
+html, body { max-width:100%; overflow-x:hidden; }
+#phoneView, .phone-view, .phone-wod, .phone-card { max-width:100%; min-width:0; }
+.phone-view{ width:100%; margin:0 auto; }
+.phone-card{ overflow:hidden; }
+.phone-wod-text,.phone-line,.phone-move,.phone-title,.phone-subtitle{ overflow-wrap:anywhere; word-break:normal; }
+.phone-toolbar{ width:100%; max-width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.phone-toolbar button{ flex:0 0 auto; }
+.phone-timer{ width:100%; max-width:100%; display:grid; grid-template-columns:1fr auto; align-items:center; gap:10px; }
+.timer-main{ min-width:0; display:grid; grid-template-columns:auto 1fr; align-items:center; gap:10px; }
+.timer-display{ font-size:72px; text-align:right; min-width:0; }
+.timer-buttons{ min-width:0; display:flex; gap:6px; justify-content:flex-end; }
+
+@media(max-width:480px){
+  .app{ width:100%; padding:8px 6px 16px; }
+  .phone-toolbar{ padding:8px 2px; margin-bottom:10px; }
+  .phone-toolbar .ghost{ font-size:12px; padding:8px 8px; border-radius:12px; }
+  .phone-wod{ gap:12px; }
+  .phone-card{ padding:14px; border-radius:18px; }
+  .phone-title{ font-size:28px; line-height:1.05; }
+  .phone-subtitle{ font-size:19px; line-height:1.15; }
+  .phone-intention-title{ font-size:17px; }
+  .phone-block-title{ font-size:24px; line-height:1.08; margin-bottom:10px; }
+  .phone-move{ font-size:24px; line-height:1.12; margin-bottom:9px; }
+  .phone-line{ font-size:20px; line-height:1.22; }
+  .phone-wod-text{ font-size:22px; line-height:1.22; }
+  .rules-list{ font-size:18px; line-height:1.22; padding-left:18px; }
+  .phone-exercise{ padding-top:12px; margin-top:12px; }
+  .phone-timer{ padding:12px; border-radius:18px; grid-template-columns:1fr; justify-items:stretch; gap:8px; }
+  .timer-main{ width:100%; grid-template-columns:1fr; gap:2px; }
+  .timer-label{ font-size:15px; text-align:center; }
+  .timer-display{ font-size:78px; line-height:.9; text-align:center; letter-spacing:.01em; }
+  .timer-buttons{ width:100%; justify-content:center; gap:7px; }
+  .timer-btn{ font-size:13px; padding:8px 12px; border-radius:11px; }
+}
+
+@media(max-width:380px){
+  .timer-display{ font-size:68px; }
+  .phone-title{ font-size:25px; }
+  .phone-block-title{ font-size:22px; }
+  .phone-move{ font-size:22px; }
+  .phone-line{ font-size:19px; }
+  .phone-wod-text{ font-size:20px; }
+}
