@@ -1,4 +1,4 @@
-const CACHE_NAME = 'coach-bertin-v34-charges-personnalisables';
+const CACHE_NAME = 'coach-bertin-v36-training-mode-timer';
 const FILES = ['./','./index.html','./styles.css','./app.js','./charges.js','./manifest.json'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES)));

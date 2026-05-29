@@ -117,3 +117,28 @@
 .charge-input{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid rgba(148,163,184,.35);background:#0f172a;color:#e5e7eb;padding:10px;font-size:15px}
 .charge-input:focus{outline:2px solid rgba(56,189,248,.55);border-color:rgba(56,189,248,.75)}
 @media(max-width:700px){.charge-grid{grid-template-columns:1fr}.charge-row{padding:14px}.charge-input{font-size:16px}}
+
+
+/* V36 — timer plus visible et cap en chronomètre */
+.phone-toolbar{align-items:center;justify-content:space-between;gap:8px}
+.phone-toolbar .ghost{padding:9px 10px;font-size:14px}
+.phone-rules{border-color:rgba(45,212,191,.35);background:rgba(45,212,191,.07)}
+.rules-list{margin:0;padding-left:22px;color:var(--text);font-size:22px;line-height:1.32}
+.rules-list li{margin:6px 0}
+.phone-timer{margin-top:16px;padding:14px 16px;border:1px solid rgba(100,210,255,.35);border-radius:20px;background:rgba(100,210,255,.08);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.timer-main{display:flex;align-items:center;gap:14px;min-width:0}
+.timer-label{font-size:20px;font-weight:900;color:var(--accent);white-space:nowrap}
+.timer-display{font-size:64px;line-height:.95;font-weight:950;letter-spacing:.03em;color:var(--text);font-variant-numeric:tabular-nums}
+.timer-buttons{display:flex;gap:6px;flex-wrap:nowrap}
+.timer-btn{padding:10px 12px;border-radius:12px;font-size:15px;line-height:1;font-weight:800}
+.timer-btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+@media(max-width:620px){
+  .phone-toolbar{position:sticky;top:0;overflow-x:auto}
+  .phone-toolbar .ghost{font-size:13px;padding:8px 9px;white-space:nowrap}
+  .rules-list{font-size:20px;line-height:1.28}
+  .phone-timer{padding:12px;gap:10px}
+  .timer-main{gap:10px}
+  .timer-label{font-size:16px}
+  .timer-display{font-size:54px}
+  .timer-btn{font-size:13px;padding:8px 9px}
+}

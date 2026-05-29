@@ -1,21 +1,23 @@
-# Coach Bertin V34 — Épaules 3D
+# Coach Bertin V36 — Épaules 3D
 
-Version lecture seule pour les séances, avec charges personnalisables.
+Version statique pour GitHub Pages.
 
-## Nouveautés V34
+Ajouts V36 :
+- Mode entraînement iPhone
+- Bouton plein écran quand supporté par le navigateur
+- Timer compact dans la vue iPhone, préajusté au WOD du jour
+- Durée estimée par bloc
+- Règles du cycle visibles
+- Charges personnalisables localement via l’onglet Profil / PR
+- Aucune donnée de performance enregistrée
 
-- `charges.js` contient les charges officielles de base.
-- Onglet `Profil / PR` > `Charges ajustables` permet de modifier les charges localement sur l'appareil.
-- Les charges locales sont sauvegardées dans le navigateur avec `localStorage`.
-- Si une charge locale est vide, l'app utilise la valeur de base dans `charges.js`.
-- Aucun résultat de séance n'est enregistré.
-- Cache PWA mis à jour pour forcer le rafraîchissement.
+Fichiers importants :
+- index.html
+- styles.css
+- app.js
+- charges.js
+- manifest.json
+- service-worker.js
 
-## Modifier les charges pour tous les appareils
 
-Modifier le fichier `charges.js` dans GitHub, puis commit.
-
-## Modifier les charges seulement sur un appareil
-
-Ouvrir l'app > Profil / PR > Charges ajustables.
-
+V36: timer agrandi dans le mode entraînement; les WOD avec time cap démarrent à 00:00 et comptent vers le cap.

@@ -3,8 +3,8 @@
 // Les ajustements faits dans l'app sur iPhone restent locaux et ont priorité sur ces valeurs.
 window.DEFAULT_CHARGES = {
   "Strict Press": "S1 4 x 8 @ 115 lb | S2 5 x 8 @ 120 lb | S3 5 x 6-8 @ 125 lb | S4 3 x 8 @ 95-105 lb",
-  "Lateral Raise": "15-20 lb",
-  "Rear Delt Fly": "15-20 lb",
+  "Lateral Raise": "20-25 lb",
+  "Rear Delt Fly": "20-25 lb",
   "Triceps Rope Pushdown": "60-70 lb",
   "Face Pull": "60-70 lb",
   "Chest Supported Row": "115-125 lb",

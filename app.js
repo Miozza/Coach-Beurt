@@ -22,6 +22,7 @@ function copy(o){return JSON.parse(JSON.stringify(o));} function $(id){return do
 function load(){try{var r=localStorage.getItem(KEY)||localStorage.getItem("coachBertinV16RepsReferences")||localStorage.getItem("coachBertinV15MovementProgression");if(r){var p=JSON.parse(r);state=Object.assign(state,p);state.profile=Object.assign(copy(defaultProfile),p.profile||{});state.cycle=Object.assign({goal:"hypertrophy"},p.cycle||{});state.movementRefs=Object.assign(EXTRA_PRELOADED_REFS, {"inclineDb__strength": {"movement": "inclineDb", "range": "strength", "load": 85, "reps": 5, "date": "préchargé", "lastActual": 85, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "inclineDb__hypertrophy": {"movement": "inclineDb", "range": "hypertrophy", "load": 60, "reps": 8, "date": "préchargé", "lastActual": 60, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "inclineDb__endurance": {"movement": "inclineDb", "range": "endurance", "load": 45, "reps": 15, "date": "préchargé", "lastActual": 45, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "strictPress__strength": {"movement": "strictPress", "range": "strength", "load": 155, "reps": 5, "date": "préchargé", "lastActual": 155, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "strictPress__hypertrophy": {"movement": "strictPress", "range": "hypertrophy", "load": 135, "reps": 8, "date": "préchargé", "lastActual": 135, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "strictPress__endurance": {"movement": "strictPress", "range": "endurance", "load": 115, "reps": 15, "date": "préchargé", "lastActual": 115, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "chestRow__strength": {"movement": "chestRow", "range": "strength", "load": 155, "reps": 5, "date": "préchargé", "lastActual": 155, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "chestRow__hypertrophy": {"movement": "chestRow", "range": "hypertrophy", "load": 115, "reps": 8, "date": "préchargé", "lastActual": 115, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "chestRow__endurance": {"movement": "chestRow", "range": "endurance", "load": 95, "reps": 15, "date": "préchargé", "lastActual": 95, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "barbellRow__strength": {"movement": "barbellRow", "range": "strength", "load": 205, "reps": 5, "date": "préchargé", "lastActual": 205, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "barbellRow__hypertrophy": {"movement": "barbellRow", "range": "hypertrophy", "load": 185, "reps": 8, "date": "préchargé", "lastActual": 185, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "barbellRow__endurance": {"movement": "barbellRow", "range": "endurance", "load": 155, "reps": 15, "date": "préchargé", "lastActual": 155, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "latPulldown__strength": {"movement": "latPulldown", "range": "strength", "load": 45, "reps": 5, "date": "préchargé", "lastActual": 45, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "latPulldown__hypertrophy": {"movement": "latPulldown", "range": "hypertrophy", "load": 20, "reps": 8, "date": "préchargé", "lastActual": 20, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "frontSquat__strength": {"movement": "frontSquat", "range": "strength", "load": 224, "reps": 5, "date": "préchargé", "lastActual": 224, "status": "preloaded", "quality": "acceptable", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "frontSquat__hypertrophy": {"movement": "frontSquat", "range": "hypertrophy", "load": 185, "reps": 8, "date": "préchargé", "lastActual": 185, "status": "preloaded", "quality": "acceptable", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "frontSquat__endurance": {"movement": "frontSquat", "range": "endurance", "load": 115, "reps": 15, "date": "préchargé", "lastActual": 115, "status": "preloaded", "quality": "acceptable", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "hipThrust__strength": {"movement": "hipThrust", "range": "strength", "load": 315, "reps": 5, "date": "préchargé", "lastActual": 315, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "hipThrust__hypertrophy": {"movement": "hipThrust", "range": "hypertrophy", "load": 315, "reps": 8, "date": "préchargé", "lastActual": 315, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "hipThrust__endurance": {"movement": "hipThrust", "range": "endurance", "load": 265, "reps": 15, "date": "préchargé", "lastActual": 265, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "bulgarian__strength": {"movement": "bulgarian", "range": "strength", "load": 60, "reps": 5, "date": "préchargé", "lastActual": 60, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "bulgarian__hypertrophy": {"movement": "bulgarian", "range": "hypertrophy", "load": 40, "reps": 8, "date": "préchargé", "lastActual": 40, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "bulgarian__endurance": {"movement": "bulgarian", "range": "endurance", "load": 25, "reps": 15, "date": "préchargé", "lastActual": 25, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "powerClean__strength": {"movement": "powerClean", "range": "strength", "load": 215, "reps": 5, "date": "préchargé", "lastActual": 215, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "powerClean__hypertrophy": {"movement": "powerClean", "range": "hypertrophy", "load": 185, "reps": 8, "date": "préchargé", "lastActual": 185, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "powerClean__endurance": {"movement": "powerClean", "range": "endurance", "load": 135, "reps": 15, "date": "préchargé", "lastActual": 135, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "dbSnatch__strength": {"movement": "dbSnatch", "range": "strength", "load": 70, "reps": 5, "date": "préchargé", "lastActual": 70, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "dbSnatch__hypertrophy": {"movement": "dbSnatch", "range": "hypertrophy", "load": 50, "reps": 8, "date": "préchargé", "lastActual": 50, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "dbSnatch__endurance": {"movement": "dbSnatch", "range": "endurance", "load": 35, "reps": 15, "date": "préchargé", "lastActual": 35, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "farmerCarry__strength": {"movement": "farmerCarry", "range": "strength", "load": 32, "reps": 5, "date": "préchargé", "lastActual": 32, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "farmerCarry__hypertrophy": {"movement": "farmerCarry", "range": "hypertrophy", "load": 28, "reps": 8, "date": "préchargé", "lastActual": 28, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}, "farmerCarry__endurance": {"movement": "farmerCarry", "range": "endurance", "load": 24, "reps": 15, "date": "préchargé", "lastActual": 24, "status": "preloaded", "quality": "clean", "rpe": 8, "note": "Référence initiale fournie par Bertin"}}, p.movementRefs||{});}}catch(e){}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
 var CHARGE_KEY="coachBertinCustomChargesV34";
+var wodTimer={duration:0,remaining:0,running:false,interval:null,label:""};
 var customCharges={};
 function loadCustomCharges(){try{customCharges=JSON.parse(localStorage.getItem(CHARGE_KEY)||"{}");}catch(e){customCharges={};}}
 function saveCustomCharges(){try{localStorage.setItem(CHARGE_KEY,JSON.stringify(customCharges));}catch(e){}}
@@ -203,6 +204,89 @@ function restFor(kind){
 function wodForDay(day){var goal=state.cycle.goal;if(goal==="shoulders3d")return shouldersWodForDay(day);if(goal==="weightlifting")return wodBanks.weightlifting[(state.week-1)%wodBanks.weightlifting.length];if(goal==="engine")return wodBanks.engine[(state.week-1)%wodBanks.engine.length];if(goal==="maintenance")return wodBanks.lowimpact[(state.week-1)%wodBanks.lowimpact.length];if(day==="lundi")return wodBanks.push[(state.week-1)%wodBanks.push.length];if(day==="mardi")return wodBanks.pull[(state.week-1)%wodBanks.pull.length];if(day==="jeudi")return wodBanks.legs[(state.week-1)%wodBanks.legs.length];return wodBanks.engine[(state.week-1)%wodBanks.engine.length];}
 
 
+function cycleRules(){
+  return [
+    "Aucun échec sur les mouvements principaux.",
+    "Supersets seulement quand c’est indiqué.",
+    "Lateral raise : brûlure oui, élan non.",
+    "WOD lundi : pacing modéré, épaules déjà fatiguées.",
+    "Vendredi : haltéro propre, pas de redline.",
+    "Si douleur articulaire : baisse la charge, garde l’amplitude propre."
+  ];
+}
+function rulesHtml(){return "<ul class='rules-list'>"+cycleRules().map(function(r){return "<li>"+r+"</li>";}).join("")+"</ul>";}
+function parseTimeToSeconds(t){
+  var m=String(t||"").match(/(\d+)\s*min/);
+  return m?Number(m[1])*60:0;
+}
+function wodTimerConfig(block){
+  var txt=String((block&&block.text)||"");
+  var seconds=parseTimeToSeconds(block&&block.time);
+  var label="Timer";
+  var mode="down";
+  if(/AMRAP/i.test(txt)){label="AMRAP "+Math.round(seconds/60)+" min";}
+  else if(/EMOM/i.test(txt)){label="EMOM "+Math.round(seconds/60)+" min";}
+  else if(/For time|Cap/i.test(txt)){label="CAP "+Math.round(seconds/60)+" min";mode="up";}
+  if(!seconds){seconds=8*60;label="Timer 8 min";}
+  return {seconds:seconds,label:label,mode:mode};
+}
+function formatClock(sec){
+  sec=Math.max(0,Math.floor(sec||0));
+  var m=Math.floor(sec/60),s=sec%60;
+  return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+function timerHtml(block){
+  var cfg=wodTimerConfig(block);
+  var initial=cfg.mode==="up"?0:cfg.seconds;
+  return '<div class="phone-timer" data-duration="'+cfg.seconds+'" data-label="'+cfg.label+'" data-mode="'+cfg.mode+'">'+
+    '<div class="timer-main"><span class="timer-label">'+cfg.label+'</span><span id="timerDisplay" class="timer-display">'+formatClock(initial)+'</span></div>'+
+    '<div class="timer-buttons"><button id="timerStartBtn" class="timer-btn">Start</button><button id="timerPauseBtn" class="timer-btn ghost">Pause</button><button id="timerResetBtn" class="timer-btn ghost">Reset</button></div>'+
+  '</div>';
+}
+function stopTimer(){if(wodTimer.interval){clearInterval(wodTimer.interval);wodTimer.interval=null;}wodTimer.running=false;}
+function timerCurrentValue(){return wodTimer.mode==="up"?wodTimer.elapsed:wodTimer.remaining;}
+function updateTimerDisplay(){var d=document.getElementById("timerDisplay");if(d){d.textContent=formatClock(timerCurrentValue());}}
+function resetTimerState(dur,mode,label){
+  stopTimer();
+  wodTimer.duration=dur;
+  wodTimer.mode=mode||"down";
+  wodTimer.label=label||"Timer";
+  wodTimer.elapsed=0;
+  wodTimer.remaining=dur;
+}
+function setupTimerControls(){
+  var box=document.querySelector(".phone-timer");
+  if(!box){stopTimer();return;}
+  var dur=Number(box.getAttribute("data-duration"))||0;
+  var mode=box.getAttribute("data-mode")||"down";
+  var label=box.getAttribute("data-label")||"Timer";
+  if(wodTimer.duration!==dur || wodTimer.mode!==mode || wodTimer.label!==label){resetTimerState(dur,mode,label);}
+  updateTimerDisplay();
+  var start=document.getElementById("timerStartBtn"),pause=document.getElementById("timerPauseBtn"),reset=document.getElementById("timerResetBtn");
+  if(start){start.onclick=function(){
+    if(wodTimer.running)return;
+    wodTimer.running=true;
+    wodTimer.interval=setInterval(function(){
+      if(wodTimer.mode==="up"){
+        wodTimer.elapsed=Math.min(wodTimer.duration,wodTimer.elapsed+1);
+        updateTimerDisplay();
+        if(wodTimer.elapsed>=wodTimer.duration){stopTimer();}
+      }else{
+        wodTimer.remaining=Math.max(0,wodTimer.remaining-1);
+        updateTimerDisplay();
+        if(wodTimer.remaining<=0){stopTimer();}
+      }
+    },1000);
+  };}
+  if(pause){pause.onclick=function(){stopTimer();updateTimerDisplay();};}
+  if(reset){reset.onclick=function(){resetTimerState(dur,mode,label);updateTimerDisplay();};}
+}
+function enterFullscreen(){
+  var el=document.documentElement;
+  var fn=el.requestFullscreen||el.webkitRequestFullscreen||el.msRequestFullscreen;
+  if(fn){try{var p=fn.call(el);if(p&&p.catch){p.catch(function(){});}}catch(e){}}
+}
+
 function shouldersWeekPlan(week){
   var plans={
     1:{label:"S1 Base",note:"Qualité, amplitude complète, aucun échec.",main:"4 x 10",mainRest:"2:00",wodNote:"Pacing propre"},
@@ -227,7 +311,7 @@ function shouldersBlocks(day,week){
   if(day==="mardi")return [
     {time:"8 min",title:"Warm-up ciblé",tag:"Préparation",kind:"warmup",text:"Row facile 3 min + Open Book 6/côté + Cat-Cow 10 reps + Scap Ring Row 2 x 8 + Band Face Pull 2 x 20 + 2 séries progressives de chest row."},
     {time:"13 min",title:"A. Mouvement principal",tag:"Dos",kind:"main",exercises:[ex("Chest Supported Row",week===1?"4 x 10":week===2?"5 x 10":week===3?"4 x 8":"3 x 10 léger",week===3?"125 lb":"115 lb","1:45-2:00","Tirage propre, pas de swing.")]},
-    {time:"11 min",title:"B. Superset arrière d'épaule",tag:"Superset",kind:"accessory",text:"Alterner B1 puis B2. Ce bloc est prioritaire pour ta posture.",exercises:[ex("B1. Rear Delt Fly",week===4?"2-3 x 15":"4 x 15-20","25 lb","0:30 avant B1","Bras longs, trapèzes calmes."),ex("B2. Face Pull",week===4?"2-3 x 15":"4 x 15-20","70 lb","0:60 après B2","Finition en rotation externe.")]},
+    {time:"11 min",title:"B. Superset arrière d'épaule",tag:"Superset",kind:"accessory",text:"Alterner B1 puis B2. Ce bloc est prioritaire pour ta posture.",exercises:[ex("B1. Rear Delt Fly",week===4?"2-3 x 15":"4 x 15-20","25 lb","0:30 avant B2","Bras longs, trapèzes calmes."),ex("B2. Face Pull",week===4?"2-3 x 15":"4 x 15-20","70 lb","0:60 après B2","Finition en rotation externe.")]},
     {time:"9 min",title:"C. Superset scapulas",tag:"Posture",kind:"accessory",text:"Contrôle lent. Pas un bloc de cardio.",exercises:[ex("C1. Trap-3 Raise",week===4?"2 x 12":"3 x 15","léger","0:30 avant C2","Pouce vers le haut, trap inférieur."),ex("C2. Ring Row Strict",week===4?"2 x 8":"3 x 10","poids du corps","0:60 après C2","Corps gainé, poitrine aux anneaux.")]},
     {time:"10 min",title:"D. WOD",tag:"Conditioning",kind:"wod",text:"EMOM 10 : min 1 = 12 cal row ; min 2 = 10 ring rows stricts. "+p.wodNote+"."},
     {time:"0-4 min",title:"E. Optionnel si temps",tag:"Bonus",kind:"bonus",text:"Farmer Carry 2-3 x 40 m lourd mais propre. Épaules basses, cage ouverte."},
@@ -296,7 +380,7 @@ function renderWorkout(){
   var plan=state.cycle.goal==="shoulders3d"?shouldersWeekPlan(state.week):null;
   $("workoutTitle").textContent=weekInfo[state.week].label+" — "+w.day.label+" — "+w.day.base;
   $("workoutFocus").textContent=w.day.focus;
-  $("focusImpact").innerHTML="<strong>"+dayIntention(state.day)+"</strong>"+(plan?"<br><strong>Progression :</strong> "+plan.label+" — "+plan.note:"");
+  $("focusImpact").innerHTML="<strong>"+dayIntention(state.day)+"</strong>"+(plan?"<br><strong>Progression :</strong> "+plan.label+" — "+plan.note:"")+"<br><br><strong>Règles du cycle :</strong>"+rulesHtml();
   var c=$("blocks");c.innerHTML="";
   w.blocks.forEach(function(b){
     var div=document.createElement("div");div.className="block";
@@ -484,12 +568,14 @@ function renderPhoneWod(){
   html+='<div class="phone-card phone-intention"><p class="phone-intention-title">INTENTION DU JOUR</p><p class="phone-wod-text">'+dayIntention(state.day)+'</p></div>';
   var plan=state.cycle.goal==="shoulders3d"?shouldersWeekPlan(state.week):null;
   if(plan){html+='<div class="phone-card phone-intention"><p class="phone-intention-title">PROGRESSION</p><p class="phone-wod-text">'+plan.label+' — '+plan.note+'</p></div>';}
+  html+='<div class="phone-card phone-rules"><p class="phone-intention-title">RÈGLES DU CYCLE</p>'+rulesHtml()+'</div>';
 
   w.blocks.forEach(function(b){
     html+='<div class="phone-card">';
     html+='<h2 class="phone-block-title">'+b.title.toUpperCase()+' ('+b.time+')</h2>';
     if(b.kind==="wod"){
       html+='<p class="phone-wod-text">'+cleanExportLine(displayChargeText(b.text))+'</p>';
+      html+=timerHtml(b);
       html+=phoneWodLoadHints(b.text);
     } else if(b.exercises && b.exercises.length){
       if(b.text){html+='<p class="phone-wod-text">'+cleanExportLine(displayChargeText(b.text))+'</p>';}
@@ -524,12 +610,13 @@ function renderPhoneWod(){
     html+='</div>';
   });
   el.innerHTML=html;
+  setupTimerControls();
 }
 
 function download(name,text){var blob=new Blob([text],{type:"text/plain;charset=utf-8"});if(name.endsWith(".json"))blob=new Blob([text],{type:"application/json;charset=utf-8"});var url=URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);}
 function resetHistory(){if(confirm("Effacer historique?")){state.history=[];save();renderHistory();renderAI();}}
 function switchView(v){["training","phone","profile","cycle","references","backup","history","ai"].forEach(function(x){$(x+"View").classList.toggle("hidden",v!==x);$(x+"Tab").classList.toggle("active",v===x);});if(v==="phone")renderPhoneWod();if(v==="profile")renderProfile();if(v==="cycle")renderCycle();if(v==="references")renderReferences();if(v==="history")renderHistory();if(v==="ai")renderAI();}
-function bind(){["training","phone","profile","cycle","references","backup","history","ai"].forEach(function(v){$(v+"Tab").onclick=function(){switchView(v);};});$("saveBtn").onclick=saveResults;$("phoneViewBtn").onclick=function(){switchView("phone");renderPhoneWod();};$("backTrainingBtn").onclick=function(){switchView("training");};$("copyPhoneBtn").onclick=function(){navigator.clipboard.writeText(stableIphoneText()).then(function(){alert("Texte copié.");}).catch(function(){alert("Copie bloquée.");});};$("saveProfileBtn").onclick=saveProfile;if($("resetCustomChargesBtn")){$("resetCustomChargesBtn").onclick=resetCustomCharges;}$("saveCycleBtn").onclick=saveCycle;$("newCycleBtn").onclick=newCycle;$("resetRefsBtn").onclick=resetRefs;$("resetHistoryBtn").onclick=resetHistory;$("copyIphoneBtn").onclick=function(){navigator.clipboard.writeText(stableIphoneText()).then(function(){alert("WOD copié pour iPhone.");}).catch(function(){alert("Copie bloquée.");});};$("exportIphoneBtn").onclick=function(){download("wod-iphone.txt",stableIphoneText());};$("exportTodayBtn").onclick=function(){download("coach-bertin-seance.txt",workoutText());};$("exportWeekBtn").onclick=function(){download("coach-bertin-semaine.txt",weekText());};$("exportHistoryBtn").onclick=function(){download("coach-bertin-historique.txt",historyText());};$("exportAiBtn").onclick=function(){download("coach-bertin-analyse.txt",aiAnalysis().summary);};$("exportBackupBtn").onclick=exportBackup;$("importBackupFile").onchange=function(e){importBackup(e.target.files[0]);};$("cycleGoal").onchange=function(){state.cycle.goal=$("cycleGoal").value;save();render();};}
+function bind(){["training","phone","profile","cycle","references","backup","history","ai"].forEach(function(v){$(v+"Tab").onclick=function(){switchView(v);};});$("saveBtn").onclick=saveResults;$("phoneViewBtn").onclick=function(){switchView("phone");renderPhoneWod();};$("backTrainingBtn").onclick=function(){switchView("training");};$("copyPhoneBtn").onclick=function(){navigator.clipboard.writeText(stableIphoneText()).then(function(){alert("Texte copié.");}).catch(function(){alert("Copie bloquée.");});};$("saveProfileBtn").onclick=saveProfile;if($("resetCustomChargesBtn")){$("resetCustomChargesBtn").onclick=resetCustomCharges;}if($("fullscreenBtn")){$("fullscreenBtn").onclick=enterFullscreen;}$("saveCycleBtn").onclick=saveCycle;$("newCycleBtn").onclick=newCycle;$("resetRefsBtn").onclick=resetRefs;$("resetHistoryBtn").onclick=resetHistory;$("copyIphoneBtn").onclick=function(){navigator.clipboard.writeText(stableIphoneText()).then(function(){alert("WOD copié pour iPhone.");}).catch(function(){alert("Copie bloquée.");});};$("exportIphoneBtn").onclick=function(){download("wod-iphone.txt",stableIphoneText());};$("exportTodayBtn").onclick=function(){download("coach-bertin-seance.txt",workoutText());};$("exportWeekBtn").onclick=function(){download("coach-bertin-semaine.txt",weekText());};$("exportHistoryBtn").onclick=function(){download("coach-bertin-historique.txt",historyText());};$("exportAiBtn").onclick=function(){download("coach-bertin-analyse.txt",aiAnalysis().summary);};$("exportBackupBtn").onclick=exportBackup;$("importBackupFile").onchange=function(e){importBackup(e.target.files[0]);};$("cycleGoal").onchange=function(){state.cycle.goal=$("cycleGoal").value;save();render();};}
 function render(){renderWeeks();renderDays();renderWorkout();renderHistory();renderAI();}
 load();loadCustomCharges();bind();render();
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("service-worker.js").catch(function(){});});}

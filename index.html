@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coach Bertin V34 — Épaules 3D</title>
+  <title>Coach Bertin V35 — Épaules 3D</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#111827" />
   <link rel="stylesheet" href="styles.css" />
@@ -12,9 +12,9 @@
   <div class="app">
     <header class="hero">
       <div>
-        <p class="eyebrow">Coach Bertin — V34</p>
+        <p class="eyebrow">Coach Bertin — V35</p>
         <h1>Épaules 3D — programme structuré 4 semaines</h1>
-        <p class="subtitle">Lecture seule pour les séances. Charges ajustables localement ou dans charges.js.</p>
+        <p class="subtitle">Lecture seule. Charges ajustables. Mode entraînement iPhone avec timer compact.</p>
       </div>
       <div class="stats">
         <div><strong>Reps</strong><span>plages</span></div>
@@ -25,7 +25,7 @@
 
     <nav class="tabs">
       <button id="trainingTab" class="tab active">Entraînement</button>
-      <button id="phoneTab" class="tab">Vue iPhone</button>
+      <button id="phoneTab" class="tab">Mode entraînement</button>
       <button id="profileTab" class="tab">Profil / PR</button>
       <button id="cycleTab" class="tab">Cycle</button>
       <button id="referencesTab" class="tab">Références</button>
@@ -43,7 +43,7 @@
             <p id="cycleSummary" class="muted"></p>
           </div>
           <div class="actions">
-            <button id="phoneViewBtn" class="ghost">Voir format iPhone</button>
+            <button id="phoneViewBtn" class="ghost">Mode entraînement</button>
             <button id="copyIphoneBtn" class="ghost">Copier WOD iPhone</button>
             <button id="exportIphoneBtn" class="ghost">Exporter WOD iPhone</button>
             <button id="exportTodayBtn" class="ghost">Export complet</button>
@@ -75,6 +75,7 @@
     <main id="phoneView" class="phone-view hidden">
       <section class="phone-toolbar">
         <button id="backTrainingBtn" class="ghost">Retour entraînement</button>
+        <button id="fullscreenBtn" class="ghost">Plein écran</button>
         <button id="copyPhoneBtn" class="ghost">Copier texte</button>
       </section>
       <section id="phoneWod" class="phone-wod"></section>
