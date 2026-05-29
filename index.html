@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coach Bertin V28 — Épaules 3D</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Coach Bertin — V28</p>
+        <h1>Smart Progression</h1>
+        <p class="subtitle">Version avec focus Épaules 3D : deltoïdes latéraux, arrière d’épaule, triceps et CrossFit.</p>
+      </div>
+      <div class="stats">
+        <div><strong>Reps</strong><span>plages</span></div>
+        <div><strong>JSON</strong><span>backup</span></div>
+        <div><strong>WOD</strong><span>banque</span></div>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <button id="trainingTab" class="tab active">Entraînement</button>
+      <button id="phoneTab" class="tab">Vue iPhone</button>
+      <button id="profileTab" class="tab">Profil / PR</button>
+      <button id="cycleTab" class="tab">Cycle</button>
+      <button id="referencesTab" class="tab">Références</button>
+      <button id="backupTab" class="tab">Backup</button>
+      <button id="historyTab" class="tab">Historique</button>
+      <button id="aiTab" class="tab">Analyse IA</button>
+    </nav>
+
+    <main id="trainingView" class="profile">
+      <section class="panel">
+        <div class="section-title">
+          <div>
+            <h2>Entraînement du jour</h2>
+            <p id="weekGoal" class="muted"></p>
+            <p id="cycleSummary" class="muted"></p>
+          </div>
+          <div class="actions">
+            <button id="phoneViewBtn" class="ghost">Voir format iPhone</button>
+            <button id="copyIphoneBtn" class="ghost">Copier WOD iPhone</button>
+            <button id="exportIphoneBtn" class="ghost">Exporter WOD iPhone</button>
+            <button id="exportTodayBtn" class="ghost">Export complet</button>
+            <button id="exportWeekBtn" class="ghost">Export semaine</button>
+          </div>
+        </div>
+
+        <div class="weeks" id="weekButtons"></div>
+        <div class="days" id="dayButtons"></div>
+
+        <div class="workout-head">
+          <div>
+            <h2 id="workoutTitle"></h2>
+            <p id="workoutFocus"></p>
+          </div>
+        </div>
+
+        <div id="focusImpact" class="notice"></div>
+        <div id="blocks" class="blocks"></div>
+
+        <div class="savebar">
+          <button id="saveBtn">Sauvegarder les résultats de la séance</button>
+          <p id="progressionAdvice" class="advice"></p>
+        </div>
+      </section>
+    </main>
+
+
+    <main id="phoneView" class="phone-view hidden">
+      <section class="phone-toolbar">
+        <button id="backTrainingBtn" class="ghost">Retour entraînement</button>
+        <button id="copyPhoneBtn" class="ghost">Copier texte</button>
+      </section>
+      <section id="phoneWod" class="phone-wod"></section>
+    </main>
+
+    <main id="profileView" class="profile hidden">
+      <section class="panel">
+        <div class="section-title">
+          <div>
+            <h2>Profil / PR stratégiques</h2>
+            <p class="muted">Valeurs de départ. Les références par plage de reps prennent ensuite le relais.</p>
+          </div>
+          <button id="saveProfileBtn">Sauvegarder profil</button>
+        </div>
+
+        <div class="settings-row">
+          <label>Training max utilisé</label>
+          <select id="trainingMaxPct">
+            <option value="0.90">90 % des PR</option>
+            <option value="0.925">92.5 % des PR</option>
+            <option value="0.95">95 % des PR</option>
+          </select>
+        </div>
+
+        <div class="pr-grid">
+          <div class="pr-card">
+            <h3>Force principale</h3>
+            <label>Bench press 1RM</label><input id="prBench" type="number" />
+            <label>Front squat 1RM / référence</label><input id="prFrontSquat" type="number" />
+            <label>Strict press 1RM</label><input id="prStrictPress" type="number" />
+            <label>Power clean 1RM</label><input id="prPowerClean" type="number" />
+          </div>
+          <div class="pr-card">
+            <h3>Bas du corps</h3>
+            <label>Back squat 5RM</label><input id="prBackSquat5RM" type="number" />
+            <label>Hip thrust 8RM</label><input id="prHipThrust8RM" type="number" />
+            <label>DB Bulgarian — poids/main</label><input id="prBulgarianDB" type="number" />
+            <label>DB RDL — poids/main</label><input id="prDbRdl" type="number" />
+          </div>
+          <div class="pr-card">
+            <h3>Tirage / haut du dos</h3>
+            <label>Barbell row 8RM</label><input id="prRow8RM" type="number" />
+            <label>Chest-supported row 8RM</label><input id="prChestRow8RM" type="number" />
+            <label>Weighted pull-up 10RM</label><input id="prLatPulldown10RM" type="number" />
+            <label>DB incline press 10RM — poids/main</label><input id="prInclineDb10RM" type="number" />
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <main id="cycleView" class="profile hidden">
+      <section class="panel">
+        <div class="section-title">
+          <div>
+            <h2>Objectif du cycle</h2>
+            <p class="muted">Le focus change les séries, reps, charges, WOD et accessoires.</p>
+          </div>
+          <button id="saveCycleBtn">Sauvegarder cycle</button>
+        </div>
+
+        <div class="pr-grid">
+          <div class="pr-card">
+            <h3>Focus principal</h3>
+            <label>Objectif</label>
+            <select id="cycleGoal">
+              <option value="hypertrophy">Hypertrophie utile</option>
+              <option value="shoulders3d">Épaules 3D</option>
+              <option value="strength">Force</option>
+              <option value="weightlifting">Haltérophilie</option>
+              <option value="posture">Posture / cyphose</option>
+              <option value="engine">Endurance CrossFit</option>
+              <option value="recomp">Recomposition corporelle</option>
+              <option value="maintenance">Maintien / récupération</option>
+            </select>
+          </div>
+          <div class="pr-card">
+            <h3>Effet du focus</h3>
+            <div id="focusDetails" class="details"></div>
+          </div>
+          <div class="pr-card">
+            <h3>Nouveau cycle</h3>
+            <p class="muted">Repart à la semaine 1. Les références sont conservées.</p>
+            <button id="newCycleBtn">Démarrer cycle suivant</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <main id="referencesView" class="profile hidden">
+      <section class="panel">
+        <div class="section-title">
+          <div>
+            <h2>Références par mouvement et plage de reps</h2>
+            <p class="muted">Force 1–5 reps, hypertrophie 6–12 reps, endurance 13+ reps.</p>
+          </div>
+          <button id="resetRefsBtn" class="ghost danger">Réinitialiser références</button>
+        </div>
+        <div id="referencesList" class="calc-grid"></div>
+      </section>
+    </main>
+
+    <main id="backupView" class="profile hidden">
+      <section class="panel">
+        <div class="section-title">
+          <div>
+            <h2>Backup complet</h2>
+            <p class="muted">Sauvegarde ou restaure toutes les données : profil, références, historique, focus et semaine.</p>
+          </div>
+        </div>
+        <div class="pr-grid">
+          <div class="pr-card">
+            <h3>Exporter</h3>
+            <p class="muted">Crée un fichier JSON complet.</p>
+            <button id="exportBackupBtn">Exporter backup JSON</button>
+          </div>
+          <div class="pr-card">
+            <h3>Importer</h3>
+            <p class="muted">Restaure un fichier JSON exporté.</p>
+            <label class="file-label">Importer JSON<input id="importBackupFile" type="file" accept="application/json" /></label>
+          </div>
+          <div class="pr-card">
+            <h3>Attention</h3>
+            <p class="muted">Importer remplace les données actuelles. Exporte un backup avant si tu veux les garder.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <main id="historyView" class="profile hidden">
+      <section class="panel">
+        <div class="section-title">
+          <h2>Historique complet</h2>
+          <div class="actions">
+            <button id="exportHistoryBtn" class="ghost">Exporter historique texte</button>
+            <button id="resetHistoryBtn" class="ghost danger">Effacer historique</button>
+          </div>
+        </div>
+        <div id="history" class="history big"></div>
+      </section>
+    </main>
+
+    <main id="aiView" class="profile hidden">
+      <section class="panel">
+        <div class="section-title">
+          <div><h2>Analyse IA locale</h2><p class="muted">Analyse par mouvement, plage de reps, qualité technique, échecs et douleurs.</p></div>
+          <button id="exportAiBtn" class="ghost">Exporter analyse</button>
+        </div>
+        <div id="aiScoreCards" class="calc-grid"></div>
+      </section>
+      <section class="panel"><h2>Suggestions du coach</h2><div id="aiSuggestions" class="ai-list"></div></section>
+      <section class="panel"><h2>Résumé lisible</h2><pre id="aiSummary" class="summary-box"></pre></section>
+    </main>
+
+    <footer class="footer">V28 : ajout du focus Épaules 3D avec progression corrigée.</footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
