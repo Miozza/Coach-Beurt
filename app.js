@@ -2,7 +2,7 @@
 var weekInfo={1:{label:"Semaine 1",goal:"Base technique : repères propres."},2:{label:"Semaine 2",goal:"Progression : plus de volume ou densité."},3:{label:"Semaine 3",goal:"Intensité : semaine la plus lourde."},4:{label:"Semaine 4",goal:"Deload actif : récupération et qualité."}};
 var focusConfigs={
 hypertrophy:{label:"Hypertrophie utile",impact:"Augmente reps/accessoires, WOD court.",sets:["4 x 8","4 x 8","5 x 5","3 x 8 tempo"],targetReps:[8,8,5,8],mult:[0.65,0.68,0.72,0.55],rest:"1:30–2:00",tag:"plus de muscle"},
-shoulders3d:{label:"Épaules 3D",impact:"Priorité deltoïdes latéraux, arrière d’épaule et triceps. Press sous-maximal, haut du dos élevé, CrossFit conservé.",sets:["4 x 10","4 x 10","5 x 8","3 x 10 léger"],targetReps:[10,10,8,10],mult:[0.58,0.62,0.66,0.50],rest:"1:15–1:45",tag:"épaules 3D"},
+shoulders3d:{label:"Épaules 3D",impact:"Priorité épaules rondes sans surcharger les tendons : 2 vraies doses de deltoïde latéral, plus arrière d’épaule, trap inférieur, serratus et triceps. Press sous-maximal, CrossFit conservé.",sets:["4 x 10","4 x 10","5 x 8","3 x 10 léger"],targetReps:[10,10,8,10],mult:[0.58,0.62,0.66,0.50],rest:"1:15–1:45",tag:"épaules 3D"},
 strength:{label:"Force",impact:"Plus lourd, moins de volume inutile, repos longs.",sets:["5 x 5","5 x 4","6 x 3","3 x 5 léger"],targetReps:[5,4,3,5],mult:[0.75,0.80,0.86,0.60],rest:"2:00–2:30",tag:"plus lourd"},
 weightlifting:{label:"Haltérophilie",impact:"Technique olympique, vitesse, positions, réception propre.",sets:["8 x 2 technique","EMOM 10 x 2","8 x 1–2 lourd propre","5 x 2 léger"],targetReps:[2,2,2,2],mult:[0.62,0.68,0.78,0.55],rest:"1:15–2:00",tag:"technique + vitesse"},
 posture:{label:"Posture / cyphose",impact:"Plus de tirage, serratus, trap inférieur, mobilité thoracique.",sets:["4 x 6 propre","4 x 6 propre","5 x 4","3 x 6 tempo"],targetReps:[6,6,4,6],mult:[0.68,0.70,0.75,0.55],rest:"1:45–2:15",tag:"posture"},
@@ -140,14 +140,14 @@ function restFor(kind){
 function wodForDay(day){var goal=state.cycle.goal;if(goal==="shoulders3d")return shouldersWodForDay(day);if(goal==="weightlifting")return wodBanks.weightlifting[(state.week-1)%wodBanks.weightlifting.length];if(goal==="engine")return wodBanks.engine[(state.week-1)%wodBanks.engine.length];if(goal==="maintenance")return wodBanks.lowimpact[(state.week-1)%wodBanks.lowimpact.length];if(day==="lundi")return wodBanks.push[(state.week-1)%wodBanks.push.length];if(day==="mardi")return wodBanks.pull[(state.week-1)%wodBanks.pull.length];if(day==="jeudi")return wodBanks.legs[(state.week-1)%wodBanks.legs.length];return wodBanks.engine[(state.week-1)%wodBanks.engine.length];}
 
 function shouldersAccessoryText(day){
-  if(day==="lundi")return "Lateral raise 4 x 15-20 + cable lateral raise 3 x 12-15/côté + rear delt fly 3 x 15-20 + triceps rope pushdown 3 x 12-15.";
-  if(day==="mardi")return "Rear delt fly 4 x 15-20 + face pull 4 x 15-20 + trap-3 raise 3 x 12-15 + hammer curl 3 x 10-12.";
-  if(day==="jeudi")return "Bulgarian split squat + DB RDL + rappel épaules : lateral raise mécanique 2 rounds.";
-  if(day==="vendredi")return "Push press léger/modéré 3 x 6 + lateral raise 3 x 15 + farmer carry 3 x 30-40 m.";
-  return "Deltoïdes latéraux + arrière d’épaule + triceps.";
+  if(day==="lundi")return "Lateral raise 4 x 15-20 + rear delt fly 3 x 15-20 + triceps rope pushdown 4 x 12-15 + serratus cable punch 2 x 15/côté.";
+  if(day==="mardi")return "Face pull 4 x 15-20 + trap-3 raise 3 x 12-15 + rear delt fly 3 x 15-20 + hammer curl 3 x 10-12.";
+  if(day==="jeudi")return "Bulgarian split squat + DB RDL + rappel épaules court : lateral raise 2 x 20-25, léger et propre.";
+  if(day==="vendredi")return "Push press léger/modéré 3 x 5-6 + farmer carry 3 x 30-40 m + scap push-up 2 x 12.";
+  return "Épaules 3D : latéral 2x/semaine, arrière d’épaule/posture plus fréquent, triceps sans échec articulaire.";
 }
 function shouldersWodForDay(day){
-  if(day==="lundi")return "AMRAP 8 : 8 burpees contrôlés + 10 cal row + 12 light DB push press.";
+  if(day==="lundi")return "AMRAP 8 : 8 burpees contrôlés + 10 cal row + 12 sit-ups. Objectif : moteur sans rajouter de press.";
   if(day==="mardi")return "EMOM 8 : min 1 = 12 cal SkiErg/row, min 2 = 12 ring rows stricts.";
   if(day==="jeudi")return "AMRAP 7 : 10 cal bike + 10 box step-ups + 10 KB swings.";
   if(day==="vendredi")return "AMRAP 12 : 8 hang power cleans légers + 10 wall balls 14 lb + 12 cal row.";
@@ -157,9 +157,9 @@ function shouldersWodForDay(day){
 function buildWorkout(day,week){var d=baseDays[day],cfg=focus(),i=Math.max(0,Math.min(3,week-1));var progress=d.progress.slice();
 if(state.cycle.goal==="shoulders3d"){
   if(day==="lundi")progress=["strictPress","lateralRaise","rearDeltFly","ropePushdown"];
-  if(day==="mardi")progress=["chestRow","rearDeltFly","facePull"];
-  if(day==="jeudi")progress=["frontSquat","lateralRaise"];
-  if(day==="vendredi")progress=["powerClean","pushPress","lateralRaise","farmerCarry"];
+  if(day==="mardi")progress=["chestRow","facePull","rearDeltFly"];
+  if(day==="jeudi")progress=["frontSquat","bulgarian","lateralRaise"];
+  if(day==="vendredi")progress=["powerClean","pushPress","farmerCarry"];
 }
 if(state.cycle.goal==="weightlifting"&&day==="vendredi")progress=["powerClean","frontSquat","strictPress"];
 if(state.cycle.goal==="posture"&&day==="lundi")progress=["bench","chestRow","inclineDb"];var blocks=[{time:"8 min",title:"Warm-up",text:d.warmup,tag:"Préparation",progress:[],kind:"warmup"},{time:"25 min",title:"Bloc principal",text:movements[progress[0]].name+" "+cfg.sets[i]+".",tag:"Charge",progress:[progress[0]],kind:"main"},{time:state.cycle.goal==="engine"?"7 min":"12 min",title:"Accessoires",text:accessoryText(d),tag:"Accessoires",progress:progress.slice(1),kind:"accessory"},{time:state.cycle.goal==="engine"?"15 min":"10 min",title:"WOD",text:wodForDay(day),tag:"Conditioning",progress:wodProgress(day),kind:"wod"},{time:state.cycle.goal==="engine"?"0–5 min":"5 min",title:"Mobilité",text:mobilityText(),tag:"Reset",progress:[],kind:"mobility"}];return{day:d,blocks:blocks,progress:progress};}
@@ -177,10 +177,10 @@ function shouldUpdate(status,load,reps,quality){
 function renderWeeks(){var w=$("weekButtons");w.innerHTML="";Object.keys(weekInfo).forEach(function(k){var b=document.createElement("button");b.textContent=weekInfo[k].label;b.className=Number(k)===state.week?"":"secondary";b.onclick=function(){state.week=Number(k);save();render();};w.appendChild(b);});$("weekGoal").textContent=weekInfo[state.week].goal;$("cycleSummary").textContent="Focus : "+focus().label+" — "+focus().impact;}
 function renderDays(){var w=$("dayButtons");w.innerHTML="";Object.keys(baseDays).forEach(function(k){var d=baseDays[k];var b=document.createElement("button");b.textContent=d.label+" — "+d.base;b.className=k===state.day?"":"secondary";b.onclick=function(){state.day=k;save();render();};w.appendChild(b);});}
 function dayIntention(day){
-  if(day==="lundi")return "Intention : pump épaules/triceps. Strict press jamais à l’échec. DB push press du WOD léger, pas une 2e séance de force.";
-  if(day==="mardi")return "Intention : posture parfaite. Scapulas contrôlées, thorax ouvert, aucun tirage croche avec l’ego.";
-  if(day==="jeudi")return "Intention : jambes propres, dos protégé. Front squat contrôlé, rappel épaules sans brûler le système.";
-  if(day==="vendredi")return "Intention : garder le CrossFit vivant sans redline. Haltéro propre, transitions efficaces, pas une compétition.";
+  if(day==="lundi")return "Intention : vraie séance épaules/triceps. Une seule dose de deltoïde latéral, strict press sous-maximal, aucun échec articulaire.";
+  if(day==="mardi")return "Intention : construire l’arrière d’épaule et la posture. Scapulas contrôlées, thorax ouvert, tirage propre sans ego.";
+  if(day==="jeudi")return "Intention : jambes propres, dos protégé. Rappel épaules très court : pump, pas destruction.";
+  if(day==="vendredi")return "Intention : garder l’haltéro et le CrossFit vivants. Push press technique, wall balls contrôlés, pas une compétition.";
   return "Intention : qualité avant intensité.";
 }
 
@@ -323,7 +323,7 @@ function aiAnalysis(){
 }
 function renderAI(){var a=aiAnalysis(),cards=$("aiScoreCards");cards.innerHTML="";Object.keys(a.scores).forEach(function(k){var d=document.createElement("div");d.className="calc-item";d.innerHTML="<strong>"+k+"</strong><span>"+a.scores[k]+"</span>";cards.appendChild(d);});var list=$("aiSuggestions");list.innerHTML="";a.suggestions.forEach(function(s){var d=document.createElement("div");d.className="ai-item "+s.type;d.innerHTML="<strong>"+s.title+"</strong>"+s.text;list.appendChild(d);});$("aiSummary").textContent=a.summary;}
 function exportBackup(){
-  download("coach-bertin-programme-v29.json",JSON.stringify({version:"V30-readonly-coach-intentions",exportedAt:new Date().toISOString(),week:state.week,day:state.day,cycle:state.cycle},null,2));
+  download("coach-bertin-programme-v31.json",JSON.stringify({version:"V31-readonly-shoulders-logical",exportedAt:new Date().toISOString(),week:state.week,day:state.day,cycle:state.cycle},null,2));
 }
 function importBackup(file){alert("Import désactivé : cette version ne restaure pas de résultats.");}
 

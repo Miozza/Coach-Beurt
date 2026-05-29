@@ -47,7 +47,14 @@ Ce focus n'est pas un programme bodybuilding pur.
 Il garde les mouvements CrossFit et l'haltéro, mais augmente fortement le volume d’épaules.
 
 
-## V30
+## V31
 - Ajout des intentions du jour dans la vue normale, export texte et vue iPhone.
 - Conservation des poids suggérés.
 - Toujours aucune entrée de poids, RPE, ressenti, note ou résultat.
+
+
+## V31
+- Lateral raise limité à 2 stimulations/semaine.
+- Plus de travail arrière d’épaule, trap inférieur, serratus et posture.
+- WOD du lundi sans press additionnel pour réduire la surcharge.
+- Version lecture seule : aucun poids ou résultat à entrer.
