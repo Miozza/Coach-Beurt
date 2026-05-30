@@ -1,4 +1,4 @@
-const CACHE_NAME = 'coach-bertin-v39-progression-semaine-unique';
+const CACHE_NAME = 'coach-bertin-v40-mode-entrainement-lisible-timers';
 const FILES = ['./','./index.html','./styles.css','./app.js','./charges.js','./manifest.json','./data/programs/index.js','./data/programs/epaules_3d.js','./data/programs/crossfit_maintenance.js','./data/programs/posture_cyphose.js','./data/programs/force.js'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES)));

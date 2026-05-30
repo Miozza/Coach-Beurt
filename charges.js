@@ -1,4 +1,4 @@
-// Coach Bertin V39-progression-semaine-unique — charges officielles modifiables
+// Coach Bertin V40-mode-entrainement-lisible-timers — charges officielles modifiables
 // Tu peux modifier ce fichier dans GitHub pour changer les charges de base de tous les appareils.
 // Les ajustements faits dans l'app sur iPhone restent locaux et ont priorité sur ces valeurs.
 window.DEFAULT_CHARGES = {

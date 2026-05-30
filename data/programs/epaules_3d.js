@@ -1,4 +1,4 @@
-// Coach Bertin V39-progression-semaine-unique — programme: Épaules 3D + triceps
+// Coach Bertin V40-mode-entrainement-lisible-timers — programme: Épaules 3D + triceps
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.shoulders3d = {
   id: "shoulders3d",

@@ -1,6 +1,6 @@
-# Coach Bertin V39-progression-semaine-unique
+# Coach Bertin V40-mode-entrainement-lisible-timers
 
-Correction de l’affichage des progressions : une seule semaine visible à la fois.
+Amélioration du mode entraînement iPhone : hiérarchie visuelle plus claire, instructions séparées des mouvements, et timer WOD amélioré.
 
 ## Ce qui change
 
@@ -12,8 +12,12 @@ Correction de l’affichage des progressions : une seule semaine visible à la f
   - `data/programs/posture_cyphose.js`
   - `data/programs/force.js`
 - `data/programs/index.js` sert de liste des programmes disponibles.
-- Le numéro de version a été uniformisé : **V39-progression-semaine-unique** dans README, index, app, service worker, fichiers de programmes et charges.
+- Le numéro de version a été uniformisé : **V40-mode-entrainement-lisible-timers** dans README, index, app, service worker, fichiers de programmes et charges.
 - Les charges restent modifiables localement dans l’app, avec `charges.js` comme base globale.
+- En mode entraînement, les consignes sont maintenant dans des encadrés distincts et plus petits.
+- Les mouvements sont plus gros et isolés dans des cartes lisibles.
+- Les lignes Format / Poids / Repos ont une vraie hiérarchie visuelle.
+- Le timer WOD a maintenant : état, barre de progression, boutons Start/Pause/Reset et ajustement ±30 secondes.
 
 ## À modifier plus tard
 

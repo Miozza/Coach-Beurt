@@ -1,4 +1,4 @@
-// Coach Bertin V39-progression-semaine-unique — programme: Force
+// Coach Bertin V40-mode-entrainement-lisible-timers — programme: Force
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.strength = {
   id: "strength",

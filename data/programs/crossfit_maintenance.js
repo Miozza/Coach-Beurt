@@ -1,4 +1,4 @@
-// Coach Bertin V39-progression-semaine-unique — programme: CrossFit maintenance
+// Coach Bertin V40-mode-entrainement-lisible-timers — programme: CrossFit maintenance
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.maintenance = {
   id: "maintenance",
