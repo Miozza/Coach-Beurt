@@ -1,23 +1,24 @@
-# Coach Bertin V36 — Épaules 3D
+# Coach Bertin V39-progression-semaine-unique
 
-Version statique pour GitHub Pages.
+Correction de l’affichage des progressions : une seule semaine visible à la fois.
 
-Ajouts V36 :
-- Mode entraînement iPhone
-- Bouton plein écran quand supporté par le navigateur
-- Timer compact dans la vue iPhone, préajusté au WOD du jour
-- Durée estimée par bloc
-- Règles du cycle visibles
-- Charges personnalisables localement via l’onglet Profil / PR
-- Aucune donnée de performance enregistrée
+## Ce qui change
 
-Fichiers importants :
-- index.html
-- styles.css
-- app.js
-- charges.js
-- manifest.json
-- service-worker.js
+- Le choix du programme actif se fait dans l’app, onglet **Cycle / Programme actif**.
+- Le choix est sauvegardé localement dans l’iPhone avec `localStorage`, donc pas besoin de modifier GitHub juste pour changer de focus.
+- Les focus principaux sont maintenant dans des fichiers simples séparés :
+  - `data/programs/epaules_3d.js`
+  - `data/programs/crossfit_maintenance.js`
+  - `data/programs/posture_cyphose.js`
+  - `data/programs/force.js`
+- `data/programs/index.js` sert de liste des programmes disponibles.
+- Le numéro de version a été uniformisé : **V39-progression-semaine-unique** dans README, index, app, service worker, fichiers de programmes et charges.
+- Les charges restent modifiables localement dans l’app, avec `charges.js` comme base globale.
 
+## À modifier plus tard
 
-V36: timer agrandi dans le mode entraînement; les WOD avec time cap démarrent à 00:00 et comptent vers le cap.
+Pour ajouter un nouveau focus, créer un nouveau fichier dans `data/programs/`, le charger dans `index.html`, puis l’ajouter dans `data/programs/index.js`.
+
+## Important
+
+Cette version ne transforme pas encore tous les entraînements en JSON pur. Elle rend déjà les focus séparés et faciles à changer sans toucher au coeur de l’interface. C’est volontaire : moins risqué que de tout casser d’un coup.

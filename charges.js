@@ -1,19 +1,19 @@
-// Coach Bertin — charges officielles modifiables
+// Coach Bertin V39-progression-semaine-unique — charges officielles modifiables
 // Tu peux modifier ce fichier dans GitHub pour changer les charges de base de tous les appareils.
 // Les ajustements faits dans l'app sur iPhone restent locaux et ont priorité sur ces valeurs.
 window.DEFAULT_CHARGES = {
-  "Strict Press": "S1 4 x 8 @ 115 lb | S2 5 x 8 @ 120 lb | S3 5 x 6-8 @ 125 lb | S4 3 x 8 @ 95-105 lb",
-  "Lateral Raise": "15-20 lb",
-  "Rear Delt Fly": "15-20 lb",
+  "Strict Press": "115 lb",
+  "Lateral Raise": "20-25 lb",
+  "Rear Delt Fly": "20-25 lb",
   "Triceps Rope Pushdown": "60-70 lb",
   "Face Pull": "60-70 lb",
   "Chest Supported Row": "115-125 lb",
   "Trap-3 Raise": "léger",
   "Ring Row Strict": "poids du corps",
-  "Front Squat": "S1 165 lb | S2 175 lb | S3 185 lb | S4 135-145 lb",
+  "Front Squat": "165 lb",
   "Bulgarian Split Squat": "50 lb / main",
   "Standing Calf Raise": "25 lb",
-  "Power Clean": "S1 155 lb | S2 165 lb | S3 175 lb | S4 135 lb",
+  "Power Clean": "155 lb",
   "Overhead Rope Extension": "50-60 lb",
   "Farmer Carry": "lourd propre",
   "Reverse Sled Drag": "léger à modéré",
