@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>Coach Bertin V46.7</title>
+  <title>Coach Bertin V47.1</title>
   <link rel="manifest" href="manifest.json"/>
   <meta name="theme-color" content="#0a0a0f"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -17,7 +17,7 @@
 
 <!-- ═══ TOPNAV ═══ -->
 <nav class="topnav">
-  <span class="topnav-brand">CB <span class="topnav-v">V46.7</span></span>
+  <span class="topnav-brand">CB <span class="topnav-v">V47.1</span></span>
   <div class="topnav-tabs" id="mainTabs">
     <button id="trainingTab"    class="tab active">WOD</button>
     <button id="phoneTab"       class="tab">iPhone</button>
@@ -84,12 +84,16 @@
       <span id="phoneDayLabel" class="phone-day-label"></span>
       <button class="arrow-btn sm" id="phoneDayNext">&#8250;</button>
     </div>
+    <button class="tb-btn tb-primary" id="sessionModeBtn">▶ Séance</button>
     <button class="tb-btn" id="wakeLockBtn">💤 Écran</button>
     <button class="tb-btn" id="copyPhoneBtn">⎘</button>
     <button class="tb-btn" id="fullscreenBtn">⛶</button>
   </div>
 
   <div id="phoneWod" class="phone-wod"></div>
+
+  <!-- ═══ MODE SÉANCE GUIDÉ — optionnel, ne remplace pas la vue iPhone ═══ -->
+  <div id="guidedSession" class="guided-session hidden"></div>
 
   <!-- ═══ SAISIE FIN DE SÉANCE ═══ -->
   <div class="session-entry" id="sessionEntry">
@@ -146,7 +150,9 @@
     <div class="btn-row">
       <button id="saveTokenBtn" class="btn-accent">Sauvegarder le token</button>
       <button id="testTokenBtn" class="btn-ghost">Tester le token GitHub</button>
+      <button id="syncGithubBtn" class="btn-ghost">Synchroniser depuis GitHub</button>
     </div>
+    <p class="field-hint">V47.1 : la sync lit <code>data/resultats.json</code>, reconstruit l'historique local et remet les références/RPE à jour.</p>
     <p id="tokenStatus" class="status-msg"></p>
   </div>
 
@@ -283,7 +289,7 @@
   </div>
 </main>
 
-<footer class="footer">V46.7 · Coach Bertin · GitHub sync · Saisie résultats · iPhone optimisé</footer>
+<footer class="footer">V47.1 · Coach Bertin · GitHub sync · Saisie résultats · iPhone optimisé</footer>
 </div>
 
 <script src="data/programs/index.js"></script>

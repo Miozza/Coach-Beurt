@@ -1,5 +1,5 @@
 // Coach Bertin V46
-var APP_VERSION = "V46.7";
+var APP_VERSION = "V47.1";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -698,57 +698,70 @@ function buildRepsChips(targetMin, targetMax){
 function parseWodStructure(text){
   if(!text) return null;
   var COLORS = ['mv1','mv2','mv3','mv4'];
+  var raw = String(text);
   var moves = [], seen = new Set();
 
-  // On garde seulement la portion utile du WOD.
-  // Exemple : "AMRAP 8 : 8 burpees contrôlés + 10 cal row + 12 sit-ups. S1..."
-  // L'ancienne regex avalait parfois le texte après le point et perdait les sit-ups.
-  var main = String(text)
+  function cleanMoveName(name){
+    return String(name||'')
+      .replace(/\bcal\b/ig,'')
+      .replace(/\bmin\s*\d+\s*=\s*/ig,'')
+      .replace(/\s+/g,' ')
+      .replace(/[;:,.]+$/,'')
+      .trim();
+  }
+  function addMove(reps,name){
+    name = cleanMoveName(name);
+    if(!name || name.length<2) return;
+    var key = (String(reps)+'_'+name).toLowerCase();
+    if(seen.has(key)) return;
+    seen.add(key);
+    moves.push({name:name, reps:String(reps), color:COLORS[moves.length % COLORS.length]});
+  }
+
+  // EMOM : "min 1 = 12 cal row ; min 2 = 10 ring rows stricts"
+  if(/\bEMOM\b/i.test(raw)){
+    var emomPart = raw.split('.')[0];
+    var emomRe = /min\s*\d+\s*=\s*(\d+)\s*(?:cal\s+)?([^;\.]+)/ig;
+    var m;
+    while((m = emomRe.exec(emomPart)) !== null){ addMove(m[1], m[2]); }
+    if(moves.length) return moves;
+  }
+
+  // For time 21-15-9 : les reps sont une pyramide, donc on affiche "21-15-9" pour chaque mouvement.
+  var scheme = null;
+  var schemeMatch = raw.match(/(\d+\s*[-–]\s*\d+\s*[-–]\s*\d+)/);
+  if(/for time|cap/i.test(raw) && schemeMatch){ scheme = schemeMatch[1].replace(/\s/g,''); }
+
+  var main = raw
     .replace(/^[^:]*:\s*/,'')
     .split('.')[0]
     .replace(/\bAMRAP\s*\d+\b/ig,'')
     .replace(/\bEMOM\s*\d+\b/ig,'')
     .replace(/\bFor time\b/ig,'')
+    .replace(/\bCap\s*\d+\s*min\b/ig,'')
     .trim();
+
+  if(scheme){
+    main = main.replace(/^(\d+\s*[-–]\s*\d+\s*[-–]\s*\d+)\s*:?\s*/,'');
+    main.split('+').forEach(function(part){
+      part = cleanMoveName(part);
+      if(part) addMove(scheme, part);
+    });
+    if(moves.length) return moves;
+  }
 
   main.split('+').forEach(function(part){
     part = part.trim();
     var m = part.match(/^(\d+)\s*(?:cal\s+)?(.+)$/i);
     if(!m) return;
     var reps = Number(m[1]);
-    var name = m[2]
-      .replace(/\bcal\b/ig,'')
-      .replace(/\s+/g,' ')
-      .replace(/[;:,]+$/,'')
-      .trim();
-    if(reps<1||reps>60||name.length<2) return;
-    var key = name.toLowerCase();
-    if(seen.has(key)) return;
-    seen.add(key);
-    moves.push({name:name, reps:reps, color:COLORS[moves.length % COLORS.length]});
+    var name = cleanMoveName(m[2]);
+    if(reps<1||reps>80||name.length<2) return;
+    addMove(reps, name);
   });
 
-  return moves.length>=2 ? moves : null;
+  return moves.length>=1 ? moves : null;
 }
-
-function parseCapSeconds(text, fallbackMin){
-  var t = String(text||'');
-  var m = t.match(/cap\s*(\d+)\s*min/i) || t.match(/time cap\s*(\d+)\s*min/i);
-  var min = m ? Number(m[1]) : (Number(fallbackMin)||10);
-  return min*60;
-}
-
-function buildTimeOptions(expectedSec){
-  expectedSec = Number(expectedSec)||600;
-  var start = Math.max(120, expectedSec-180);
-  var end = expectedSec+120;
-  var arr=[];
-  for(var s=start; s<=end; s+=15) arr.push(s);
-  if(arr.indexOf(expectedSec)<0) arr.push(expectedSec);
-  arr.sort(function(a,b){return a-b;});
-  return arr;
-}
-
 // Estime les rounds attendus selon durée et type
 function estimateWodRounds(text, durationMin){
   if(/emom/i.test(text)) return {min:durationMin,max:durationMin,def:durationMin};
@@ -1112,8 +1125,9 @@ function collectSessionResults(){
   return results;
 }
 
-function updateRefsFromResults(results){
-  Object.keys(results).forEach(function(key){
+function updateRefsFromResults(results,dateStr){
+  dateStr = dateStr || new Date().toLocaleDateString("fr-CA");
+  Object.keys(results||{}).forEach(function(key){
     var r=results[key];
     var load=parseLoad(r.load),reps=Number(r.reps)||0;
     if(!load||!reps)return;
@@ -1125,7 +1139,7 @@ function updateRefsFromResults(results){
     if(!existing||load>=existing.load){
       state.movementRefs[refK]={
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
-        date:new Date().toLocaleDateString("fr-CA"),lastActual:load,
+        date:dateStr,lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
         rpe:Number(r.rpe)||8,note:"Saisi V46"
       };
@@ -1137,6 +1151,38 @@ function updateRefsFromResults(results){
     // Garder seulement les 3 dernières
     if(state.rpeHistory[rpeKey].length>3)state.rpeHistory[rpeKey].shift();
   });
+}
+
+function sessionUid(s){
+  if(!s)return "";
+  return [s.date||"",s.time||"",s.semaine||s.week||"",s.jour||s.day||"",s.focus||""].join("|");
+}
+function normalizeRemoteSession(s){
+  var r=s&&s.resultats?s.resultats:(s&&s.results?s.results:{});
+  return {
+    date:s.date||"",
+    time:s.time||"",
+    week:s.semaine||s.week||state.week,
+    day:s.jour||s.day||state.day,
+    focus:s.focus||"",
+    results:r||{},
+    version:s.version||"remote"
+  };
+}
+function mergeHistory(localHistory,remoteData){
+  var map={},merged=[];
+  (localHistory||[]).forEach(function(s){var n=normalizeRemoteSession(s),id=sessionUid(n);if(id&&!map[id]){map[id]=true;merged.push(n);}});
+  (remoteData||[]).forEach(function(s){var n=normalizeRemoteSession(s),id=sessionUid(n);if(id&&!map[id]){map[id]=true;merged.push(n);}});
+  merged.sort(function(a,b){return String((a.date||"")+" "+(a.time||"")).localeCompare(String((b.date||"")+" "+(b.time||"")));});
+  return merged;
+}
+function rebuildRefsFromHistory(){
+  state.movementRefs=copy(PRELOADED_REFS);
+  state.rpeHistory={};
+  (state.history||[]).forEach(function(s){
+    updateRefsFromResults(s.results||s.resultats||{},s.date||new Date().toLocaleDateString("fr-CA"));
+  });
+  checkDeloadAlert();
 }
 
 // ─── Progression automatique basée sur RPE ────────────────────────────────────
@@ -1446,6 +1492,35 @@ async function testGithubToken(){
   }
 }
 
+async function syncHistoryFromGitHub(silent){
+  var token=getToken();
+  var status=$("tokenStatus")||$("saveStatus");
+  if(!token){if(!silent&&status){status.textContent="Token GitHub manquant.";status.className="status-msg err";}return{ok:false,msg:"Token manquant"};}
+  if(!silent&&status){status.textContent="Synchronisation GitHub en cours...";status.className="status-msg";}
+  try{
+    var ensure=await ensureResultatsFile(token);
+    if(!ensure.ok){if(!silent&&status){status.textContent="❌ Sync impossible : "+ensure.msg;status.className="status-msg err";}return{ok:false,msg:ensure.msg};}
+    var before=(state.history||[]).length;
+    state.history=mergeHistory(state.history||[],ensure.data||[]);
+    rebuildRefsFromHistory();
+    save();
+    renderHistory();renderWorkout();renderReferences();renderWeekProgress();
+    var added=state.history.length-before;
+    var msg="✅ Sync GitHub OK · "+state.history.length+" séance"+(state.history.length>1?"s":"")+" chargée"+(added>0?" · +"+added:"");
+    if(!silent&&status){status.textContent=msg;status.className="status-msg ok";}
+    return{ok:true,msg:msg,added:added,total:state.history.length};
+  }catch(e){
+    if(!silent&&status){status.textContent="❌ Sync GitHub : "+e.message;status.className="status-msg err";}
+    return{ok:false,msg:e.message};
+  }
+}
+
+function autoSyncFromGitHub(){
+  if(!getToken())return;
+  // Petit délai : laisse la page finir son rendu avant de parler à GitHub.
+  setTimeout(function(){syncHistoryFromGitHub(true);},800);
+}
+
 function setupSessionSave(){
   var btn=$("saveSessionBtn");if(!btn)return;
   btn.onclick=async function(){
@@ -1464,7 +1539,7 @@ function setupSessionSave(){
     // 4. Vérifier alerte deload
     checkDeloadAlert();
     // 5. Ajouter à l'historique local
-    state.history.push({date:payload.date,week:state.week,day:state.day,focus:focus().label,results:results});
+    state.history.push({date:payload.date,time:payload.time,week:state.week,day:state.day,focus:focus().label,results:results,version:APP_VERSION});
     save();
     // 6. Envoyer séance sur GitHub
     var result=await saveToGitHub(payload);
@@ -1807,6 +1882,320 @@ function renderPhoneWod(){
   setupWodTimer();
 }
 
+
+
+// ─── Mode séance guidé (optionnel) — V47.1 ────────────────────────────────
+// Vue iPhone pleine largeur : 1 bloc = 1 page. Le WOD a son gros timer dédié.
+
+var guidedSessionState = { blocks: [], index: 0 };
+var guidedTimer = {duration:0,remaining:0,elapsed:0,running:false,interval:null,mode:"down",label:"",isEmom:false,countdownActive:false,countdownRemaining:10};
+
+function escHtml(v){
+  return String(v===undefined||v===null?"":v)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/\"/g,"&quot;")
+    .replace(/'/g,"&#39;");
+}
+
+function buildGuidedSessionBlocks(){
+  var w = buildWorkout(state.day,state.week);
+  var blocks = [];
+  w.blocks.forEach(function(b,bi){
+    var rk = kindRank(b.kind);
+    var obj = {
+      kind:b.kind,
+      tag:rk.tag,
+      title:b.title,
+      time:b.time,
+      text:b.text || "",
+      blockIndex:bi,
+      exercises:[],
+      timer:null,
+      moves:null,
+      loadHints:""
+    };
+
+    if(b.exercises && b.exercises.length){
+      b.exercises.forEach(function(e,ei){
+        obj.exercises.push({
+          title:e.name,
+          format:e.format || "",
+          load:e.load || "",
+          rest:e.rest || "",
+          note:e.note || "",
+          exerciseIndex:ei
+        });
+      });
+    } else if(b.progress && b.progress.length){
+      b.progress.forEach(function(mvKey,j){
+        var reps=targetReps(j,b.kind);
+        var baseLoad=suggestLoad(mvKey,progressionPct(j),reps);
+        var adj=getRpeAdjustment(mvKey,reps);
+        var finalLoad=round5(baseLoad+(adj.adj||0));
+        obj.exercises.push({
+          title:movements[mvKey].name,
+          format:setScheme(b.kind,j),
+          load:lb(finalLoad)+(adj.arrow?" "+adj.arrow:""),
+          rest:restFor(b.kind),
+          note:adj.msg || "",
+          exerciseIndex:j
+        });
+      });
+    }
+
+    if(b.kind==="wod"){
+      obj.timer = wodTimerConfig(b);
+      obj.moves = parseWodStructure(b.text || "");
+      obj.loadHints = phoneWodLoadHints(b.text || "");
+    }
+
+    blocks.push(obj);
+  });
+  return blocks;
+}
+
+function openGuidedSession(){
+  resumeAudio();
+  guidedSessionState.blocks = buildGuidedSessionBlocks();
+  guidedSessionState.index = 0;
+  renderGuidedSession();
+}
+
+function closeGuidedSession(){
+  stopGuidedTimer();
+  var el=$("guidedSession");
+  if(el){ el.classList.add("hidden"); el.innerHTML=""; }
+}
+
+function guidedNext(){
+  if(guidedSessionState.index < guidedSessionState.blocks.length-1){
+    stopGuidedTimer();
+    guidedSessionState.index++;
+    renderGuidedSession();
+  }
+}
+function guidedPrev(){
+  if(guidedSessionState.index > 0){
+    stopGuidedTimer();
+    guidedSessionState.index--;
+    renderGuidedSession();
+  }
+}
+
+function resetGuidedTimerState(cfg){
+  stopGuidedTimer();
+  guidedTimer.duration=Number(cfg&&cfg.seconds)||0;
+  guidedTimer.remaining=guidedTimer.duration;
+  guidedTimer.elapsed=0;
+  guidedTimer.mode=(cfg&&cfg.mode)||"down";
+  guidedTimer.label=(cfg&&cfg.label)||"Timer";
+  guidedTimer.isEmom=!!(cfg&&cfg.isEmom);
+  guidedTimer.countdownActive=false;
+  guidedTimer.countdownRemaining=10;
+  updateGuidedTimerDisplay();
+}
+function guidedTimerCurrentValue(){return guidedTimer.mode==="up"?guidedTimer.elapsed:guidedTimer.remaining;}
+function updateGuidedTimerDisplay(){
+  var d=$("guidedTimerDisplay"); if(!d)return;
+  if(guidedTimer.countdownActive){
+    d.textContent=String(guidedTimer.countdownRemaining);
+    d.classList.add("countdown");
+  } else {
+    d.textContent=formatClock(guidedTimerCurrentValue());
+    d.classList.remove("countdown");
+  }
+}
+function stopGuidedTimer(){
+  if(guidedTimer.interval){clearInterval(guidedTimer.interval);guidedTimer.interval=null;}
+  guidedTimer.running=false;
+  guidedTimer.countdownActive=false;
+}
+function startGuidedTimerCountdown(onDone){
+  guidedTimer.countdownActive=true;
+  guidedTimer.countdownRemaining=10;
+  updateGuidedTimerDisplay();
+  guidedTimer.interval=setInterval(function(){
+    guidedTimer.countdownRemaining--;
+    if(guidedTimer.countdownRemaining<=3&&guidedTimer.countdownRemaining>0){bipCountdown();vibrate([60]);}
+    if(guidedTimer.countdownRemaining<=0){
+      clearInterval(guidedTimer.interval);
+      guidedTimer.interval=null;
+      guidedTimer.countdownActive=false;
+      bipStart();vibrate([200,80,200]);
+      onDone();
+    }
+    updateGuidedTimerDisplay();
+  },1000);
+}
+function startGuidedTimer(){
+  resumeAudio();
+  if(guidedTimer.running||guidedTimer.countdownActive)return;
+  var s=$("guidedTimerStart"); if(s){s.textContent="...";s.disabled=true;}
+  startGuidedTimerCountdown(function(){
+    if(s){s.textContent="▶";s.disabled=false;}
+    guidedTimer.running=true;
+    guidedTimer.interval=setInterval(function(){
+      if(guidedTimer.mode==="up"){
+        guidedTimer.elapsed=Math.min(guidedTimer.duration,guidedTimer.elapsed+1);
+        if(guidedTimer.isEmom&&guidedTimer.elapsed>0&&guidedTimer.elapsed%60===0){bipEmom();vibrate([100,50,100]);}
+        if(guidedTimer.elapsed>=guidedTimer.duration){stopGuidedTimer();bipEnd();vibrate([300,100,300,100,300]);}
+      } else {
+        guidedTimer.remaining=Math.max(0,guidedTimer.remaining-1);
+        if(guidedTimer.remaining<=3&&guidedTimer.remaining>0){bipCountdown();vibrate([60]);}
+        if(guidedTimer.isEmom&&guidedTimer.remaining>0&&guidedTimer.remaining%60===0){bipEmom();vibrate([100,50,100]);}
+        if(guidedTimer.remaining<=0){stopGuidedTimer();bipEnd();vibrate([300,100,300,100,300]);}
+      }
+      updateGuidedTimerDisplay();
+    },1000);
+  });
+}
+function pauseGuidedTimer(){stopGuidedTimer();updateGuidedTimerDisplay();}
+function renderGuidedWodMoves(moves){
+  var html="";
+  if(moves&&moves.length){
+    html+="<div class='guided-wod-moves'>";
+    moves.slice(0,4).forEach(function(mv){
+      html+="<div class='guided-wod-move "+escHtml(mv.color)+"'>"+
+            "<div class='guided-wod-reps'>"+escHtml(mv.reps)+"</div>"+
+            "<div class='guided-wod-name'>"+escHtml(mv.name)+"</div>"+
+            "</div>";
+    });
+    html+="</div>";
+  }
+  return html;
+}
+function renderGuidedExerciseList(exercises){
+  var html="";
+  if(!exercises||!exercises.length)return html;
+  html+="<div class='guided-ex-list'>";
+  exercises.forEach(function(e,idx){
+    var restSec=parseRestToSeconds(e.rest);
+    html+="<div class='guided-ex-card'>"+
+          "<div class='guided-ex-index'>"+(idx+1)+"</div>"+
+          "<div class='guided-ex-main'>"+
+            "<div class='guided-ex-title'>"+escHtml(e.title)+"</div>"+
+            "<div class='guided-ex-grid'>";
+    if(e.format)html+="<div><span>Format</span><strong>"+escHtml(e.format)+"</strong></div>";
+    if(e.load)html+="<div><span>Poids</span><strong class='accent'>"+escHtml(e.load)+"</strong></div>";
+    if(e.rest&&e.rest!=="—")html+="<div><span>Repos</span><strong>"+escHtml(e.rest)+"</strong></div>";
+    html+="</div>";
+    if(e.note)html+="<div class='guided-note compact'>"+escHtml(e.note)+"</div>";
+    if(restSec>0)html+="<button class='guided-rest mini' data-rest='"+restSec+"'>Repos "+escHtml(e.rest)+"</button>";
+    html+="</div></div>";
+  });
+  html+="</div>";
+  return html;
+}
+
+
+function parseGuidedSteps(text){
+  var t = cleanLine(displayChargeText(text||''));
+  if(!t) return [];
+  // En mode séance, on veut des gros items simples, pas un paragraphe d'instructions.
+  return t.split('+').map(function(x){
+    return x.replace(/^[\s\-–]+/,'').replace(/[.;]+$/,'').trim();
+  }).filter(function(x){ return x.length>1; }).slice(0,8);
+}
+
+function renderGuidedStepList(text, kind){
+  var steps = parseGuidedSteps(text);
+  if(!steps.length) return '';
+  var html = "<div class='guided-step-list kind-"+escHtml(kind||'')+"'>";
+  steps.forEach(function(step,idx){
+    var m = step.match(/^(.*?)(\d+\s*(?:min|reps?|\/côté|x\d+|×\d+|m|sec|séries?)?.*)$/i);
+    var name = step, dose = '';
+    if(m && m[1].trim().length>=3){ name = m[1].trim(); dose = m[2].trim(); }
+    html += "<div class='guided-step-card'>"+
+            "<div class='guided-step-num'>"+(idx+1)+"</div>"+
+            "<div class='guided-step-body'>"+
+              "<div class='guided-step-name'>"+escHtml(name)+"</div>"+
+              (dose?"<div class='guided-step-dose'>"+escHtml(dose)+"</div>":"")+
+            "</div>"+
+            "</div>";
+  });
+  html += "</div>";
+  return html;
+}
+function renderGuidedSession(){
+  var el=$("guidedSession"); if(!el)return;
+  var blocks=guidedSessionState.blocks||[];
+  if(!blocks.length){ closeGuidedSession(); return; }
+  var i=guidedSessionState.index;
+  var st=blocks[i];
+  var pct=Math.round(((i+1)/blocks.length)*100);
+  var isFirst=i===0, isLast=i===blocks.length-1;
+  var text=cleanLine(displayChargeText(st.text||""));
+  var cfg=st.timer;
+
+  var html="";
+  html+="<div class='guided-top'>"+
+        "<button class='tb-btn' id='guidedCloseBtn'>✕</button>"+
+        "<div class='guided-top-title'>Mode séance · "+escHtml(baseDays[state.day].label)+" · S"+state.week+"</div>"+
+        "<div class='guided-count'>"+(i+1)+"/"+blocks.length+"</div>"+
+        "</div>";
+  html+="<div class='guided-progress'><div style='width:"+pct+"%'></div></div>";
+  html+="<div class='guided-card kind-"+escHtml(st.kind)+"'>";
+  html+="<div class='guided-tag'>"+escHtml(st.tag)+" · "+escHtml(st.time)+"</div>";
+
+  if(st.kind==="wod"){
+    html+="<div class='guided-wod-head'>"+
+          "<div class='guided-wod-kicker'>"+escHtml((cfg&&cfg.label)||"WOD")+"</div>"+
+          "<div class='guided-wod-title'>"+escHtml(st.title)+"</div>"+
+          "</div>";
+    html+=renderGuidedWodMoves(st.moves);
+    html+="<div class='guided-wod-timer' data-duration='"+(cfg?cfg.seconds:0)+"' data-mode='"+(cfg?cfg.mode:"down")+"'>"+
+          "<div class='guided-timer-label'>"+escHtml((cfg&&cfg.label)||"Timer")+(cfg&&cfg.isEmom?" · bip/min":"")+"</div>"+
+          "<div class='guided-timer-display' id='guidedTimerDisplay'>"+formatClock(cfg&&cfg.mode==="up"?0:(cfg?cfg.seconds:0))+"</div>"+
+          "<div class='guided-timer-buttons'>"+
+            "<button class='guided-tbtn start' id='guidedTimerStart'>▶</button>"+
+            "<button class='guided-tbtn' id='guidedTimerPause'>Ⅱ</button>"+
+            "<button class='guided-tbtn' id='guidedTimerReset'>↻</button>"+
+          "</div>"+
+          "<div class='guided-timer-hint'>Démarrage 10s · gros affichage lisible à distance</div>"+
+          "</div>";
+    if(text)html+="<div class='guided-wod-fulltext'>"+escHtml(text)+"</div>";
+    if(st.loadHints)html+=st.loadHints.replace(/pc-wod/g,"guided-wod");
+  } else {
+    html+="<div class='guided-title'>"+escHtml(st.title)+"</div>";
+    if(st.kind==="warmup" || st.kind==="mobility"){
+      html+=renderGuidedStepList(st.text, st.kind);
+    } else {
+      // En mode séance, on retire le paragraphe d'instructions pour éviter le scroll inutile.
+      html+=renderGuidedExerciseList(st.exercises);
+    }
+  }
+
+  html+="</div>";
+  html+="<div class='guided-actions'>"+
+        "<button class='guided-btn' id='guidedPrevBtn' "+(isFirst?"disabled":"")+">← Précédent</button>"+
+        "<button class='guided-btn primary' id='guidedNextBtn'>"+(isLast?"Terminer":"Bloc suivant →")+"</button>"+
+        "</div>";
+  html+="<div class='guided-subactions'>"+
+        "<button class='guided-link' id='guidedBackToFullBtn'>Voir séance complète</button>"+
+        "</div>";
+
+  el.innerHTML=html;
+  el.classList.remove("hidden");
+  $("guidedCloseBtn").onclick=closeGuidedSession;
+  $("guidedPrevBtn").onclick=guidedPrev;
+  $("guidedNextBtn").onclick=function(){ if(isLast)closeGuidedSession(); else guidedNext(); };
+  $("guidedBackToFullBtn").onclick=closeGuidedSession;
+
+  Array.prototype.forEach.call(el.querySelectorAll(".guided-rest[data-rest]"),function(btn){
+    btn.onclick=function(){ startRestTimer(Number(btn.getAttribute("data-rest"))||0); };
+  });
+
+  if(st.kind==="wod" && cfg){
+    resetGuidedTimerState(cfg);
+    var start=$("guidedTimerStart"), pause=$("guidedTimerPause"), reset=$("guidedTimerReset");
+    if(start)start.onclick=startGuidedTimer;
+    if(pause)pause.onclick=pauseGuidedTimer;
+    if(reset)reset.onclick=function(){ resetGuidedTimerState(cfg); };
+  }
+}
+
 // ─── Cycle ───────────────────────────────────────────────────────────────────
 
 function populateCycleGoalOptions(){
@@ -2006,6 +2395,8 @@ function setupSettingsSave(){
   };
   var testBtn=$("testTokenBtn");
   if(testBtn)testBtn.onclick=function(){testGithubToken();};
+  var syncBtn=$("syncGithubBtn");
+  if(syncBtn)syncBtn.onclick=function(){syncHistoryFromGitHub(false);};
 }
 
 // ─── Export texte ─────────────────────────────────────────────────────────────
@@ -2064,6 +2455,7 @@ function bind(){
   var pvb=$("phoneViewBtn");if(pvb)pvb.onclick=function(){switchView("phone");};
   var btb=$("backTrainingBtn");if(btb)btb.onclick=function(){switchView("training");};
   var fs=$("fullscreenBtn");if(fs)fs.onclick=function(){var el=document.documentElement,fn=el.requestFullscreen||el.webkitRequestFullscreen;if(fn)try{fn.call(el);}catch(e){}};
+  var smb=$("sessionModeBtn");if(smb)smb.onclick=openGuidedSession;
   var wl=$("wakeLockBtn");if(wl)wl.onclick=function(){if(wakeLock)releaseWakeLock();else requestWakeLock();};  var cp=$("copyPhoneBtn");if(cp)cp.onclick=function(){navigator.clipboard.writeText(stableIphoneText()).then(function(){alert("Copié.");}).catch(function(){alert("Copie bloquée.");});};
   var sc=$("saveCycleBtn");if(sc)sc.onclick=saveCycle;
   var nc=$("newCycleBtn");if(nc)nc.onclick=newCycle;
@@ -2091,5 +2483,6 @@ setupSettingsSave();
 setupSessionSave();
 render();
 switchView("training");
+autoSyncFromGitHub();
 
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("service-worker.js").catch(function(){});});}
