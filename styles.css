@@ -1747,3 +1747,83 @@ label {
   border-color: var(--muted);
   color: var(--white);
 }
+
+
+/* ═══════════════════════════════════════════
+   V46.6 — iPhone plein écran / largeur utile maximale
+   ═══════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .app {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: calc(28px + var(--safe-bot));
+  }
+
+  .topnav {
+    padding-left: 6px;
+    padding-right: 6px;
+    gap: 6px;
+  }
+
+  .topnav-brand {
+    min-width: 42px;
+  }
+
+  #phoneView {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  .phone-toolbar {
+    padding-left: 4px;
+    padding-right: 4px;
+    gap: 4px;
+  }
+
+  .phone-day-nav {
+    gap: 4px;
+  }
+
+  .tb-btn {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+  .phone-wod {
+    width: 100%;
+    padding-left: 4px;
+    padding-right: 4px;
+    gap: 8px;
+  }
+
+  .pc {
+    width: 100%;
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .session-entry {
+    margin-left: 4px;
+    margin-right: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 10px;
+  }
+
+  .pc-day-title {
+    font-size: 36px;
+  }
+
+  .pc-block-title {
+    font-size: 21px;
+  }
+
+  .pc-ex-name {
+    font-size: 22px;
+  }
+}
