@@ -1,6 +1,6 @@
-// Coach Bertin V48.6 — Programme autonome : CrossFit maintenance
+// Coach Bertin V48.8 — Programme autonome : CrossFit maintenance
 // Objectif : garder technique, moteur et mobilité avec fatigue basse.
-// V48.6 : ne dépend plus de la structure PPL générique.
+// V48.8 : ne dépend plus de la structure PPL générique.
 
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.maintenance = {

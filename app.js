@@ -1,8 +1,10 @@
-// Coach Bertin V48.7
-var APP_VERSION = "V48.7";
+// Coach Bertin V48.8
+var APP_VERSION = "V48.8";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
+var ATHLETE_STATE_FILE = "data/athlete_state.json";
+var CYCLE_STATE_FILE   = "data/cycle_state.json";
 
 // Objectifs compétition janvier 2027
 var COMPETITION_DATE = new Date("2027-01-15");
@@ -26,7 +28,12 @@ function buildWeekInfo(){
   });
   return info;
 }
-function totalWeeks(){ var f=focus(); return (f&&f.sets) ? f.sets.length : 4; }
+function totalWeeks(){
+  var cfg=focus();
+  if(cfg&&cfg.weekLabels&&cfg.weekLabels.length)return cfg.weekLabels.length;
+  if(cfg&&cfg.sets&&cfg.sets.length)return cfg.sets.length;
+  return 4;
+}
 
 // ─── FocusConfigs de base (fallback) ─────────────────────────────────────────
 
@@ -64,8 +71,10 @@ if (window.COACH_BERTIN_PROGRAMS) {
 
 // Données de profil, mouvements et banques WOD chargées depuis programs/config.js
 
-var KEY       = "coachBertinState";
-var CHARGE_KEY= "coachBertinCustomChargesV46";
+var KEY       = "coachBertinState";       // clé stable : ne change plus avec les versions
+var LEGACY_KEYS = ["coachBertinV46", "coachBertinV43", "coachBertinV41"];
+var CHARGE_KEY= "coachBertinCustomCharges";
+var LEGACY_CHARGE_KEYS = ["coachBertinCustomChargesV46"];
 var TOKEN_KEY = "coachBertinGithubToken";
 var DAYS_ORDER= ["lundi","mardi","jeudi","vendredi"];
 
@@ -104,11 +113,13 @@ var state = {
   trainingMaxPct: 0.925,
   cycle: { goal:"shoulders3d" },
   movementRefs: copy(PRELOADED_REFS),
-  // Nouveau V46 : suivi RPE par mouvement pour progression automatique
+  // Suivi RPE par mouvement pour progression automatique
   rpeHistory: {},        // { "mvKey__range": [rpe1, rpe2, rpe3] } — 3 dernières séances
   sessionCount: {},      // { "lundi": 2, "mardi": 1, ... } — séances complétées par jour cette semaine
   completedDays: [],     // ["lundi", "mardi"] — jours complétés cette semaine
-  deloadAlert: false     // true si le système détecte fatigue RPE
+  deloadAlert: false,    // true si le système détecte fatigue RPE
+  athleteState: { movements:{}, updatedAt:null, version:null }, // Niveau réel durable par mouvement
+  cycleState: null       // Où le cycle est rendu, sauvegardable indépendamment des versions
 };
 var customCharges = {};
 
@@ -117,14 +128,20 @@ var customCharges = {};
 function copy(o){return JSON.parse(JSON.stringify(o));}
 function $(id){return document.getElementById(id);}
 
+function findFirstStored(keys){
+  for(var i=0;i<keys.length;i++){
+    try{
+      var raw=localStorage.getItem(keys[i]);
+      if(raw)return {key:keys[i], raw:raw};
+    }catch(e){}
+  }
+  return null;
+}
 function load(){
   try{
-    // Migration : lire ancienne clé V46 si la nouvelle est vide
-    var raw = localStorage.getItem(KEY)
-           || localStorage.getItem("coachBertinV46")
-           || localStorage.getItem("coachBertinV43");
-    if(raw){
-      var p = JSON.parse(raw);
+    var found = findFirstStored([KEY].concat(LEGACY_KEYS));
+    if(found&&found.raw){
+      var p = JSON.parse(found.raw);
       state = Object.assign(state, p);
       state.profile      = Object.assign(copy(defaultProfile), p.profile||{});
       state.cycle        = Object.assign({goal:"shoulders3d"}, p.cycle||{});
@@ -133,12 +150,22 @@ function load(){
       state.rpeHistory   = p.rpeHistory || {};
       state.completedDays= p.completedDays || [];
       state.deloadAlert  = p.deloadAlert || false;
+      state.athleteState = p.athleteState || { movements:{}, updatedAt:null, version:null };
+      state.cycleState   = p.cycleState || null;
+      // Migration douce vers la clé stable, sans effacer les anciennes clés.
+      if(found.key!==KEY)save();
     }
   }catch(e){}
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
 
-function loadCustomCharges(){try{customCharges=JSON.parse(localStorage.getItem(CHARGE_KEY)||"{}");}catch(e){customCharges={};}}
+function loadCustomCharges(){
+  try{
+    var found = findFirstStored([CHARGE_KEY].concat(LEGACY_CHARGE_KEYS));
+    customCharges = found&&found.raw ? JSON.parse(found.raw) : {};
+    if(found&&found.key!==CHARGE_KEY)saveCustomCharges();
+  }catch(e){customCharges={};}
+}
 function saveCustomCharges(){try{localStorage.setItem(CHARGE_KEY,JSON.stringify(customCharges));}catch(e){}}
 
 function getToken(){return localStorage.getItem(TOKEN_KEY)||"";}
@@ -168,12 +195,178 @@ function chargeList(){
   return list;
 }
 
+
+// ─── Athlete State : niveau réel durable par mouvement ─────────────────────
+
+function nowIso(){try{return new Date().toISOString();}catch(e){return String(new Date());}}
+function normalizeExerciseName(name){return chargeKeyFromName(name).toLowerCase().replace(/[^a-z0-9à-ÿ]+/g," ").trim();}
+function athleteMoveId(nameOrKey){
+  var mvKey=resolveMovementKey ? resolveMovementKey(nameOrKey) : null;
+  if(mvKey&&movements[mvKey])return movements[mvKey].name;
+  return chargeKeyFromName(nameOrKey||"Mouvement");
+}
+function ensureAthleteState(){
+  if(!state.athleteState)state.athleteState={movements:{},updatedAt:null,version:null};
+  if(!state.athleteState.movements)state.athleteState.movements={};
+  return state.athleteState;
+}
+function epley1RM(load,reps){load=Number(load)||0;reps=Number(reps)||0;if(!load||!reps)return 0;return load*(1+reps/30);}
+function estimateLoadForRepsFrom1RM(oneRm,reps){oneRm=Number(oneRm)||0;reps=Number(reps)||1;if(!oneRm)return 0;return oneRm/(1+reps/30);}
+function simpleLevelFromLoad(load){load=Number(load)||0;return Math.max(1,Math.round(load/12.5));}
+function movementLabelFromKeyOrName(key){var mvKey=resolveMovementKey ? resolveMovementKey(key) : null;return mvKey&&movements[mvKey]?movements[mvKey].name:chargeKeyFromName(key);}
+function plannedMapFromSessionExercises(){
+  var map={};
+  try{
+    collectSessionExercises().forEach(function(it){
+      if(!it||it.isWod)return;
+      var label=movementLabelFromKeyOrName(it.key||it.name);
+      var plannedLoad=parseLoad(it.suggested);
+      var targetMin=Number(it.targetMin)||0;
+      var targetMax=Number(it.targetMax)||targetMin||0;
+      map[it.key]={name:label,load:plannedLoad,reps:targetMin||targetMax, targetMin:targetMin, targetMax:targetMax, format:it.format||"", kind:it.kind||""};
+      map[label]=map[it.key];
+      map[normalizeExerciseName(label)]=map[it.key];
+    });
+  }catch(e){}
+  return map;
+}
+function classifyPerformance(actual, planned){
+  var load=parseLoad(actual.load), reps=Number(actual.reps)||0, rpe=Number(actual.rpe)||0;
+  var targetReps=Number((planned&&planned.reps)||actual.targetMin||actual.targetMax)||reps||1;
+  var ratio=targetReps?reps/targetReps:1;
+  var status="logged";
+  if(load&&reps&&rpe>=9.5&&ratio<0.60)status="major_fail";
+  else if(load&&reps&&rpe>=9&&ratio<1)status="failed";
+  else if(load&&reps&&rpe<=7&&ratio>=1)status="easy_success";
+  else if(load&&reps&&rpe>=9)status="hard_success";
+  else if(load&&reps)status="success";
+  return {status:status,ratio:Math.round(ratio*100)/100,targetReps:targetReps};
+}
+function enrichSessionResults(results){
+  var plan=plannedMapFromSessionExercises();
+  Object.keys(results||{}).forEach(function(key){
+    var r=results[key];
+    if(!r||r.isWod||!r.load)return;
+    var lookup=plan[key]||plan[movementLabelFromKeyOrName(key)]||plan[normalizeExerciseName(key)]||null;
+    if(lookup){
+      r.planned={load:lookup.load||null,reps:lookup.reps||null,targetMin:lookup.targetMin||null,targetMax:lookup.targetMax||null,format:lookup.format||"",kind:lookup.kind||""};
+      var c=classifyPerformance(r,lookup);
+      r.status=c.status;r.performanceRatio=c.ratio;
+      if(c.status==="major_fail")r.coachNote="Échec majeur : niveau probablement surestimé aujourd'hui. Recalibrage requis.";
+      else if(c.status==="failed")r.coachNote="Échec partiel : ne pas monter la charge avant confirmation.";
+    }
+  });
+  return results;
+}
+function updateAthleteStateFromResults(results,dateStr){
+  var ast=ensureAthleteState();
+  dateStr=dateStr||new Date().toLocaleDateString("fr-CA");
+  Object.keys(results||{}).forEach(function(key){
+    var r=results[key];
+    if(!r||r.isWod||!r.load)return;
+    var load=parseLoad(r.load), reps=Number(r.reps)||0, rpe=Number(r.rpe)||0;
+    if(!load||!reps)return;
+    var label=movementLabelFromKeyOrName(key);
+    var range=repRange(reps);
+    var planned=r.planned||{};
+    var targetReps=Number(planned.reps||planned.targetMin)||reps;
+    var cls=classifyPerformance(r,planned);
+    var oneRM=epley1RM(load,reps);
+    var capacityLoad=load;
+    var confidence=0.65;
+    var status=cls.status;
+    if(cls.status==="major_fail"){
+      capacityLoad=round5(estimateLoadForRepsFrom1RM(oneRM,targetReps))||load;
+      confidence=0.35;
+      status="recalibrating";
+    }else if(cls.status==="failed"){
+      capacityLoad=round5(estimateLoadForRepsFrom1RM(oneRM,targetReps))||load;
+      confidence=0.50;
+      status="watch";
+    }else if(cls.status==="easy_success"){
+      capacityLoad=load;
+      confidence=0.85;
+      status="level_up_ready";
+    }else if(cls.status==="hard_success"){
+      capacityLoad=load;
+      confidence=0.70;
+      status="hard";
+    }
+    if(!ast.movements[label]){
+      ast.movements[label]={level:1,xp:0,ranges:{},history:[],lastUpdated:null,status:"new"};
+    }
+    var mv=ast.movements[label];
+    mv.ranges=mv.ranges||{};mv.history=mv.history||[];
+    var prev=mv.ranges[range]||{};
+    var shouldReplace = !prev.currentLoad || cls.status==="major_fail" || cls.status==="failed" || load>=Number(prev.currentLoad||0) || confidence>Number(prev.confidence||0);
+    if(shouldReplace){
+      mv.ranges[range]={
+        currentLoad:capacityLoad,
+        currentReps:targetReps,
+        actualLoad:load,
+        actualReps:reps,
+        rpe:rpe,
+        confidence:confidence,
+        status:status,
+        estimated1RM:Math.round(oneRM),
+        lastUpdated:dateStr,
+        planned:planned||null
+      };
+    }
+    var xpDelta = cls.status==="easy_success"?25:cls.status==="success"?15:cls.status==="hard_success"?10:cls.status==="failed"?-5:cls.status==="major_fail"?-15:5;
+    mv.xp=Math.max(0,Number(mv.xp||0)+xpDelta);
+    mv.level=simpleLevelFromLoad(Math.max(capacityLoad,Number(prev.currentLoad||0)));
+    mv.status=status;
+    mv.lastUpdated=dateStr;
+    mv.history.push({date:dateStr,load:load,reps:reps,rpe:rpe,range:range,status:status,capacityLoad:capacityLoad,planned:planned||null});
+    if(mv.history.length>12)mv.history=mv.history.slice(-12);
+  });
+  ast.updatedAt=nowIso();ast.version=APP_VERSION;
+}
+function athleteSuggestedLoad(nameOrKey, currentLoad, targetReps){
+  var load=parseLoad(currentLoad);
+  if(!load)return currentLoad;
+  var ast=ensureAthleteState();
+  var label=movementLabelFromKeyOrName(nameOrKey);
+  var mv=ast.movements&&ast.movements[label];
+  if(!mv||!mv.ranges)return currentLoad;
+  var range=repRange(Number(targetReps)||8);
+  var cap=mv.ranges[range];
+  if(!cap||!cap.currentLoad)return currentLoad;
+  // Si le niveau est en recalibrage ou sous surveillance, on cappe la charge proposée.
+  if(cap.status==="recalibrating"||cap.status==="watch"||cap.confidence<0.55){
+    var capped=Math.min(load, Number(cap.currentLoad)||load);
+    return lb(capped)+" ⚠";
+  }
+  return currentLoad;
+}
+function buildCycleStatePayload(){
+  return {
+    version:APP_VERSION,
+    updatedAt:nowIso(),
+    activeCycle:state.cycle&&state.cycle.goal?state.cycle.goal:"shoulders3d",
+    activeWeek:state.week,
+    activeDay:state.day,
+    completedDays:state.completedDays||[],
+    focus:focus()?focus().label:"",
+    cycleStartedAt:(state.cycleState&&state.cycleState.cycleStartedAt)||nowIso()
+  };
+}
+function applyCycleStatePayload(cycleData){
+  if(!cycleData||typeof cycleData!=="object")return;
+  state.cycleState=cycleData;
+  if(cycleData.activeCycle)state.cycle={goal:cycleData.activeCycle};
+  if(cycleData.activeWeek)state.week=Number(cycleData.activeWeek)||state.week;
+  if(cycleData.activeDay)state.day=cycleData.activeDay;
+  if(Array.isArray(cycleData.completedDays))state.completedDays=cycleData.completedDays;
+}
+
 function round5(n){if(n===0)return 0;if(!n||isNaN(n))return null;return Math.round(n/5)*5;}
 function lb(n){var r=round5(n);return(r===0||r)?r+" lb":"—";}
 function parseLoad(v){if(v===0||v==="0")return 0;if(!v)return null;var m=String(v).replace(",",".").match(/[0-9]+(\.[0-9]+)?/);return m?Number(m[0]):null;}
 
-function focus(){return focusConfigs[state.cycle.goal]||focusConfigs.maintenance||focusConfigs.strength||Object.values(focusConfigs)[0];}
-function weekIdx(){var tw=totalWeeks()||4; return Math.max(0,Math.min(tw-1,state.week-1));}
+function focus(){return focusConfigs[state.cycle.goal]||focusConfigs.maintenance||focusConfigs.shoulders3d||Object.values(focusConfigs)[0]||{};}
+function weekIdx(){var tw=Math.max(1,totalWeeks());return Math.max(0,Math.min(tw-1,state.week-1));}
 function repRange(reps){reps=Number(reps)||0;if(reps<=5)return"strength";if(reps<=12)return"hypertrophy";return"endurance";}
 function repRangeLabel(r){return r==="strength"?"1–5 reps":r==="hypertrophy"?"6–12 reps":"13+ reps";}
 function refKey(mvKey,reps){return mvKey+"__"+repRange(reps);}
@@ -227,6 +420,10 @@ function parseRestToSeconds(s){
   return Number(m[1])*60+Number(m[2]);
 }
 function cleanLine(s){return String(s||"").replace(/\s+/g," ").trim();}
+function currentDayLabel(){
+  var d=baseDays&&baseDays[state.day];
+  return (d&&d.label)||state.day||"—";
+}
 
 // Construction des séances chargée depuis programs/workouts.js
 
@@ -516,7 +713,7 @@ function collectSessionExercises(){
       b.exercises.forEach(function(e){
         var parsed = parseTargetReps(e.format, 10);
         items.push({key:e.name.replace(/^[A-Z][0-9]?\.\s*/,"").trim(),name:e.name,
-          suggested:e.load,format:e.format,targetMin:parsed.min,targetMax:parsed.max,kind:b.kind,isWod:false});
+          suggested:athleteSuggestedLoad(e.name,e.load,parsed.min||parsed.max),format:e.format,targetMin:parsed.min,targetMax:parsed.max,kind:b.kind,isWod:false});
       });
     } else if(b.progress&&b.progress.length){
       b.progress.forEach(function(mvKey,j){
@@ -850,9 +1047,11 @@ function renderSessionEntry(){
 
 function collectSessionResults(){
   var results={};
-  var sf=document.getElementById("sessionFields")||document;
-  sf.querySelectorAll(".sf-input").forEach(function(inp){
-    var key=inp.getAttribute("data-key"),field=inp.getAttribute("data-field"),val=inp.value.trim();
+  var scope=$("sessionFields")||document;
+  scope.querySelectorAll(".sf-input").forEach(function(inp){
+    var key=inp.getAttribute("data-key"),field=inp.getAttribute("data-field");
+    if(!key||!field)return;
+    var val=String(inp.value||"").trim();
     if(!val)return;
     if(!results[key])results[key]={};
     results[key][field]=val;
@@ -884,7 +1083,7 @@ function updateRefsFromResults(results,dateStr){
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
         date:dateStr,lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
-        rpe:Number(r.rpe)||8,note:"Saisi V48.6"
+        rpe:Number(r.rpe)||8,note:"Saisi V48.8"
       };
     }
     // Enregistrer RPE dans l'historique pour progression automatique
@@ -922,8 +1121,11 @@ function mergeHistory(localHistory,remoteData){
 function rebuildRefsFromHistory(){
   state.movementRefs=copy(PRELOADED_REFS);
   state.rpeHistory={};
+  state.athleteState={movements:{},updatedAt:null,version:APP_VERSION};
   (state.history||[]).forEach(function(s){
-    updateRefsFromResults(s.results||s.resultats||{},s.date||new Date().toLocaleDateString("fr-CA"));
+    var res=s.results||s.resultats||{};
+    updateRefsFromResults(res,s.date||new Date().toLocaleDateString("fr-CA"));
+    updateAthleteStateFromResults(res,s.date||new Date().toLocaleDateString("fr-CA"));
   });
   checkDeloadAlert();
 }
@@ -1022,7 +1224,7 @@ function showSessionSummaryModal(summary){
   modal.innerHTML =
     '<div class="summary-modal-inner">'+
       '<div class="summary-modal-title">📊 Résumé de la séance</div>'+
-      '<div class="summary-modal-sub">'+((baseDays[state.day]&&baseDays[state.day].label)||state.day)+' S'+state.week+' · RPE moyen '+summary.avgRpe+' '+summary.rpeSignal+'</div>'+
+      '<div class="summary-modal-sub">'+currentDayLabel()+' S'+state.week+' · RPE moyen '+summary.avgRpe+' '+summary.rpeSignal+'</div>'+
       prSection+
       deloadHtml+
       '<div class="summary-lines">'+
@@ -1051,6 +1253,7 @@ function showSessionSummaryModal(summary){
 function markDayCompleted(day){
   if(state.completedDays.indexOf(day)<0){
     state.completedDays.push(day);
+    state.cycleState=buildCycleStatePayload();
     save();
   }
 }
@@ -1068,7 +1271,9 @@ function advanceWeek(){
   if(state.week < tw){
     state.week++;
     state.completedDays = []; // reset pour la nouvelle semaine
+    state.cycleState=buildCycleStatePayload();
     save();
+    if(getToken())savePersistentStateToGitHub(getToken());
     render();
     renderWeekProgress();
   }
@@ -1125,7 +1330,9 @@ function buildSessionPayload(results){
     time:new Date().toLocaleTimeString("fr-CA"),
     semaine:state.week,
     jour:state.day,
+    cycle:state.cycle&&state.cycle.goal?state.cycle.goal:null,
     focus:focus().label,
+    cycleState:buildCycleStatePayload(),
     resultats:results
   };
 }
@@ -1168,8 +1375,8 @@ async function readGithubJsonFile(token,path){
   if(resp.status===404)return{ok:false,missing:true,status:404,sha:null,data:null,msg:"Fichier absent"};
   if(!resp.ok)return{ok:false,missing:false,status:resp.status,msg:await githubErrorMessage(resp)};
   var j=await resp.json();
-  var data=[];
-  try{data=JSON.parse(atob(String(j.content||"").replace(/\n/g,"")));}catch(e){data=[];}
+  var data=null;
+  try{data=JSON.parse(atob(String(j.content||"").replace(/\n/g,"")));}catch(e){data=null;}
   return{ok:true,missing:false,sha:j.sha,data:data,msg:"OK"};
 }
 async function writeGithubFile(token,path,contentText,message,sha){
@@ -1196,6 +1403,36 @@ async function ensureResultatsFile(token){
   if(!init.ok)return{ok:false,msg:"Création resultats.json impossible : "+init.msg};
   var r2=await readGithubJsonFile(token,GITHUB_FILE);
   return{ok:true,msg:"resultats.json créé",sha:r2.sha,data:[]};
+}
+
+
+async function ensureJsonFile(token,path,initialValue,message){
+  var r=await readGithubJsonFile(token,path);
+  if(r.ok)return{ok:true,msg:path+" OK",sha:r.sha,data:r.data};
+  if(!r.missing)return{ok:false,msg:r.msg};
+  var initText=JSON.stringify(initialValue,null,2);
+  var init=await writeGithubFile(token,path,initText,message||("Création "+path),null);
+  if(!init.ok)return{ok:false,msg:"Création "+path+" impossible : "+init.msg};
+  var r2=await readGithubJsonFile(token,path);
+  return{ok:true,msg:path+" créé",sha:r2.sha,data:initialValue};
+}
+async function saveJsonDataFile(token,path,data,message){
+  var r=await readGithubJsonFile(token,path);
+  var sha=r.ok?r.sha:null;
+  if(!r.ok&&!r.missing)return{ok:false,msg:r.msg};
+  return await writeGithubFile(token,path,JSON.stringify(data,null,2),message,sha);
+}
+async function savePersistentStateToGitHub(token){
+  if(!token)return{ok:false,msg:"Token manquant"};
+  var ast=ensureAthleteState();
+  ast.updatedAt=nowIso();ast.version=APP_VERSION;
+  var cycle=buildCycleStatePayload();
+  state.cycleState=cycle;
+  var a=await saveJsonDataFile(token,ATHLETE_STATE_FILE,ast,"Mise à jour athlete_state — "+new Date().toLocaleDateString("fr-CA"));
+  if(!a.ok)return{ok:false,msg:"athlete_state : "+a.msg};
+  var c=await saveJsonDataFile(token,CYCLE_STATE_FILE,cycle,"Mise à jour cycle_state — "+new Date().toLocaleDateString("fr-CA"));
+  if(!c.ok)return{ok:false,msg:"cycle_state : "+c.msg};
+  return{ok:true,msg:"state OK"};
 }
 
 async function saveToGitHub(payload){
@@ -1226,8 +1463,12 @@ async function testGithubToken(){
 
     var ensure=await ensureResultatsFile(token);
     if(!ensure.ok){if(s){s.textContent="❌ "+ensure.msg;s.className="status-msg err";}return;}
+    var ast=await ensureJsonFile(token,ATHLETE_STATE_FILE,{version:APP_VERSION,updatedAt:nowIso(),movements:{}},"Création athlete_state.json");
+    if(!ast.ok){if(s){s.textContent="❌ "+ast.msg;s.className="status-msg err";}return;}
+    var cyc=await ensureJsonFile(token,CYCLE_STATE_FILE,buildCycleStatePayload(),"Création cycle_state.json");
+    if(!cyc.ok){if(s){s.textContent="❌ "+cyc.msg;s.className="status-msg err";}return;}
 
-    if(s){s.textContent="✅ Token OK · repo accessible · "+ensure.msg;s.className="status-msg ok";}
+    if(s){s.textContent="✅ Token OK · repo accessible · resultats + athlete_state + cycle_state OK";s.className="status-msg ok";}
   }catch(e){
     if(s){s.textContent="❌ Erreur réseau/test : "+e.message;s.className="status-msg err";}
   }
@@ -1242,8 +1483,14 @@ async function syncHistoryFromGitHub(silent){
     var ensure=await ensureResultatsFile(token);
     if(!ensure.ok){if(!silent&&status){status.textContent="❌ Sync impossible : "+ensure.msg;status.className="status-msg err";}return{ok:false,msg:ensure.msg};}
     var before=(state.history||[]).length;
-    state.history=mergeHistory(state.history||[],ensure.data||[]);
+    state.history=mergeHistory(state.history||[],Array.isArray(ensure.data)?ensure.data:[]);
     rebuildRefsFromHistory();
+    try{
+      var ast=await readGithubJsonFile(token,ATHLETE_STATE_FILE);
+      if(ast.ok&&ast.data&&ast.data.movements)state.athleteState=ast.data;
+      var cyc=await readGithubJsonFile(token,CYCLE_STATE_FILE);
+      if(cyc.ok&&cyc.data)applyCycleStatePayload(cyc.data);
+    }catch(e){}
     save();
     renderHistory();renderWorkout();renderReferences();renderWeekProgress();
     var added=state.history.length-before;
@@ -1270,9 +1517,11 @@ function setupSessionSave(){
     var hasData=Object.keys(results).length>0;
     if(!hasData){var s=$("saveStatus");if(s){s.textContent="Aucun résultat saisi.";s.className="session-note";}return;}
     btn.disabled=true;btn.textContent="Envoi en cours...";
+    results=enrichSessionResults(results);
     var payload=buildSessionPayload(results);
     // 1. Mettre à jour références + historique RPE
     updateRefsFromResults(results);
+    updateAthleteStateFromResults(results,payload.date);
     // 2. Mettre à jour charges locales
     updateCustomChargesFromResults(results);
     // 3. Marquer le jour complété
@@ -1284,9 +1533,15 @@ function setupSessionSave(){
     save();
     // 6. Envoyer séance sur GitHub
     var result=await saveToGitHub(payload);
-    // 7. Ne pas modifier data/charges.js automatiquement : les charges stables ne doivent pas être écrasées par une mise à jour ou une séance.
+    // 7. Sauvegarder les états persistants durables si la séance est bien écrite
+    var stateMsg="";
+    if(result.ok&&getToken()){
+      var stateSave=await savePersistentStateToGitHub(getToken());
+      stateMsg=stateSave.ok?" · niveaux/cycle ✅":" · état durable non sauvegardé ("+stateSave.msg+")";
+    }
+    // 8. Ne pas modifier data/charges.js automatiquement : les charges stables ne doivent pas être écrasées par une mise à jour ou une séance.
     var s=$("saveStatus");
-    if(s){s.textContent=result.msg;s.className="session-note"+(result.ok?" ok":" err");}
+    if(s){s.textContent=result.msg+stateMsg;s.className="session-note"+(result.ok?" ok":" err");}
     btn.disabled=false;btn.textContent="💾 Sauvegarder & envoyer sur GitHub";
     // 8. Construire et afficher le résumé
     var summary=buildSessionSummary(results);
@@ -1466,7 +1721,7 @@ function renderWorkout(){
             '<div class="exercise-name">'+e.name+'</div>'+
             '<div class="exercise-meta">'+
               '<div class="exercise-format">'+e.format+'</div>'+
-              '<div class="exercise-load">'+e.load+'</div>'+
+              '<div class="exercise-load">'+athleteSuggestedLoad(e.name,e.load,(parseTargetReps(e.format,10).min||parseTargetReps(e.format,10).max))+'</div>'+
             '</div>'+
           '</div>';
         if(e.note)inner+='<div class="exercise-note">'+e.note+'</div>';
@@ -1576,7 +1831,7 @@ function renderPhoneWod(){
         html+="<div class='pc-exercise'><div class='pc-ex-name'>"+e.name+"</div>";
         html+="<div class='pc-ex-rows'>";
         html+="<div class='pc-ex-row'><span class='pc-ex-label'>Format</span><span class='pc-ex-value'>"+e.format+"</span></div>";
-        html+="<div class='pc-ex-row'><span class='pc-ex-label'>Poids</span><span class='pc-ex-value accent'>"+e.load+"</span></div>";
+        html+="<div class='pc-ex-row'><span class='pc-ex-label'>Poids</span><span class='pc-ex-value accent'>"+athleteSuggestedLoad(e.name,e.load,(parseTargetReps(e.format,10).min||parseTargetReps(e.format,10).max))+"</span></div>";
         html+="<div class='pc-ex-row'><span class='pc-ex-label'>Repos</span><span class='pc-ex-value'>"+e.rest+"</span></div>";
         html+="</div>";
         if(e.note)html+="<div class='pc-ex-note'>"+e.note+"</div>";
@@ -1619,7 +1874,7 @@ function renderPhoneWod(){
 
 
 
-// ─── Mode séance guidé (optionnel) — V48.6 ────────────────────────────────
+// ─── Mode séance guidé (optionnel) — V48.8 ────────────────────────────────
 // Vue iPhone pleine largeur : 1 bloc = 1 page. Le WOD a son gros timer dédié.
 
 var guidedSessionState = { blocks: [], index: 0 };
@@ -1657,7 +1912,7 @@ function buildGuidedSessionBlocks(){
         obj.exercises.push({
           title:e.name,
           format:e.format || "",
-          load:e.load || "",
+          load:athleteSuggestedLoad(e.name,e.load,(parseTargetReps(e.format,10).min||parseTargetReps(e.format,10).max)) || "",
           rest:e.rest || "",
           note:e.note || "",
           exerciseIndex:ei
@@ -1867,7 +2122,7 @@ function renderGuidedSession(){
   var html="";
   html+="<div class='guided-top'>"+
         "<button class='tb-btn' id='guidedCloseBtn'>✕</button>"+
-        "<div class='guided-top-title'>Mode séance · "+escHtml(baseDays[state.day].label)+" · S"+state.week+"</div>"+
+        "<div class='guided-top-title'>Mode séance · "+escHtml(currentDayLabel())+" · S"+state.week+"</div>"+
         "<div class='guided-count'>"+(i+1)+"/"+blocks.length+"</div>"+
         "</div>";
   html+="<div class='guided-progress'><div style='width:"+pct+"%'></div></div>";
@@ -1996,7 +2251,9 @@ function saveCycle(){
   state.cycle.goal=$("cycleGoal").value;
   state.week=1;
   state.completedDays=[];
+  state.cycleState=buildCycleStatePayload();
   save();render();
+  if(getToken())savePersistentStateToGitHub(getToken());
   alert("Cycle sauvegardé. Semaine remise à S1.");
 }
 function newCycle(){
@@ -2004,7 +2261,10 @@ function newCycle(){
     state.week=1;
     state.completedDays=[];
     state.deloadAlert=false;
-    save();switchView("training");render();
+    state.cycleState=buildCycleStatePayload();
+    save();
+    if(getToken())savePersistentStateToGitHub(getToken());
+    switchView("training");render();
   }
 }
 
@@ -2142,7 +2402,7 @@ function stableIphoneText(day,week){
   var txt=w.day.label.toUpperCase()+" - "+w.day.base.toUpperCase()+" - SEMAINE "+week+"\nFocus: "+focus().label+"\n"+dayIntention(day)+"\n\n";
   w.blocks.forEach(function(b){
     txt+=b.title.toUpperCase()+" ("+b.time+")\n";
-    if(b.exercises&&b.exercises.length){if(b.text)txt+=cleanLine(displayChargeText(b.text))+"\n";b.exercises.forEach(function(e){txt+=e.name+"\nFormat: "+e.format+"\nPoids: "+e.load+"\nRepos: "+e.rest+"\n"+(e.note?"Note: "+e.note+"\n":"")+"\n";});}
+    if(b.exercises&&b.exercises.length){if(b.text)txt+=cleanLine(displayChargeText(b.text))+"\n";b.exercises.forEach(function(e){var smartLoad=athleteSuggestedLoad(e.name,e.load,(parseTargetReps(e.format,10).min||parseTargetReps(e.format,10).max));txt+=e.name+"\nFormat: "+e.format+"\nPoids: "+smartLoad+"\nRepos: "+e.rest+"\n"+(e.note?"Note: "+e.note+"\n":"")+"\n";});}
     else if(b.progress&&b.progress.length){b.progress.forEach(function(mvKey,j){var reps=targetReps(j,b.kind),load=lb(suggestLoad(mvKey,progressionPct(j),reps));txt+=movements[mvKey].name+"\nFormat: "+setScheme(b.kind,j)+"\nPoids: "+load+"\nRepos: "+restFor(b.kind)+"\n\n";});}
     else{txt+=cleanLine(displayChargeText(b.text||""))+"\n\n";}
   });
@@ -2155,7 +2415,10 @@ function download(name,text){
   var blob=new Blob([text],{type:type}),url=URL.createObjectURL(blob);
   var a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
 }
-function exportBackup(){download("coach-bertin-backup-"+new Date().toISOString().slice(0,10)+".json",JSON.stringify({version:APP_VERSION,exportedAt:new Date().toISOString(),state:state},null,2));}
+function exportBackup(){
+  var v=String(APP_VERSION||"backup").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"");
+  download("coach-bertin-"+v+"-backup.json",JSON.stringify({version:APP_VERSION,exportedAt:new Date().toISOString(),state:state},null,2));
+}
 function importBackup(file){
   if(!file)return;
   var r=new FileReader();
@@ -2195,7 +2458,7 @@ function bind(){
   var sc=$("saveCycleBtn");if(sc)sc.onclick=saveCycle;
   var nc=$("newCycleBtn");if(nc)nc.onclick=newCycle;
   var cg=$("cycleGoal");if(cg)cg.onchange=function(){state.cycle.goal=cg.value;save();renderFocusDetails();};
-  var eh=$("exportHistoryBtn");if(eh)eh.onclick=function(){download("coach-bertin-historique.txt","Historique Coach Bertin V48.7\n\n"+JSON.stringify(state.history,null,2));};
+  var eh=$("exportHistoryBtn");if(eh)eh.onclick=function(){download("coach-bertin-historique.txt","Historique "+APP_VERSION+"\n\n"+JSON.stringify(state.history,null,2));};
   var rh=$("resetHistoryBtn");if(rh)rh.onclick=function(){if(confirm("Effacer tout l'historique?")){state.history=[];save();renderHistory();}};
   var rcb=$("resetCustomChargesBtn");if(rcb)rcb.onclick=resetCustomCharges;
   var ebb=$("exportBackupBtn");if(ebb)ebb.onclick=exportBackup;

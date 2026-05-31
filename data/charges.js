@@ -1,6 +1,7 @@
-// Coach Bertin V39-progression-semaine-unique — charges officielles modifiables
-// Tu peux modifier ce fichier dans GitHub pour changer les charges de base de tous les appareils.
-// Les ajustements faits dans l'app sur iPhone restent locaux et ont priorité sur ces valeurs.
+// Coach Bertin — charges de base / équipement
+// Ce fichier est une configuration stable. Il ne représente pas ta capacité réelle.
+// Ta capacité réelle est dans data/athlete_state.json.
+
 window.DEFAULT_CHARGES = {
   "Strict Press": "115 lb",
   "Lateral Raise": "20-25 lb",
@@ -11,6 +12,7 @@ window.DEFAULT_CHARGES = {
   "Trap-3 Raise": "léger",
   "Ring Row Strict": "poids du corps",
   "Front Squat": "165 lb",
+  "Back Squat": "185 lb",
   "Bulgarian Split Squat": "50 lb / main",
   "Standing Calf Raise": "25 lb",
   "Power Clean": "155 lb",
@@ -24,6 +26,7 @@ window.DEFAULT_CHARGES = {
   "KB Swings": "24 kg",
   "DB Snatch": "50 lb"
 };
+
 window.CHARGE_ORDER = [
   "Strict Press",
   "Lateral Raise",
@@ -34,6 +37,7 @@ window.CHARGE_ORDER = [
   "Trap-3 Raise",
   "Ring Row Strict",
   "Front Squat",
+  "Back Squat",
   "Bulgarian Split Squat",
   "Standing Calf Raise",
   "Power Clean",

@@ -1,6 +1,6 @@
-// Coach Bertin V48.7 — Phase 4 : Compétition CrossFit Peak (8 semaines)
+// Coach Bertin V48.8 — Phase 4 : Compétition CrossFit Peak (8 semaines)
 // Objectif : performance Open CrossFit janvier 2027
-// V48.6 : programme autonome. Logique compétition réelle : pacing, benchmarks, simulations, taper.
+// V48.8 : programme autonome. Logique compétition réelle : pacing, benchmarks, simulations, taper.
 
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.competition_peak = {
@@ -69,8 +69,8 @@ function competitionPeakBlocks(day,week){
        week===2?"AMRAP 18 : 14 wall balls 14 lb + 12 cal row + 10 burpees." :
        week===3?"For time 5 rounds : 12 wall balls 14 lb + 10 burpees + 12 cal row. Cap 16 min." :
        week===4?"AMRAP 18 : 15 wall balls 14 lb + 12 box step-ups + 10 burpees." :
-       week===5?"Benchmark adapté — 19.1 style : AMRAP 15 : 19 wall balls 14 lb + 19 cal row. Note chaque round." :
-       week===6?"Simulation Open format : AMRAP 15 : 15 wall balls 14 lb + 12 cal row + 9 burpees over bar. Stratégie : démarre à 85% de ton rythme max, pas 100%." :
+       week===5?"Benchmark style Open — AMRAP 15 : 10 wall balls 14 lb + 10 cal row + 10 burpees." :
+       week===6?"AMRAP 16 : 12 wall balls 14 lb + 12 cal row + 8 burpees over line." :
        week===7?"AMRAP 12 : 8 wall balls 14 lb + 8 cal row + 6 burpees. Reste frais." :
        "AMRAP 10 : 6 wall balls 14 lb + 6 cal row + 4 burpees. Activation seulement.")+" "+p.wodNote+"."},
 
@@ -95,7 +95,7 @@ function competitionPeakBlocks(day,week){
        week===2?"EMOM 20 : min 1 = 14 cal row ; min 2 = 8 pull-ups ; min 3 = 14 cal bike ; min 4 = 12 sit-ups." :
        week===3?"EMOM 16 : min 1 = 15 cal row ; min 2 = 10 burpees ; min 3 = 12 cal ski ; min 4 = 8 pull-ups." :
        week===4?"AMRAP 18 : 12 cal ski + 10 pull-ups/ring rows + 12 sit-ups + 10 box step-ups." :
-       week===5?"Helen : 3 rounds for time : 500 m row + 21 KB swings 16 kg (53 lb) ou 12 kg (35 lb) + 12 pull-ups ou ring rows. Cap 15 min. Note ton temps réel — c'est un benchmark, mesure-le." :
+       week===5?"Helen adapté — 3 rounds for time : 400 m row + 21 KB swings + 12 pull-ups/ring rows. Cap 15 min." :
        week===6?"EMOM 18 : min 1 = 15 cal row ; min 2 = 10 burpees ; min 3 = 10 pull-ups/ring rows." :
        week===7?"EMOM 12 : min 1 = 10 cal row ; min 2 = 6 pull-ups/ring rows ; min 3 = 8 sit-ups." :
        "EMOM 8 : min 1 = 8 cal row ; min 2 = 5 pull-ups/ring rows. Activation.")+" "+p.wodNote+"."},
@@ -119,10 +119,7 @@ function competitionPeakBlocks(day,week){
     {time:"10 min",title:"B. Front squat / thruster prep",tag:"Force maintien",kind:"accessory",
      exercises:[cpEx("Front Squat",p.front,p.frontLoad,taper?"1:30":"2:00","Maintenir les jambes et le rack. Aucune bataille.")]},
 
-    {time:"8 min",title:"C. Bench technique maintien",tag:"Force",kind:"accessory",
-     exercises:[cpEx("Bench press technique",taper?"2×5 léger":week>=6?"3×3":"3×4",taper?"185 lb":week>=6?"215 lb":"205-215 lb","1:30","Maintenir la fréquence 2x/semaine bench en phase peak. RPE 7 max. Vitesse de barre.")]},
-
-    {time:taper?"10 min":week>=4?"18 min":"14 min",title:"D. WOD haltéro sous fatigue",tag:"Conditioning",kind:"wod",
+    {time:taper?"10 min":week>=4?"18 min":"14 min",title:"C. WOD haltéro sous fatigue",tag:"Conditioning",kind:"wod",
      text:(week===1?"AMRAP 14 : 6 power cleans légers + 10 wall balls 14 lb + 12 cal row." :
        week===2?"AMRAP 18 : 5 power cleans légers + 10 box step-ups + 12 wall balls 14 lb + 10 cal row." :
        week===3?"For time 21-15-9 : wall balls 14 lb + cal row, puis 15 power cleans légers. Cap 14 min." :
@@ -148,7 +145,7 @@ function competitionPeakBlocks(day,week){
        week===3?"For time 5 rounds : 20 cal row + 20 wall balls 14 lb + 15 box step-ups + 10 burpees. Cap 25 min." :
        week===4?"Chipper for time : 50 cal row + 50 wall balls 14 lb + 50 box step-ups + 40 KB swings + 30 burpees + 20 ring rows. Cap 30 min." :
        week===5?"Benchmark long — AMRAP 20 : 5 power cleans légers + 10 wall balls 14 lb + 15 cal row + 20 sit-ups." :
-       week===6?"Simulation Open — Pour reproduire un format compétition réel. For time : 50 cal row + 40 wall balls 14 lb + 30 burpees over bar + 20 power cleans 135 lb + 10 pull-ups ou ring rows. Cap 25 min. Stratégie écrite avant de commencer : cassures planifiées, jamais de grind ego." :
+       week===6?"Simulation compétition — For time : 60 cal row + 50 wall balls 14 lb + 40 box step-ups + 30 burpees + 20 power cleans légers + 10 pull-ups/ring rows. Cap 35 min." :
        week===7?"AMRAP 15 : 10 wall balls 14 lb + 10 cal row + 8 box step-ups + 6 burpees. Reste frais." :
        "Test court — AMRAP 12 : 8 wall balls 14 lb + 8 cal row + 6 burpees + 6 sit-ups. Activation compétitive.")+" "+p.wodNote+"."},
 
@@ -175,10 +172,10 @@ window.COACH_BERTIN_PROGRAMS.competition_peak.cycleRules = [
 ];
 
 window.COACH_BERTIN_PROGRAMS.competition_peak.dayIntentions = {
-  lundi: "WOD court/moyen format Open. S5 = benchmark nommé (19.1 style). Apprendre ton rythme réel.",
-  mardi: "Gymnastics + engine intervals. S5 = Helen benchmark. Mesurer, pas juste s'entraîner.",
-  jeudi: "Haltéro sous fatigue contrôlée + bench technique 2e session. Maintenir la puissance.",
-  vendredi: "WOD long compétition. S6 = simulation format réel Open avec stratégie planifiée à l'avance."
+  lundi: "Skill + WOD Open court/moyen. Apprendre le bon départ et les transitions propres.",
+  mardi: "Gymnastics + engine intervals. Construire le moteur et garder les tirages utiles.",
+  jeudi: "Haltéro sous fatigue contrôlée. Maintenir la puissance sans te vider.",
+  vendredi: "WOD long compétition. C'est la journée centrale de la phase peak."
 };
 
 window.COACH_BERTIN_PROGRAMS.competition_peak.dayMeta = {

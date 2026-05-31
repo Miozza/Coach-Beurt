@@ -1,4 +1,4 @@
-// Coach Bertin V48.7 — Phase 3 : Force + Résistance musculaire (6 semaines)
+// Coach Bertin V48.3 — Phase 3 : Force + Résistance musculaire (6 semaines)
 // Objectif : force réelle + transfert CrossFit sans structure PPL générique.
 // V48.3 : programme autonome. Les journées complètes vivent ici, pas dans app.js.
 
@@ -77,7 +77,7 @@ function forcePerformanceBlocks(day,week){
   // MARDI — Squat / jambes + densité squat contrôlée.
   if(day === "mardi") return [
     {time:"9 min",title:"Warm-up squat",tag:"Préparation",kind:"warmup",
-     text:"Bike 3 min + ankle rocks 10/côté + goblet squat 2×10 + glute bridge 2×15 + ramp-up squat : barre ×8, 135×5, 185×3. S5 peak : ajouter 205×2, 220×1 avant série travail."},
+     text:"Bike 3 min + ankle rocks 10/côté + goblet squat 2×10 + glute bridge 2×15 + ramp-up squat : barre ×8, 135×5, 185×3."},
 
     {time:"18 min",title:"A. Squat priorité",tag:"Force",kind:"main",
      exercises:[fpEx("Back Squat",p.squat,p.squatLoad,heavy?"3:00":"2:30","Force jambes. Dos neutre. Aucun ego lift. Si le dos parle : front squat même charge relative.")]},
@@ -88,16 +88,11 @@ function forcePerformanceBlocks(day,week){
        fpEx("B2. DB RDL",deload?"2×8 léger":"3×8","60-70 lb / main","1:30 après B2","Ischios. Pas de flexion lombaire.")
      ]},
 
-    // CORRECTION V48.7 : retiré 5x10 front squat après back squat lourd.
-    // Science : empiler 50 reps squat après bloc force crée une surcharge impossible à récupérer
-    // en 48h, compromet la séance jeudi et force la baisse de qualité sur le A.
-    // Remplacé par unilatéral léger + step-up qui ciblent la résistance sans fatiguer
-    // les patterns squat bilatéral utilisés dans le A.
-    {time:"10 min",title:"C. Résistance jambes unilatérale",tag:"Résistance",kind:"accessory",
-     text:deload?"Deload : bouger proprement, rien de plus.":"Résistance musculaire via unilatéral — moins de fatigue systémique que les squats bilatéraux après un bloc lourd.",
+    {time:"10 min",title:"C. Densité jambes",tag:"Résistance",kind:"accessory",
+     text:deload?"Deload : seulement bouger proprement.":"Bloc spécifique : tolérer les jambes qui brûlent sans perdre la technique.",
      exercises:[
-       fpEx("C1. Bulgarian Split Squat",deload?"2×8/jambe":week>=4?"4×8/jambe":"3×10/jambe",deload?"poids du corps":week>=3?"50-60 lb / main":"40-50 lb / main","0:45 avant C2","Amplitude propre, genou stable. Tolère la brûlure sans perdre la technique."),
-       fpEx("C2. Box Step-up",deload?"2×10":"3×15/jambe",deload?"poids du corps":"20-35 lb / main","0:45 après C2","Rythme constant, genou stable. La densité vient du volume, pas de la vitesse.")
+       fpEx("C1. Front Squat léger densité",deload?"2×8":"5×10",deload?"115 lb":week>=3?"145-165 lb":"135-155 lb","0:45","Respiration contrôlée. Pas d'échec."),
+       fpEx("C2. Box Step-up",deload?"2×10":"3×15/jambe",deload?"poids du corps":"20-35 lb / main","0:45","Rythme constant, genou stable.")
      ]},
 
     {time:deload?"6 min":"8 min",title:"D. Conditioning jambes court",tag:"Conditioning",kind:"wod",
@@ -115,24 +110,20 @@ function forcePerformanceBlocks(day,week){
     {time:"16 min",title:"A. Power clean force-vitesse",tag:"Haltéro",kind:"main",
      exercises:[fpEx("Power Clean",p.clean,p.cleanLoad,peak?"2:00-2:30":"1:30-2:00","Vitesse et réception propre. Zéro grind. Si tu tires avec les bras, baisse.")]},
 
-    // CORRECTION V48.7 : bench technique 2e session (fréquence 2x/semaine)
-    {time:"9 min",title:"B. Bench technique (2e session semaine)",tag:"Force",kind:"accessory",
-     exercises:[fpEx("Bench press technique",deload?"2×5 léger":peak?"4×2 lourd":"3×4",deload?"185 lb":peak?"235-245 lb":week>=3?"215-225 lb":"200-215 lb","1:30-2:00","2e exposition bench. RPE 7 S1-S3, RPE 8 S4-S5. Vitesse de barre prioritaire.")]},
-
-    {time:"12 min",title:"C. Press force vertical",tag:"Force",kind:"accessory",
+    {time:"12 min",title:"B. Press force",tag:"Force",kind:"accessory",
      exercises:[fpEx("Strict Press",p.press,p.pressLoad,heavy?"2:15":"1:45-2:00","Force verticale. Gainage dur. Pas de compensation lombaire.")]},
 
-    {time:"12 min",title:"D. Skill muscle-up",tag:"Skill",kind:"accessory",
+    {time:"12 min",title:"C. Skill muscle-up",tag:"Skill",kind:"accessory",
      text:"Qualité stricte. Ce bloc prépare les muscle-ups sans te détruire les coudes.",
      exercises:[
        fpEx("C1. Chest-to-Bar Pull-up / Pull-up strict",deload?"3×4 facile":peak?"4×3":"5×4-6","poids du corps","0:45 avant C2","Tirage haut. Stop avant la perte de forme."),
        fpEx("C2. Ring Dip strict",deload?"3×5 facile":peak?"4×3":"5×5-6",deload?"poids du corps":heavy?"+20 à +35 lb":"+10 à +25 lb","1:15 après C2","Épaules basses. Amplitude propre.")
      ]},
 
-    {time:deload?"6 min":"10 min",title:"E. Conditioning technique",tag:"Conditioning",kind:"wod",
+    {time:deload?"6 min":"10 min",title:"D. Conditioning technique",tag:"Conditioning",kind:"wod",
      text:(deload?"SkiErg 6 min facile.":"EMOM 10 : min 1 = 2 power cleans légers ; min 2 = 6 burpees contrôlés.")+" "+p.wodNote+". Le but est technique sous fatigue légère."},
 
-    {time:"5 min",title:"F. Mobilité",tag:"Mobilité",kind:"mobility",
+    {time:"5 min",title:"E. Mobilité",tag:"Mobilité",kind:"mobility",
      text:"Front rack stretch 1 min + lat stretch 1 min/côté + wrist stretch 1 min."}
   ];
 
@@ -171,11 +162,10 @@ window.COACH_BERTIN_PROGRAMS.force_performance.getWodText = function(day, week){
 };
 
 window.COACH_BERTIN_PROGRAMS.force_performance.cycleRules = [
-  "Objectif phase 3 : bench 300 lb et back squat 285 lb. Force avant conditionnement.",
-  "Bench 2x/semaine : lundi lourd, jeudi technique. La fréquence fait la différence.",
+  "Objectif phase 3 : force d'abord, conditionnement ensuite.",
   "Aucun WOD long : les conditionings servent le cycle, ils ne le dominent pas.",
   "Aucun échec sur bench, squat, clean ou press.",
-  "RPE 9 maximum sur les semaines lourdes. RPE 10 = erreur de gestion.",
+  "RPE 9 maximum sur les semaines lourdes; RPE 10 = erreur de gestion.",
   "Si le bas du dos ou les coudes deviennent sensibles : réduire le volume accessoire avant de toucher au mouvement principal."
 ];
 
