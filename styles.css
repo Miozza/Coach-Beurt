@@ -1750,7 +1750,7 @@ label {
 
 
 /* ═══════════════════════════════════════════
-   V46.6 — iPhone plein écran / largeur utile maximale
+   V46.7 — iPhone plein écran / largeur utile maximale
    ═══════════════════════════════════════════ */
 @media (max-width: 600px) {
   .app {
@@ -1825,5 +1825,104 @@ label {
 
   .pc-ex-name {
     font-size: 22px;
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+   V46.7 — Onglet iPhone full bleed réel
+   Objectif : utiliser 100% de l'écran, comme l'onglet WOD
+   ═══════════════════════════════════════════ */
+#phoneView.view-active {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding-left: 0;
+  padding-right: 0;
+}
+
+#phoneView .phone-toolbar {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: max(2px, env(safe-area-inset-left, 0px));
+  padding-right: max(2px, env(safe-area-inset-right, 0px));
+}
+
+#phoneView .phone-wod {
+  width: 100vw;
+  max-width: 100vw;
+  padding-left: max(2px, env(safe-area-inset-left, 0px));
+  padding-right: max(2px, env(safe-area-inset-right, 0px));
+  margin-left: 0;
+  margin-right: 0;
+  gap: 6px;
+}
+
+#phoneView .pc {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  border-radius: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+#phoneView .session-entry {
+  width: calc(100vw - 4px);
+  max-width: calc(100vw - 4px);
+  margin-left: 2px;
+  margin-right: 2px;
+  border-radius: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+#phoneView .pc-block-title {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+#phoneView .pc-exercise,
+#phoneView .sf-card {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+@media (max-width: 600px) {
+  body:has(#phoneView.view-active) .app {
+    max-width: none;
+    width: 100vw;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .topnav {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  #phoneView .pc-day-title {
+    font-size: 38px;
+  }
+
+  #phoneView .pc-wod-text,
+  #phoneView .pc-plain-text,
+  #phoneView .rules-list li {
+    font-size: 18px;
+  }
+
+  #phoneView .pc-ex-name {
+    font-size: 24px;
+  }
+
+  #phoneView .pc-ex-label {
+    font-size: 16px;
+  }
+
+  #phoneView .pc-ex-value {
+    font-size: 21px;
   }
 }
