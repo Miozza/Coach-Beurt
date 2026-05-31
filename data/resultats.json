@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "version": "V46.5",
+    "date": "2026-05-31",
+    "time": "12:27:08",
+    "semaine": 1,
+    "jour": "lundi",
+    "focus": "Épaules 3D + Triceps — Phase 1",
+    "resultats": {
+      "Strict Press": {
+        "load": "116",
+        "reps": "10",
+        "rpe": "8"
+      },
+      "Lateral Raise câble bas": {
+        "load": "15",
+        "reps": "18",
+        "rpe": "8"
+      },
+      "Rear Delt Fly câble bas": {
+        "load": "15",
+        "reps": "18",
+        "rpe": "8"
+      },
+      "Triceps Rope Pushdown": {
+        "load": "60",
+        "reps": "14",
+        "rpe": "8"
+      },
+      "Face Pull": {
+        "load": "60",
+        "reps": "18",
+        "rpe": "8"
+      },
+      "wod_D. WOD": {
+        "result": "4 rounds",
+        "rpe": "8",
+        "note": "Test repo"
+      }
+    }
+  }
+]
