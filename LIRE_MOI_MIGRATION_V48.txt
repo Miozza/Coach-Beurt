@@ -1,0 +1,33 @@
+Coach Bertin V48.0 — Refonte architecture sans changement d'interface
+
+À remplacer dans GitHub :
+- index.html
+- app.js
+- styles.css
+- manifest.json
+- service-worker.js
+- le dossier programs/ complet (incluant config.js et workouts.js)
+
+Ne pas écraser / ne pas supprimer :
+- data/resultats.json
+- data/charges.js si tu l'as déjà créé
+- charges.js à la racine tant que tu ne l'as pas déplacé
+
+Nouvelle logique :
+- programs/ contient les fichiers de programmes.
+- data/resultats.json reste le journal des séances.
+- data/charges.js devient l'emplacement logique des charges.
+- Par compatibilité, si data/charges.js n'existe pas encore, l'app essaie encore de charger charges.js à la racine.
+
+Migration recommandée pour les charges :
+1. Dans GitHub, copie le contenu de charges.js.
+2. Crée data/charges.js avec le même contenu.
+3. Quand l'app fonctionne avec data/charges.js, tu peux garder charges.js à la racine par sécurité ou le retirer plus tard.
+
+Important :
+Cette version ne modifie plus charges.js automatiquement après une séance. Les séances vont dans data/resultats.json.
+
+Architecture V48.0 :
+- app.js ne contient plus les blocs détaillés des séances.
+- programs/config.js contient les mouvements/jours/banques WOD.
+- programs/workouts.js contient la construction détaillée des entraînements.
