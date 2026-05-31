@@ -1,5 +1,5 @@
-// Coach Bertin V45
-var APP_VERSION = "V45";
+// Coach Bertin V46
+var APP_VERSION = "V46.4";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -102,8 +102,8 @@ var wodBanks = {
   lowimpact:    ["10 min bike zone 2","10 min row zone 2","AMRAP facile : 8 cal row + 8 air squats + 8 ring rows"]
 };
 
-var KEY       = "coachBertinV45";
-var CHARGE_KEY= "coachBertinCustomChargesV45";
+var KEY       = "coachBertinV46";
+var CHARGE_KEY= "coachBertinCustomChargesV46";
 var TOKEN_KEY = "coachBertinGithubToken";
 var DAYS_ORDER= ["lundi","mardi","jeudi","vendredi"];
 
@@ -142,7 +142,7 @@ var state = {
   trainingMaxPct: 0.925,
   cycle: { goal:"shoulders3d" },
   movementRefs: copy(PRELOADED_REFS),
-  // Nouveau V45 : suivi RPE par mouvement pour progression automatique
+  // Nouveau V46 : suivi RPE par mouvement pour progression automatique
   rpeHistory: {},        // { "mvKey__range": [rpe1, rpe2, rpe3] } — 3 dernières séances
   sessionCount: {},      // { "lundi": 2, "mardi": 1, ... } — séances complétées par jour cette semaine
   completedDays: [],     // ["lundi", "mardi"] — jours complétés cette semaine
@@ -268,48 +268,189 @@ function cleanLine(s){return String(s||"").replace(/\s+/g," ").trim();}
 // ─── Programme épaules 3D ────────────────────────────────────────────────────
 
 function shouldersWeekPlan(week){
-  return({1:{label:"S1 Base",note:"Qualité, amplitude complète, aucun échec.",main:"4 x 10",mainRest:"2:00",wodNote:"Pacing propre"},2:{label:"S2 Volume",note:"Un peu plus de volume ou de densité.",main:"5 x 8-10",mainRest:"2:00",wodNote:"Transitions plus courtes"},3:{label:"S3 Intensité",note:"Un peu plus lourd, jamais sale.",main:"5 x 8",mainRest:"2:15",wodNote:"Fort mais pas redline"},4:{label:"S4 Deload",note:"Réduis le volume, récupère les tendons.",main:"3 x 10 léger",mainRest:"1:45",wodNote:"Facile, technique"}})[week]||{label:"S1",note:"",main:"4 x 10",mainRest:"2:00",wodNote:""};
+  return({
+    1:{label:"S1 Base",      note:"Qualité, amplitude complète, aucun échec. Apprendre les positions câble.",main:"4 x 10",     mainRest:"2:00",wodNote:"Pacing propre"},
+    2:{label:"S2 Technique", note:"Même qualité, légère augmentation densité. Câble bas : sentir la tension en bas.",main:"5 x 8-10",  mainRest:"2:00",wodNote:"Transitions plus courtes"},
+    3:{label:"S3 Volume",    note:"Volume augmente. +5 lb strict press. Superset plus serrés. Rappel jeudi → 3×20.",main:"5 x 10",    mainRest:"2:00",wodNote:"Modéré, épaules déjà fatiguées"},
+    4:{label:"S4 Surcharge", note:"Semaine la plus volumineuse. Densité maximale. Technique parfaite.",main:"5 x 8",     mainRest:"2:15",wodNote:"Fort mais pas redline"},
+    5:{label:"S5 Intensité", note:"Charges les plus lourdes du cycle. Volume réduit. Qualité avant tout.",main:"4 x 8 lourd",mainRest:"2:30",wodNote:"Fort mais propre"},
+    6:{label:"S6 Deload",    note:"Deload actif. -40% volume, -20% charge. Récupérer les tendons.",main:"3 x 10 léger",mainRest:"1:45",wodNote:"Facile, technique"}
+  })[week]||{label:"S1",note:"",main:"4 x 10",mainRest:"2:00",wodNote:""};
 }
 function ex(name,format,load,rest,note){return{name:name,format:format,load:charge(name,load||"—"),rest:rest||"—",note:note||""};}
 function exFixed(name,format,load,rest,note){return{name:name,format:format,load:load||"—",rest:rest||"—",note:note||""};}
 
 function shouldersBlocks(day,week){
   var p=shouldersWeekPlan(week);
+  var isDeload=week===6;
+  var isHeavy=week>=4;
+
+  // ── LUNDI : Push principal + Épaules 3D ──────────────────────────────────
   if(day==="lundi")return[
-    {time:"8 min",title:"Warm-up ciblé",tag:"Préparation",kind:"warmup",text:"Row/Bike facile 3 min + PVC Pass Through 2 x 10 + Band Pull Apart 2 x 20 + Scap Push-up 2 x 10 + montée strict press : barre x10, 40% x5, 55% x5."},
-    {time:"14 min",title:"A. Mouvement principal",tag:"Force",kind:"main",exercises:[exFixed("Strict Press",p.main,week===1?"115 lb":week===2?"120 lb":week===3?"125 lb":"95-105 lb",p.mainRest,"Sous-maximal. Stop si compensation lombaire.")]},
-    {time:"11 min",title:"B. Superset épaules",tag:"Superset",kind:"accessory",text:"Alterner B1 puis B2. Repos seulement après B2.",exercises:[ex("B1. Lateral Raise",week===4?"2-3 x 15-20":"4 x 15-20","25 lb","0:30 avant B2","Contrôle, pas d'élan."),ex("B2. Rear Delt Fly",week===4?"2-3 x 15-20":"4 x 15-20","25 lb","0:60 après B2","Arrière d'épaule, épaules basses.")]},
-    {time:"11 min",title:"C. Superset triceps / santé",tag:"Superset",kind:"accessory",text:"Alterner C1 puis C2. Repos seulement après C2.",exercises:[ex("C1. Triceps Rope Pushdown",week===4?"2-3 x 12-15":"4 x 12-15","70 lb","0:30 avant C2","Extension complète sans douleur coude."),ex("C2. Face Pull",week===4?"2-3 x 15-20":"4 x 15-20","70 lb","0:60 après C2","Tire vers les yeux, rotation externe.")]},
-    {time:"8 min",title:"D. WOD",tag:"Conditioning",kind:"wod",text:"AMRAP 8 : 8 burpees contrôlés + 10 cal row + 12 sit-ups. "+p.wodNote+". Pacing modéré : épaules déjà fatiguées."},
-    {time:"0-3 min",title:"E. Optionnel",tag:"Bonus",kind:"bonus",text:"Band Pull Apart 2 x 30."},
-    {time:"5 min",title:"F. Mobilité",tag:"Mobilité",kind:"mobility",text:"Doorway Pec Stretch 2 min + Lat Stretch sur rig 2 min + Triceps Overhead Stretch 1 min."}
+    {time:"8 min",title:"Warm-up ciblé",tag:"Préparation",kind:"warmup",
+     text:"Row/Bike facile 3 min + PVC Pass Through 2×10 + Band Pull Apart 2×20 + Scap Push-up 2×10 + montée strict press : barre ×10, 40% ×5, 55% ×5."},
+
+    {time:"14 min",title:"A. Mouvement principal",tag:"Force",kind:"main",
+     exercises:[exFixed("Strict Press",p.main,
+       week===1?"115 lb":week===2?"120 lb":week===3?"125 lb":week===4?"130 lb":week===5?"135 lb":"100 lb",
+       p.mainRest,
+       "RPE 7-8. Sous-maximal. Stop si compensation lombaire.")]},
+
+    // B. Superset épaules — câble bas les deux
+    {time:"12 min",title:"B. Superset épaules — câble bas",tag:"Superset",kind:"accessory",
+     text:"Câble réglé au plus bas. Alterner B1 → B2. Repos seulement après B2. RPE 8 sur les deux (2 reps en réserve).",
+     exercises:[
+       exFixed("B1. Lateral Raise câble bas",isDeload?"2×15":"4×15-20","15-20 lb","0:30 avant B2",
+         "Tension constante en bas du câble = meilleure activation. Arrêt 2 reps avant l'échec."),
+       exFixed("B2. Rear Delt Fly câble bas",isDeload?"2×15":"4×15-20","15-20 lb","1:00 après B2",
+         "Câble à hauteur de hanche, tirer vers l'arrière. Épaules basses. RPE 8.")
+     ]},
+
+    // C. Superset triceps — tout au câble
+    {time:"12 min",title:"C. Superset triceps — câble",tag:"Superset",kind:"accessory",
+     text:"Alterner C1 → C2. Repos seulement après C2. RPE 8 sur les deux.",
+     exercises:[
+       ex("C1. Triceps Rope Pushdown",isDeload?"2-3×12-15":"4×12-15","70 lb","0:30 avant C2",
+         "Câble haut. Extension complète. RPE 8 — 2 reps en réserve. Coude fixe."),
+       ex("C2. Face Pull",isDeload?"2-3×15-20":"4×15-20","70 lb","1:00 après C2",
+         "Câble à hauteur des yeux. Tire vers le visage, rotation externe en fin. RPE 8.")
+     ]},
+
+    {time:"8 min",title:"D. WOD",tag:"Conditioning",kind:"wod",
+     text:"AMRAP 8 : 8 burpees contrôlés + 10 cal row + 12 sit-ups. "+p.wodNote+". Pacing modéré — épaules déjà fatiguées."},
+
+    {time:"0-3 min",title:"E. Optionnel",tag:"Bonus",kind:"bonus",
+     text:"Band Pull Apart 2×30 ou câble Lateral Raise léger 1×20 chaque bras."},
+
+    {time:"5 min",title:"F. Mobilité",tag:"Mobilité",kind:"mobility",
+     text:"Doorway Pec Stretch 2 min + Lat Stretch sur rig 2 min + Triceps Overhead Stretch 1 min."}
   ];
+
+  // ── MARDI : Pull principal + Posture ─────────────────────────────────────
   if(day==="mardi")return[
-    {time:"8 min",title:"Warm-up ciblé",tag:"Préparation",kind:"warmup",text:"Row facile 3 min + Open Book 6/côté + Cat-Cow 10 reps + Scap Ring Row 2 x 8 + Band Face Pull 2 x 20 + 2 séries progressives de chest row."},
-    {time:"13 min",title:"A. Mouvement principal",tag:"Dos",kind:"main",exercises:[ex("Chest Supported Row",week===1?"4 x 10":week===2?"5 x 10":week===3?"4 x 8":"3 x 10 léger",week===3?"125 lb":"115 lb","1:45-2:00","Tirage propre, pas de swing.")]},
-    {time:"11 min",title:"B. Superset arrière d'épaule",tag:"Superset",kind:"accessory",text:"Alterner B1 puis B2. Priorité posture.",exercises:[ex("B1. Rear Delt Fly",week===4?"2-3 x 15":"4 x 15-20","25 lb","0:30 avant B2","Bras longs, trapèzes calmes."),ex("B2. Face Pull",week===4?"2-3 x 15":"4 x 15-20","70 lb","0:60 après B2","Finition en rotation externe.")]},
-    {time:"9 min",title:"C. Superset scapulas",tag:"Posture",kind:"accessory",text:"Contrôle lent.",exercises:[ex("C1. Trap-3 Raise",week===4?"2 x 12":"3 x 15","léger","0:30 avant C2","Pouce vers le haut, trap inférieur."),ex("C2. Ring Row Strict",week===4?"2 x 8":"3 x 10","poids du corps","0:60 après C2","Corps gainé, poitrine aux anneaux.")]},
-    {time:"10 min",title:"D. WOD",tag:"Conditioning",kind:"wod",text:"EMOM 10 : min 1 = 12 cal row ; min 2 = 10 ring rows stricts. "+p.wodNote+"."},
-    {time:"0-4 min",title:"E. Optionnel",tag:"Bonus",kind:"bonus",text:"Farmer Carry 2-3 x 40 m lourd mais propre."},
-    {time:"5 min",title:"F. Mobilité",tag:"Mobilité",kind:"mobility",text:"Child Pose Lat Stretch 2 min + Open Book lent 1 min/côté + Neck/Trap Stretch léger 1 min."}
+    {time:"8 min",title:"Warm-up ciblé",tag:"Préparation",kind:"warmup",
+     text:"Row facile 3 min + Open Book 6/côté + Cat-Cow 10 reps + Scap Ring Row 2×8 + Band Face Pull 2×20 + 2 séries progressives de chest row."},
+
+    {time:"13 min",title:"A. Mouvement principal",tag:"Dos",kind:"main",
+     exercises:[ex("Chest Supported Row",
+       week===1?"4×10":week===2?"5×10":week===3?"4×8":week===4?"5×8":week===5?"4×6":"3×10 léger",
+       week>=3&&week<=5?"125 lb":"115 lb","1:45-2:00",
+       "RPE 8. Tirage propre, pas de swing. Omoplate rétractée en haut.")]},
+
+    // B. Superset rear delt — câble bas
+    {time:"12 min",title:"B. Superset arrière épaule — câble bas",tag:"Superset",kind:"accessory",
+     text:"Câble au plus bas. Alterner B1 → B2. Priorité posture. RPE 8 sur les deux.",
+     exercises:[
+       exFixed("B1. Rear Delt Fly câble bas",isDeload?"2-3×15":"4×15-20","15-20 lb","0:30 avant B2",
+         "Meilleure tension que les haltères. Bras longs, trapèzes calmes. RPE 8."),
+       ex("B2. Face Pull",isDeload?"2-3×15":"4×15-20","70 lb","1:00 après B2",
+         "Câble à hauteur des yeux. Finition en rotation externe. RPE 8.")
+     ]},
+
+    // C. Superset scapulas
+    {time:"9 min",title:"C. Superset scapulas",tag:"Posture",kind:"accessory",
+     text:"Contrôle lent. Connexion musculaire prioritaire sur le poids.",
+     exercises:[
+       ex("C1. Trap-3 Raise",isDeload?"2×12":"3×15","léger","0:30 avant C2",
+         "Câble ou haltère léger. Pouce vers le haut, trap inférieur activé. RPE 7."),
+       ex("C2. Ring Row Strict",isDeload?"2×8":"3×10","poids du corps","1:00 après C2",
+         "Corps gainé, poitrine aux anneaux. RPE 8.")
+     ]},
+
+    {time:"10 min",title:"D. WOD",tag:"Conditioning",kind:"wod",
+     text:"EMOM 10 : min 1 = 12 cal row ; min 2 = 10 ring rows stricts. "+p.wodNote+"."},
+
+    {time:"0-4 min",title:"E. Optionnel",tag:"Bonus",kind:"bonus",
+     text:"Farmer Carry 2-3×40 m lourd mais propre."},
+
+    {time:"5 min",title:"F. Mobilité",tag:"Mobilité",kind:"mobility",
+     text:"Child Pose Lat Stretch 2 min + Open Book lent 1 min/côté + Neck/Trap Stretch léger 1 min."}
   ];
+
+  // ── JEUDI : Jambes + Rappel épaules câble (volume augmenté S3+) ───────────
   if(day==="jeudi")return[
-    {time:"9 min",title:"Warm-up ciblé",tag:"Préparation",kind:"warmup",text:"Bike/Row facile 3 min + Ankle Rocks 10/côté + World's Greatest Stretch 5/côté + Glute Bridge 2 x 15 + Goblet Squat léger 2 x 10 + montée front squat : barre x8, 40% x5, 55% x5, 70% x3."},
-    {time:"15 min",title:"A. Mouvement principal",tag:"Jambes",kind:"main",exercises:[exFixed("Front Squat",week===1?"5 x 5":week===2?"5 x 5":week===3?"5 x 4":"3 x 5 léger",week===1?"165 lb":week===2?"175 lb":week===3?"185 lb":"135-145 lb","2:00","Dos protégé, aucune tentative héroïque.")]},
-    {time:"11 min",title:"B. Superset jambes",tag:"Superset",kind:"accessory",text:"Alterner B1 puis B2.",exercises:[ex("B1. Bulgarian Split Squat",week===4?"2 x 8/jambe":"3 x 10/jambe","50 lb / main","0:30 avant B2","Amplitude propre, genou stable."),ex("B2. Standing Calf Raise",week===4?"2 x 15":"3 x 20","25 lb","0:60 après B2","Pause en haut, étirement en bas.")]},
-    {time:"8 min",title:"C. Rappel épaules court",tag:"Pump",kind:"accessory",text:"Rappel rapide.",exercises:[ex("C1. Lateral Raise",week===4?"2 x 15":"3 x 20","20-25 lb","0:30 avant C2","Léger, propre."),ex("C2. Face Pull",week===4?"2 x 15":"3 x 20","60-70 lb","0:45 après C2","Posture et arrière d'épaule.")]},
-    {time:"9 min",title:"D. WOD",tag:"Conditioning",kind:"wod",text:"For time 21-15-9 : Wall Ball 14 lb + Cal Row. "+p.wodNote+". Cap 9 min."},
-    {time:"0-3 min",title:"E. Optionnel",tag:"Bonus",kind:"bonus",text:"Reverse Sled Drag 3 min continu, léger à modéré."},
-    {time:"5 min",title:"F. Mobilité",tag:"Mobilité",kind:"mobility",text:"Couch Stretch 1 min/côté + Ankle Stretch contre mur 1 min/côté + Hamstring Stretch 1 min total."}
+    {time:"9 min",title:"Warm-up ciblé",tag:"Préparation",kind:"warmup",
+     text:"Bike/Row facile 3 min + Ankle Rocks 10/côté + World's Greatest Stretch 5/côté + Glute Bridge 2×15 + Goblet Squat léger 2×10 + montée front squat : barre ×8, 40% ×5, 55% ×5, 70% ×3."},
+
+    {time:"15 min",title:"A. Mouvement principal",tag:"Jambes",kind:"main",
+     exercises:[exFixed("Front Squat",
+       week===1?"5×5":week===2?"5×5":week===3?"5×4":week===4?"5×4":week===5?"5×3":"3×5 léger",
+       week===1?"165 lb":week===2?"175 lb":week===3?"185 lb":week===4?"190 lb":week===5?"195 lb":"140 lb",
+       "2:00","RPE 8. Dos protégé, aucune tentative héroïque.")]},
+
+    {time:"11 min",title:"B. Superset jambes",tag:"Superset",kind:"accessory",
+     text:"Alterner B1 → B2.",
+     exercises:[
+       ex("B1. Bulgarian Split Squat",isDeload?"2×8/jambe":"3×10/jambe","50 lb / main","0:30 avant B2",
+         "Amplitude propre, genou stable. RPE 8."),
+       ex("B2. Standing Calf Raise",isDeload?"2×15":"3×20","25 lb","1:00 après B2",
+         "Pause en haut, étirement en bas. RPE 8.")
+     ]},
+
+    // C. Rappel épaules câble — volume augmenté à partir S3
+    {time:week>=3&&!isDeload?"10 min":"8 min",
+     title:"C. Rappel épaules câble",tag:"Volume",kind:"accessory",
+     text:"Rappel câble bas. Volume augmente à S3 pour atteindre le MAV semaine. RPE 8.",
+     exercises:[
+       exFixed("C1. Lateral Raise câble bas",
+         isDeload?"2×15":week>=3?"3×20":"3×15","15-20 lb","0:30 avant C2",
+         "Câble bas = tension en bas du mouvement. Arrêt 2 reps avant l'échec. RPE 8."),
+       ex("C2. Face Pull",
+         isDeload?"2×15":week>=3?"3×20":"3×15","60-70 lb","1:00 après C2",
+         "Câble à hauteur des yeux. Posture et arrière d'épaule. RPE 8.")
+     ]},
+
+    {time:"9 min",title:"D. WOD",tag:"Conditioning",kind:"wod",
+     text:"For time 21-15-9 : Wall Ball 14 lb + Cal Row. "+p.wodNote+". Cap 9 min."},
+
+    {time:"0-3 min",title:"E. Optionnel",tag:"Bonus",kind:"bonus",
+     text:"Reverse Sled Drag 3 min continu, léger à modéré."},
+
+    {time:"5 min",title:"F. Mobilité",tag:"Mobilité",kind:"mobility",
+     text:"Couch Stretch 1 min/côté + Ankle Stretch contre mur 1 min/côté + Hamstring Stretch 1 min total."}
   ];
+
+  // ── VENDREDI : Haltéro + Giant set épaules câble augmenté ────────────────
   return[
-    {time:"10 min",title:"Warm-up ciblé",tag:"Préparation",kind:"warmup",text:"Row facile 3 min + Band Pull-Apart 2 x 20 + Wrist Stretch 1 min + Front Rack Elbow Rotations 10 reps + Lat Stretch 1 min/côté + Tall Muscle Clean 2 x 5 + High Pull 2 x 5 + montée power clean : barre x5, 40% x3, 55% x3, 65% x2."},
-    {time:"14 min",title:"A. Technique haltéro",tag:"Haltéro",kind:"main",exercises:[exFixed("Power Clean",week===1?"6 x 3":week===2?"7 x 3":week===3?"8 x 2":"5 x 2 léger",week===1?"155 lb":week===2?"165 lb":week===3?"175 lb":"135 lb","1:30-2:00","Vitesse et réception propre. Pas de grind.")]},
-    {time:"8 min",title:"B. Giant set épaules 3D",tag:"Giant set",kind:"accessory",text:"Enchaîner les 3, puis repos.",exercises:[ex("B1. Lateral Raise",week===4?"2 rounds x 15":"3 rounds x 15","20-25 lb","—","Rappel léger."),ex("B2. Rear Delt Fly",week===4?"2 rounds x 15":"3 rounds x 15","25 lb","—","Arrière d'épaule."),ex("B3. Face Pull",week===4?"2 rounds x 15":"3 rounds x 15","60-70 lb","0:75 après B3","Scapulas propres.")]},
-    {time:"5 min",title:"C. Triceps",tag:"Accessoire",kind:"accessory",exercises:[ex("Overhead Rope Extension",week===4?"2 x 12":"3 x 15","50-60 lb","0:60","Longue portion du triceps.")]},
-    {time:"12 min",title:"D. WOD",tag:"Conditioning",kind:"wod",text:"AMRAP 12 : 6 power cleans légers + 12 wall balls 14 lb + 12 cal row. "+p.wodNote+"."},
-    {time:"0-3 min",title:"E. Optionnel",tag:"Bonus",kind:"bonus",text:"Farmer Carry 2 x 40 m."},
-    {time:"5 min",title:"F. Mobilité",tag:"Mobilité",kind:"mobility",text:"Lat Stretch 2 min + Front Rack Stretch 1 min + PVC Overhead Hold 1 min + Wrist Stretch 1 min."}
+    {time:"10 min",title:"Warm-up ciblé",tag:"Préparation",kind:"warmup",
+     text:"Row facile 3 min + Band Pull-Apart 2×20 + Wrist Stretch 1 min + Front Rack Elbow Rotations 10 reps + Lat Stretch 1 min/côté + Tall Muscle Clean 2×5 + High Pull 2×5 + montée power clean : barre ×5, 40% ×3, 55% ×3, 65% ×2."},
+
+    {time:"14 min",title:"A. Technique haltéro",tag:"Haltéro",kind:"main",
+     exercises:[exFixed("Power Clean",
+       week===1?"6×3":week===2?"7×3":week===3?"8×2":week===4?"8×2":week===5?"6×2":"5×2 léger",
+       week===1?"155 lb":week===2?"165 lb":week===3?"175 lb":week===4?"180 lb":week===5?"185 lb":"135 lb",
+       "1:30-2:00","RPE 7-8. Vitesse et réception propre. Pas de grind.")]},
+
+    // B. Giant set épaules 3D — tout au câble, volume augmenté S3+
+    {time:week>=3&&!isDeload?"10 min":"8 min",
+     title:"B. Giant set épaules 3D — câble",tag:"Giant set",kind:"accessory",
+     text:"Câble bas pour B1+B2, câble à hauteur yeux pour B3. Enchaîner les 3 sans pause, repos après B3. RPE 8 sur chaque exercice.",
+     exercises:[
+       exFixed("B1. Lateral Raise câble bas",
+         isDeload?"2 rounds×15":week>=3?"3 rounds×15-20":"3 rounds×15","15-20 lb","—",
+         "Tension en bas = stretch del latéral. RPE 8."),
+       exFixed("B2. Rear Delt Fly câble bas",
+         isDeload?"2 rounds×15":week>=3?"3 rounds×15-20":"3 rounds×15","15-20 lb","—",
+         "Arrière d'épaule, résistance constante vs haltère. RPE 8."),
+       ex("B3. Face Pull",
+         isDeload?"2 rounds×15":week>=3?"3 rounds×15-20":"3 rounds×15","60-70 lb","1:15 après B3",
+         "Câble à hauteur des yeux. Scapulas propres, rotation externe. RPE 8.")
+     ]},
+
+    {time:"5 min",title:"C. Triceps",tag:"Accessoire",kind:"accessory",
+     exercises:[
+       ex("Overhead Rope Extension",isDeload?"2×12":week>=3?"3×15":"3×12","50-60 lb","1:00",
+         "Câble bas, corde derrière la tête. Longue portion triceps. RPE 8 — 2 reps en réserve.")
+     ]},
+
+    {time:"12 min",title:"D. WOD",tag:"Conditioning",kind:"wod",
+     text:"AMRAP 12 : 6 power cleans légers + 12 wall balls 14 lb + 12 cal row. "+p.wodNote+"."},
+
+    {time:"0-3 min",title:"E. Optionnel",tag:"Bonus",kind:"bonus",
+     text:"Farmer Carry 2×40 m."},
+
+    {time:"5 min",title:"F. Mobilité",tag:"Mobilité",kind:"mobility",
+     text:"Lat Stretch 2 min + Front Rack Stretch 1 min + PVC Overhead Hold 1 min + Wrist Stretch 1 min."}
   ];
 }
 function shouldersWodForDay(day){
@@ -528,7 +669,97 @@ function setupRestBar(){
 
 // ─── Saisie résultats & GitHub sync ──────────────────────────────────────────
 
-// Collecte tous les exercices nommés du WOD courant pour la saisie
+// Extrait la plage de reps cible depuis le format (ex: "4 x 15-20" → {min:15,max:20})
+// ou depuis un nombre simple (ex: "5 x 8" → {min:8,max:8})
+function parseTargetReps(format, repsHint){
+  // Chercher une plage "X-Y" dans le format
+  var rangeMatch = String(format||"").match(/(\d+)\s*[–\-]\s*(\d+)/);
+  if(rangeMatch) return {min:Number(rangeMatch[1]), max:Number(rangeMatch[2])};
+  // Chercher un nombre simple après "x" ou "×"
+  var singleMatch = String(format||"").match(/[x×]\s*(\d+)/i);
+  if(singleMatch) return {min:Number(singleMatch[1]), max:Number(singleMatch[1])};
+  // Fallback sur repsHint
+  var r = Number(repsHint)||8;
+  return {min:r, max:r};
+}
+
+// Génère les chips de reps dynamiques autour de la cible
+// ex: cible {min:15,max:20} → chips de 13 à 23 (±2-3 de chaque côté)
+function buildRepsChips(targetMin, targetMax){
+  var margin = targetMax <= 5 ? 3 : targetMax <= 10 ? 3 : 2;
+  var lo = Math.max(1, targetMin - margin);
+  var hi = targetMax + margin;
+  var chips = [];
+  for(var i = lo; i <= hi; i++) chips.push(i);
+  return chips;
+}
+
+// ── Analyse la structure d'un WOD pour extraire mouvements + reps + couleurs ──
+function parseWodStructure(text){
+  if(!text) return null;
+  var COLORS = ['mv1','mv2','mv3','mv4'];
+  var moves = [], seen = new Set();
+
+  // On garde seulement la portion utile du WOD.
+  // Exemple : "AMRAP 8 : 8 burpees contrôlés + 10 cal row + 12 sit-ups. S1..."
+  // L'ancienne regex avalait parfois le texte après le point et perdait les sit-ups.
+  var main = String(text)
+    .replace(/^[^:]*:\s*/,'')
+    .split('.')[0]
+    .replace(/\bAMRAP\s*\d+\b/ig,'')
+    .replace(/\bEMOM\s*\d+\b/ig,'')
+    .replace(/\bFor time\b/ig,'')
+    .trim();
+
+  main.split('+').forEach(function(part){
+    part = part.trim();
+    var m = part.match(/^(\d+)\s*(?:cal\s+)?(.+)$/i);
+    if(!m) return;
+    var reps = Number(m[1]);
+    var name = m[2]
+      .replace(/\bcal\b/ig,'')
+      .replace(/\s+/g,' ')
+      .replace(/[;:,]+$/,'')
+      .trim();
+    if(reps<1||reps>60||name.length<2) return;
+    var key = name.toLowerCase();
+    if(seen.has(key)) return;
+    seen.add(key);
+    moves.push({name:name, reps:reps, color:COLORS[moves.length % COLORS.length]});
+  });
+
+  return moves.length>=2 ? moves : null;
+}
+
+function parseCapSeconds(text, fallbackMin){
+  var t = String(text||'');
+  var m = t.match(/cap\s*(\d+)\s*min/i) || t.match(/time cap\s*(\d+)\s*min/i);
+  var min = m ? Number(m[1]) : (Number(fallbackMin)||10);
+  return min*60;
+}
+
+function buildTimeOptions(expectedSec){
+  expectedSec = Number(expectedSec)||600;
+  var start = Math.max(120, expectedSec-180);
+  var end = expectedSec+120;
+  var arr=[];
+  for(var s=start; s<=end; s+=15) arr.push(s);
+  if(arr.indexOf(expectedSec)<0) arr.push(expectedSec);
+  arr.sort(function(a,b){return a-b;});
+  return arr;
+}
+
+// Estime les rounds attendus selon durée et type
+function estimateWodRounds(text, durationMin){
+  if(/emom/i.test(text)) return {min:durationMin,max:durationMin,def:durationMin};
+  if(/for time|cap/i.test(text)) return {min:1,max:1,def:1};
+  if(durationMin<=6)  return {min:2,max:4,def:3};
+  if(durationMin<=10) return {min:3,max:6,def:4};
+  if(durationMin<=15) return {min:4,max:8,def:5};
+  return {min:3,max:6,def:4};
+}
+
+// Collecte tous les exercices du WOD courant avec leur cible de reps
 function collectSessionExercises(){
   var w=buildWorkout(state.day,state.week);
   var items=[];
@@ -536,25 +767,29 @@ function collectSessionExercises(){
     if(b.kind==="warmup"||b.kind==="mobility"||b.kind==="bonus")return;
     if(b.exercises&&b.exercises.length){
       b.exercises.forEach(function(e){
-        items.push({
-          key:e.name.replace(/^[A-Z][0-9]?\.\s*/,"").trim(),
-          name:e.name,
-          suggested:e.load,
-          kind:b.kind
-        });
+        var parsed = parseTargetReps(e.format, 10);
+        items.push({key:e.name.replace(/^[A-Z][0-9]?\.\s*/,"").trim(),name:e.name,
+          suggested:e.load,format:e.format,targetMin:parsed.min,targetMax:parsed.max,kind:b.kind,isWod:false});
       });
     } else if(b.progress&&b.progress.length){
       b.progress.forEach(function(mvKey,j){
-        var reps=targetReps(j,b.kind);
-        items.push({
-          key:mvKey,
-          name:movements[mvKey].name,
+        var reps=targetReps(j,b.kind),fmt=setScheme(b.kind,j),parsed=parseTargetReps(fmt,reps);
+        items.push({key:mvKey,name:movements[mvKey].name,
           suggested:lb(suggestLoad(mvKey,progressionPct(j),reps)),
-          kind:b.kind
-        });
+          format:fmt,targetMin:parsed.min,targetMax:parsed.max,kind:b.kind,isWod:false});
       });
     } else if(b.kind==="wod"){
-      items.push({key:"wod_"+b.title,name:"WOD — "+b.title,suggested:"",kind:"wod",isWod:true});
+      var wodText=b.text||"";
+      var durMin=parseTimeToSeconds(b.time)/60;
+      var moves=parseWodStructure(wodText);
+      var rounds=estimateWodRounds(wodText,durMin);
+      items.push({
+        key:"wod_"+b.title, name:"WOD — "+b.title, suggested:"",
+        kind:"wod", isWod:true,
+        wodText:wodText, wodMoves:moves, wodRounds:rounds,
+        isAmrap:/amrap/i.test(wodText), isEmom:/emom/i.test(wodText),
+        isForTime:/for time|cap/i.test(wodText), durationMin:durMin
+      });
     }
   });
   return items;
@@ -570,32 +805,208 @@ function renderSessionEntry(){
     card.className="sf-card";
 
     if(item.isWod){
-      // Carte WOD : texte libre
-      card.innerHTML=
-        '<div class="sf-name">'+item.name+'</div>'+
-        '<div class="sf-row-2col" style="margin-top:10px">'+
-          '<div class="sf-group">'+
-            '<span class="sf-label">RÉSULTAT / ROUNDS</span>'+
-            '<input class="sf-input" data-key="'+item.key+'" data-field="result" type="text" inputmode="text" placeholder="ex: 4+8 rds"/>'+
-          '</div>'+
-          '<div class="sf-group">'+
-            '<span class="sf-label">NOTE</span>'+
-            '<input class="sf-input" data-key="'+item.key+'" data-field="note" type="text" inputmode="text" placeholder=""/>'+
-          '</div>'+
-        '</div>';
+      // ── Carte WOD intelligente V46.4 ──
+      card.innerHTML = '<div class="sf-name">'+item.name+'</div>';
+      container.appendChild(card);
+
+      var wodInner = '';
+
+      if(item.isEmom){
+        wodInner += '<div class="wod-expected">EMOM — <strong>RPE seulement</strong></div>';
+      } else if(item.isAmrap){
+        var r = item.wodRounds;
+        wodInner += '<div class="wod-expected">Résultat attendu : <strong>'+r.min+'–'+r.max+' rounds</strong></div>';
+      } else if(item.isForTime){
+        var expectedSec = parseCapSeconds(item.wodText,item.durationMin);
+        wodInner += '<div class="wod-expected">For time — temps attendu : <strong>'+formatClock(expectedSec)+'</strong></div>';
+        wodInner += '<span class="sf-label">TEMPS FINAL</span>';
+        wodInner += '<select class="sf-input" id="wod_time_'+item.key+'" data-key="'+item.key+'" data-field="result">';
+        buildTimeOptions(expectedSec).forEach(function(sec){
+          wodInner += '<option value="'+formatClock(sec)+'"'+(sec===expectedSec?' selected':'')+'>'+formatClock(sec)+'</option>';
+        });
+        wodInner += '</select>';
+        wodInner += '<input class="sf-input" data-key="'+item.key+'" data-field="note" type="text" inputmode="text" placeholder="si cap : reps complétées ou note"/>';
+      }
+
+      if(item.isAmrap && item.wodRounds.max > 1){
+        var r2 = item.wodRounds;
+        wodInner += '<span class="sf-label">ROUNDS COMPLÉTÉS</span>';
+        wodInner += '<div class="sf-chips" id="wod_rounds_'+item.key+'">';
+        for(var ri=0; ri<=r2.max+2; ri++){
+          var inRange = ri>=r2.min && ri<=r2.max;
+          wodInner += '<button type="button" class="sf-chip'+(inRange?' target':'')+'" data-round="'+ri+'">'+ri+'</button>';
+        }
+        wodInner += '</div>';
+      }
+
+      if(item.isAmrap && item.wodMoves && item.wodMoves.length){
+        wodInner += '<span class="sf-label">REPS DU DERNIER ROUND — 0 inclus pour corriger</span>';
+        item.wodMoves.forEach(function(mv, mi){
+          var maxReps = mv.reps - (mi === item.wodMoves.length-1 ? 1 : 0);
+          var hint = mi < item.wodMoves.length-1
+            ? 'si tu complètes les '+mv.reps+' → '+item.wodMoves[mi+1].name+' commence'
+            : mv.reps+' = round complet → clique +1 round à la place';
+          wodInner += '<div class="wod-mv-label '+mv.color+'">'+mv.name+' <span class="wod-mv-max">(0–'+maxReps+')</span></div>';
+          wodInner += '<div class="sf-chips" id="wod_mv_'+item.key+'_'+mi+'">';
+          for(var ri2=0; ri2<=maxReps; ri2++){
+            wodInner += '<button type="button" class="sf-chip '+mv.color+(ri2===0?' zero':'')+'" data-mv="'+mi+'" data-rep="'+ri2+'">'+ri2+'</button>';
+          }
+          wodInner += '</div>';
+          wodInner += '<div class="wod-mv-hint">'+hint+'</div>';
+        });
+      }
+
+      if(item.isAmrap){
+        wodInner += '<div class="sf-divider">— ou saisie libre —</div>';
+        wodInner += '<input class="sf-input" id="wod_free_'+item.key
+          +'" data-key="'+item.key+'" data-field="result" type="text" inputmode="text" placeholder="ex: 4 rounds + 1 burpees + 0 row + 0 sit-ups"/>';
+      } else if(item.isEmom){
+        wodInner += '<input class="sf-input" id="wod_free_'+item.key+'" data-key="'+item.key+'" data-field="result" type="hidden" value="EMOM complété"/>';
+      }
+
+      wodInner += '<input class="sf-input" id="wod_rpe_value_'+item.key+'" data-key="'+item.key+'" data-field="rpe" type="hidden" value="8"/>';
+      wodInner += '<span class="sf-label" style="margin-top:12px">RPE</span>';
+      wodInner += '<div class="sf-chips" id="wod_rpe_'+item.key+'">';
+      [6,7,8,9,10].forEach(function(n){
+        wodInner += '<button type="button" class="sf-chip'+(n===8?' active':'')+'" data-rpe="'+n+'">'+n+'</button>';
+      });
+      wodInner += '</div>';
+
+      if(!item.isForTime){
+        wodInner += '<span class="sf-label">NOTE (optionnel)</span>';
+        wodInner += '<input class="sf-input" data-key="'+item.key+'" data-field="note" type="text" inputmode="text" placeholder="ex: burpees lents, bon rythme row"/>';
+      }
+
+      wodInner += '<div class="wod-result-preview" id="wod_preview_'+item.key+'">Résultat prêt</div>';
+      card.innerHTML += wodInner;
+
+      (function(it){
+        var selectedRounds = it.isAmrap && it.wodRounds ? it.wodRounds.def : 0;
+        var selectedMvReps = {};
+        if(it.wodMoves) it.wodMoves.forEach(function(_,i){ selectedMvReps[i]=0; });
+        var selectedRpe = 8;
+
+        function updatePreview(){
+          var freeInp = document.getElementById('wod_free_'+it.key);
+          var preview = document.getElementById('wod_preview_'+it.key);
+          var rpeInp = document.getElementById('wod_rpe_value_'+it.key);
+          if(rpeInp) rpeInp.value = selectedRpe;
+          if(!preview) return;
+
+          if(it.isEmom){
+            preview.innerHTML = '<strong style="color:var(--cyan)">EMOM</strong> · RPE '+selectedRpe;
+            return;
+          }
+
+          if(it.isForTime){
+            var sel = document.getElementById('wod_time_'+it.key);
+            var val = sel ? sel.value : '';
+            preview.innerHTML = '<strong style="color:var(--cyan)">'+(val||'—')+'</strong> · RPE '+selectedRpe;
+            return;
+          }
+
+          var parts = [];
+          if(selectedRounds>0) parts.push(selectedRounds+' round'+(selectedRounds>1?'s':''));
+
+          var repParts = [];
+          if(it.wodMoves){
+            it.wodMoves.forEach(function(mv,i){
+              if(selectedMvReps[i]>0) repParts.push(selectedMvReps[i]+' '+mv.name);
+            });
+          }
+          if(repParts.length) parts.push(repParts.join(' + '));
+
+          var resultStr = parts.join(' + ');
+          if(freeInp) freeInp.value = resultStr;
+
+          var partialTotal = 0;
+          if(it.wodMoves){
+            it.wodMoves.forEach(function(mv,i){
+              if(selectedMvReps[i]>0){
+                for(var pi=0; pi<i; pi++) partialTotal += it.wodMoves[pi].reps;
+                partialTotal += selectedMvReps[i];
+              }
+            });
+          }
+
+          var totalStr = '<strong style="color:var(--cyan)">'+(resultStr||'—')+'</strong>';
+          if(partialTotal>0) totalStr += ' <span style="color:var(--muted);font-size:11px">(+'+partialTotal+' reps partielles)</span>';
+          totalStr += ' · RPE '+selectedRpe;
+          preview.innerHTML = totalStr;
+        }
+
+        var roundsEl = document.getElementById('wod_rounds_'+it.key);
+        if(roundsEl){
+          var defBtn = roundsEl.querySelector('[data-round="'+selectedRounds+'"]');
+          if(defBtn) defBtn.classList.add('active');
+          roundsEl.querySelectorAll('[data-round]').forEach(function(btn){
+            btn.addEventListener('click',function(){
+              selectedRounds = Number(btn.getAttribute('data-round'));
+              roundsEl.querySelectorAll('[data-round]').forEach(function(b){b.classList.remove('active');});
+              btn.classList.add('active');
+              updatePreview();
+            });
+          });
+        }
+
+        if(it.wodMoves){
+          it.wodMoves.forEach(function(mv,mi){
+            var mvEl = document.getElementById('wod_mv_'+it.key+'_'+mi);
+            if(!mvEl) return;
+            var zeroBtn = mvEl.querySelector('[data-rep="0"]');
+            if(zeroBtn) zeroBtn.classList.add('active');
+            mvEl.querySelectorAll('[data-mv]').forEach(function(btn){
+              btn.addEventListener('click',function(){
+                var rep = Number(btn.getAttribute('data-rep'));
+                selectedMvReps[mi]=rep;
+                mvEl.querySelectorAll('[data-mv]').forEach(function(b){b.classList.remove('active');});
+                btn.classList.add('active');
+                for(var ni=mi+1; ni<it.wodMoves.length; ni++){
+                  selectedMvReps[ni]=0;
+                  var nextEl=document.getElementById('wod_mv_'+it.key+'_'+ni);
+                  if(nextEl){
+                    nextEl.querySelectorAll('[data-mv]').forEach(function(b){b.classList.remove('active');});
+                    var z=nextEl.querySelector('[data-rep="0"]'); if(z) z.classList.add('active');
+                  }
+                }
+                updatePreview();
+              });
+            });
+          });
+        }
+
+        var timeSel = document.getElementById('wod_time_'+it.key);
+        if(timeSel) timeSel.addEventListener('change',updatePreview);
+
+        var rpeEl = document.getElementById('wod_rpe_'+it.key);
+        if(rpeEl){
+          rpeEl.querySelectorAll('[data-rpe]').forEach(function(btn){
+            btn.addEventListener('click',function(){
+              selectedRpe = Number(btn.getAttribute('data-rpe'));
+              rpeEl.querySelectorAll('[data-rpe]').forEach(function(b){b.classList.remove('active');});
+              btn.classList.add('active');
+              updatePreview();
+            });
+          });
+        }
+
+        updatePreview();
+      })(item);
+
     } else {
-      // Extraire la valeur numérique du poids suggéré (ex: "115 lb" → 115)
-      var suggestedNum=parseLoad(item.suggested)||0;
-      var suggestedDisplay=suggestedNum?suggestedNum:"";
+      var suggestedNum = parseLoad(item.suggested)||0;
+      var suggestedDisplay = suggestedNum?suggestedNum:"";
+
+      // Label cible reps pour affichage
+      var repLabel = item.targetMin===item.targetMax
+        ? item.targetMin+" reps"
+        : item.targetMin+"–"+item.targetMax+" reps";
 
       card.innerHTML=
-        // Nom + badge suggéré
         '<div class="sf-header">'+
           '<div class="sf-name">'+item.name+'</div>'+
-          (suggestedNum?'<div class="sf-badge">Suggéré : '+suggestedNum+' lb</div>':'')+
+          (suggestedNum?'<div class="sf-badge">'+suggestedNum+' lb · '+repLabel+'</div>':'')+
         '</div>'+
-
-        // ── Ligne poids : -5 | champ | +5 ──
         '<div class="sf-weight-row">'+
           '<button type="button" class="sf-adj sf-adj-minus" data-key="'+item.key+'">−5</button>'+
           '<div class="sf-weight-wrap">'+
@@ -608,16 +1019,12 @@ function renderSessionEntry(){
           '</div>'+
           '<button type="button" class="sf-adj sf-adj-plus" data-key="'+item.key+'">+5</button>'+
         '</div>'+
-
-        // ── Ligne reps + RPE ──
         '<div class="sf-row-2col">'+
-          // Reps : chips 1-20 + champ texte
           '<div class="sf-group">'+
-            '<span class="sf-label">REPS</span>'+
+            '<span class="sf-label">REPS — cible '+repLabel+'</span>'+
             '<div class="sf-chips" id="reps_'+item.key+'"></div>'+
             '<input class="sf-input sf-reps-input" data-key="'+item.key+'" data-field="reps" type="number" inputmode="numeric" placeholder="reps" style="margin-top:6px"/>'+
           '</div>'+
-          // RPE : chips 6-10
           '<div class="sf-group">'+
             '<span class="sf-label">RPE</span>'+
             '<div class="sf-chips" id="rpe_'+item.key+'"></div>'+
@@ -629,10 +1036,10 @@ function renderSessionEntry(){
     container.appendChild(card);
 
     if(!item.isWod){
-      // Boutons -5 / +5 sur le champ poids
-      var minus=card.querySelector('.sf-adj-minus');
-      var plus =card.querySelector('.sf-adj-plus');
-      var loadInp=card.querySelector('.sf-weight-input');
+      // ── Boutons -5 / +5 poids ──
+      var minus = card.querySelector('.sf-adj-minus');
+      var plus  = card.querySelector('.sf-adj-plus');
+      var loadInp = card.querySelector('.sf-weight-input');
       if(minus&&plus&&loadInp){
         minus.addEventListener('click',function(){
           var v=parseLoad(loadInp.value)||parseLoad(item.suggested)||0;
@@ -644,16 +1051,26 @@ function renderSessionEntry(){
         });
       }
 
-      // Chips reps (common CrossFit rep counts)
-      var repsChips=[1,2,3,5,6,8,10,12,15,20];
-      var repsContainer=$('reps_'+item.key);
-      var repsInp=card.querySelector('.sf-reps-input');
+      // ── Chips reps DYNAMIQUES selon la cible ──
+      var repsChips = buildRepsChips(item.targetMin, item.targetMax);
+      // Valeur par défaut = milieu de la plage cible
+      var defaultReps = Math.round((item.targetMin + item.targetMax) / 2);
+      var repsContainer = $('reps_'+item.key);
+      var repsInp = card.querySelector('.sf-reps-input');
       if(repsContainer&&repsInp){
+        // Pré-remplir avec le milieu de la plage
+        repsInp.value = defaultReps;
         repsChips.forEach(function(n){
-          var btn=document.createElement('button');
-          btn.type='button';btn.className='sf-chip';btn.textContent=n;
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          // Mettre en surbrillance toute la plage cible
+          var inTarget = n >= item.targetMin && n <= item.targetMax;
+          // Sélectionner par défaut le milieu
+          var isDefault = n === defaultReps;
+          btn.className = 'sf-chip' + (isDefault?' active':'') + (inTarget&&!isDefault?' target':'');
+          btn.textContent = n;
           btn.addEventListener('click',function(){
-            repsInp.value=n;
+            repsInp.value = n;
             repsContainer.querySelectorAll('.sf-chip').forEach(function(b){b.classList.remove('active');});
             btn.classList.add('active');
           });
@@ -661,19 +1078,19 @@ function renderSessionEntry(){
         });
       }
 
-      // Chips RPE (6 à 10)
-      var rpeChips=[6,7,8,9,10];
-      var rpeContainer=$('rpe_'+item.key);
-      var rpeInp=card.querySelector('.sf-rpe-input');
+      // ── Chips RPE (6 à 10, défaut 8) ──
+      var rpeChips = [6,7,8,9,10];
+      var rpeContainer = $('rpe_'+item.key);
+      var rpeInp = card.querySelector('.sf-rpe-input');
       if(rpeContainer&&rpeInp){
+        rpeInp.value = 8;
         rpeChips.forEach(function(n){
-          var btn=document.createElement('button');
-          btn.type='button';
-          btn.className='sf-chip'+(n===8?' active':''); // défaut 8
-          btn.textContent=n;
-          if(n===8)rpeInp.value=8; // pré-remplir RPE à 8
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'sf-chip' + (n===8?' active':'');
+          btn.textContent = n;
           btn.addEventListener('click',function(){
-            rpeInp.value=n;
+            rpeInp.value = n;
             rpeContainer.querySelectorAll('.sf-chip').forEach(function(b){b.classList.remove('active');});
             btn.classList.add('active');
           });
@@ -710,7 +1127,7 @@ function updateRefsFromResults(results){
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
         date:new Date().toLocaleDateString("fr-CA"),lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
-        rpe:Number(r.rpe)||8,note:"Saisi V45"
+        rpe:Number(r.rpe)||8,note:"Saisi V46"
       };
     }
     // Enregistrer RPE dans l'historique pour progression automatique
@@ -1165,12 +1582,12 @@ function renderWorkout(){
   if(wf)wf.textContent=w.day.focus;
 
   var deloadWarning=state.deloadAlert
-    ?'<br><strong style="color:var(--red)">⚠ RPE ÉLEVÉ DÉTECTÉ — CONSIDÈRE UN DELOAD</strong>':"";
+    ?"<br><strong style='color:var(--red)'>⚠ RPE élevé détecté — considère un deload</strong>":"";
   if(fi)fi.innerHTML=
-    "<strong style='font-family:var(--font-hud);letter-spacing:.04em'>"+dayIntention(state.day)+"</strong>"+
-    (plan?"<br><em style='color:var(--text2)'>"+plan.label+" : "+plan.note+"</em>":"")+
+    "<strong>"+dayIntention(state.day)+"</strong>"+
+    (plan?"<em>"+plan.label+" : "+plan.note+"</em>":"")+
     deloadWarning+
-    "<br><small style='color:var(--muted);font-family:var(--font-hud);font-size:10px;letter-spacing:.04em'>"+cycleRules().slice(0,3).join(" · ")+"</small>";
+    "<small>"+cycleRules().slice(0,3).join(" · ")+"</small>";
 
   if(!c)return;c.innerHTML="";
   w.blocks.forEach(function(b){
@@ -1179,9 +1596,11 @@ function renderWorkout(){
     div.className="block kind-"+b.kind;
     var inner=
       '<div class="block-header">'+
-        '<div class="block-rank '+rk.cls+'">'+rk.rank+'</div>'+
-        '<div><div class="block-title">'+b.title+'</div><div class="block-time">'+b.time+'</div></div>'+
-        '<div class="block-tag '+rk.tagCls+'">'+rk.tag+'</div>'+
+        '<div class="block-header-left"><div class="block-title">'+b.title+'</div></div>'+
+        '<div style="display:flex;align-items:center;gap:8px">'+
+          '<div class="block-tag '+rk.tagCls+'">'+rk.tag+'</div>'+
+          '<div class="block-time">'+b.time+'</div>'+
+        '</div>'+
       '</div>';
     if(b.text)inner+='<div class="block-text">'+displayChargeText(b.text)+'</div>';
     if(b.exercises&&b.exercises.length){

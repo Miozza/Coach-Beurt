@@ -122,10 +122,10 @@ body::before {
   border: 1px solid transparent;
   border-radius: 6px;
   padding: 6px 12px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  font-family: var(--font-hud);
-  letter-spacing: .06em;
+  font-family: var(--font-main);
+  letter-spacing: 0;
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
@@ -356,13 +356,13 @@ main.view-active { display: block; }
 /* ── Day pips ── */
 .day-pips { display: flex; gap: 5px; }
 .day-pip {
-  width: 28px; height: 24px;
+  width: 32px; height: 26px;
   border-radius: 5px;
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-hud);
-  font-size: 8px;
+  font-family: var(--font-main);
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: .04em;
+  letter-spacing: 0;
   background: var(--panel2);
   border: 1px solid var(--border);
   color: var(--muted);
@@ -419,7 +419,7 @@ main.view-active { display: block; }
 .rank-D { background: rgba(58,90,138,.15); border: 1px solid var(--muted); color: var(--muted); }
 
 .block-title { font-size: 13px; font-weight: 600; color: var(--white); letter-spacing: .03em; }
-.block-time  { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.block-time  { font-size: 12px; color: var(--muted); font-weight: 400; }
 .block-tag {
   margin-left: auto;
   font-family: var(--font-hud);
@@ -440,7 +440,7 @@ main.view-active { display: block; }
 /* ── Texte du bloc ── */
 .block-text {
   font-family: var(--font-main);
-  font-size: 15px;
+  font-size: 13px;
   color: var(--text);
   line-height: 1.5;
   padding: 0 14px 12px 17px;
@@ -454,12 +454,12 @@ main.view-active { display: block; }
   align-items: center;
   gap: 10px;
 }
-.exercise-name { flex: 1; font-size: 13px; font-weight: 600; color: var(--text); }
+.exercise-name { flex: 1; font-size: 18px; font-weight: 800; color: var(--text); }
 .exercise-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
-.exercise-format { font-size: 12px; color: var(--muted); }
+.exercise-format { font-size: 14px; font-weight: 600; color: var(--text2); }
 .exercise-load {
   font-family: var(--font-hud);
-  font-size: 13px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--cyan);
   white-space: nowrap;
@@ -468,11 +468,11 @@ main.view-active { display: block; }
 .exercise-load.down { color: var(--red); }
 .exercise-load.new  { color: var(--gold); }
 .exercise-note {
-  font-size: 11px;
-  color: var(--muted);
+  font-size: 13px;
+  color: var(--text2);
   padding: 4px 14px 8px 17px;
   font-style: italic;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 /* ── WOD text ── */
@@ -499,11 +499,11 @@ main.view-active { display: block; }
   padding: 12px 14px;
   font-size: 13px;
   color: var(--text);
-  line-height: 1.5;
+  line-height: 1.6;
   margin-bottom: 12px;
 }
 .notice strong { color: var(--cyan); }
-.advice { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: var(--font-hud); letter-spacing: .04em; }
+.advice { font-size: 13px; color: var(--text2); margin-top: 8px; font-family: var(--font-main); }
 
 /* ═══════════════════════════════════════
    MODE IPHONE — Hunter Mode
@@ -570,7 +570,7 @@ main.view-active { display: block; }
 /* ── Phone toolbar ── */
 .phone-toolbar {
   position: sticky;
-  top: calc(var(--nav-h) + var(--rest-h) + var(--safe-top));
+  top: calc(var(--nav-h) + var(--safe-top));
   z-index: 99;
   background: rgba(4,6,15,.97);
   border-bottom: 1px solid var(--border);
@@ -655,9 +655,10 @@ main.view-active { display: block; }
   margin-bottom: 6px;
 }
 .pc-day-sub {
-  font-size: 15px;
+  font-family: var(--font-main);
+  font-size: 16px;
   color: var(--text2);
-  letter-spacing: .04em;
+  letter-spacing: 0;
   font-weight: 600;
 }
 .pc-day-nav-hint {
@@ -697,15 +698,18 @@ main.view-active { display: block; }
 
 /* Block title dans carte */
 .pc-block-title {
-  font-family: var(--font-hud);
-  font-size: 14px;
+  font-family: var(--font-main);
+  font-size: 20px;
   font-weight: 700;
   color: var(--cyan);
-  letter-spacing: .06em;
-  margin-bottom: 14px;
+  letter-spacing: 0;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
 }
 .pc-block-title .rank-badge {
   width: 26px; height: 26px;
@@ -726,10 +730,10 @@ main.view-active { display: block; }
 
 .pc-ex-name {
   font-family: var(--font-main);
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 800;
   color: var(--white);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   overflow-wrap: anywhere;
   line-height: 1.15;
 }
@@ -737,15 +741,15 @@ main.view-active { display: block; }
 .pc-ex-row  { display: flex; justify-content: space-between; align-items: center; }
 .pc-ex-label {
   font-family: var(--font-main);
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 600;
-  color: var(--text2);
+  color: var(--text);
   letter-spacing: .08em;
 }
 .pc-ex-value {
   font-family: var(--font-main);
-  font-size: 17px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   color: var(--text);
 }
 .pc-ex-value.accent {
@@ -786,13 +790,13 @@ main.view-active { display: block; }
 /* WOD text */
 .pc-wod-text {
   font-family: var(--font-main);
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--text);
-  line-height: 1.6;
+  line-height: 1.65;
   overflow-wrap: anywhere;
 }
-.pc-plain-text { font-family: var(--font-main); font-size: 16px; color: var(--text); font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
+.pc-plain-text { font-family: var(--font-main); font-size: 17px; color: var(--text); font-weight: 500; line-height: 1.6; line-height: 1.5; overflow-wrap: anywhere; }
 
 /* Charges WOD */
 .pc-wod-charges {
@@ -816,9 +820,9 @@ main.view-active { display: block; }
 .rules-list { list-style: none; padding: 0; display: grid; gap: 6px; }
 .rules-list li {
   font-family: var(--font-main);
-  font-size: 16px;
+  font-size: 17px;
   color: var(--text);
-  line-height: 1.55;
+  line-height: 1.6;
   padding-left: 16px;
   position: relative;
 }
@@ -1597,4 +1601,149 @@ label {
   .pr-row-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
   .pr-input { font-size: 16px; padding: 6px; }
   .pr-stat-card { padding: 8px 9px; }
+}
+
+.pc .rank-badge { display: none; }
+
+/* V46 — Notice bureau : intention + règles lisibles */
+.notice strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cyan);
+  display: block;
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+.notice em {
+  font-size: 13px;
+  color: var(--text2);
+  display: block;
+  margin-bottom: 4px;
+}
+.notice small {
+  font-size: 12px;
+  color: var(--text2);
+  display: block;
+  line-height: 1.55;
+}
+
+/* V46 — Block header bureau : titre + tag + durée sur une ligne */
+.block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 14px 11px 17px;
+}
+.block-header-left { flex: 1; min-width: 0; }
+.block-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--white);
+}
+.block-time {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 400;
+  white-space: nowrap;
+  margin-left: 8px;
+}
+
+/* V46 — Pill semaines/jours : plus grands */
+.pill-row .tab {
+  font-size: 12px;
+  padding: 6px 13px;
+}
+
+/* V46 — week-progress-meta texte */
+#weekProgressLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+}
+
+/* V46.2 — Chips reps dynamiques : plage cible surlignée */
+.sf-chip.target {
+  border-color: rgba(0,212,255,.4);
+  color: var(--cyan);
+  background: rgba(0,212,255,.08);
+}
+.sf-chip.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* V46.4 — Saisie WOD intelligente */
+.wod-expected {
+  background: rgba(0,212,255,.08);
+  border: 1px solid rgba(0,212,255,.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--text2);
+  margin-bottom: 12px;
+}
+.wod-expected strong { color: var(--cyan); font-size: 13px; }
+
+.wod-mv-label {
+  font-size: 12px;
+  font-weight: 800;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.wod-mv-label.mv1 { color: #ff8c5a; }
+.wod-mv-label.mv2 { color: #4db8ff; }
+.wod-mv-label.mv3 { color: #3dd68c; }
+.wod-mv-label.mv4 { color: #c77dff; }
+.wod-mv-max { font-size: 10px; font-weight: 500; opacity: .6; }
+
+.wod-mv-hint {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 3px;
+  margin-bottom: 6px;
+  font-style: italic;
+}
+
+/* Chips colorées par mouvement */
+.sf-chip.mv1 { border-color: rgba(255,107,53,.4); color: #ff8c5a; background: rgba(255,107,53,.08); }
+.sf-chip.mv1.active { background: rgba(255,107,53,.35); border-color: #ff6b35; color: #fff; }
+.sf-chip.mv2 { border-color: rgba(30,144,255,.4); color: #4db8ff; background: rgba(30,144,255,.08); }
+.sf-chip.mv2.active { background: rgba(30,144,255,.35); border-color: #1e90ff; color: #fff; }
+.sf-chip.mv3 { border-color: rgba(61,214,140,.4); color: #3dd68c; background: rgba(61,214,140,.08); }
+.sf-chip.mv3.active { background: rgba(61,214,140,.35); border-color: #3dd68c; color: #fff; }
+.sf-chip.mv4 { border-color: rgba(199,125,255,.4); color: #c77dff; background: rgba(199,125,255,.08); }
+.sf-chip.mv4.active { background: rgba(199,125,255,.35); border-color: #c77dff; color: #fff; }
+
+.sf-divider {
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+  margin: 10px 0 8px;
+  letter-spacing: .06em;
+}
+
+.wod-result-preview {
+  background: #060e1a;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text2);
+  min-height: 38px;
+  line-height: 1.5;
+}
+
+/* V46.4 — WOD : bouton 0 pour corriger les reps partielles */
+.sf-chip.zero {
+  opacity: .85;
+}
+.sf-chip.zero.active {
+  background: rgba(155,187,216,.18);
+  border-color: var(--muted);
+  color: var(--white);
 }
