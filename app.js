@@ -1,5 +1,5 @@
-// Coach Bertin V48.9
-var APP_VERSION = "V48.9";
+// Coach Bertin V49.0
+var APP_VERSION = "V49.0";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -1083,7 +1083,7 @@ function updateRefsFromResults(results,dateStr){
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
         date:dateStr,lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
-        rpe:Number(r.rpe)||8,note:"Saisi V48.9"
+        rpe:Number(r.rpe)||8,note:"Saisi V49.0"
       };
     }
     // Enregistrer RPE dans l'historique pour progression automatique
@@ -1304,7 +1304,7 @@ document.addEventListener("visibilitychange",function(){
   }
 });
 
-// V48.9 — volontairement neutralisé.
+// V49.0 — volontairement neutralisé.
 // Les résultats ne doivent plus réécrire les charges locales ou data/charges.js.
 // - data/charges.js = configuration stable / équipement / charges de départ
 // - data/resultats.json = journal brut
@@ -1328,7 +1328,7 @@ function buildSessionPayload(results){
 }
 
 // Génère le contenu du fichier charges.js mis à jour avec les nouveaux poids
-// V48.9 — supprimé/neutralisé : l'app ne doit jamais écrire data/charges.js automatiquement.
+// V49.0 — supprimé/neutralisé : l'app ne doit jamais écrire data/charges.js automatiquement.
 // data/charges.js est une configuration stable; le niveau réel est dans data/athlete_state.json.
 function buildChargesJsContent(){ return ""; }
 async function saveChargesToGitHub(token){
@@ -1816,7 +1816,7 @@ function renderPhoneWod(){
 
 
 
-// ─── Mode séance guidé (optionnel) — V48.9 ────────────────────────────────
+// ─── Mode séance guidé (optionnel) — V49.0 ────────────────────────────────
 // Vue iPhone pleine largeur : 1 bloc = 1 page. Le WOD a son gros timer dédié.
 
 var guidedSessionState = { blocks: [], index: 0 };
@@ -2026,7 +2026,7 @@ function parseGuidedSteps(text){
   var t = cleanLine(displayChargeText(text||''));
   if(!t) return [];
   // En mode séance, on veut des gros items simples, pas un paragraphe d'instructions.
-  return t.split('+').map(function(x){
+  return t.split(/\s*(?:\+|;| ou | puis )\s*/i).map(function(x){
     return x.replace(/^[\s\-–]+/,'').replace(/[.;]+$/,'').trim();
   }).filter(function(x){ return x.length>1; }).slice(0,8);
 }
@@ -2091,11 +2091,17 @@ function renderGuidedSession(){
     if(st.loadHints)html+=st.loadHints.replace(/pc-wod/g,"guided-wod");
   } else {
     html+="<div class='guided-title'>"+escHtml(st.title)+"</div>";
-    if(st.kind==="warmup" || st.kind==="mobility"){
+    if(st.kind==="warmup" || st.kind==="mobility" || st.kind==="bonus"){
       html+=renderGuidedStepList(st.text, st.kind);
-    } else {
+    } else if(st.exercises && st.exercises.length){
       // En mode séance, on retire le paragraphe d'instructions pour éviter le scroll inutile.
       html+=renderGuidedExerciseList(st.exercises);
+    } else if(text){
+      // Certains blocs autonomes (ex.: Optionnel / Bonus) n'ont pas d'exercises[].
+      // Avant V49.0, ils s'affichaient vides en mode séance.
+      html+=renderGuidedStepList(st.text, st.kind) || ("<div class='guided-note big'>"+escHtml(text)+"</div>");
+    } else {
+      html+="<div class='guided-note big'>Aucun contenu pour ce bloc.</div>";
     }
   }
 
