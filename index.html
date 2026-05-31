@@ -1,253 +1,308 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coach Bertin V40 — Progression semaine unique</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#111827" />
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Coach Bertin V45</title>
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#0a0a0f"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  <div class="app">
-    <header class="hero">
-      <div>
-        <p class="eyebrow">Coach Bertin — V40</p>
-        <h1>Épaules 3D — programme structuré 4 semaines</h1>
-        <p class="subtitle">Lecture seule. Charges ajustables. Mode entraînement iPhone avec timer compact.</p>
-      </div>
-      <div class="stats">
-        <div><strong>Reps</strong><span>plages</span></div>
-        <div><strong>Read</strong><span>only</span></div>
-        <div><strong>WOD</strong><span>banque</span></div>
-      </div>
-    </header>
 
-    <nav class="tabs">
-      <button id="trainingTab" class="tab active">Entraînement</button>
-      <button id="phoneTab" class="tab">Mode entraînement</button>
-      <button id="profileTab" class="tab">Profil / PR</button>
-      <button id="cycleTab" class="tab">Cycle</button>
-      <button id="referencesTab" class="tab">Références</button>
-      <button id="backupTab" class="tab" style="display:none">Backup</button>
-      <button id="historyTab" class="tab" style="display:none">Historique</button>
-      <button id="aiTab" class="tab" style="display:none">Analyse IA</button>
-    </nav>
-
-    <main id="trainingView" class="profile">
-      <section class="panel">
-        <div class="section-title">
-          <div>
-            <h2>Entraînement du jour</h2>
-            <p id="weekGoal" class="muted"></p>
-            <p id="cycleSummary" class="muted"></p>
-          </div>
-          <div class="actions">
-            <button id="phoneViewBtn" class="ghost">Mode entraînement</button>
-            <button id="copyIphoneBtn" class="ghost">Copier WOD iPhone</button>
-            <button id="exportIphoneBtn" class="ghost">Exporter WOD iPhone</button>
-            <button id="exportTodayBtn" class="ghost">Export complet</button>
-            <button id="exportWeekBtn" class="ghost">Export semaine</button>
-          </div>
-        </div>
-
-        <div class="weeks" id="weekButtons"></div>
-        <div class="days" id="dayButtons"></div>
-
-        <div class="workout-head">
-          <div>
-            <h2 id="workoutTitle"></h2>
-            <p id="workoutFocus"></p>
-          </div>
-        </div>
-
-        <div id="focusImpact" class="notice"></div>
-        <div id="blocks" class="blocks"></div>
-
-        <div class="savebar">
-          <button id="saveBtn" style="display:none">Sauvegarder les résultats de la séance</button>
-          <p id="progressionAdvice" class="advice"></p>
-        </div>
-      </section>
-    </main>
-
-
-    <main id="phoneView" class="phone-view hidden">
-      <section class="phone-toolbar">
-        <button id="backTrainingBtn" class="ghost">Retour entraînement</button>
-        <button id="fullscreenBtn" class="ghost">Plein écran</button>
-        <button id="copyPhoneBtn" class="ghost">Copier texte</button>
-      </section>
-      <section id="phoneWod" class="phone-wod"></section>
-    </main>
-
-    <main id="profileView" class="profile hidden">
-      <section class="panel">
-        <div class="section-title">
-          <div>
-            <h2>Profil / PR stratégiques</h2>
-            <p class="muted">Valeurs de départ en lecture seule. Elles servent seulement à afficher les poids suggérés.</p>
-          </div>
-          <button id="saveProfileBtn" style="display:none">Sauvegarder profil</button>
-        </div>
-
-        <div class="settings-row">
-          <label>Training max utilisé</label>
-          <select id="trainingMaxPct" disabled>
-            <option value="0.90">90 % des PR</option>
-            <option value="0.925">92.5 % des PR</option>
-            <option value="0.95">95 % des PR</option>
-          </select>
-        </div>
-
-        <div class="pr-grid">
-          <div class="pr-card">
-            <h3>Force principale</h3>
-            <label>Bench press 1RM</label><input id="prBench" type="number" disabled />
-            <label>Front squat 1RM / référence</label><input id="prFrontSquat" type="number" disabled />
-            <label>Strict press 1RM</label><input id="prStrictPress" type="number" disabled />
-            <label>Power clean 1RM</label><input id="prPowerClean" type="number" disabled />
-          </div>
-          <div class="pr-card">
-            <h3>Bas du corps</h3>
-            <label>Back squat 5RM</label><input id="prBackSquat5RM" type="number" disabled />
-            <label>Hip thrust 8RM</label><input id="prHipThrust8RM" type="number" disabled />
-            <label>DB Bulgarian — poids/main</label><input id="prBulgarianDB" type="number" disabled />
-            <label>DB RDL — poids/main</label><input id="prDbRdl" type="number" disabled />
-          </div>
-          <div class="pr-card">
-            <h3>Tirage / haut du dos</h3>
-            <label>Barbell row 8RM</label><input id="prRow8RM" type="number" disabled />
-            <label>Chest-supported row 8RM</label><input id="prChestRow8RM" type="number" disabled />
-            <label>Weighted pull-up 10RM</label><input id="prLatPulldown10RM" type="number" disabled />
-            <label>DB incline press 10RM — poids/main</label><input id="prInclineDb10RM" type="number" disabled />
-          </div>
-        </div>
-
-        <section class="charge-settings">
-          <div class="section-title compact">
-            <div>
-              <h2>Charges ajustables</h2>
-              <p class="muted">Ces valeurs restent sur cet appareil. Laisse vide pour utiliser la base GitHub de <code>charges.js</code>.</p>
-            </div>
-            <button id="resetCustomChargesBtn" class="ghost danger">Réinitialiser charges locales</button>
-          </div>
-          <div id="chargeSettingsList" class="charge-grid"></div>
-        </section>
-      </section>
-    </main>
-
-    <main id="cycleView" class="profile hidden">
-      <section class="panel">
-        <div class="section-title">
-          <div>
-            <h2>Programme actif</h2>
-            <p class="muted">Le choix reste dans ton iPhone avec localStorage. Pas besoin de modifier GitHub pour changer de focus.</p>
-          </div>
-          <button id="saveCycleBtn">Sauvegarder cycle</button>
-        </div>
-
-        <div class="pr-grid">
-          <div class="pr-card">
-            <h3>Focus principal</h3>
-            <label>Programme actif</label>
-            <select id="cycleGoal">
-              <option value="hypertrophy">Hypertrophie utile</option>
-              <option value="shoulders3d">Épaules 3D</option>
-              <option value="strength">Force</option>
-              <option value="weightlifting">Haltérophilie</option>
-              <option value="posture">Posture / cyphose</option>
-              <option value="engine">Endurance CrossFit</option>
-              <option value="recomp">Recomposition corporelle</option>
-              <option value="maintenance">Maintien / récupération</option>
-            </select>
-          </div>
-          <div class="pr-card">
-            <h3>Effet du focus</h3>
-            <div id="focusDetails" class="details"></div>
-          </div>
-          <div class="pr-card">
-            <h3>Nouveau cycle</h3>
-            <p class="muted">Repart à la semaine 1. Les références fixes sont conservées.</p>
-            <button id="newCycleBtn">Démarrer cycle suivant</button>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <main id="referencesView" class="profile hidden">
-      <section class="panel">
-        <div class="section-title">
-          <div>
-            <h2>Références par mouvement et plage de reps</h2>
-            <p class="muted">Références fixes utilisées pour calculer les poids suggérés.</p>
-          </div>
-          <button id="resetRefsBtn" class="ghost danger" style="display:none">Réinitialiser références</button>
-        </div>
-        <div id="referencesList" class="calc-grid"></div>
-      </section>
-    </main>
-
-    <main id="backupView" class="profile hidden">
-      <section class="panel">
-        <div class="section-title">
-          <div>
-            <h2>Backup complet</h2>
-            <p class="muted">Sauvegarde ou restaure toutes les données : profil, références, historique, focus et semaine.</p>
-          </div>
-        </div>
-        <div class="pr-grid">
-          <div class="pr-card">
-            <h3>Exporter</h3>
-            <p class="muted">Crée un fichier JSON complet.</p>
-            <button id="exportBackupBtn">Exporter backup JSON</button>
-          </div>
-          <div class="pr-card">
-            <h3>Importer</h3>
-            <p class="muted">Restaure un fichier JSON exporté.</p>
-            <label class="file-label">Importer JSON<input id="importBackupFile" type="file" accept="application/json" /></label>
-          </div>
-          <div class="pr-card">
-            <h3>Attention</h3>
-            <p class="muted">Importer remplace les données actuelles. Exporte un backup avant si tu veux les garder.</p>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <main id="historyView" class="profile hidden">
-      <section class="panel">
-        <div class="section-title">
-          <h2>Historique complet</h2>
-          <div class="actions">
-            <button id="exportHistoryBtn" class="ghost">Exporter historique texte</button>
-            <button id="resetHistoryBtn" class="ghost danger">Effacer historique</button>
-          </div>
-        </div>
-        <div id="history" class="history big"></div>
-      </section>
-    </main>
-
-    <main id="aiView" class="profile hidden">
-      <section class="panel">
-        <div class="section-title">
-          <div><h2>Analyse IA locale</h2><p class="muted">Analyse par mouvement, plage de reps, qualité technique, échecs et douleurs.</p></div>
-          <button id="exportAiBtn" class="ghost">Exporter analyse</button>
-        </div>
-        <div id="aiScoreCards" class="calc-grid"></div>
-      </section>
-      <section class="panel"><h2>Suggestions du coach</h2><div id="aiSuggestions" class="ai-list"></div></section>
-      <section class="panel"><h2>Résumé lisible</h2><pre id="aiSummary" class="summary-box"></pre></section>
-    </main>
-
-    <footer class="footer">V40-mode-entrainement-lisible-timers : interface stable, programmes séparés dans data/programs/, choix actif local, charges personnalisables localement.</footer>
+<!-- ═══ TOPNAV ═══ -->
+<nav class="topnav">
+  <span class="topnav-brand">CB <span class="topnav-v">V45</span></span>
+  <div class="topnav-tabs" id="mainTabs">
+    <button id="trainingTab"    class="tab active">WOD</button>
+    <button id="phoneTab"       class="tab">iPhone</button>
+    <button id="profileTab"     class="tab">PR</button>
+    <button id="referencesTab"  class="tab">Réfs</button>
+    <button id="cycleTab"       class="tab">Cycle</button>
+    <button id="historyTab"     class="tab">Historique</button>
+    <button id="settingsTab"    class="tab">⚙</button>
   </div>
-  <script src="data/programs/index.js"></script>
-  <script src="data/programs/epaules_3d.js"></script>
-  <script src="data/programs/crossfit_maintenance.js"></script>
-  <script src="data/programs/posture_cyphose.js"></script>
-  <script src="data/programs/force.js"></script>
-  <script src="charges.js"></script>
-  <script src="app.js"></script>
+  <button class="hamburger" id="hamburgerBtn">&#9776;</button>
+</nav>
+<div class="hamburger-menu hidden" id="hamburgerMenu">
+  <button id="backupTabM"  class="tab-menu">💾 Backup</button>
+  <button id="githubTabM"  class="tab-menu">⚡ GitHub sync</button>
+</div>
+
+<div class="app">
+
+<!-- ═══ VUE : WOD ═══ -->
+<main id="trainingView" class="view-active">
+  <div class="view-header">
+    <div>
+      <h2 id="workoutTitle" class="view-title"></h2>
+      <p id="workoutFocus" class="view-sub"></p>
+    </div>
+    <button id="phoneViewBtn" class="btn-accent">Mode iPhone →</button>
+  </div>
+
+  <div class="week-day-nav">
+    <div class="nav-row">
+      <button class="arrow-btn" id="weekPrev">&#8249;</button>
+      <div id="weekButtons" class="pill-row"></div>
+      <button class="arrow-btn" id="weekNext">&#8250;</button>
+    </div>
+    <div class="week-progress-wrap">
+      <div class="week-progress-track"><div class="week-progress-bar" id="weekProgressBar"></div></div>
+      <div class="week-progress-meta">
+        <span id="weekProgressLabel" class="nav-goal"></span>
+        <div class="day-pips" id="daysCompleted"></div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="arrow-btn" id="dayPrev">&#8249;</button>
+      <div id="dayButtons" class="pill-row"></div>
+      <button class="arrow-btn" id="dayNext">&#8250;</button>
+    </div>
+    <p id="weekGoal" class="nav-goal"></p>
+  </div>
+
+  <div id="focusImpact" class="notice"></div>
+  <div id="blocks" class="blocks"></div>
+  <p id="progressionAdvice" class="advice"></p>
+</main>
+
+<!-- ═══ VUE : MODE IPHONE ═══ -->
+<main id="phoneView">
+  <!-- Barre repos persistante -->
+  <div class="rest-bar" id="restBar">
+    <span class="rest-label">REPOS</span>
+    <span class="rest-display" id="restDisplay">0:00</span>
+    <div class="rest-btns">
+      <button class="rb" id="rb45">45s</button>
+      <button class="rb" id="rb60">60s</button>
+      <button class="rb" id="rb90">90s</button>
+      <button class="rb" id="rb120">2min</button>
+      <button class="rb rb-stop" id="rbStop">■</button>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="phone-toolbar">
+    <button class="tb-btn" id="backTrainingBtn">← Retour</button>
+    <div class="phone-day-nav">
+      <button class="arrow-btn sm" id="phoneDayPrev">&#8249;</button>
+      <span id="phoneDayLabel" class="phone-day-label"></span>
+      <button class="arrow-btn sm" id="phoneDayNext">&#8250;</button>
+    </div>
+    <button class="tb-btn" id="wakeLockBtn">💤 Écran</button>
+    <button class="tb-btn" id="copyPhoneBtn">⎘</button>
+    <button class="tb-btn" id="fullscreenBtn">⛶</button>
+  </div>
+
+  <div id="phoneWod" class="phone-wod"></div>
+
+  <!-- ═══ SAISIE FIN DE SÉANCE ═══ -->
+  <div class="session-entry" id="sessionEntry">
+    <div class="session-header">
+      <h2 class="session-title">📝 Résultats de la séance</h2>
+      <p class="session-sub">Remplis ce que tu as fait · laisse vide le reste</p>
+    </div>
+    <div id="sessionFields" class="session-fields"></div>
+    <div class="session-footer">
+      <button class="btn-save" id="saveSessionBtn">💾 Sauvegarder &amp; envoyer sur GitHub</button>
+      <p class="session-note" id="saveStatus"></p>
+    </div>
+  </div>
+</main>
+
+<!-- ═══ VUE : CYCLE ═══ -->
+<main id="cycleView">
+  <div class="panel">
+    <h2>Programme actif</h2>
+    <p class="muted">Sauvegardé localement sur cet appareil.</p>
+    <label>Focus</label>
+    <select id="cycleGoal" class="select-field"></select>
+    <div id="focusDetails" class="focus-details"></div>
+    <div class="btn-row">
+      <button id="saveCycleBtn" class="btn-accent">Sauvegarder</button>
+      <button id="newCycleBtn"  class="btn-ghost">Nouveau cycle (S1)</button>
+    </div>
+  </div>
+</main>
+
+<!-- ═══ VUE : HISTORIQUE ═══ -->
+<main id="historyView">
+  <div class="panel">
+    <div class="panel-header">
+      <h2>Historique</h2>
+      <div class="btn-row">
+        <button id="exportHistoryBtn" class="btn-ghost">Exporter</button>
+        <button id="resetHistoryBtn"  class="btn-danger">Effacer</button>
+      </div>
+    </div>
+    <div id="progressCharts" class="progress-charts"></div>
+    <div id="history" class="history-list"></div>
+  </div>
+</main>
+
+<!-- ═══ VUE : PARAMÈTRES ═══ -->
+<main id="settingsView">
+  <div class="panel">
+    <h2>⚡ GitHub — Sauvegarde automatique</h2>
+    <p class="muted">Tes résultats sont sauvegardés dans <code>Miozza/Coach-Beurt</code> après chaque séance.</p>
+    <label>Personal Access Token GitHub</label>
+    <input id="githubToken" type="password" class="input-field" placeholder="ghp_xxxxxxxxxxxxxxxx"/>
+    <p class="field-hint">Généré une fois sur GitHub → Settings → Developer settings → Tokens (classic) → repo</p>
+    <button id="saveTokenBtn" class="btn-accent">Sauvegarder le token</button>
+    <p id="tokenStatus" class="status-msg"></p>
+  </div>
+
+  <div class="panel">
+    <h2>Charges ajustables</h2>
+    <p class="muted">Laisse vide pour utiliser la base de <code>charges.js</code>.</p>
+    <button id="resetCustomChargesBtn" class="btn-danger">Réinitialiser charges locales</button>
+    <div id="chargeSettingsList" class="charge-grid"></div>
+  </div>
+</main>
+
+
+<!-- ═══ VUE : PROFIL / PR ═══ -->
+<main id="profileView">
+  <div class="panel">
+    <div class="system-tag" style="margin-bottom:12px">PR · Valeurs de référence</div>
+    <h2>Profil / PR Stratégiques</h2>
+    <p style="font-size:11px;color:var(--muted);font-family:var(--font-hud);letter-spacing:.04em;margin-bottom:16px">// VALEURS DE RÉFÉRENCE · LECTURE SEULE · BASE DE CALCUL</p>
+
+    <!-- Force principale -->
+    <div class="pr-section">
+      <div class="pr-section-title">
+        <div class="block-rank rank-A" style="width:24px;height:24px;font-size:9px">A</div>
+        Force principale
+      </div>
+      <div class="pr-row-grid">
+        <div class="pr-stat-card">
+          <div class="pr-stat-label">BENCH PRESS 1RM</div>
+          <div class="pr-stat-input"><input id="prBench" type="number" disabled class="pr-input"/><span class="pr-unit">lb</span></div>
+          <div class="pr-stat-target">Objectif Phase 3 : 300 lb</div>
+        </div>
+        <div class="pr-stat-card">
+          <div class="pr-stat-label">FRONT SQUAT 1RM</div>
+          <div class="pr-stat-input"><input id="prFrontSquat" type="number" disabled class="pr-input"/><span class="pr-unit">lb</span></div>
+          <div class="pr-stat-target">Réf compétition</div>
+        </div>
+        <div class="pr-stat-card">
+          <div class="pr-stat-label">STRICT PRESS 1RM</div>
+          <div class="pr-stat-input"><input id="prStrictPress" type="number" disabled class="pr-input"/><span class="pr-unit">lb</span></div>
+          <div class="pr-stat-target">Base épaules 3D</div>
+        </div>
+        <div class="pr-stat-card">
+          <div class="pr-stat-label">POWER CLEAN 1RM</div>
+          <div class="pr-stat-input"><input id="prPowerClean" type="number" disabled class="pr-input"/><span class="pr-unit">lb</span></div>
+          <div class="pr-stat-target">Haltéro peak</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bas du corps -->
+    <div class="pr-section">
+      <div class="pr-section-title">
+        <div class="block-rank rank-B" style="width:24px;height:24px;font-size:9px">B</div>
+        Bas du corps
+      </div>
+      <div class="pr-row-grid">
+        <div class="pr-stat-card">
+          <div class="pr-stat-label">BACK SQUAT 5RM</div>
+          <div class="pr-stat-input"><input id="prBackSquat5RM" type="number" disabled class="pr-input"/><span class="pr-unit">lb</span></div>
+          <div class="pr-stat-target">Objectif Phase 3 : 260 lb</div>
+        </div>
+        <div class="pr-stat-card">
+          <div class="pr-stat-label">HIP THRUST 8RM</div>
+          <div class="pr-stat-input"><input id="prHipThrust8RM" type="number" disabled class="pr-input"/><span class="pr-unit">lb</span></div>
+          <div class="pr-stat-target">Chaîne postérieure</div>
+        </div>
+        <div class="pr-stat-card">
+          <div class="pr-stat-label">DB BULGARIAN / MAIN</div>
+          <div class="pr-stat-input"><input id="prBulgarianDB" type="number" disabled class="pr-input"/><span class="pr-unit">lb</span></div>
+          <div class="pr-stat-target">Unilatéral</div>
+        </div>
+        <div class="pr-stat-card">
+          <div class="pr-stat-label">DB RDL / MAIN</div>
+          <div class="pr-stat-input"><input id="prDbRdl" type="number" disabled class="pr-input"/><span class="pr-unit">lb</span></div>
+          <div class="pr-stat-target">Ischio-jambiers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tirage -->
+    <div class="pr-section">
+      <div class="pr-section-title">
+        <div class="block-rank rank-B" style="width:24px;height:24px;font-size:9px">B</div>
+        Tirage / haut du dos
+      </div>
+      <div class="pr-row-grid">
+        <div class="pr-stat-card">
+          <div class="pr-stat-label">BARBELL ROW 8RM</div>
+          <div class="pr-stat-input"><input id="prRow8RM" type="number" disabled class="pr-input"/><span class="pr-unit">lb</span></div>
+          <div class="pr-stat-target">Dos épais</div>
+        </div>
+        <div class="pr-stat-card">
+          <div class="pr-stat-label">CHEST ROW 8RM</div>
+          <div class="pr-stat-input"><input id="prChestRow8RM" type="number" disabled class="pr-input"/><span class="pr-unit">lb</span></div>
+          <div class="pr-stat-target">Posture</div>
+        </div>
+        <div class="pr-stat-card">
+          <div class="pr-stat-label">WEIGHTED PULL-UP 10RM</div>
+          <div class="pr-stat-input"><input id="prLatPulldown10RM" type="number" disabled class="pr-input"/><span class="pr-unit">lb</span></div>
+          <div class="pr-stat-target">→ Muscle-up</div>
+        </div>
+        <div class="pr-stat-card">
+          <div class="pr-stat-label">DB INCLINE 10RM</div>
+          <div class="pr-stat-input"><input id="prInclineDb10RM" type="number" disabled class="pr-input"/><span class="pr-unit">lb</span></div>
+          <div class="pr-stat-target">Pectoraux haut</div>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:10px;color:var(--muted);margin-top:14px;font-family:var(--font-hud);letter-spacing:.04em">// MODIFIE VIA SETTINGS OU DIRECTEMENT DANS app.js → defaultProfile</p>
+  </div>
+</main>
+
+<!-- ═══ VUE : RÉFÉRENCES ═══ -->
+<main id="referencesView">
+  <div class="panel">
+    <div class="system-tag" style="margin-bottom:12px">Références · Base de calcul</div>
+    <h2>Références par mouvement</h2>
+    <p style="font-size:11px;color:var(--muted);font-family:var(--font-hud);letter-spacing:.04em;margin-bottom:14px">// BASE DE CALCUL DES POIDS SUGGÉRÉS · MIS À JOUR APRÈS CHAQUE SÉANCE</p>
+    <div id="referencesList" class="ref-grid"></div>
+  </div>
+</main>
+
+
+<!-- ═══ VUE : BACKUP ═══ -->
+<main id="backupView">
+  <div class="panel">
+    <h2>Backup</h2>
+    <div class="btn-row">
+      <button id="exportBackupBtn" class="btn-accent">Exporter JSON</button>
+      <label class="btn-ghost file-label">Importer JSON<input id="importBackupFile" type="file" accept="application/json"/></label>
+      <button id="exportWeekBtn" class="btn-ghost">Semaine texte</button>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">V45 · Coach Bertin · GitHub sync · Saisie résultats · iPhone optimisé</footer>
+</div>
+
+<script src="data/programs/index.js"></script>
+<script src="data/programs/epaules_3d.js"></script>
+<script src="data/programs/crossfit_maintenance.js"></script>
+<script src="data/programs/posture_cyphose.js"></script>
+<script src="data/programs/force.js"></script>
+<script src="data/programs/hypertrophy_base.js"></script>
+<script src="data/programs/force_performance.js"></script>
+<script src="data/programs/competition_peak.js"></script>
+<script src="charges.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

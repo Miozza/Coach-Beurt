@@ -1,9 +1,9 @@
 {
-  "name": "Coach Bertin V40",
-  "short_name": "Coach V40",
+  "name": "Coach Bertin V45",
+  "short_name": "Hunter V45",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#111827",
+  "background_color": "#04060f",
+  "theme_color": "#04060f",
   "icons": []
 }

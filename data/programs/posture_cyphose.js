@@ -1,4 +1,4 @@
-// Coach Bertin V40-mode-entrainement-lisible-timers — programme: Posture / cyphose
+// Coach Bertin V39-progression-semaine-unique — programme: Posture / cyphose
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.posture = {
   id: "posture",

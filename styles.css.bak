@@ -2,7 +2,7 @@
    COACH BERTIN V45 — HUNTER SYSTEM · Solo Leveling Style
    ═══════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap');
 
 /* ── Variables ── */
 :root {
@@ -29,7 +29,7 @@
   --rest-h:    60px;
   --safe-top:  env(safe-area-inset-top, 0px);
   --safe-bot:  env(safe-area-inset-bottom, 0px);
-  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  --font-main: 'Rajdhani', Arial, sans-serif;
   --font-hud:  'Orbitron', monospace;
 }
 
@@ -40,7 +40,7 @@ html, body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-main);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.5;
   max-width: 100%;
   overflow-x: hidden;
@@ -177,10 +177,10 @@ body::before {
   border: none;
   border-radius: 6px;
   padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: var(--font-main);
-  letter-spacing: 0;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-hud);
+  letter-spacing: .06em;
   cursor: pointer;
   text-align: left;
   white-space: nowrap;
@@ -223,7 +223,7 @@ main.view-active { display: block; }
   font-family: var(--font-hud);
   font-size: 11px;
   color: var(--cyan);
-  letter-spacing: .10em;
+  letter-spacing: .15em;
   margin-bottom: 6px;
   display: flex;
   align-items: center;
@@ -307,10 +307,9 @@ main.view-active { display: block; }
   flex: 1;
 }
 .nav-goal {
-  font-family: var(--font-main);
-  font-size: 13px;
+  font-size: 11px;
   color: var(--text2);
-  letter-spacing: 0;
+  letter-spacing: .03em;
   margin-top: 4px;
 }
 .nav-goal small { color: var(--muted); font-size: 10px; }
@@ -439,8 +438,7 @@ main.view-active { display: block; }
 
 /* ── Texte du bloc ── */
 .block-text {
-  font-family: var(--font-main);
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text);
   line-height: 1.5;
   padding: 0 14px 12px 17px;
@@ -725,9 +723,8 @@ main.view-active { display: block; }
 .pc-exercise:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
 
 .pc-ex-name {
-  font-family: var(--font-main);
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 900;
   color: var(--white);
   margin-bottom: 12px;
   overflow-wrap: anywhere;
@@ -736,16 +733,14 @@ main.view-active { display: block; }
 .pc-ex-rows { display: grid; gap: 7px; }
 .pc-ex-row  { display: flex; justify-content: space-between; align-items: center; }
 .pc-ex-label {
-  font-family: var(--font-main);
-  font-size: 14px;
-  font-weight: 600;
+  font-family: var(--font-hud);
+  font-size: 15px;
   color: var(--text2);
   letter-spacing: .08em;
 }
 .pc-ex-value {
-  font-family: var(--font-main);
   font-size: 17px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text);
 }
 .pc-ex-value.accent {
@@ -757,11 +752,10 @@ main.view-active { display: block; }
 .pc-ex-value.up   { color: var(--green); }
 .pc-ex-value.down { color: var(--red); }
 .pc-ex-note {
-  font-family: var(--font-main);
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text2);
   margin-top: 8px;
-  line-height: 1.5;
+  line-height: 1.4;
   font-style: italic;
 }
 
@@ -772,11 +766,11 @@ main.view-active { display: block; }
   border: 1px solid rgba(124,58,255,.35);
   color: var(--purple2);
   border-radius: 8px;
-  padding: 12px 14px;
-  font-size: 15px;
-  font-weight: 600;
-  font-family: var(--font-main);
-  letter-spacing: 0;
+  padding: 11px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-hud);
+  letter-spacing: .04em;
   cursor: pointer;
   width: 100%;
   text-align: center;
@@ -785,14 +779,13 @@ main.view-active { display: block; }
 
 /* WOD text */
 .pc-wod-text {
-  font-family: var(--font-main);
-  font-size: 17px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   color: var(--text);
-  line-height: 1.6;
+  line-height: 1.5;
   overflow-wrap: anywhere;
 }
-.pc-plain-text { font-family: var(--font-main); font-size: 16px; color: var(--text); font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
+.pc-plain-text { font-size: 17px; color: var(--text); font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
 
 /* Charges WOD */
 .pc-wod-charges {
@@ -815,10 +808,9 @@ main.view-active { display: block; }
 /* Rules list */
 .rules-list { list-style: none; padding: 0; display: grid; gap: 6px; }
 .rules-list li {
-  font-family: var(--font-main);
-  font-size: 16px;
+  font-size: 17px;
   color: var(--text);
-  line-height: 1.55;
+  line-height: 1.4;
   padding-left: 16px;
   position: relative;
 }
@@ -915,7 +907,7 @@ main.view-active { display: block; }
   letter-spacing: .08em;
   margin-bottom: 4px;
 }
-.session-sub { font-family: var(--font-main); font-size: 14px; color: var(--text2); }
+.session-sub { font-size: 14px; color: var(--muted); }
 .session-fields { display: grid; gap: 10px; }
 
 .sf-card {
@@ -950,7 +942,7 @@ main.view-active { display: block; }
   flex-shrink: 0;
   letter-spacing: .04em;
 }
-.sf-suggested { font-family: var(--font-main); font-size: 14px; color: var(--text2); margin-bottom: 10px; }
+.sf-suggested { font-size: 14px; color: var(--muted); margin-bottom: 10px; }
 .sf-suggested span { color: var(--cyan); font-weight: 700; font-family: var(--font-hud); }
 
 /* Ligne poids -5 | input | +5 */
@@ -1225,13 +1217,12 @@ label {
 
 /* Focus details */
 .focus-details {
-  font-family: var(--font-main);
   background: var(--panel2);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px;
   margin-top: 10px;
-  font-size: 15px;
+  font-size: 13px;
   color: var(--text2);
   line-height: 1.6;
 }
