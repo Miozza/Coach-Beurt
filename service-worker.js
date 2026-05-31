@@ -1,4 +1,4 @@
-const CACHE_NAME = 'coach-bertin-v48.0';
+const CACHE_NAME = 'coach-bertin-v48.7';
 const FILES = [
   './', './index.html', './styles.css', './app.js', './manifest.json',
   './programs/index.js', './programs/epaules_3d.js',

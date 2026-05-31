@@ -1,5 +1,5 @@
-// Coach Bertin V46
-var APP_VERSION = "V48.0";
+// Coach Bertin V48.7
+var APP_VERSION = "V48.7";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -26,7 +26,7 @@ function buildWeekInfo(){
   });
   return info;
 }
-function totalWeeks(){ return focus().sets ? focus().sets.length : 4; }
+function totalWeeks(){ var f=focus(); return (f&&f.sets) ? f.sets.length : 4; }
 
 // ─── FocusConfigs de base (fallback) ─────────────────────────────────────────
 
@@ -64,7 +64,7 @@ if (window.COACH_BERTIN_PROGRAMS) {
 
 // Données de profil, mouvements et banques WOD chargées depuis programs/config.js
 
-var KEY       = "coachBertinV46";
+var KEY       = "coachBertinState";
 var CHARGE_KEY= "coachBertinCustomChargesV46";
 var TOKEN_KEY = "coachBertinGithubToken";
 var DAYS_ORDER= ["lundi","mardi","jeudi","vendredi"];
@@ -119,9 +119,10 @@ function $(id){return document.getElementById(id);}
 
 function load(){
   try{
+    // Migration : lire ancienne clé V46 si la nouvelle est vide
     var raw = localStorage.getItem(KEY)
-           || localStorage.getItem("coachBertinV43")
-           || localStorage.getItem("coachBertinV41");
+           || localStorage.getItem("coachBertinV46")
+           || localStorage.getItem("coachBertinV43");
     if(raw){
       var p = JSON.parse(raw);
       state = Object.assign(state, p);
@@ -171,8 +172,8 @@ function round5(n){if(n===0)return 0;if(!n||isNaN(n))return null;return Math.rou
 function lb(n){var r=round5(n);return(r===0||r)?r+" lb":"—";}
 function parseLoad(v){if(v===0||v==="0")return 0;if(!v)return null;var m=String(v).replace(",",".").match(/[0-9]+(\.[0-9]+)?/);return m?Number(m[0]):null;}
 
-function focus(){return focusConfigs[state.cycle.goal]||focusConfigs.hypertrophy;}
-function weekIdx(){return Math.max(0,Math.min(3,state.week-1));}
+function focus(){return focusConfigs[state.cycle.goal]||focusConfigs.maintenance||focusConfigs.strength||Object.values(focusConfigs)[0];}
+function weekIdx(){var tw=totalWeeks()||4; return Math.max(0,Math.min(tw-1,state.week-1));}
 function repRange(reps){reps=Number(reps)||0;if(reps<=5)return"strength";if(reps<=12)return"hypertrophy";return"endurance";}
 function repRangeLabel(r){return r==="strength"?"1–5 reps":r==="hypertrophy"?"6–12 reps":"13+ reps";}
 function refKey(mvKey,reps){return mvKey+"__"+repRange(reps);}
@@ -849,7 +850,8 @@ function renderSessionEntry(){
 
 function collectSessionResults(){
   var results={};
-  document.querySelectorAll(".sf-input").forEach(function(inp){
+  var sf=document.getElementById("sessionFields")||document;
+  sf.querySelectorAll(".sf-input").forEach(function(inp){
     var key=inp.getAttribute("data-key"),field=inp.getAttribute("data-field"),val=inp.value.trim();
     if(!val)return;
     if(!results[key])results[key]={};
@@ -858,14 +860,22 @@ function collectSessionResults(){
   return results;
 }
 
+function resolveMovementKey(key){
+  var mvKey=null;
+  var cleanKey=chargeKeyFromName(key);
+  Object.keys(movements).forEach(function(k){
+    if(k===key || k===cleanKey || movements[k].name===key || movements[k].name===cleanKey){mvKey=k;}
+  });
+  return mvKey;
+}
+
 function updateRefsFromResults(results,dateStr){
   dateStr = dateStr || new Date().toLocaleDateString("fr-CA");
   Object.keys(results||{}).forEach(function(key){
     var r=results[key];
     var load=parseLoad(r.load),reps=Number(r.reps)||0;
     if(!load||!reps)return;
-    var mvKey=null;
-    Object.keys(movements).forEach(function(k){if(k===key)mvKey=k;});
+    var mvKey=resolveMovementKey(key);
     if(!mvKey)return;
     var refK=refKey(mvKey,reps);
     var existing=state.movementRefs[refK];
@@ -874,7 +884,7 @@ function updateRefsFromResults(results,dateStr){
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
         date:dateStr,lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
-        rpe:Number(r.rpe)||8,note:"Saisi V46"
+        rpe:Number(r.rpe)||8,note:"Saisi V48.6"
       };
     }
     // Enregistrer RPE dans l'historique pour progression automatique
@@ -1012,7 +1022,7 @@ function showSessionSummaryModal(summary){
   modal.innerHTML =
     '<div class="summary-modal-inner">'+
       '<div class="summary-modal-title">📊 Résumé de la séance</div>'+
-      '<div class="summary-modal-sub">'+baseDays[state.day].label+' S'+state.week+' · RPE moyen '+summary.avgRpe+' '+summary.rpeSignal+'</div>'+
+      '<div class="summary-modal-sub">'+((baseDays[state.day]&&baseDays[state.day].label)||state.day)+' S'+state.week+' · RPE moyen '+summary.avgRpe+' '+summary.rpeSignal+'</div>'+
       prSection+
       deloadHtml+
       '<div class="summary-lines">'+
@@ -1099,8 +1109,9 @@ function updateCustomChargesFromResults(results){
     var chargeKey=chargeKeyFromName(key);
     var official=officialCharges()[chargeKey];
     if(official!==undefined){customCharges[chargeKey]=load+" lb";changed=true;}
-    if(!changed&&movements[key]){
-      var ck=chargeKeyFromName(movements[key].name);
+    var mvKey=resolveMovementKey(key);
+    if(mvKey){
+      var ck=chargeKeyFromName(movements[mvKey].name);
       if(officialCharges()[ck]!==undefined){customCharges[ck]=load+" lb";changed=true;}
     }
   });
@@ -1303,7 +1314,7 @@ function setupSwipeNav(){
   // Flèches semaine
   var wp=$("weekPrev"),wn=$("weekNext");
   if(wp)wp.onclick=function(){if(state.week>1){state.week--;save();render();}};
-  if(wn)wn.onclick=function(){if(state.week<4){state.week++;save();render();}};
+  if(wn)wn.onclick=function(){if(state.week<totalWeeks()){state.week++;save();render();}};
   // Flèches jour
   var dp=$("dayPrev"),dn=$("dayNext");
   if(dp)dp.onclick=function(){var i=DAYS_ORDER.indexOf(state.day);if(i>0){state.day=DAYS_ORDER[i-1];save();render();}};
@@ -1314,7 +1325,7 @@ function setupSwipeNav(){
   if(pdn)pdn.onclick=function(){var i=DAYS_ORDER.indexOf(state.day);if(i<DAYS_ORDER.length-1){state.day=DAYS_ORDER[i+1];save();renderPhoneWod();}};
   // Swipe vue entraînement : horizontal = semaine, vertical = jour
   setupSwipeGesture($("trainingView"),function(dir){
-    if(dir==="left"&&state.week<4){state.week++;save();render();}
+    if(dir==="left"&&state.week<totalWeeks()){state.week++;save();render();}
     else if(dir==="right"&&state.week>1){state.week--;save();render();}
     else if(dir==="up"){var i=DAYS_ORDER.indexOf(state.day);if(i<DAYS_ORDER.length-1){state.day=DAYS_ORDER[i+1];save();render();}}
     else if(dir==="down"){var i=DAYS_ORDER.indexOf(state.day);if(i>0){state.day=DAYS_ORDER[i-1];save();render();}}
@@ -1608,7 +1619,7 @@ function renderPhoneWod(){
 
 
 
-// ─── Mode séance guidé (optionnel) — V48.0 ────────────────────────────────
+// ─── Mode séance guidé (optionnel) — V48.6 ────────────────────────────────
 // Vue iPhone pleine largeur : 1 bloc = 1 page. Le WOD a son gros timer dédié.
 
 var guidedSessionState = { blocks: [], index: 0 };
@@ -2144,7 +2155,7 @@ function download(name,text){
   var blob=new Blob([text],{type:type}),url=URL.createObjectURL(blob);
   var a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
 }
-function exportBackup(){download("coach-bertin-v41-backup.json",JSON.stringify({version:APP_VERSION,exportedAt:new Date().toISOString(),state:state},null,2));}
+function exportBackup(){download("coach-bertin-backup-"+new Date().toISOString().slice(0,10)+".json",JSON.stringify({version:APP_VERSION,exportedAt:new Date().toISOString(),state:state},null,2));}
 function importBackup(file){
   if(!file)return;
   var r=new FileReader();
@@ -2184,7 +2195,7 @@ function bind(){
   var sc=$("saveCycleBtn");if(sc)sc.onclick=saveCycle;
   var nc=$("newCycleBtn");if(nc)nc.onclick=newCycle;
   var cg=$("cycleGoal");if(cg)cg.onchange=function(){state.cycle.goal=cg.value;save();renderFocusDetails();};
-  var eh=$("exportHistoryBtn");if(eh)eh.onclick=function(){download("coach-bertin-historique.txt","Historique V41\n\n"+JSON.stringify(state.history,null,2));};
+  var eh=$("exportHistoryBtn");if(eh)eh.onclick=function(){download("coach-bertin-historique.txt","Historique Coach Bertin V48.7\n\n"+JSON.stringify(state.history,null,2));};
   var rh=$("resetHistoryBtn");if(rh)rh.onclick=function(){if(confirm("Effacer tout l'historique?")){state.history=[];save();renderHistory();}};
   var rcb=$("resetCustomChargesBtn");if(rcb)rcb.onclick=resetCustomCharges;
   var ebb=$("exportBackupBtn");if(ebb)ebb.onclick=exportBackup;

@@ -11,6 +11,7 @@ var movements = {
   barbellRow:   {name:"Barbell row",            profile:"row8RM"},
   latPulldown:  {name:"Weighted pull-up",       profile:null},
   frontSquat:   {name:"Front squat",            profile:"frontSquat"},
+  backSquat:    {name:"Back Squat",             profile:"backSquat5RM"},
   hipThrust:    {name:"Hip thrust",             profile:"hipThrust8RM"},
   bulgarian:    {name:"Bulgarian split squat",  profile:"bulgarianDb"},
   powerClean:   {name:"Power clean",            profile:"powerClean"},
