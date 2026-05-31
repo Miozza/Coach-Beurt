@@ -1,6 +1,6 @@
-// Coach Bertin V48.3 — Phase 3 : Force + Résistance musculaire (6 semaines)
+// Coach Bertin V48.9 — Phase 3 : Force + Résistance musculaire (6 semaines)
 // Objectif : force réelle + transfert CrossFit sans structure PPL générique.
-// V48.3 : programme autonome. Les journées complètes vivent ici, pas dans app.js.
+// V48.9 : programme autonome. Les journées complètes vivent ici, pas dans app.js.
 
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.force_performance = {

@@ -1,5 +1,5 @@
-// Coach Bertin V48.8
-var APP_VERSION = "V48.8";
+// Coach Bertin V48.9
+var APP_VERSION = "V48.9";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -1083,7 +1083,7 @@ function updateRefsFromResults(results,dateStr){
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
         date:dateStr,lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
-        rpe:Number(r.rpe)||8,note:"Saisi V48.8"
+        rpe:Number(r.rpe)||8,note:"Saisi V48.9"
       };
     }
     // Enregistrer RPE dans l'historique pour progression automatique
@@ -1304,23 +1304,13 @@ document.addEventListener("visibilitychange",function(){
   }
 });
 
-// Met à jour les charges personnalisées locales quand un poids réel est saisi
+// V48.9 — volontairement neutralisé.
+// Les résultats ne doivent plus réécrire les charges locales ou data/charges.js.
+// - data/charges.js = configuration stable / équipement / charges de départ
+// - data/resultats.json = journal brut
+// - data/athlete_state.json = capacité réelle et recalibrage
 function updateCustomChargesFromResults(results){
-  var changed=false;
-  Object.keys(results).forEach(function(key){
-    var r=results[key];
-    var load=parseLoad(r.load);
-    if(!load)return;
-    var chargeKey=chargeKeyFromName(key);
-    var official=officialCharges()[chargeKey];
-    if(official!==undefined){customCharges[chargeKey]=load+" lb";changed=true;}
-    var mvKey=resolveMovementKey(key);
-    if(mvKey){
-      var ck=chargeKeyFromName(movements[mvKey].name);
-      if(officialCharges()[ck]!==undefined){customCharges[ck]=load+" lb";changed=true;}
-    }
-  });
-  if(changed)saveCustomCharges();
+  return false;
 }
 
 function buildSessionPayload(results){
@@ -1338,61 +1328,11 @@ function buildSessionPayload(results){
 }
 
 // Génère le contenu du fichier charges.js mis à jour avec les nouveaux poids
-function buildChargesJsContent(){
-  // Partir des charges officielles de base
-  var base=officialCharges();
-  // Écraser avec les charges personnalisées locales
-  var merged=Object.assign({},base,customCharges);
-  var lines=["// Coach Bertin "+APP_VERSION+" — charges officielles modifiables","// Fichier de données stable. Ne pas écraser pendant les mises à jour.","// Les ajustements faits dans l'app sur iPhone ont priorité sur ces valeurs.","window.DEFAULT_CHARGES = {"];
-  var keys=Object.keys(merged);
-  keys.forEach(function(k,i){
-    lines.push('  "'+k+'": "'+merged[k]+'"'+(i<keys.length-1?",":""));
-  });
-  lines.push("};","window.CHARGE_ORDER = [");
-  var order=window.CHARGE_ORDER||keys;
-  order.forEach(function(k,i){lines.push('  "'+k+'"'+(i<order.length-1?",":""));});
-  lines.push("];");
-  return lines.join("\n");
-}
-
-function githubHeaders(token){
-  return {"Authorization":"token "+token,"Accept":"application/vnd.github.v3+json","Content-Type":"application/json"};
-}
-function githubContentUrl(path){
-  return "https://api.github.com/repos/"+GITHUB_OWNER+"/"+GITHUB_REPO+"/contents/"+path;
-}
-async function githubErrorMessage(resp){
-  var txt="";
-  try{var j=await resp.json();txt=j.message||JSON.stringify(j);}catch(e){txt=String(resp.statusText||"");}
-  if(resp.status===401)return "401 token invalide ou expiré";
-  if(resp.status===403)return "403 permission refusée ou rate limit — vérifie la permission repo";
-  if(resp.status===404)return "404 repo/fichier introuvable ou token sans accès";
-  if(resp.status===422)return "422 chemin invalide ou branche protégée"+(txt?" — "+txt:"");
-  return resp.status+" "+txt;
-}
-async function readGithubJsonFile(token,path){
-  var resp=await fetch(githubContentUrl(path),{headers:githubHeaders(token)});
-  if(resp.status===404)return{ok:false,missing:true,status:404,sha:null,data:null,msg:"Fichier absent"};
-  if(!resp.ok)return{ok:false,missing:false,status:resp.status,msg:await githubErrorMessage(resp)};
-  var j=await resp.json();
-  var data=null;
-  try{data=JSON.parse(atob(String(j.content||"").replace(/\n/g,"")));}catch(e){data=null;}
-  return{ok:true,missing:false,sha:j.sha,data:data,msg:"OK"};
-}
-async function writeGithubFile(token,path,contentText,message,sha){
-  var body={message:message,content:btoa(unescape(encodeURIComponent(contentText)))};
-  if(sha)body.sha=sha;
-  var resp=await fetch(githubContentUrl(path),{method:"PUT",headers:githubHeaders(token),body:JSON.stringify(body)});
-  if(resp.ok)return{ok:true,msg:"OK"};
-  return{ok:false,msg:await githubErrorMessage(resp)};
-}
-
+// V48.9 — supprimé/neutralisé : l'app ne doit jamais écrire data/charges.js automatiquement.
+// data/charges.js est une configuration stable; le niveau réel est dans data/athlete_state.json.
+function buildChargesJsContent(){ return ""; }
 async function saveChargesToGitHub(token){
-  var readResp=await fetch(githubContentUrl("data/charges.js"),{headers:githubHeaders(token)});
-  var sha=null;
-  if(readResp.ok){var gj=await readResp.json();sha=gj.sha;}
-  else if(readResp.status!==404){return{ok:false,msg:await githubErrorMessage(readResp)};}
-  return await writeGithubFile(token,"data/charges.js",buildChargesJsContent(),"Charges mises à jour — "+new Date().toLocaleDateString("fr-CA"),sha);
+  return {ok:false,msg:"Désactivé : les charges stables ne sont pas modifiées automatiquement."};
 }
 
 async function ensureResultatsFile(token){
@@ -1522,8 +1462,10 @@ function setupSessionSave(){
     // 1. Mettre à jour références + historique RPE
     updateRefsFromResults(results);
     updateAthleteStateFromResults(results,payload.date);
-    // 2. Mettre à jour charges locales
-    updateCustomChargesFromResults(results);
+    // 2. Ne plus modifier les charges locales depuis les résultats :
+    // data/charges.js et les charges locales sont une configuration/équipement, pas une capacité réelle.
+    // La capacité réelle est gérée par athlete_state.json.
+    // updateCustomChargesFromResults(results);
     // 3. Marquer le jour complété
     markDayCompleted(state.day);
     // 4. Vérifier alerte deload
@@ -1874,7 +1816,7 @@ function renderPhoneWod(){
 
 
 
-// ─── Mode séance guidé (optionnel) — V48.8 ────────────────────────────────
+// ─── Mode séance guidé (optionnel) — V48.9 ────────────────────────────────
 // Vue iPhone pleine largeur : 1 bloc = 1 page. Le WOD a son gros timer dédié.
 
 var guidedSessionState = { blocks: [], index: 0 };

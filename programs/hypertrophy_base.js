@@ -1,6 +1,6 @@
-// Coach Bertin V48.2 — Phase 2 : Hypertrophie / Force Base (6 semaines)
+// Coach Bertin V48.9 — Phase 2 : Hypertrophie / Force Base (6 semaines)
 // Objectif : masse générale, force de base, chaîne postérieure, densité musculaire jambes
-// V48.2 : programme autonome. Les séances complètes vivent ici, pas dans app.js.
+// V48.9 : programme autonome. Les séances complètes vivent ici, pas dans app.js.
 
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.hypertrophy_base = {

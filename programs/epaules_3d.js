@@ -1,4 +1,4 @@
-// Coach Bertin V48.1 — Phase 1 : Épaules 3D + Triceps (6 semaines)
+// Coach Bertin V48.9 — Phase 1 : Épaules 3D + Triceps (6 semaines)
 // Objectif : masse épaules, triceps, récupération post-compétition, été relaxe
 // S1-S2 : base technique sous-maximale
 // S3-S4 : volume progressif, charges sérieuses
@@ -32,7 +32,7 @@ window.COACH_BERTIN_PROGRAMS.shoulders3d = {
 
 
 // ─── Séances complètes du programme Épaules 3D ──────────────────────────────
-// V48.1 : le contenu réel du programme vit dans ce fichier, pas dans app.js.
+// V48.9 : le contenu réel du programme vit dans ce fichier, pas dans app.js.
 
 function shouldersWeekPlan(week){
   return({

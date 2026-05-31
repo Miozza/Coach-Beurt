@@ -1,4 +1,4 @@
-// Coach Bertin V44 — index des programmes
+// Coach Bertin V48.9 — index des programmes
 window.COACH_BERTIN_PROGRAM_INDEX = [
   { id: "shoulders3d",       file: "programs/epaules_3d.js",         name: "Phase 1 — Épaules 3D + Triceps",          phase: 1 },
   { id: "hypertrophy_base",  file: "programs/hypertrophy_base.js",   name: "Phase 2 — Hypertrophie / Force Base",      phase: 2 },

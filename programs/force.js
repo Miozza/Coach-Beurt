@@ -1,6 +1,6 @@
-// Coach Bertin V48.8 — Programme autonome : Force classique
+// Coach Bertin V48.9 — Programme autonome : Force classique
 // Objectif : force pure, repos longs, très peu de conditioning, aucun WOD destructeur.
-// V48.8 : ne dépend plus de la structure PPL générique.
+// V48.9 : ne dépend plus de la structure PPL générique.
 
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.strength = {

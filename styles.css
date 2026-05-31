@@ -2115,7 +2115,7 @@ label {
 }
 
 /* ═══════════════════════════════════════════
-   V48.1 — Mode séance : 1 bloc = 1 page, WOD géant iPhone 17 Pro
+   V48.9 — Mode séance : 1 bloc = 1 page, WOD géant iPhone 17 Pro
    ═══════════════════════════════════════════ */
 .guided-session {
   padding: max(6px, env(safe-area-inset-top, 0px)) max(2px, env(safe-area-inset-right, 0px)) max(6px, env(safe-area-inset-bottom, 0px)) max(2px, env(safe-area-inset-left, 0px));
@@ -2381,7 +2381,7 @@ label {
 }
 
 /* ═══════════════════════════════════════════
-   V48.1 — Mode séance plein écran sans scroll inutile
+   V48.9 — Mode séance plein écran sans scroll inutile
    - Pas de paragraphes d'instructions dans les blocs guidés
    - Warm-up / mobilité séparés en gros mouvements
    - EMOM et For Time utilisent le même affichage géant que AMRAP

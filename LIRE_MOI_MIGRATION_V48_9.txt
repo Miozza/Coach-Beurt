@@ -1,0 +1,24 @@
+Coach Bertin V48.9 — niveau durable / Solo Leveling
+
+À remplacer dans GitHub :
+- index.html
+- app.js
+- styles.css
+- manifest.json
+- service-worker.js
+- programs/
+
+Ne pas remplacer / ne pas écraser :
+- charges.js
+- data/charges.js
+- data/resultats.json
+- data/athlete_state.json
+- data/cycle_state.json
+
+Nouveautés V48.9 :
+- data/athlete_state.json : niveau réel durable par mouvement.
+- data/cycle_state.json : cycle actif, semaine, jour et jours complétés.
+- Détection d'échec majeur : reps réalisées < 60% de la cible ET RPE >= 9.5.
+- Recalibrage automatique d'un mouvement si la force a été surestimée.
+- charges.js reste une configuration/équipement, pas une mesure de capacité.
+- Interface inchangée.

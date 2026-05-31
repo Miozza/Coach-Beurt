@@ -1,4 +1,4 @@
-// Coach Bertin V48.0 — configuration programme extraite de app.js
+// Coach Bertin V48.9 — configuration programme extraite de app.js
 // Ne contient pas de données personnelles vivantes comme resultats.json.
 
 var defaultProfile = {bench:300,frontSquat:215,strictPress:185,powerClean:225,backSquat5RM:235,hipThrust8RM:315,bulgarianDb:50,dbRdl:70,row8RM:185,chestRow8RM:160,latPulldown10RM:140,inclineDb10RM:55};
