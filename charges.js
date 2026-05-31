@@ -1,12 +1,12 @@
-// Coach Bertin V39-progression-semaine-unique — charges officielles modifiables
-// Tu peux modifier ce fichier dans GitHub pour changer les charges de base de tous les appareils.
-// Les ajustements faits dans l'app sur iPhone restent locaux et ont priorité sur ces valeurs.
+// Coach Bertin V46.5 — charges officielles modifiables
+// Mis à jour automatiquement par l'app après chaque séance.
+// Les ajustements faits dans l'app sur iPhone ont priorité sur ces valeurs.
 window.DEFAULT_CHARGES = {
-  "Strict Press": "115 lb",
+  "Strict Press": "116 lb",
   "Lateral Raise": "20-25 lb",
   "Rear Delt Fly": "20-25 lb",
-  "Triceps Rope Pushdown": "60-70 lb",
-  "Face Pull": "60-70 lb",
+  "Triceps Rope Pushdown": "60 lb",
+  "Face Pull": "60 lb",
   "Chest Supported Row": "115-125 lb",
   "Trap-3 Raise": "léger",
   "Ring Row Strict": "poids du corps",
