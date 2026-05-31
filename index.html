@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>Coach Bertin V49.0</title>
+  <title>Coach Bertin V49.1</title>
   <link rel="manifest" href="manifest.json"/>
   <meta name="theme-color" content="#0a0a0f"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -17,7 +17,7 @@
 
 <!-- ═══ TOPNAV ═══ -->
 <nav class="topnav">
-  <span class="topnav-brand">CB <span class="topnav-v">V49.0</span></span>
+  <span class="topnav-brand">CB <span class="topnav-v">V49.1</span></span>
   <div class="topnav-tabs" id="mainTabs">
     <button id="trainingTab"    class="tab active">WOD</button>
     <button id="phoneTab"       class="tab">iPhone</button>
@@ -152,7 +152,7 @@
       <button id="testTokenBtn" class="btn-ghost">Tester le token GitHub</button>
       <button id="syncGithubBtn" class="btn-ghost">Synchroniser depuis GitHub</button>
     </div>
-    <p class="field-hint">V49.0 : la sync lit <code>data/resultats.json</code>, reconstruit l'historique local et remet les références/RPE à jour.</p>
+    <p class="field-hint">V49.1 : la sync lit <code>data/resultats.json</code>, reconstruit l'historique local et remet les références/RPE à jour.</p>
     <p id="tokenStatus" class="status-msg"></p>
   </div>
 
@@ -289,7 +289,7 @@
   </div>
 </main>
 
-<footer class="footer">V49.0 · Coach Bertin · GitHub sync · Saisie résultats · iPhone optimisé</footer>
+<footer class="footer">V49.1 · Coach Bertin · GitHub sync · Saisie résultats · iPhone optimisé</footer>
 </div>
 
 <script src="programs/index.js"></script>
@@ -302,6 +302,7 @@
 <script src="programs/competition_peak.js"></script>
 <script src="programs/config.js"></script>
 <script src="programs/workouts.js"></script>
+<script src="programs/tutorials.js"></script>
 <script src="data/charges.js"></script>
 <script>
   if (!window.DEFAULT_CHARGES) {

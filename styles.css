@@ -2576,3 +2576,126 @@ label {
   .guided-timer-display { font-size: clamp(72px, 22vw, 112px); }
   .guided-btn { min-height: 46px; }
 }
+
+
+/* V49.1 — Tutos mouvements dans la vue WOD seulement */
+.exercise-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+}
+.exercise-name span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.tuto-btn {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid var(--cyan);
+  background: rgba(0,212,255,.10);
+  color: var(--cyan);
+  font-family: var(--font-hud);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0,212,255,.12);
+}
+.tuto-btn:active { transform: scale(.92); background: rgba(0,212,255,.22); }
+.tuto-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 700;
+  background: rgba(0,0,0,.86);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .22s ease;
+}
+.tuto-modal.visible { opacity: 1; pointer-events: all; }
+.tuto-modal-inner {
+  width: 100%;
+  max-width: 680px;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--panel);
+  border: 1px solid var(--cyan);
+  border-radius: 18px 18px 0 0;
+  padding: 20px 18px calc(22px + var(--safe-bot));
+  box-shadow: 0 -12px 40px rgba(0,0,0,.75), 0 0 28px rgba(0,212,255,.14);
+  transform: translateY(22px);
+  transition: transform .22s ease;
+  position: relative;
+}
+.tuto-modal.visible .tuto-modal-inner { transform: translateY(0); }
+.tuto-modal-inner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--purple), var(--blue), var(--cyan));
+}
+.tuto-topline {
+  font-family: var(--font-hud);
+  font-size: 10px;
+  color: var(--cyan);
+  letter-spacing: .12em;
+  margin-bottom: 6px;
+}
+.tuto-title {
+  font-family: var(--font-hud);
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--white);
+  letter-spacing: .04em;
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+.tuto-goal {
+  background: rgba(0,212,255,.08);
+  border: 1px solid rgba(0,212,255,.22);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.tuto-section {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 10px;
+}
+.tuto-section-title {
+  font-family: var(--font-hud);
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: .09em;
+  margin-bottom: 8px;
+}
+.tuto-section ul {
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+}
+.tuto-section li {
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.45;
+}
+.tuto-cue {
+  margin-top: 12px;
+  background: rgba(255,215,0,.09);
+  border: 1px solid rgba(255,215,0,.28);
+  color: var(--gold);
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-size: 15px;
+  font-weight: 800;
+}

@@ -1,5 +1,5 @@
-// Coach Bertin V49.0
-var APP_VERSION = "V49.0";
+// Coach Bertin V49.1
+var APP_VERSION = "V49.1";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -1083,7 +1083,7 @@ function updateRefsFromResults(results,dateStr){
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
         date:dateStr,lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
-        rpe:Number(r.rpe)||8,note:"Saisi V49.0"
+        rpe:Number(r.rpe)||8,note:"Saisi V49.1"
       };
     }
     // Enregistrer RPE dans l'historique pour progression automatique
@@ -1304,7 +1304,7 @@ document.addEventListener("visibilitychange",function(){
   }
 });
 
-// V49.0 — volontairement neutralisé.
+// V49.1 — volontairement neutralisé.
 // Les résultats ne doivent plus réécrire les charges locales ou data/charges.js.
 // - data/charges.js = configuration stable / équipement / charges de départ
 // - data/resultats.json = journal brut
@@ -1328,7 +1328,7 @@ function buildSessionPayload(results){
 }
 
 // Génère le contenu du fichier charges.js mis à jour avec les nouveaux poids
-// V49.0 — supprimé/neutralisé : l'app ne doit jamais écrire data/charges.js automatiquement.
+// V49.1 — supprimé/neutralisé : l'app ne doit jamais écrire data/charges.js automatiquement.
 // data/charges.js est une configuration stable; le niveau réel est dans data/athlete_state.json.
 function buildChargesJsContent(){ return ""; }
 async function saveChargesToGitHub(token){
@@ -1625,6 +1625,63 @@ function rpeArrowHtml(mvKey, reps){
   return ' <span style="font-size:11px;font-weight:900;color:'+adj.color+'">'+adj.arrow+' <span style="font-size:10px">'+adj.msg+'</span></span>';
 }
 
+
+// ─── Tutos mouvements — vue WOD seulement ───────────────────────────────────
+
+function escapeHtml(s){
+  return String(s==null?"":s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+function tutorialButtonHtml(name){
+  if(!window.findCoachBertinTutorial) return "";
+  var t = window.findCoachBertinTutorial(name);
+  if(!t) return "";
+  return '<button type="button" class="tuto-btn" data-tuto-name="'+escapeHtml(t.key)+'">?</button>';
+}
+function showTutorialModal(name){
+  if(!window.findCoachBertinTutorial) return;
+  var found = window.findCoachBertinTutorial(name);
+  if(!found) return;
+  var t = found.item;
+  var existing=document.getElementById("tutoModal");
+  if(existing) existing.remove();
+  function list(title, arr){
+    if(!arr || !arr.length) return "";
+    return '<div class="tuto-section"><div class="tuto-section-title">'+escapeHtml(title)+'</div><ul>'+arr.map(function(x){return '<li>'+escapeHtml(x)+'</li>';}).join("")+'</ul></div>';
+  }
+  var modal=document.createElement("div");
+  modal.id="tutoModal";
+  modal.className="tuto-modal";
+  modal.innerHTML =
+    '<div class="tuto-modal-inner">'+
+      '<div class="tuto-topline">TUTO MOUVEMENT</div>'+
+      '<div class="tuto-title">'+escapeHtml(found.key)+'</div>'+
+      '<div class="tuto-goal">'+escapeHtml(t.goal||"")+'</div>'+
+      list("Setup", t.setup)+
+      list("Exécution", t.execution)+
+      list("Erreurs fréquentes", t.mistakes)+
+      (t.cue?'<div class="tuto-cue">Repère : '+escapeHtml(t.cue)+'</div>':"")+
+      '<button id="closeTutoBtn" class="btn-accent" style="width:100%;margin-top:14px">Fermer</button>'+
+    '</div>';
+  document.body.appendChild(modal);
+  setTimeout(function(){modal.classList.add("visible");},20);
+  var close=function(){modal.classList.remove("visible");setTimeout(function(){modal.remove();},220);};
+  var btn=document.getElementById("closeTutoBtn"); if(btn) btn.onclick=close;
+  modal.addEventListener("click",function(e){ if(e.target===modal) close(); });
+}
+function setupTutorialButtons(scope){
+  (scope||document).querySelectorAll(".tuto-btn[data-tuto-name]").forEach(function(btn){
+    btn.onclick=function(e){
+      e.preventDefault(); e.stopPropagation();
+      showTutorialModal(btn.getAttribute("data-tuto-name"));
+    };
+  });
+}
+
 function renderWorkout(){
   var w=buildWorkout(state.day,state.week);
   var wt=$("workoutTitle"),wf=$("workoutFocus"),fi=$("focusImpact"),c=$("blocks"),pa=$("progressionAdvice");
@@ -1660,7 +1717,7 @@ function renderWorkout(){
         var arrowHtml="";
         inner+=
           '<div class="exercise-box">'+
-            '<div class="exercise-name">'+e.name+'</div>'+
+            '<div class="exercise-name"><span>'+e.name+'</span>'+tutorialButtonHtml(e.name)+'</div>'+
             '<div class="exercise-meta">'+
               '<div class="exercise-format">'+e.format+'</div>'+
               '<div class="exercise-load">'+athleteSuggestedLoad(e.name,e.load,(parseTargetReps(e.format,10).min||parseTargetReps(e.format,10).max))+'</div>'+
@@ -1677,7 +1734,7 @@ function renderWorkout(){
         var loadCls=adj.signal==="easy"?"up":adj.signal==="hard"?"down":"";
         inner+=
           '<div class="exercise-box">'+
-            '<div class="exercise-name">'+movements[mvKey].name+'</div>'+
+            '<div class="exercise-name"><span>'+movements[mvKey].name+'</span>'+tutorialButtonHtml(movements[mvKey].name)+'</div>'+
             '<div class="exercise-meta">'+
               '<div class="exercise-format">'+setScheme(b.kind,j)+'</div>'+
               '<div class="exercise-load '+loadCls+'">'+lb(finalLoad)+(adj.arrow?' '+adj.arrow:'')+'</div>'+
@@ -1685,7 +1742,7 @@ function renderWorkout(){
           '</div>';
       });
     }
-    div.innerHTML=inner;c.appendChild(div);
+    div.innerHTML=inner;c.appendChild(div);setupTutorialButtons(div);
   });
   if(pa)pa.textContent="Poids ajustés selon ton RPE. Saisis tes résultats en fin de séance.";
 }
@@ -1816,7 +1873,7 @@ function renderPhoneWod(){
 
 
 
-// ─── Mode séance guidé (optionnel) — V49.0 ────────────────────────────────
+// ─── Mode séance guidé (optionnel) — V49.1 ────────────────────────────────
 // Vue iPhone pleine largeur : 1 bloc = 1 page. Le WOD a son gros timer dédié.
 
 var guidedSessionState = { blocks: [], index: 0 };
@@ -2098,7 +2155,7 @@ function renderGuidedSession(){
       html+=renderGuidedExerciseList(st.exercises);
     } else if(text){
       // Certains blocs autonomes (ex.: Optionnel / Bonus) n'ont pas d'exercises[].
-      // Avant V49.0, ils s'affichaient vides en mode séance.
+      // Avant V49.1, ils s'affichaient vides en mode séance.
       html+=renderGuidedStepList(st.text, st.kind) || ("<div class='guided-note big'>"+escHtml(text)+"</div>");
     } else {
       html+="<div class='guided-note big'>Aucun contenu pour ce bloc.</div>";
