@@ -1,5 +1,5 @@
 // Coach Bertin V46
-var APP_VERSION = "V46.4";
+var APP_VERSION = "V46.5";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -1358,46 +1358,91 @@ function buildChargesJsContent(){
   return lines.join("\n");
 }
 
-async function saveChargesToGitHub(token){
-  var apiUrl="https://api.github.com/repos/"+GITHUB_OWNER+"/"+GITHUB_REPO+"/contents/charges.js";
-  var sha=null;
-  try{
-    var getResp=await fetch(apiUrl,{headers:{"Authorization":"token "+token,"Accept":"application/vnd.github.v3+json"}});
-    if(getResp.ok){var gj=await getResp.json();sha=gj.sha;}
-  }catch(e){}
-  var content=btoa(unescape(encodeURIComponent(buildChargesJsContent())));
-  var body={message:"Charges mises à jour — "+new Date().toLocaleDateString("fr-CA"),content:content};
+function githubHeaders(token){
+  return {"Authorization":"token "+token,"Accept":"application/vnd.github.v3+json","Content-Type":"application/json"};
+}
+function githubContentUrl(path){
+  return "https://api.github.com/repos/"+GITHUB_OWNER+"/"+GITHUB_REPO+"/contents/"+path;
+}
+async function githubErrorMessage(resp){
+  var txt="";
+  try{var j=await resp.json();txt=j.message||JSON.stringify(j);}catch(e){txt=String(resp.statusText||"");}
+  if(resp.status===401)return "401 token invalide ou expiré";
+  if(resp.status===403)return "403 permission refusée ou rate limit — vérifie la permission repo";
+  if(resp.status===404)return "404 repo/fichier introuvable ou token sans accès";
+  if(resp.status===422)return "422 chemin invalide ou branche protégée"+(txt?" — "+txt:"");
+  return resp.status+" "+txt;
+}
+async function readGithubJsonFile(token,path){
+  var resp=await fetch(githubContentUrl(path),{headers:githubHeaders(token)});
+  if(resp.status===404)return{ok:false,missing:true,status:404,sha:null,data:null,msg:"Fichier absent"};
+  if(!resp.ok)return{ok:false,missing:false,status:resp.status,msg:await githubErrorMessage(resp)};
+  var j=await resp.json();
+  var data=[];
+  try{data=JSON.parse(atob(String(j.content||"").replace(/\n/g,"")));}catch(e){data=[];}
+  return{ok:true,missing:false,sha:j.sha,data:data,msg:"OK"};
+}
+async function writeGithubFile(token,path,contentText,message,sha){
+  var body={message:message,content:btoa(unescape(encodeURIComponent(contentText)))};
   if(sha)body.sha=sha;
-  try{
-    var putResp=await fetch(apiUrl,{method:"PUT",headers:{"Authorization":"token "+token,"Accept":"application/vnd.github.v3+json","Content-Type":"application/json"},body:JSON.stringify(body)});
-    return putResp.ok;
-  }catch(e){return false;}
+  var resp=await fetch(githubContentUrl(path),{method:"PUT",headers:githubHeaders(token),body:JSON.stringify(body)});
+  if(resp.ok)return{ok:true,msg:"OK"};
+  return{ok:false,msg:await githubErrorMessage(resp)};
+}
+
+async function saveChargesToGitHub(token){
+  var readResp=await fetch(githubContentUrl("charges.js"),{headers:githubHeaders(token)});
+  var sha=null;
+  if(readResp.ok){var gj=await readResp.json();sha=gj.sha;}
+  else if(readResp.status!==404){return{ok:false,msg:await githubErrorMessage(readResp)};}
+  return await writeGithubFile(token,"charges.js",buildChargesJsContent(),"Charges mises à jour — "+new Date().toLocaleDateString("fr-CA"),sha);
+}
+
+async function ensureResultatsFile(token){
+  var r=await readGithubJsonFile(token,GITHUB_FILE);
+  if(r.ok)return{ok:true,msg:"resultats.json OK",sha:r.sha,data:Array.isArray(r.data)?r.data:[]};
+  if(!r.missing)return{ok:false,msg:r.msg};
+  var init=await writeGithubFile(token,GITHUB_FILE,"[]","Création initiale de resultats.json",null);
+  if(!init.ok)return{ok:false,msg:"Création resultats.json impossible : "+init.msg};
+  var r2=await readGithubJsonFile(token,GITHUB_FILE);
+  return{ok:true,msg:"resultats.json créé",sha:r2.sha,data:[]};
 }
 
 async function saveToGitHub(payload){
   var token=getToken();
-  if(!token){return{ok:false,msg:"Token GitHub manquant. Va dans Paramètres ⚙ pour le saisir."};}
-  var apiUrl="https://api.github.com/repos/"+GITHUB_OWNER+"/"+GITHUB_REPO+"/contents/"+GITHUB_FILE;
+  if(!token){return{ok:false,msg:"❌ Token GitHub manquant. Va dans Paramètres ⚙ pour le saisir."};}
+  var r=await readGithubJsonFile(token,GITHUB_FILE);
   var sha=null,existingData=[];
-  try{
-    var getResp=await fetch(apiUrl,{headers:{"Authorization":"token "+token,"Accept":"application/vnd.github.v3+json"}});
-    if(getResp.ok){
-      var getJson=await getResp.json();sha=getJson.sha;
-      try{existingData=JSON.parse(atob(getJson.content.replace(/\n/g,"")));}catch(e){existingData=[];}
-    }
-  }catch(e){}
-  if(!Array.isArray(existingData))existingData=[];
+  if(r.ok){sha=r.sha;existingData=Array.isArray(r.data)?r.data:[];}
+  else if(r.missing){existingData=[];}
+  else{return{ok:false,msg:"❌ Lecture resultats.json échouée : "+r.msg};}
+
   existingData.push(payload);
-  var content=btoa(unescape(encodeURIComponent(JSON.stringify(existingData,null,2))));
-  var body={message:"Séance "+payload.date+" — "+payload.jour+" S"+payload.semaine,content:content};
-  if(sha)body.sha=sha;
+  var w=await writeGithubFile(token,GITHUB_FILE,JSON.stringify(existingData,null,2),"Séance "+payload.date+" — "+payload.jour+" S"+payload.semaine,sha);
+  if(w.ok)return{ok:true,msg:"✅ Séance sauvegardée sur GitHub !"};
+  return{ok:false,msg:"❌ Sauvegarde resultats.json échouée : "+w.msg};
+}
+
+async function testGithubToken(){
+  var inp=$("githubToken");
+  var token=(inp&&inp.value.trim())||getToken();
+  var s=$("tokenStatus");
+  if(!token){if(s){s.textContent="Token vide.";s.className="status-msg err";}return;}
+  setToken(token);
+  if(s){s.textContent="Test GitHub en cours...";s.className="status-msg";}
   try{
-    var putResp=await fetch(apiUrl,{method:"PUT",headers:{"Authorization":"token "+token,"Accept":"application/vnd.github.v3+json","Content-Type":"application/json"},body:JSON.stringify(body)});
-    if(putResp.ok)return{ok:true,msg:"✅ Séance sauvegardée sur GitHub !"};
-    var err=await putResp.json();
-    return{ok:false,msg:"❌ Erreur GitHub : "+(err.message||putResp.status)};
+    var repoResp=await fetch("https://api.github.com/repos/"+GITHUB_OWNER+"/"+GITHUB_REPO,{headers:githubHeaders(token)});
+    if(!repoResp.ok){if(s){s.textContent="❌ Repo inaccessible : "+await githubErrorMessage(repoResp);s.className="status-msg err";}return;}
+
+    var chargesResp=await fetch(githubContentUrl("charges.js"),{headers:githubHeaders(token)});
+    if(!chargesResp.ok){if(s){s.textContent="❌ charges.js inaccessible : "+await githubErrorMessage(chargesResp);s.className="status-msg err";}return;}
+
+    var ensure=await ensureResultatsFile(token);
+    if(!ensure.ok){if(s){s.textContent="❌ "+ensure.msg;s.className="status-msg err";}return;}
+
+    if(s){s.textContent="✅ Token OK · repo accessible · charges.js OK · "+ensure.msg;s.className="status-msg ok";}
   }catch(e){
-    return{ok:false,msg:"❌ Erreur réseau : "+e.message};
+    if(s){s.textContent="❌ Erreur réseau/test : "+e.message;s.className="status-msg err";}
   }
 }
 
@@ -1423,12 +1468,12 @@ function setupSessionSave(){
     save();
     // 6. Envoyer séance sur GitHub
     var result=await saveToGitHub(payload);
-    // 7. Mettre à jour charges.js sur GitHub
+    // 7. Mettre à jour charges.js seulement si la séance est bien sauvegardée
     var token=getToken();
     var chargesMsg="";
-    if(token){
-      var chargesOk=await saveChargesToGitHub(token);
-      chargesMsg=chargesOk?" + charges.js ✅":" (charges.js : erreur)";
+    if(result.ok&&token){
+      var chargesResult=await saveChargesToGitHub(token);
+      chargesMsg=chargesResult.ok?" + charges.js ✅":" · charges.js non sauvegardé : "+chargesResult.msg;
     }
     var s=$("saveStatus");
     if(s){s.textContent=result.msg+chargesMsg;s.className="session-note"+(result.ok?" ok":" err");}
@@ -1952,13 +1997,15 @@ function renderSettings(){
   renderChargeSettings();
 }
 function setupSettingsSave(){
-  var btn=$("saveTokenBtn");if(!btn)return;
-  btn.onclick=function(){
+  var btn=$("saveTokenBtn");
+  if(btn)btn.onclick=function(){
     var val=$("githubToken").value.trim();
     if(!val){var s=$("tokenStatus");if(s){s.textContent="Token vide.";s.className="status-msg err";}return;}
     setToken(val);
-    var s=$("tokenStatus");if(s){s.textContent="✅ Token sauvegardé localement.";s.className="status-msg ok";}
+    var s=$("tokenStatus");if(s){s.textContent="✅ Token sauvegardé localement. Clique Tester le token pour valider GitHub.";s.className="status-msg ok";}
   };
+  var testBtn=$("testTokenBtn");
+  if(testBtn)testBtn.onclick=function(){testGithubToken();};
 }
 
 // ─── Export texte ─────────────────────────────────────────────────────────────
