@@ -325,7 +325,7 @@ function updateAthleteStateFromResults(results,dateStr){
 }
 function athleteSuggestedLoad(nameOrKey, currentLoad, targetReps){
   // athlete_state est la source principale de vérité pour la charge suggérée.
-  // Si des données existent pour ce mouvement + plage de reps → on les utilise en priorité.
+  // Si des données existent pour ce mouvement + plage de reps → utilisées en priorité.
   // Sinon → fallback sur la charge du programme.
   var ast=ensureAthleteState();
   var label=movementLabelFromKeyOrName(nameOrKey);
@@ -336,21 +336,13 @@ function athleteSuggestedLoad(nameOrKey, currentLoad, targetReps){
     if(cap&&cap.currentLoad){
       var capLoad=Number(cap.currentLoad)||0;
       if(capLoad>0){
-        if(cap.status==="recalibrating"||cap.confidence<0.45){
-          return lb(capLoad)+" ⚠";
-        }
-        if(cap.status==="watch"||cap.confidence<0.55){
-          return lb(capLoad)+" ⚠";
-        }
-        if(cap.status==="level_up_ready"){
-          return lb(round5(capLoad+5))+" ↑";
-        }
-        // success, hard, pr, preloaded, hard_success → charge confirmée
+        if(cap.status==="recalibrating"||cap.confidence<0.45){ return lb(capLoad)+" ⚠"; }
+        if(cap.status==="watch"||cap.confidence<0.55){ return lb(capLoad)+" ⚠"; }
+        if(cap.status==="level_up_ready"){ return lb(round5(capLoad+5))+" ↑"; }
         return lb(capLoad);
       }
     }
   }
-  // Fallback : charge du programme (aucune donnée athlete_state pour ce mouvement)
   var load=parseLoad(currentLoad);
   if(!load)return currentLoad||"—";
   return currentLoad;
@@ -1890,18 +1882,7 @@ function renderPhoneWod(){
       html+="<div class='pc-tag wod'>"+rk.tag+"</div>";
       html+="<div class='pc-wod-text'>"+cleanLine(displayChargeText(b.text||""))+"</div>";
       html+=phoneWodLoadHints(b.text||"");
-      var cfg=wodTimerConfig(b);
-      var initial=cfg.mode==="up"?0:cfg.seconds;
-      html+="<div class='pc-timer' data-duration='"+cfg.seconds+"' data-mode='"+cfg.mode+"' data-label='"+cfg.label+"' data-emom='"+(cfg.isEmom?"1":"0")+"'>";
-      html+="<div class='pc-timer-left'>";
-      html+="<div class='pc-timer-label'>"+cfg.label+(cfg.isEmom?" · bip/min":"")+"</div>";
-      html+="<div class='pc-timer-display' id='pcTimerDisplay'>"+formatClock(initial)+"</div>";
-      html+="<div class='pc-timer-hint'>▶ Démarrage dans 10s · bips aux 3 dernières secondes</div>";
-      html+="</div><div class='pc-timer-btns'>";
-      html+="<button class='pc-tbtn start' id='pcTimerStart'>&#9654;</button>";
-      html+="<button class='pc-tbtn' id='pcTimerPause'>&#9208;</button>";
-      html+="<button class='pc-tbtn' id='pcTimerReset'>&#8635;</button>";
-      html+="</div></div>";
+
 
     } else if(b.exercises&&b.exercises.length){
       if(b.text)html+="<div class='pc-plain-text' style='margin-bottom:12px'>"+cleanLine(displayChargeText(b.text))+"</div>";
@@ -1914,7 +1895,7 @@ function renderPhoneWod(){
         html+="<div class='pc-ex-row'><span class='pc-ex-label'>Repos</span><span class='pc-ex-value'>"+e.rest+"</span></div>";
         html+="</div>";
         if(e.note)html+="<div class='pc-ex-note'>"+e.note+"</div>";
-        if(restSec>0)html+="<button class='pc-rest-btn' onclick='startRestTimer("+restSec+")'>// DÉMARRER REPOS "+e.rest+"</button>";
+
         html+="</div>";
       });
     } else if(b.progress&&b.progress.length){
@@ -1931,7 +1912,7 @@ function renderPhoneWod(){
         html+="<div class='pc-ex-row'><span class='pc-ex-label'>Poids</span><span class='pc-ex-value accent "+loadCls+"'>"+lb(finalLoad)+(adj.arrow?" "+adj.arrow:"")+"</span></div>";
         html+="<div class='pc-ex-row'><span class='pc-ex-label'>Repos</span><span class='pc-ex-value'>"+rest+"</span></div>";
         html+="</div>";
-        if(restSec>0)html+="<button class='pc-rest-btn' onclick='startRestTimer("+restSec+")'>// DÉMARRER REPOS "+rest+"</button>";
+
         html+="</div>";
       });
     } else {
@@ -1940,7 +1921,7 @@ function renderPhoneWod(){
       if(rest2!=="—"){
         var rs=parseRestToSeconds(rest2);
         html+="<div class='pc-ex-row' style='margin-top:8px'><span class='pc-ex-label'>Repos</span><span class='pc-ex-value'>"+rest2+"</span></div>";
-        if(rs>0)html+="<button class='pc-rest-btn' style='margin-top:10px' onclick='startRestTimer("+rs+")'>// DÉMARRER REPOS "+rest2+"</button>";
+
       }
     }
     html+="</div>";
@@ -1948,7 +1929,6 @@ function renderPhoneWod(){
 
   el.innerHTML=html;
   renderSessionEntry();
-  setupWodTimer();
 }
 
 
@@ -2151,7 +2131,7 @@ function renderGuidedExerciseList(exercises){
     if(e.rest&&e.rest!=="—")html+="<div><span>Repos</span><strong>"+escHtml(e.rest)+"</strong></div>";
     html+="</div>";
     if(e.note)html+="<div class='guided-note compact'>"+escHtml(e.note)+"</div>";
-    if(restSec>0)html+="<button class='guided-rest mini' data-rest='"+restSec+"'>Repos "+escHtml(e.rest)+"</button>";
+
     html+="</div></div>";
   });
   html+="</div>";
@@ -2258,9 +2238,7 @@ function renderGuidedSession(){
   $("guidedNextBtn").onclick=function(){ if(isLast)closeGuidedSession(); else guidedNext(); };
   $("guidedBackToFullBtn").onclick=closeGuidedSession;
 
-  Array.prototype.forEach.call(el.querySelectorAll(".guided-rest[data-rest]"),function(btn){
-    btn.onclick=function(){ startRestTimer(Number(btn.getAttribute("data-rest"))||0); };
-  });
+
 
   if(st.kind==="wod" && cfg){
     resetGuidedTimerState(cfg);
@@ -2379,7 +2357,6 @@ function renderProgressCharts(){
     var loads=[];
     state.history.forEach(function(s){
       var res=s.results||s.resultats||{};
-      // Chercher par clé mvKey ET par nom complet du mouvement
       var r=res[mvKey]||res[mv.name]||null;
       if(r&&r.load){loads.push(Number(r.load));}
     });
@@ -2668,7 +2645,8 @@ function switchView(v){
     if(main){if(v===x)main.classList.add("view-active");else main.classList.remove("view-active");}
     if(tab)tab.classList.toggle("active",v===x);
   });
-  if(v==="phone"){renderPhoneWod();updateRestDisplay();}
+  if(v==="phone"){renderPhoneWod();}
+  if(v!=="phone"){closeGuidedSession();}
   if(v==="cycle")renderCycle();
   if(v==="history")renderHistory();
   if(v==="profile")renderProfile();
