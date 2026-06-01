@@ -170,5 +170,107 @@
         }
       }
     }
+  },
+  {
+    "version": "V49.5",
+    "date": "2026-06-01",
+    "time": "13:00:49",
+    "semaine": 1,
+    "jour": "lundi",
+    "cycle": "shoulders3d",
+    "focus": "Épaules 3D + Triceps — Phase 1",
+    "cycleState": {
+      "version": "V49.5",
+      "updatedAt": "2026-06-01T17:00:49.921Z",
+      "activeCycle": "shoulders3d",
+      "activeWeek": 1,
+      "activeDay": "lundi",
+      "completedDays": [
+        "lundi"
+      ],
+      "focus": "Épaules 3D + Triceps — Phase 1",
+      "cycleStartedAt": "2026-06-01T00:39:05.095Z"
+    },
+    "resultats": {
+      "Strict Press": {
+        "load": "115",
+        "reps": "10",
+        "rpe": "8",
+        "planned": {
+          "load": 115,
+          "reps": 10,
+          "targetMin": 10,
+          "targetMax": 10,
+          "format": "4 x 10",
+          "kind": "main"
+        },
+        "status": "success",
+        "performanceRatio": 1
+      },
+      "Lateral Raise câble bas": {
+        "load": "15",
+        "reps": "18",
+        "rpe": "8",
+        "planned": {
+          "load": 15,
+          "reps": 15,
+          "targetMin": 15,
+          "targetMax": 20,
+          "format": "4×15-20",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1.2
+      },
+      "Rear Delt Fly câble bas": {
+        "load": "15",
+        "reps": "18",
+        "rpe": "8",
+        "planned": {
+          "load": 15,
+          "reps": 15,
+          "targetMin": 15,
+          "targetMax": 20,
+          "format": "4×15-20",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1.2
+      },
+      "Triceps Rope Pushdown": {
+        "load": "70",
+        "reps": "14",
+        "rpe": "9",
+        "planned": {
+          "load": 60,
+          "reps": 12,
+          "targetMin": 12,
+          "targetMax": 15,
+          "format": "4×12-15",
+          "kind": "accessory"
+        },
+        "status": "hard_success",
+        "performanceRatio": 1.17
+      },
+      "Face Pull": {
+        "load": "70",
+        "reps": "18",
+        "rpe": "9",
+        "planned": {
+          "load": 60,
+          "reps": 15,
+          "targetMin": 15,
+          "targetMax": 20,
+          "format": "4×15-20",
+          "kind": "accessory"
+        },
+        "status": "hard_success",
+        "performanceRatio": 1.2
+      },
+      "wod_D. WOD": {
+        "result": "4 rounds + 1 burpees contrôlés",
+        "rpe": "7"
+      }
+    }
   }
 ]
