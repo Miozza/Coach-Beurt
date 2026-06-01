@@ -1,5 +1,5 @@
-// Coach Bertin V49.1
-var APP_VERSION = "V49.1";
+// Coach Bertin V49.2
+var APP_VERSION = "V49.2";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -1083,7 +1083,7 @@ function updateRefsFromResults(results,dateStr){
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
         date:dateStr,lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
-        rpe:Number(r.rpe)||8,note:"Saisi V49.1"
+        rpe:Number(r.rpe)||8,note:"Saisi V49.2"
       };
     }
     // Enregistrer RPE dans l'historique pour progression automatique
@@ -1304,7 +1304,7 @@ document.addEventListener("visibilitychange",function(){
   }
 });
 
-// V49.1 — volontairement neutralisé.
+// V49.2 — volontairement neutralisé.
 // Les résultats ne doivent plus réécrire les charges locales ou data/charges.js.
 // - data/charges.js = configuration stable / équipement / charges de départ
 // - data/resultats.json = journal brut
@@ -1328,7 +1328,7 @@ function buildSessionPayload(results){
 }
 
 // Génère le contenu du fichier charges.js mis à jour avec les nouveaux poids
-// V49.1 — supprimé/neutralisé : l'app ne doit jamais écrire data/charges.js automatiquement.
+// V49.2 — supprimé/neutralisé : l'app ne doit jamais écrire data/charges.js automatiquement.
 // data/charges.js est une configuration stable; le niveau réel est dans data/athlete_state.json.
 function buildChargesJsContent(){ return ""; }
 async function saveChargesToGitHub(token){
@@ -1873,7 +1873,7 @@ function renderPhoneWod(){
 
 
 
-// ─── Mode séance guidé (optionnel) — V49.1 ────────────────────────────────
+// ─── Mode séance guidé (optionnel) — V49.2 ────────────────────────────────
 // Vue iPhone pleine largeur : 1 bloc = 1 page. Le WOD a son gros timer dédié.
 
 var guidedSessionState = { blocks: [], index: 0 };
@@ -2155,7 +2155,7 @@ function renderGuidedSession(){
       html+=renderGuidedExerciseList(st.exercises);
     } else if(text){
       // Certains blocs autonomes (ex.: Optionnel / Bonus) n'ont pas d'exercises[].
-      // Avant V49.1, ils s'affichaient vides en mode séance.
+      // Avant V49.2, ils s'affichaient vides en mode séance.
       html+=renderGuidedStepList(st.text, st.kind) || ("<div class='guided-note big'>"+escHtml(text)+"</div>");
     } else {
       html+="<div class='guided-note big'>Aucun contenu pour ce bloc.</div>";
@@ -2352,9 +2352,129 @@ function renderReferences(){
 
 // ─── Profil ──────────────────────────────────────────────────────────────────
 
+var PR_FIELD_MAP = {
+  prBench:          {profile:"bench",            label:"Bench press",          mvKey:"bench",       reps:1,  range:"strength"},
+  prFrontSquat:     {profile:"frontSquat",       label:"Front squat",         mvKey:"frontSquat",  reps:1,  range:"strength"},
+  prStrictPress:    {profile:"strictPress",      label:"Strict press",        mvKey:"strictPress", reps:1,  range:"strength"},
+  prPowerClean:     {profile:"powerClean",       label:"Power clean",         mvKey:"powerClean",  reps:1,  range:"strength"},
+  prBackSquat5RM:   {profile:"backSquat5RM",     label:"Back Squat",          mvKey:"backSquat",   reps:5,  range:"strength"},
+  prHipThrust8RM:   {profile:"hipThrust8RM",     label:"Hip thrust",          mvKey:"hipThrust",   reps:8,  range:"hypertrophy"},
+  prBulgarianDB:    {profile:"bulgarianDb",      label:"Bulgarian split squat",mvKey:"bulgarian",   reps:8,  range:"hypertrophy"},
+  prDbRdl:          {profile:"dbRdl",            label:"DB RDL",              mvKey:null,          reps:8,  range:"hypertrophy"},
+  prRow8RM:         {profile:"row8RM",           label:"Barbell row",         mvKey:"barbellRow", reps:8,  range:"hypertrophy"},
+  prChestRow8RM:    {profile:"chestRow8RM",      label:"Chest Supported Row", mvKey:"chestRow",   reps:8,  range:"hypertrophy"},
+  prLatPulldown10RM:{profile:"latPulldown10RM", label:"Weighted Pull-up",    mvKey:"latPulldown",reps:10, range:"hypertrophy"},
+  prInclineDb10RM:  {profile:"inclineDb10RM",    label:"Incline DB press",    mvKey:"inclineDb",  reps:10, range:"hypertrophy"}
+};
+
+function todayDateString(){return new Date().toLocaleDateString("fr-CA");}
+
 function renderProfile(){
-  var map={prBench:"bench",prFrontSquat:"frontSquat",prStrictPress:"strictPress",prPowerClean:"powerClean",prBackSquat5RM:"backSquat5RM",prHipThrust8RM:"hipThrust8RM",prBulgarianDB:"bulgarianDb",prDbRdl:"dbRdl",prRow8RM:"row8RM",prChestRow8RM:"chestRow8RM",prLatPulldown10RM:"latPulldown10RM",prInclineDb10RM:"inclineDb10RM"};
-  Object.keys(map).forEach(function(id){var el=$(id);if(el)el.value=state.profile[map[id]]||"";});
+  Object.keys(PR_FIELD_MAP).forEach(function(id){
+    var el=$(id), cfg=PR_FIELD_MAP[id];
+    if(el)el.value=state.profile[cfg.profile]||"";
+  });
+  var d=$("prDate");if(d&&!d.value)d.value=todayDateString();
+  var st=$("prStatus");if(st){st.textContent="";st.className="status-msg";}
+}
+
+function updateMovementRefFromPR(cfg,load,dateStr){
+  if(!cfg||!cfg.mvKey||!load)return;
+  var refK=cfg.mvKey+"__"+(cfg.range||repRange(cfg.reps));
+  state.movementRefs[refK]={
+    movement:cfg.mvKey,
+    range:cfg.range||repRange(cfg.reps),
+    load:load,
+    reps:cfg.reps,
+    date:dateStr,
+    lastActual:load,
+    status:"pr",
+    quality:"clean",
+    rpe:10,
+    note:"PR saisi manuellement"
+  };
+}
+
+function updateAthleteStateFromPR(cfg,load,dateStr){
+  if(!cfg||!load)return;
+  var ast=ensureAthleteState();
+  var label=cfg.label;
+  var range=cfg.range||repRange(cfg.reps);
+  var oneRM=epley1RM(load,cfg.reps);
+  if(!ast.movements[label]){
+    ast.movements[label]={level:1,xp:0,ranges:{},history:[],lastUpdated:null,status:"new"};
+  }
+  var mv=ast.movements[label];
+  mv.ranges=mv.ranges||{};mv.history=mv.history||[];
+  mv.ranges[range]={
+    currentLoad:load,
+    currentReps:cfg.reps,
+    actualLoad:load,
+    actualReps:cfg.reps,
+    rpe:10,
+    confidence:0.90,
+    status:"pr",
+    estimated1RM:Math.round(oneRM),
+    lastUpdated:dateStr,
+    planned:{source:"manual_pr"}
+  };
+  mv.xp=Math.max(0,Number(mv.xp||0)+35);
+  mv.level=simpleLevelFromLoad(load);
+  mv.status="pr";
+  mv.lastUpdated=dateStr;
+  mv.history.push({date:dateStr,load:load,reps:cfg.reps,rpe:10,range:range,status:"pr",capacityLoad:load,planned:{source:"manual_pr"}});
+  if(mv.history.length>12)mv.history=mv.history.slice(-12);
+  ast.updatedAt=nowIso();ast.version=APP_VERSION;
+}
+
+async function savePrProfile(){
+  var dateStr=($("prDate")&&$("prDate").value)||todayDateString();
+  var changed={}, results={};
+  Object.keys(PR_FIELD_MAP).forEach(function(id){
+    var el=$(id), cfg=PR_FIELD_MAP[id];
+    if(!el)return;
+    var val=parseLoad(el.value);
+    if(!val)return;
+    var old=Number(state.profile[cfg.profile])||0;
+    if(val!==old){
+      state.profile[cfg.profile]=val;
+      changed[cfg.label]={old:old||null,new:val,reps:cfg.reps};
+      results[cfg.label]={load:String(val),reps:String(cfg.reps),rpe:"10",note:"PR saisi manuellement",status:"pr"};
+      updateMovementRefFromPR(cfg,val,dateStr);
+      updateAthleteStateFromPR(cfg,val,dateStr);
+    }
+  });
+  var st=$("prStatus");
+  if(!Object.keys(changed).length){
+    if(st){st.textContent="Aucun PR modifié.";st.className="status-msg";}
+    return;
+  }
+  var entry={
+    uid:"pr_"+dateStr+"_"+Date.now(),
+    type:"pr_update",
+    date:dateStr,
+    time:new Date().toLocaleTimeString("fr-CA"),
+    week:state.week,
+    day:state.day,
+    focus:"PR / Records personnels",
+    results:results,
+    changes:changed,
+    version:APP_VERSION
+  };
+  state.history.push(entry);
+  save();
+  renderReferences();
+  renderHistory();
+  var msg="✅ PR sauvegardés localement et inscrits dans l’historique.";
+  var token=getToken();
+  if(token){
+    var payload={version:APP_VERSION,eventType:"pr_update",date:entry.date,time:entry.time,cycle:state.cycle&&state.cycle.goal?state.cycle.goal:null,focus:entry.focus,resultats:results,changes:changed,athleteState:ensureAthleteState()};
+    var gh=await saveToGitHub(payload);
+    var ps=await savePersistentStateToGitHub(token);
+    msg += " "+(gh.ok?"GitHub resultats ✅":"GitHub resultats ❌ "+gh.msg);
+    msg += " "+(ps.ok?"State ✅":"State ❌ "+ps.msg);
+  }
+  if(st){st.textContent=msg;st.className="status-msg ok";}
 }
 
 // ─── Charges ─────────────────────────────────────────────────────────────────
@@ -2462,6 +2582,7 @@ function bind(){
   var wl=$("wakeLockBtn");if(wl)wl.onclick=function(){if(wakeLock)releaseWakeLock();else requestWakeLock();};  var cp=$("copyPhoneBtn");if(cp)cp.onclick=function(){navigator.clipboard.writeText(stableIphoneText()).then(function(){alert("Copié.");}).catch(function(){alert("Copie bloquée.");});};
   var sc=$("saveCycleBtn");if(sc)sc.onclick=saveCycle;
   var nc=$("newCycleBtn");if(nc)nc.onclick=newCycle;
+  var spr=$("savePrBtn");if(spr)spr.onclick=savePrProfile;
   var cg=$("cycleGoal");if(cg)cg.onchange=function(){state.cycle.goal=cg.value;save();renderFocusDetails();};
   var eh=$("exportHistoryBtn");if(eh)eh.onclick=function(){download("coach-bertin-historique.txt","Historique "+APP_VERSION+"\n\n"+JSON.stringify(state.history,null,2));};
   var rh=$("resetHistoryBtn");if(rh)rh.onclick=function(){if(confirm("Effacer tout l'historique?")){state.history=[];save();renderHistory();}};
