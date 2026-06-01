@@ -1,6 +1,6 @@
-// Coach Bertin V48.9 — Phase 2 : Hypertrophie / Force Base (6 semaines)
+// Coach Bertin V49.5 — Phase 2 : Hypertrophie / Force Base (6 semaines)
 // Objectif : masse générale, force de base, chaîne postérieure, densité musculaire jambes
-// V48.9 : programme autonome. Les séances complètes vivent ici, pas dans app.js.
+// V49.5 : programme autonome. Les séances complètes vivent ici, pas dans app.js.
 
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.hypertrophy_base = {
@@ -75,8 +75,8 @@ function hypertrophyBlocks(day,week){
 
   // MARDI — Bas du corps : squat + chaîne postérieure
   if(day === "mardi") return [
-    {time:"9 min",title:"Warm-up bas du corps",tag:"Préparation",kind:"warmup",
-     text:"Bike 3 min + ankle rocks 10/côté + goblet squat 2×10 + glute bridge 2×15 + ramp-up front squat : barre ×8, 135×5, 155×3."},
+    {time:"9 min",title:"Warm-up bas du corps + posture",tag:"Préparation",kind:"warmup",
+     text:"Bike 3 min + ankle rocks 10/côté + open book 5/côté + dead bug 2×6 + goblet squat 2×8 + ramp-up front squat : barre ×8, 135×5, 155×3."},
 
     {time:"16 min",title:"A. Squat force base",tag:"Jambes",kind:"main",
      exercises:[hbEx("Front Squat",p.squat,p.squatLoad,heavy?"2:30":"2:00","Dos protégé. Profondeur propre. Aucune tentative héroïque.")]},
@@ -152,6 +152,10 @@ function hypertrophyBlocks(day,week){
      text:"Front rack stretch 1 min + lat stretch 1 min/côté + couch stretch 1 min/côté."}
   ];
 }
+
+window.COACH_BERTIN_PROGRAMS.hypertrophy_base.getWeekNote = function(week){
+  return hypertrophyWeekPlan(week).note || "";
+};
 
 window.COACH_BERTIN_PROGRAMS.hypertrophy_base.getBlocks = function(day, week){
   return hypertrophyBlocks(day, week);

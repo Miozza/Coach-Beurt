@@ -1,6 +1,6 @@
-// Coach Bertin V48.9 — Phase 4 : Compétition CrossFit Peak (8 semaines)
+// Coach Bertin V49.5 — Phase 4 : Compétition CrossFit Peak (8 semaines)
 // Objectif : performance Open CrossFit janvier 2027
-// V48.9 : programme autonome. Logique compétition réelle : pacing, benchmarks, simulations, taper.
+// V49.5 : programme autonome. Logique compétition réelle : pacing, benchmarks, simulations, taper.
 
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.competition_peak = {
@@ -153,6 +153,10 @@ function competitionPeakBlocks(day,week){
      text:"Marche lente 2 min + respiration nasale 1 min + couch stretch 1 min/côté. Évalue stratégie : départ, cassures, transitions."}
   ];
 }
+
+window.COACH_BERTIN_PROGRAMS.competition_peak.getWeekNote = function(week){
+  return cpWeekPlan(week).note || "";
+};
 
 window.COACH_BERTIN_PROGRAMS.competition_peak.getBlocks = function(day, week){
   return competitionPeakBlocks(day, week);

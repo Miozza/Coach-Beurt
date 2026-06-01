@@ -1,6 +1,6 @@
-// Coach Bertin V48.9 — Phase 3 : Force + Résistance musculaire (6 semaines)
+// Coach Bertin V49.5 — Phase 3 : Force + Résistance musculaire (6 semaines)
 // Objectif : force réelle + transfert CrossFit sans structure PPL générique.
-// V48.9 : programme autonome. Les journées complètes vivent ici, pas dans app.js.
+// V49.5 : programme autonome. Les journées complètes vivent ici, pas dans app.js.
 
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.force_performance = {
@@ -76,8 +76,8 @@ function forcePerformanceBlocks(day,week){
 
   // MARDI — Squat / jambes + densité squat contrôlée.
   if(day === "mardi") return [
-    {time:"9 min",title:"Warm-up squat",tag:"Préparation",kind:"warmup",
-     text:"Bike 3 min + ankle rocks 10/côté + goblet squat 2×10 + glute bridge 2×15 + ramp-up squat : barre ×8, 135×5, 185×3."},
+    {time:"8 min",title:"Warm-up squat + posture",tag:"Préparation",kind:"warmup",
+     text:"Bike 3 min + ankle rocks 10/côté + open book 5/côté + dead bug 2×6 + goblet squat 2×8 + ramp-up squat : barre ×8, 135×5, 185×3."},
 
     {time:"18 min",title:"A. Squat priorité",tag:"Force",kind:"main",
      exercises:[fpEx("Back Squat",p.squat,p.squatLoad,heavy?"3:00":"2:30","Force jambes. Dos neutre. Aucun ego lift. Si le dos parle : front squat même charge relative.")]},
@@ -88,14 +88,14 @@ function forcePerformanceBlocks(day,week){
        fpEx("B2. DB RDL",deload?"2×8 léger":"3×8","60-70 lb / main","1:30 après B2","Ischios. Pas de flexion lombaire.")
      ]},
 
-    {time:"10 min",title:"C. Densité jambes",tag:"Résistance",kind:"accessory",
+    {time:deload?"6 min":"8 min",title:"C. Densité jambes",tag:"Résistance",kind:"accessory",
      text:deload?"Deload : seulement bouger proprement.":"Bloc spécifique : tolérer les jambes qui brûlent sans perdre la technique.",
      exercises:[
        fpEx("C1. Front Squat léger densité",deload?"2×8":"5×10",deload?"115 lb":week>=3?"145-165 lb":"135-155 lb","0:45","Respiration contrôlée. Pas d'échec."),
        fpEx("C2. Box Step-up",deload?"2×10":"3×15/jambe",deload?"poids du corps":"20-35 lb / main","0:45","Rythme constant, genou stable.")
      ]},
 
-    {time:deload?"6 min":"8 min",title:"D. Conditioning jambes court",tag:"Conditioning",kind:"wod",
+    {time:deload?"5 min":"6 min",title:"D. Conditioning jambes court",tag:"Conditioning",kind:"wod",
      text:(deload?"Row 6 min facile zone 2.":"EMOM 8 : min 1 = 12 cal bike ; min 2 = 12 KB swings.")+" "+p.wodNote+"."},
 
     {time:"5 min",title:"E. Mobilité",tag:"Mobilité",kind:"mobility",
@@ -104,7 +104,7 @@ function forcePerformanceBlocks(day,week){
 
   // JEUDI — Clean / press / skill gymnastics.
   if(day === "jeudi") return [
-    {time:"10 min",title:"Warm-up haltéro",tag:"Préparation",kind:"warmup",
+    {time:"9 min",title:"Warm-up haltéro",tag:"Préparation",kind:"warmup",
      text:"Row 3 min + front rack stretch 1 min + tall muscle clean 2×5 + clean pull 2×3 + ramp-up power clean : 95×3, 135×2, 155×1."},
 
     {time:"16 min",title:"A. Power clean force-vitesse",tag:"Haltéro",kind:"main",
@@ -113,14 +113,31 @@ function forcePerformanceBlocks(day,week){
     {time:"12 min",title:"B. Press force",tag:"Force",kind:"accessory",
      exercises:[fpEx("Strict Press",p.press,p.pressLoad,heavy?"2:15":"1:45-2:00","Force verticale. Gainage dur. Pas de compensation lombaire.")]},
 
-    {time:"12 min",title:"C. Skill muscle-up",tag:"Skill",kind:"accessory",
+    {time:"10 min",title:"C. Skill muscle-up",tag:"Skill",kind:"accessory",
      text:"Qualité stricte. Ce bloc prépare les muscle-ups sans te détruire les coudes.",
      exercises:[
-       fpEx("C1. Chest-to-Bar Pull-up / Pull-up strict",deload?"3×4 facile":peak?"4×3":"5×4-6","poids du corps","0:45 avant C2","Tirage haut. Stop avant la perte de forme."),
-       fpEx("C2. Ring Dip strict",deload?"3×5 facile":peak?"4×3":"5×5-6",deload?"poids du corps":heavy?"+20 à +35 lb":"+10 à +25 lb","1:15 après C2","Épaules basses. Amplitude propre.")
+       fpEx("C1. "+[
+         "Pull-up strict","Pull-up strict","Chest-to-Bar tentative","Transition drill low-ring",
+         "Muscle-up tentative (ring)","Pull-up strict déload"
+       ][Math.min(week-1,5)],
+       deload?"2×5 facile":peak?"4×1-2":week>=4?"5×2-3":week===3?"5×4":"5×4-6",
+       "poids du corps","0:45 avant C2",
+       [
+         "S1 — Base : tirage strict, scapulas fortes. Arrêt avant la perte de forme.",
+         "S2 — Montée : pull-up haut, toucher poitrine à la barre si possible.",
+         "S3 — Densité : viser le chest-to-bar propre, chaque rep compte.",
+         "S4 — Transition : low rings, simuler le passage de pull à dip. 2-3 reps max.",
+         "S5 — Test : 1-2 muscle-ups si possible. Qualité avant nombre.",
+         "S6 — Déload : pull-up strict seulement, technique, pas de fatigue."
+       ][Math.min(week-1,5)]),
+       fpEx("C2. Ring Dip strict",
+       deload?"2×5 léger":peak?"4×3 lourd":"5×5-6",
+       deload?"poids du corps":week===5?"+30 à +40 lb":week===4?"+20 à +35 lb":week>=3?"+15 à +25 lb":"+5 à +15 lb",
+       "1:15 après C2",
+       "Épaules basses, amplitude complète. La force en dip est la moitié du muscle-up.")
      ]},
 
-    {time:deload?"6 min":"10 min",title:"D. Conditioning technique",tag:"Conditioning",kind:"wod",
+    {time:deload?"5 min":"8 min",title:"D. Conditioning technique",tag:"Conditioning",kind:"wod",
      text:(deload?"SkiErg 6 min facile.":"EMOM 10 : min 1 = 2 power cleans légers ; min 2 = 6 burpees contrôlés.")+" "+p.wodNote+". Le but est technique sous fatigue légère."},
 
     {time:"5 min",title:"E. Mobilité",tag:"Mobilité",kind:"mobility",
@@ -151,6 +168,10 @@ function forcePerformanceBlocks(day,week){
      text:"Lat stretch 1 min/côté + couch stretch 1 min/côté + respiration 1 min."}
   ];
 }
+
+window.COACH_BERTIN_PROGRAMS.force_performance.getWeekNote = function(week){
+  return forceWeekPlan(week).note || "";
+};
 
 window.COACH_BERTIN_PROGRAMS.force_performance.getBlocks = function(day, week){
   return forcePerformanceBlocks(day, week);
