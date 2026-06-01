@@ -1,5 +1,5 @@
-// Coach Bertin V49.25
-var APP_VERSION = "V49.25";
+// Coach Bertin V49.26
+var APP_VERSION = "V49.26";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -480,11 +480,19 @@ function wodTimerConfig(block){
 function stopWodTimer(){
   if(wodTimer.interval){clearInterval(wodTimer.interval);wodTimer.interval=null;}
   wodTimer.running=false;wodTimer.countdownActive=false;
-
+  var d=$("pcTimerDisplay");if(d)d.style.color="";
 }
 function wodTimerCurrentValue(){return wodTimer.mode==="up"?wodTimer.elapsed:wodTimer.remaining;}
 function updateWodTimerDisplay(){
-  // V49.25 — timer WOD retiré de la vue iPhone. Aucun élément à mettre à jour.
+  var d=$("pcTimerDisplay");if(!d)return;
+  // Pendant le countdown 10s afficher le compte à rebours en rouge
+  if(wodTimer.countdownActive){
+    d.textContent=String(wodTimer.countdownRemaining);
+    d.style.color="var(--red)";d.style.fontSize="88px";
+  } else {
+    d.textContent=formatClock(wodTimerCurrentValue());
+    d.style.color="";d.style.fontSize="";
+  }
 }
 function resetWodTimerState(dur,mode,label,isEmom){
   stopWodTimer();
@@ -520,7 +528,7 @@ function setupWodTimer(){
   var isEmom=box.getAttribute("data-emom")==="1";
   if(wodTimer.duration!==dur||wodTimer.mode!==mode)resetWodTimerState(dur,mode,label,isEmom);
   updateWodTimerDisplay();
-  var start=null,pause=null,reset=null; // V49.25 — timer WOD retiré
+  var start=$("pcTimerStart"),pause=$("pcTimerPause"),reset=$("pcTimerReset");
 
   if(start)start.onclick=function(){
     resumeAudio();
@@ -552,7 +560,7 @@ function setupWodTimer(){
   if(pause)pause.onclick=function(){stopWodTimer();updateWodTimerDisplay();};
   if(reset)reset.onclick=function(){
     resetWodTimerState(dur,mode,label,isEmom);
-
+    var s=$("pcTimerStart");if(s){s.textContent="▶";s.disabled=false;}
     updateWodTimerDisplay();
   };
 }
@@ -570,6 +578,8 @@ function currentClockWithSeconds(){
 // V49.22 — horloge uniquement dans le mode séance; heure et secondes même grosseur.
 var globalClockInterval=null;
 function ensureGlobalClock(){
+  var old=$('globalLiveClock');
+  if(old) old.classList.add('hidden');
   return $('guidedLiveClock');
 }
 function updateGlobalClock(){
@@ -603,7 +613,11 @@ function updateRestFloatingClock(){
   if(el){el.className="rest-floating-clock hidden";el.innerHTML="";}
 }
 function updateRestDisplay(){
-  // V49.25 — restDisplay retiré du DOM. Seul updateRestFloatingClock est conservé.
+  var d=$("restDisplay");
+  if(d){
+    d.textContent=formatClock(restTimer.remaining);
+    d.className="rest-display"+(restTimer.running?" active":restTimer.remaining===0?" done":"");
+  }
   updateRestFloatingClock();
 }
 function stopRestTimer(){
@@ -620,14 +634,14 @@ function startRestTimer(seconds){
     if(restTimer.remaining<=3&&restTimer.remaining>0){bipCountdown();vibrate([60]);}
     if(restTimer.remaining<=0){
       stopRestTimer();bipRestDone();vibrate([300,100,300,100,300]);
-
+      var d=$("restDisplay");if(d)d.className="rest-display done";
     }
   },1000);
 }
 function setupRestBar(){
   var map={rb45:45,rb60:60,rb90:90,rb120:120};
   Object.keys(map).forEach(function(id){var b=$(id);if(b)b.onclick=function(){resumeAudio();startRestTimer(map[id]);};});
-
+  var stop=$("rbStop");if(stop)stop.onclick=function(){stopRestTimer();restTimer.remaining=0;updateRestDisplay();};
 }
 
 // ─── Saisie résultats & GitHub sync ──────────────────────────────────────────
@@ -748,7 +762,7 @@ function estimateWodRounds(text, durationMin){
   return {min:3,max:6,def:4};
 }
 
-// V49.25 — Helpers For Time.
+// V49.26 — Helpers For Time.
 // Ces fonctions doivent exister avant renderSessionEntry(), sinon les WODs For Time
 // comme le jeudi Épaules 3D n'affichent pas le champ de temps final.
 function parseCapSeconds(text, fallbackMin){
@@ -1947,6 +1961,18 @@ function renderPhoneWod(){
       html+="<div class='pc-tag wod'>"+rk.tag+"</div>";
       html+="<div class='pc-wod-text'>"+cleanLine(displayChargeText(b.text||""))+"</div>";
       html+=phoneWodLoadHints(b.text||"");
+      var cfg=wodTimerConfig(b);
+      var initial=cfg.mode==="up"?0:cfg.seconds;
+      html+="<div class='pc-timer' data-duration='"+cfg.seconds+"' data-mode='"+cfg.mode+"' data-label='"+cfg.label+"' data-emom='"+(cfg.isEmom?"1":"0")+"'>";
+      html+="<div class='pc-timer-left'>";
+      html+="<div class='pc-timer-label'>"+cfg.label+(cfg.isEmom?" · bip/min":"")+"</div>";
+      html+="<div class='pc-timer-display' id='pcTimerDisplay'>"+formatClock(initial)+"</div>";
+      html+="<div class='pc-timer-hint'>▶ Démarrage dans 10s · bips aux 3 dernières secondes</div>";
+      html+="</div><div class='pc-timer-btns'>";
+      html+="<button class='pc-tbtn start' id='pcTimerStart'>&#9654;</button>";
+      html+="<button class='pc-tbtn' id='pcTimerPause'>&#9208;</button>";
+      html+="<button class='pc-tbtn' id='pcTimerReset'>&#8635;</button>";
+      html+="</div></div>";
 
     } else if(b.exercises&&b.exercises.length){
       if(b.text)html+="<div class='pc-plain-text' style='margin-bottom:12px'>"+cleanLine(displayChargeText(b.text))+"</div>";
