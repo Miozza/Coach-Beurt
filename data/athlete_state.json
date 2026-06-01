@@ -1,6 +1,6 @@
 {
   "version": "V49.5",
-  "updatedAt": "2026-06-01T01:37:15.899Z",
+  "updatedAt": "2026-06-01T17:00:51.370Z",
   "movements": {
     "Front squat": {
       "level": 17,
@@ -49,6 +49,236 @@
       ],
       "lastUpdated": "2026-05-31",
       "status": "pr"
+    },
+    "Strict Press": {
+      "level": 9,
+      "xp": 15,
+      "ranges": {
+        "hypertrophy": {
+          "currentLoad": 115,
+          "currentReps": 10,
+          "actualLoad": 115,
+          "actualReps": 10,
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 153,
+          "lastUpdated": "2026-06-01",
+          "planned": {
+            "load": 115,
+            "reps": 10,
+            "targetMin": 10,
+            "targetMax": 10,
+            "format": "4 x 10",
+            "kind": "main"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-01",
+          "load": 115,
+          "reps": 10,
+          "rpe": 8,
+          "range": "hypertrophy",
+          "status": "success",
+          "capacityLoad": 115,
+          "planned": {
+            "load": 115,
+            "reps": 10,
+            "targetMin": 10,
+            "targetMax": 10,
+            "format": "4 x 10",
+            "kind": "main"
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-01",
+      "status": "success"
+    },
+    "Lateral Raise câble bas": {
+      "level": 1,
+      "xp": 15,
+      "ranges": {
+        "endurance": {
+          "currentLoad": 15,
+          "currentReps": 15,
+          "actualLoad": 15,
+          "actualReps": 18,
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 24,
+          "lastUpdated": "2026-06-01",
+          "planned": {
+            "load": 15,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-01",
+          "load": 15,
+          "reps": 18,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 15,
+          "planned": {
+            "load": 15,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-01",
+      "status": "success"
+    },
+    "Rear Delt Fly câble bas": {
+      "level": 1,
+      "xp": 15,
+      "ranges": {
+        "endurance": {
+          "currentLoad": 15,
+          "currentReps": 15,
+          "actualLoad": 15,
+          "actualReps": 18,
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 24,
+          "lastUpdated": "2026-06-01",
+          "planned": {
+            "load": 15,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-01",
+          "load": 15,
+          "reps": 18,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 15,
+          "planned": {
+            "load": 15,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-01",
+      "status": "success"
+    },
+    "Triceps Rope Pushdown": {
+      "level": 6,
+      "xp": 10,
+      "ranges": {
+        "endurance": {
+          "currentLoad": 70,
+          "currentReps": 12,
+          "actualLoad": 70,
+          "actualReps": 14,
+          "rpe": 9,
+          "confidence": 0.7,
+          "status": "hard",
+          "estimated1RM": 103,
+          "lastUpdated": "2026-06-01",
+          "planned": {
+            "load": 60,
+            "reps": 12,
+            "targetMin": 12,
+            "targetMax": 15,
+            "format": "4×12-15",
+            "kind": "accessory"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-01",
+          "load": 70,
+          "reps": 14,
+          "rpe": 9,
+          "range": "endurance",
+          "status": "hard",
+          "capacityLoad": 70,
+          "planned": {
+            "load": 60,
+            "reps": 12,
+            "targetMin": 12,
+            "targetMax": 15,
+            "format": "4×12-15",
+            "kind": "accessory"
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-01",
+      "status": "hard"
+    },
+    "Face Pull": {
+      "level": 6,
+      "xp": 10,
+      "ranges": {
+        "endurance": {
+          "currentLoad": 70,
+          "currentReps": 15,
+          "actualLoad": 70,
+          "actualReps": 18,
+          "rpe": 9,
+          "confidence": 0.7,
+          "status": "hard",
+          "estimated1RM": 112,
+          "lastUpdated": "2026-06-01",
+          "planned": {
+            "load": 60,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-01",
+          "load": 70,
+          "reps": 18,
+          "rpe": 9,
+          "range": "endurance",
+          "status": "hard",
+          "capacityLoad": 70,
+          "planned": {
+            "load": 60,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-01",
+      "status": "hard"
     }
   }
 }
