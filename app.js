@@ -1,5 +1,5 @@
-// Coach Bertin V49.4
-var APP_VERSION = "V49.4";
+// Coach Bertin V49.5
+var APP_VERSION = "V49.5";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -324,20 +324,35 @@ function updateAthleteStateFromResults(results,dateStr){
   ast.updatedAt=nowIso();ast.version=APP_VERSION;
 }
 function athleteSuggestedLoad(nameOrKey, currentLoad, targetReps){
-  var load=parseLoad(currentLoad);
-  if(!load)return currentLoad;
+  // athlete_state est la source principale de vérité pour la charge suggérée.
+  // Si des données existent pour ce mouvement + plage de reps → on les utilise en priorité.
+  // Sinon → fallback sur la charge du programme.
   var ast=ensureAthleteState();
   var label=movementLabelFromKeyOrName(nameOrKey);
   var mv=ast.movements&&ast.movements[label];
-  if(!mv||!mv.ranges)return currentLoad;
-  var range=repRange(Number(targetReps)||8);
-  var cap=mv.ranges[range];
-  if(!cap||!cap.currentLoad)return currentLoad;
-  // Si le niveau est en recalibrage ou sous surveillance, on cappe la charge proposée.
-  if(cap.status==="recalibrating"||cap.status==="watch"||cap.confidence<0.55){
-    var capped=Math.min(load, Number(cap.currentLoad)||load);
-    return lb(capped)+" ⚠";
+  if(mv&&mv.ranges){
+    var range=repRange(Number(targetReps)||8);
+    var cap=mv.ranges[range];
+    if(cap&&cap.currentLoad){
+      var capLoad=Number(cap.currentLoad)||0;
+      if(capLoad>0){
+        if(cap.status==="recalibrating"||cap.confidence<0.45){
+          return lb(capLoad)+" ⚠";
+        }
+        if(cap.status==="watch"||cap.confidence<0.55){
+          return lb(capLoad)+" ⚠";
+        }
+        if(cap.status==="level_up_ready"){
+          return lb(round5(capLoad+5))+" ↑";
+        }
+        // success, hard, pr, preloaded, hard_success → charge confirmée
+        return lb(capLoad);
+      }
+    }
   }
+  // Fallback : charge du programme (aucune donnée athlete_state pour ce mouvement)
+  var load=parseLoad(currentLoad);
+  if(!load)return currentLoad||"—";
   return currentLoad;
 }
 function buildCycleStatePayload(){
@@ -465,6 +480,19 @@ function vibrate(p){try{if(navigator.vibrate)navigator.vibrate(p);}catch(e){}}
 // ─── Timer WOD ───────────────────────────────────────────────────────────────
 
 var wodTimer={duration:0,remaining:0,elapsed:0,running:false,interval:null,mode:"down",label:"",isEmom:false,countdownActive:false};
+
+// ─── parseCapSeconds / buildTimeOptions (For time WODs) ──────────────────────
+function parseCapSeconds(text, durationMin){
+  var m = String(text||"").match(/[Cc]ap\s+(\d+)\s*min/);
+  if(m) return Number(m[1])*60;
+  return (durationMin||15)*60;
+}
+function buildTimeOptions(expectedSec){
+  var options=[], step=30;
+  var max = expectedSec + 180;
+  for(var s=30; s<=max; s+=step){ options.push(s); }
+  return options;
+}
 
 function parseTimeToSeconds(t){var m=String(t||"").match(/(\d+)\s*min/);return m?Number(m[1])*60:0;}
 function formatClock(sec){sec=Math.max(0,Math.floor(sec||0));return String(Math.floor(sec/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0");}
@@ -1083,7 +1111,7 @@ function updateRefsFromResults(results,dateStr){
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
         date:dateStr,lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
-        rpe:Number(r.rpe)||8,note:"Saisi V49.3"
+        rpe:Number(r.rpe)||8,note:"Saisi V49.5"
       };
     }
     // Enregistrer RPE dans l'historique pour progression automatique
@@ -1734,7 +1762,8 @@ function setupTutorialButtons(scope){
 function renderWorkout(){
   var w=buildWorkout(state.day,state.week);
   var wt=$("workoutTitle"),wf=$("workoutFocus"),fi=$("focusImpact"),c=$("blocks"),pa=$("progressionAdvice");
-  var plan=state.cycle.goal==="shoulders3d"?shouldersWeekPlan(state.week):null;
+  var cfg_rw=focus();
+  var weekNote_rw=cfg_rw.getWeekNote?cfg_rw.getWeekNote(state.week):null;
   var wi=buildWeekInfo();
   if(wt)wt.textContent=(wi[state.week]?wi[state.week].label:"S"+state.week)+" — "+w.day.label+" — "+w.day.base;
   if(wf)wf.textContent=w.day.focus;
@@ -1743,7 +1772,7 @@ function renderWorkout(){
     ?"<br><strong style='color:var(--red)'>⚠ RPE élevé détecté — considère un deload</strong>":"";
   if(fi)fi.innerHTML=
     "<strong>"+dayIntention(state.day)+"</strong>"+
-    (plan?"<em>"+plan.label+" : "+plan.note+"</em>":"")+
+    (weekNote_rw?"<em>"+(wi[state.week]?wi[state.week].label:"S"+state.week)+" — "+weekNote_rw+"</em>":"")+
     deloadWarning+
     "<small>"+cycleRules().slice(0,3).join(" · ")+"</small>";
 
@@ -1813,7 +1842,9 @@ function phoneWodLoadHints(text){
 function renderPhoneWod(){
   var el=$("phoneWod");if(!el)return;
   var w=buildWorkout(state.day,state.week);
-  var plan=state.cycle.goal==="shoulders3d"?shouldersWeekPlan(state.week):null;
+  var cfg_pw=focus();
+  var weekNote_pw=cfg_pw.getWeekNote?cfg_pw.getWeekNote(state.week):null;
+  var weekNoteLabel_pw=(buildWeekInfo()[state.week]||{}).label||("S"+state.week);
   var dayIdx=DAYS_ORDER.indexOf(state.day);
   var html="";
   var dl=$("phoneDayLabel");if(dl)dl.textContent=w.day.label+" · S"+state.week;
@@ -1836,7 +1867,7 @@ function renderPhoneWod(){
   html+="<div class='pc intention'>";
   html+="<div class='pc-tag'>Intention du jour</div>";
   html+="<div class='pc-wod-text' style='font-size:16px;font-weight:700;color:var(--text)'>"+dayIntention(state.day)+"</div>";
-  if(plan)html+="<div style='margin-top:10px;font-size:14px;color:var(--gold)'>"+plan.label+" — "+plan.note+"</div>";
+  if(weekNote_pw)html+="<div style='margin-top:10px;font-size:14px;color:var(--gold)'>"+weekNoteLabel_pw+" — "+weekNote_pw+"</div>";
   html+="</div>";
 
   // Règles
@@ -2347,7 +2378,10 @@ function renderProgressCharts(){
     var mv=movements[mvKey];if(!mv)return;
     var loads=[];
     state.history.forEach(function(s){
-      if(s.results&&s.results[mvKey]&&s.results[mvKey].load){loads.push(Number(s.results[mvKey].load));}
+      var res=s.results||s.resultats||{};
+      // Chercher par clé mvKey ET par nom complet du mouvement
+      var r=res[mvKey]||res[mv.name]||null;
+      if(r&&r.load){loads.push(Number(r.load));}
     });
     if(loads.length<2)return;
     var max=Math.max.apply(null,loads),min=Math.min.apply(null,loads);
