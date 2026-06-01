@@ -1,9 +1,0 @@
-{
-  "name": "Coach Bertin V49.5",
-  "short_name": "Hunter V49.5",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#04060f",
-  "theme_color": "#04060f",
-  "icons": []
-}
