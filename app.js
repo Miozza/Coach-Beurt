@@ -1,5 +1,5 @@
-// Coach Bertin V49.5
-var APP_VERSION = "V49.5";
+// Coach Bertin V49.25
+var APP_VERSION = "V49.25";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -324,27 +324,20 @@ function updateAthleteStateFromResults(results,dateStr){
   ast.updatedAt=nowIso();ast.version=APP_VERSION;
 }
 function athleteSuggestedLoad(nameOrKey, currentLoad, targetReps){
-  // athlete_state est la source principale de vérité pour la charge suggérée.
-  // Si des données existent pour ce mouvement + plage de reps → utilisées en priorité.
-  // Sinon → fallback sur la charge du programme.
+  var load=parseLoad(currentLoad);
+  if(!load)return currentLoad;
   var ast=ensureAthleteState();
   var label=movementLabelFromKeyOrName(nameOrKey);
   var mv=ast.movements&&ast.movements[label];
-  if(mv&&mv.ranges){
-    var range=repRange(Number(targetReps)||8);
-    var cap=mv.ranges[range];
-    if(cap&&cap.currentLoad){
-      var capLoad=Number(cap.currentLoad)||0;
-      if(capLoad>0){
-        if(cap.status==="recalibrating"||cap.confidence<0.45){ return lb(capLoad)+" ⚠"; }
-        if(cap.status==="watch"||cap.confidence<0.55){ return lb(capLoad)+" ⚠"; }
-        if(cap.status==="level_up_ready"){ return lb(round5(capLoad+5))+" ↑"; }
-        return lb(capLoad);
-      }
-    }
+  if(!mv||!mv.ranges)return currentLoad;
+  var range=repRange(Number(targetReps)||8);
+  var cap=mv.ranges[range];
+  if(!cap||!cap.currentLoad)return currentLoad;
+  // Si le niveau est en recalibrage ou sous surveillance, on cappe la charge proposée.
+  if(cap.status==="recalibrating"||cap.status==="watch"||cap.confidence<0.55){
+    var capped=Math.min(load, Number(cap.currentLoad)||load);
+    return lb(capped)+" ⚠";
   }
-  var load=parseLoad(currentLoad);
-  if(!load)return currentLoad||"—";
   return currentLoad;
 }
 function buildCycleStatePayload(){
@@ -473,19 +466,6 @@ function vibrate(p){try{if(navigator.vibrate)navigator.vibrate(p);}catch(e){}}
 
 var wodTimer={duration:0,remaining:0,elapsed:0,running:false,interval:null,mode:"down",label:"",isEmom:false,countdownActive:false};
 
-// ─── parseCapSeconds / buildTimeOptions (For time WODs) ──────────────────────
-function parseCapSeconds(text, durationMin){
-  var m = String(text||"").match(/[Cc]ap\s+(\d+)\s*min/);
-  if(m) return Number(m[1])*60;
-  return (durationMin||15)*60;
-}
-function buildTimeOptions(expectedSec){
-  var options=[], step=30;
-  var max = expectedSec + 180;
-  for(var s=30; s<=max; s+=step){ options.push(s); }
-  return options;
-}
-
 function parseTimeToSeconds(t){var m=String(t||"").match(/(\d+)\s*min/);return m?Number(m[1])*60:0;}
 function formatClock(sec){sec=Math.max(0,Math.floor(sec||0));return String(Math.floor(sec/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0");}
 
@@ -500,19 +480,11 @@ function wodTimerConfig(block){
 function stopWodTimer(){
   if(wodTimer.interval){clearInterval(wodTimer.interval);wodTimer.interval=null;}
   wodTimer.running=false;wodTimer.countdownActive=false;
-  var d=$("pcTimerDisplay");if(d)d.style.color="";
+
 }
 function wodTimerCurrentValue(){return wodTimer.mode==="up"?wodTimer.elapsed:wodTimer.remaining;}
 function updateWodTimerDisplay(){
-  var d=$("pcTimerDisplay");if(!d)return;
-  // Pendant le countdown 10s afficher le compte à rebours en rouge
-  if(wodTimer.countdownActive){
-    d.textContent=String(wodTimer.countdownRemaining);
-    d.style.color="var(--red)";d.style.fontSize="88px";
-  } else {
-    d.textContent=formatClock(wodTimerCurrentValue());
-    d.style.color="";d.style.fontSize="";
-  }
+  // V49.25 — timer WOD retiré de la vue iPhone. Aucun élément à mettre à jour.
 }
 function resetWodTimerState(dur,mode,label,isEmom){
   stopWodTimer();
@@ -548,7 +520,7 @@ function setupWodTimer(){
   var isEmom=box.getAttribute("data-emom")==="1";
   if(wodTimer.duration!==dur||wodTimer.mode!==mode)resetWodTimerState(dur,mode,label,isEmom);
   updateWodTimerDisplay();
-  var start=$("pcTimerStart"),pause=$("pcTimerPause"),reset=$("pcTimerReset");
+  var start=null,pause=null,reset=null; // V49.25 — timer WOD retiré
 
   if(start)start.onclick=function(){
     resumeAudio();
@@ -580,7 +552,7 @@ function setupWodTimer(){
   if(pause)pause.onclick=function(){stopWodTimer();updateWodTimerDisplay();};
   if(reset)reset.onclick=function(){
     resetWodTimerState(dur,mode,label,isEmom);
-    var s=$("pcTimerStart");if(s){s.textContent="▶";s.disabled=false;}
+
     updateWodTimerDisplay();
   };
 }
@@ -589,10 +561,50 @@ function setupWodTimer(){
 
 var restTimer={remaining:0,interval:null,running:false};
 
+function currentClockWithSeconds(){
+  var n=new Date();
+  return String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0")+":"+String(n.getSeconds()).padStart(2,"0");
+}
+
+
+// V49.22 — horloge uniquement dans le mode séance; heure et secondes même grosseur.
+var globalClockInterval=null;
+function ensureGlobalClock(){
+  return $('guidedLiveClock');
+}
+function updateGlobalClock(){
+  var el=ensureGlobalClock();
+  if(!el) return;
+  var n=new Date();
+  var hh=String(n.getHours()).padStart(2,'0');
+  var mm=String(n.getMinutes()).padStart(2,'0');
+  var ss=String(n.getSeconds()).padStart(2,'0');
+  el.innerHTML='<span class="glc-hm">'+hh+':'+mm+'</span><span class="glc-sec">'+ss+'</span>';
+}
+function startGlobalClock(){
+  updateGlobalClock();
+  if(globalClockInterval)clearInterval(globalClockInterval);
+  globalClockInterval=setInterval(updateGlobalClock,1000);
+}
+function ensureRestFloatingClock(){
+  var el=$("restFloatingClock");
+  if(!el){
+    el=document.createElement("div");
+    el.id="restFloatingClock";
+    el.className="rest-floating-clock hidden";
+    document.body.appendChild(el);
+  }
+  return el;
+}
+function updateRestFloatingClock(){
+  // V49.14 : l'heure permanente remplace l'ancienne horloge de repos.
+  // Les boutons Pause ont été retirés des vues iPhone et séance.
+  var el=$("restFloatingClock");
+  if(el){el.className="rest-floating-clock hidden";el.innerHTML="";}
+}
 function updateRestDisplay(){
-  var d=$("restDisplay");if(!d)return;
-  d.textContent=formatClock(restTimer.remaining);
-  d.className="rest-display"+(restTimer.running?" active":restTimer.remaining===0?" done":"");
+  // V49.25 — restDisplay retiré du DOM. Seul updateRestFloatingClock est conservé.
+  updateRestFloatingClock();
 }
 function stopRestTimer(){
   if(restTimer.interval){clearInterval(restTimer.interval);restTimer.interval=null;}
@@ -608,14 +620,14 @@ function startRestTimer(seconds){
     if(restTimer.remaining<=3&&restTimer.remaining>0){bipCountdown();vibrate([60]);}
     if(restTimer.remaining<=0){
       stopRestTimer();bipRestDone();vibrate([300,100,300,100,300]);
-      var d=$("restDisplay");if(d)d.className="rest-display done";
+
     }
   },1000);
 }
 function setupRestBar(){
   var map={rb45:45,rb60:60,rb90:90,rb120:120};
   Object.keys(map).forEach(function(id){var b=$(id);if(b)b.onclick=function(){resumeAudio();startRestTimer(map[id]);};});
-  var stop=$("rbStop");if(stop)stop.onclick=function(){stopRestTimer();restTimer.remaining=0;updateRestDisplay();};
+
 }
 
 // ─── Saisie résultats & GitHub sync ──────────────────────────────────────────
@@ -652,16 +664,28 @@ function parseWodStructure(text){
   var raw = String(text);
   var moves = [], seen = new Set();
 
-  function cleanMoveName(name){
-    return String(name||'')
-      .replace(/\bcal\b/ig,'')
+  function cleanMoveName(name, isCal){
+    var n = String(name||'')
       .replace(/\bmin\s*\d+\s*=\s*/ig,'')
-      .replace(/\s+/g,' ')
       .replace(/[;:,.]+$/,'')
+      .replace(/\s+/g,' ')
       .trim();
+
+    // V49.14 : dans la vue séance, on doit voir "Cal Row" et non juste "Row".
+    // Si le texte original contient "cal", on conserve cette information dans le nom.
+    var hadCal = !!isCal || /^cal\s+/i.test(n);
+    n = n.replace(/^cal\s+/i,'').trim();
+
+    if(hadCal){
+      if(/^row\b/i.test(n)) return 'Cal Row';
+      if(/^bike\b/i.test(n)) return 'Cal Bike';
+      if(/^ski\b|^skierg\b/i.test(n)) return 'Cal SkiErg';
+      return 'Cal '+n.charAt(0).toUpperCase()+n.slice(1);
+    }
+    return n;
   }
-  function addMove(reps,name){
-    name = cleanMoveName(name);
+  function addMove(reps,name,isCal){
+    name = cleanMoveName(name,isCal);
     if(!name || name.length<2) return;
     var key = (String(reps)+'_'+name).toLowerCase();
     if(seen.has(key)) return;
@@ -672,9 +696,9 @@ function parseWodStructure(text){
   // EMOM : "min 1 = 12 cal row ; min 2 = 10 ring rows stricts"
   if(/\bEMOM\b/i.test(raw)){
     var emomPart = raw.split('.')[0];
-    var emomRe = /min\s*\d+\s*=\s*(\d+)\s*(?:cal\s+)?([^;\.]+)/ig;
+    var emomRe = /min\s*\d+\s*=\s*(\d+)\s*(cal\s+)?([^;\.]+)/ig;
     var m;
-    while((m = emomRe.exec(emomPart)) !== null){ addMove(m[1], m[2]); }
+    while((m = emomRe.exec(emomPart)) !== null){ addMove(m[1], m[3], !!m[2]); }
     if(moves.length) return moves;
   }
 
@@ -695,20 +719,21 @@ function parseWodStructure(text){
   if(scheme){
     main = main.replace(/^(\d+\s*[-–]\s*\d+\s*[-–]\s*\d+)\s*:?\s*/,'');
     main.split('+').forEach(function(part){
-      part = cleanMoveName(part);
-      if(part) addMove(scheme, part);
+      var isCalPart = /^\s*cal\s+/i.test(part);
+      part = cleanMoveName(part, isCalPart);
+      if(part) addMove(scheme, part, false);
     });
     if(moves.length) return moves;
   }
 
   main.split('+').forEach(function(part){
     part = part.trim();
-    var m = part.match(/^(\d+)\s*(?:cal\s+)?(.+)$/i);
+    var m = part.match(/^(\d+)\s*(cal\s+)?(.+)$/i);
     if(!m) return;
     var reps = Number(m[1]);
-    var name = cleanMoveName(m[2]);
+    var name = cleanMoveName(m[3], !!m[2]);
     if(reps<1||reps>80||name.length<2) return;
-    addMove(reps, name);
+    addMove(reps, name, false);
   });
 
   return moves.length>=1 ? moves : null;
@@ -721,6 +746,27 @@ function estimateWodRounds(text, durationMin){
   if(durationMin<=10) return {min:3,max:6,def:4};
   if(durationMin<=15) return {min:4,max:8,def:5};
   return {min:3,max:6,def:4};
+}
+
+// V49.25 — Helpers For Time.
+// Ces fonctions doivent exister avant renderSessionEntry(), sinon les WODs For Time
+// comme le jeudi Épaules 3D n'affichent pas le champ de temps final.
+function parseCapSeconds(text, fallbackMin){
+  var raw = String(text || '');
+  var m = raw.match(/(?:cap|time cap)\s*[:=]?\s*(\d+)\s*(?:min|minutes?)?/i);
+  var min = m ? Number(m[1]) : Number(fallbackMin || 0);
+  if(!min || min < 1) min = 8;
+  return Math.max(60, Math.round(min * 60));
+}
+function buildTimeOptions(expectedSec){
+  expectedSec = Math.max(60, Math.round(Number(expectedSec || 0) / 15) * 15);
+  var start = Math.max(60, expectedSec - 180);
+  var end   = expectedSec + 180;
+  var arr = [];
+  for(var sec = start; sec <= end; sec += 15) arr.push(sec);
+  if(arr.indexOf(expectedSec) === -1) arr.push(expectedSec);
+  arr.sort(function(a,b){return a-b;});
+  return arr;
 }
 
 // Collecte tous les exercices du WOD courant avec leur cible de reps
@@ -782,6 +828,7 @@ function renderSessionEntry(){
         wodInner += '<div class="wod-expected">Résultat attendu : <strong>'+r.min+'–'+r.max+' rounds</strong></div>';
       } else if(item.isForTime){
         var expectedSec = parseCapSeconds(item.wodText,item.durationMin);
+        if(!expectedSec || isNaN(expectedSec)) expectedSec = Math.max(60, Math.round((item.durationMin || 8) * 60));
         wodInner += '<div class="wod-expected">For time — temps attendu : <strong>'+formatClock(expectedSec)+'</strong></div>';
         wodInner += '<span class="sf-label">TEMPS FINAL</span>';
         wodInner += '<select class="sf-input" id="wod_time_'+item.key+'" data-key="'+item.key+'" data-field="result">';
@@ -978,7 +1025,7 @@ function renderSessionEntry(){
             '<input class="sf-input sf-weight-input" '+
               'data-key="'+item.key+'" data-field="load" '+
               'type="number" inputmode="decimal" '+
-              'value="'+suggestedDisplay+'" '+
+              'value="'+escHtml(getGuidedResult(item.key,'load',suggestedDisplay))+'" '+
               'placeholder="'+(suggestedNum||0)+'"/>'+
           '</div>'+
           '<button type="button" class="sf-adj sf-adj-plus" data-key="'+item.key+'">+5</button>'+
@@ -1008,38 +1055,46 @@ function renderSessionEntry(){
         minus.addEventListener('click',function(){
           var v=parseLoad(loadInp.value)||parseLoad(item.suggested)||0;
           loadInp.value=Math.max(0,round5(v-5));
+          setGuidedResult(item.key,'load',loadInp.value);
         });
         plus.addEventListener('click',function(){
           var v=parseLoad(loadInp.value)||parseLoad(item.suggested)||0;
           loadInp.value=round5(v+5);
+          setGuidedResult(item.key,'load',loadInp.value);
         });
+        loadInp.addEventListener('input',function(){ setGuidedResult(item.key,'load',loadInp.value); });
+        loadInp.addEventListener('change',function(){ setGuidedResult(item.key,'load',loadInp.value); });
       }
 
       // ── Chips reps DYNAMIQUES selon la cible ──
       var repsChips = buildRepsChips(item.targetMin, item.targetMax);
       // Valeur par défaut = milieu de la plage cible
       var defaultReps = Math.round((item.targetMin + item.targetMax) / 2);
+      var currentReps = Number(getGuidedResult(item.key,'reps',defaultReps)) || defaultReps;
       var repsContainer = $('reps_'+item.key);
       var repsInp = card.querySelector('.sf-reps-input');
       if(repsContainer&&repsInp){
-        // Pré-remplir avec le milieu de la plage
-        repsInp.value = defaultReps;
+        // Pré-remplir avec la valeur du mode séance si elle existe, sinon le milieu de la plage
+        repsInp.value = currentReps;
         repsChips.forEach(function(n){
           var btn = document.createElement('button');
           btn.type = 'button';
           // Mettre en surbrillance toute la plage cible
           var inTarget = n >= item.targetMin && n <= item.targetMax;
-          // Sélectionner par défaut le milieu
-          var isDefault = n === defaultReps;
+          // Sélectionner la valeur courante
+          var isDefault = n === currentReps;
           btn.className = 'sf-chip' + (isDefault?' active':'') + (inTarget&&!isDefault?' target':'');
           btn.textContent = n;
           btn.addEventListener('click',function(){
             repsInp.value = n;
+            setGuidedResult(item.key,'reps',n);
             repsContainer.querySelectorAll('.sf-chip').forEach(function(b){b.classList.remove('active');});
             btn.classList.add('active');
           });
           repsContainer.appendChild(btn);
         });
+        repsInp.addEventListener('input',function(){ setGuidedResult(item.key,'reps',repsInp.value); });
+        repsInp.addEventListener('change',function(){ setGuidedResult(item.key,'reps',repsInp.value); });
       }
 
       // ── Chips RPE (6 à 10, défaut 8) ──
@@ -1047,19 +1102,23 @@ function renderSessionEntry(){
       var rpeContainer = $('rpe_'+item.key);
       var rpeInp = card.querySelector('.sf-rpe-input');
       if(rpeContainer&&rpeInp){
-        rpeInp.value = 8;
+        var currentRpe = Number(getGuidedResult(item.key,'rpe',8)) || 8;
+        rpeInp.value = currentRpe;
         rpeChips.forEach(function(n){
           var btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = 'sf-chip' + (n===8?' active':'');
+          btn.className = 'sf-chip' + (n===currentRpe?' active':'');
           btn.textContent = n;
           btn.addEventListener('click',function(){
             rpeInp.value = n;
+            setGuidedResult(item.key,'rpe',n);
             rpeContainer.querySelectorAll('.sf-chip').forEach(function(b){b.classList.remove('active');});
             btn.classList.add('active');
           });
           rpeContainer.appendChild(btn);
         });
+        rpeInp.addEventListener('input',function(){ setGuidedResult(item.key,'rpe',rpeInp.value); });
+        rpeInp.addEventListener('change',function(){ setGuidedResult(item.key,'rpe',rpeInp.value); });
       }
     }
   });
@@ -1075,6 +1134,15 @@ function collectSessionResults(){
     if(!val)return;
     if(!results[key])results[key]={};
     results[key][field]=val;
+  });
+  Object.keys(guidedResultCache||{}).forEach(function(key){
+    var r=guidedResultCache[key]||{};
+    Object.keys(r).forEach(function(field){
+      var val=String(r[field]||"").trim();
+      if(!val)return;
+      if(!results[key])results[key]={};
+      results[key][field]=val;
+    });
   });
   return results;
 }
@@ -1103,7 +1171,7 @@ function updateRefsFromResults(results,dateStr){
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
         date:dateStr,lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
-        rpe:Number(r.rpe)||8,note:"Saisi V49.5"
+        rpe:Number(r.rpe)||8,note:"Saisi V49.3"
       };
     }
     // Enregistrer RPE dans l'historique pour progression automatique
@@ -1357,7 +1425,7 @@ async function saveChargesToGitHub(token){
 
 
 // ─── GitHub API helpers ─────────────────────────────────────────────────────
-// V49.4 : ces fonctions doivent être globales. Sans elles, le test token/PR plante.
+// V49.8 : helpers GitHub globaux. Sans elles, le test token/PR plante.
 function githubHeaders(token){
   return {
     "Authorization":"Bearer "+token,
@@ -1695,7 +1763,7 @@ function rpeArrowHtml(mvKey, reps){
 }
 
 
-// ─── Tutos mouvements — vue WOD seulement ───────────────────────────────────
+// ─── Tutos mouvements — vue WOD + mode séance ───────────────────────────────
 
 function escapeHtml(s){
   return String(s==null?"":s)
@@ -1754,8 +1822,7 @@ function setupTutorialButtons(scope){
 function renderWorkout(){
   var w=buildWorkout(state.day,state.week);
   var wt=$("workoutTitle"),wf=$("workoutFocus"),fi=$("focusImpact"),c=$("blocks"),pa=$("progressionAdvice");
-  var cfg_rw=focus();
-  var weekNote_rw=cfg_rw.getWeekNote?cfg_rw.getWeekNote(state.week):null;
+  var plan=state.cycle.goal==="shoulders3d"?shouldersWeekPlan(state.week):null;
   var wi=buildWeekInfo();
   if(wt)wt.textContent=(wi[state.week]?wi[state.week].label:"S"+state.week)+" — "+w.day.label+" — "+w.day.base;
   if(wf)wf.textContent=w.day.focus;
@@ -1764,7 +1831,7 @@ function renderWorkout(){
     ?"<br><strong style='color:var(--red)'>⚠ RPE élevé détecté — considère un deload</strong>":"";
   if(fi)fi.innerHTML=
     "<strong>"+dayIntention(state.day)+"</strong>"+
-    (weekNote_rw?"<em>"+(wi[state.week]?wi[state.week].label:"S"+state.week)+" — "+weekNote_rw+"</em>":"")+
+    (plan?"<em>"+plan.label+" : "+plan.note+"</em>":"")+
     deloadWarning+
     "<small>"+cycleRules().slice(0,3).join(" · ")+"</small>";
 
@@ -1834,9 +1901,7 @@ function phoneWodLoadHints(text){
 function renderPhoneWod(){
   var el=$("phoneWod");if(!el)return;
   var w=buildWorkout(state.day,state.week);
-  var cfg_pw=focus();
-  var weekNote_pw=cfg_pw.getWeekNote?cfg_pw.getWeekNote(state.week):null;
-  var weekNoteLabel_pw=(buildWeekInfo()[state.week]||{}).label||("S"+state.week);
+  var plan=state.cycle.goal==="shoulders3d"?shouldersWeekPlan(state.week):null;
   var dayIdx=DAYS_ORDER.indexOf(state.day);
   var html="";
   var dl=$("phoneDayLabel");if(dl)dl.textContent=w.day.label+" · S"+state.week;
@@ -1859,7 +1924,7 @@ function renderPhoneWod(){
   html+="<div class='pc intention'>";
   html+="<div class='pc-tag'>Intention du jour</div>";
   html+="<div class='pc-wod-text' style='font-size:16px;font-weight:700;color:var(--text)'>"+dayIntention(state.day)+"</div>";
-  if(weekNote_pw)html+="<div style='margin-top:10px;font-size:14px;color:var(--gold)'>"+weekNoteLabel_pw+" — "+weekNote_pw+"</div>";
+  if(plan)html+="<div style='margin-top:10px;font-size:14px;color:var(--gold)'>"+plan.label+" — "+plan.note+"</div>";
   html+="</div>";
 
   // Règles
@@ -1883,7 +1948,6 @@ function renderPhoneWod(){
       html+="<div class='pc-wod-text'>"+cleanLine(displayChargeText(b.text||""))+"</div>";
       html+=phoneWodLoadHints(b.text||"");
 
-
     } else if(b.exercises&&b.exercises.length){
       if(b.text)html+="<div class='pc-plain-text' style='margin-bottom:12px'>"+cleanLine(displayChargeText(b.text))+"</div>";
       b.exercises.forEach(function(e){
@@ -1895,7 +1959,6 @@ function renderPhoneWod(){
         html+="<div class='pc-ex-row'><span class='pc-ex-label'>Repos</span><span class='pc-ex-value'>"+e.rest+"</span></div>";
         html+="</div>";
         if(e.note)html+="<div class='pc-ex-note'>"+e.note+"</div>";
-
         html+="</div>";
       });
     } else if(b.progress&&b.progress.length){
@@ -1912,7 +1975,6 @@ function renderPhoneWod(){
         html+="<div class='pc-ex-row'><span class='pc-ex-label'>Poids</span><span class='pc-ex-value accent "+loadCls+"'>"+lb(finalLoad)+(adj.arrow?" "+adj.arrow:"")+"</span></div>";
         html+="<div class='pc-ex-row'><span class='pc-ex-label'>Repos</span><span class='pc-ex-value'>"+rest+"</span></div>";
         html+="</div>";
-
         html+="</div>";
       });
     } else {
@@ -1921,7 +1983,6 @@ function renderPhoneWod(){
       if(rest2!=="—"){
         var rs=parseRestToSeconds(rest2);
         html+="<div class='pc-ex-row' style='margin-top:8px'><span class='pc-ex-label'>Repos</span><span class='pc-ex-value'>"+rest2+"</span></div>";
-
       }
     }
     html+="</div>";
@@ -1929,6 +1990,7 @@ function renderPhoneWod(){
 
   el.innerHTML=html;
   renderSessionEntry();
+  setupWodTimer();
 }
 
 
@@ -1946,6 +2008,106 @@ function escHtml(v){
     .replace(/>/g,"&gt;")
     .replace(/\"/g,"&quot;")
     .replace(/'/g,"&#39;");
+}
+
+
+// V49.8 — Résultats saisis directement dans le mode séance.
+// On garde un cache persistant tant que la page est ouverte, puis collectSessionResults()
+// le fusionne aux champs de la vue iPhone.
+var guidedResultCache = {};
+
+function guidedExerciseKey(name){
+  return chargeKeyFromName(String(name||"")).trim();
+}
+function findSessionInput(key, field){
+  var found=null;
+  Array.prototype.forEach.call(document.querySelectorAll('#sessionFields .sf-input[data-key][data-field]'), function(inp){
+    if(found)return;
+    if(inp.getAttribute('data-key')===key && inp.getAttribute('data-field')===field) found=inp;
+  });
+  return found;
+}
+
+// V49.18 — synchronisation immédiate mode séance → saisie iPhone.
+// Quand tu modifies poids/reps/RPE dans la vue séance, les champs et chips
+// correspondants dans la section résultats iPhone se mettent à jour tout de suite.
+function syncSessionEntryFromGuided(key, field, value){
+  var inp=findSessionInput(key, field);
+  if(!inp)return;
+  inp.value=String(value);
+  if(field==='reps'){
+    var repsBox=document.getElementById('reps_'+key);
+    if(repsBox){
+      Array.prototype.forEach.call(repsBox.querySelectorAll('.sf-chip'), function(b){
+        b.classList.remove('active');
+        if(String(b.textContent).trim()===String(value)) b.classList.add('active');
+      });
+    }
+  }
+
+  if(field==='rpe'){
+    var rpeBox=document.getElementById('rpe_'+key);
+    if(rpeBox){
+      Array.prototype.forEach.call(rpeBox.querySelectorAll('.sf-chip'), function(b){
+        b.classList.remove('active');
+        if(String(b.textContent).trim()===String(value)) b.classList.add('active');
+      });
+    }
+  }
+}
+function getGuidedResult(key, field, fallback){
+  if(guidedResultCache[key] && guidedResultCache[key][field]!==undefined) return guidedResultCache[key][field];
+  var inp=findSessionInput(key, field);
+  if(inp && String(inp.value||'').trim()!=='') return inp.value;
+  return fallback;
+}
+function setGuidedResult(key, field, value){
+  if(!key||!field)return;
+  if(!guidedResultCache[key]) guidedResultCache[key]={};
+  guidedResultCache[key][field]=String(value);
+  syncSessionEntryFromGuided(key, field, value);
+}
+function setupGuidedResultControls(root){
+  if(!root)return;
+  Array.prototype.forEach.call(root.querySelectorAll('[data-guided-field]'), function(inp){
+    var key=inp.getAttribute('data-key'), field=inp.getAttribute('data-guided-field');
+    inp.addEventListener('input', function(){ setGuidedResult(key, field, inp.value); });
+    inp.addEventListener('change', function(){ setGuidedResult(key, field, inp.value); });
+  });
+  Array.prototype.forEach.call(root.querySelectorAll('[data-guided-adjust]'), function(btn){
+    btn.addEventListener('click', function(){
+      var key=btn.getAttribute('data-key');
+      var delta=Number(btn.getAttribute('data-guided-adjust'))||0;
+      var inp=root.querySelector('[data-key="'+key.replace(/"/g,'\\"')+'"][data-guided-field="load"]');
+      if(!inp)return;
+      var v=parseLoad(inp.value)||0;
+      var next=Math.max(0, round5(v+delta));
+      inp.value=next;
+      setGuidedResult(key,'load',next);
+    });
+  });
+  Array.prototype.forEach.call(root.querySelectorAll('[data-guided-reps]'), function(btn){
+    btn.addEventListener('click', function(){
+      var key=btn.getAttribute('data-key'), val=btn.getAttribute('data-guided-reps');
+      setGuidedResult(key,'reps',val);
+      var group=btn.closest('.guided-chip-row');
+      if(group) Array.prototype.forEach.call(group.querySelectorAll('.guided-chip'), function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      var inp=root.querySelector('[data-key="'+key.replace(/"/g,'\\"')+'"][data-guided-field="reps"]');
+      if(inp) inp.value=val;
+    });
+  });
+  Array.prototype.forEach.call(root.querySelectorAll('[data-guided-rpe]'), function(btn){
+    btn.addEventListener('click', function(){
+      var key=btn.getAttribute('data-key'), val=btn.getAttribute('data-guided-rpe');
+      setGuidedResult(key,'rpe',val);
+      var group=btn.closest('.guided-chip-row');
+      if(group) Array.prototype.forEach.call(group.querySelectorAll('.guided-chip'), function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      var inp=root.querySelector('[data-key="'+key.replace(/"/g,'\\"')+'"][data-guided-field="rpe"]');
+      if(inp) inp.value=val;
+    });
+  });
 }
 
 function buildGuidedSessionBlocks(){
@@ -1968,10 +2130,14 @@ function buildGuidedSessionBlocks(){
 
     if(b.exercises && b.exercises.length){
       b.exercises.forEach(function(e,ei){
+        var parsedTarget=parseTargetReps(e.format,10);
         obj.exercises.push({
+          key:guidedExerciseKey(e.name),
           title:e.name,
           format:e.format || "",
-          load:athleteSuggestedLoad(e.name,e.load,(parseTargetReps(e.format,10).min||parseTargetReps(e.format,10).max)) || "",
+          targetMin:parsedTarget.min,
+          targetMax:parsedTarget.max,
+          load:athleteSuggestedLoad(e.name,e.load,(parsedTarget.min||parsedTarget.max)) || "",
           rest:e.rest || "",
           note:e.note || "",
           exerciseIndex:ei
@@ -1983,9 +2149,14 @@ function buildGuidedSessionBlocks(){
         var baseLoad=suggestLoad(mvKey,progressionPct(j),reps);
         var adj=getRpeAdjustment(mvKey,reps);
         var finalLoad=round5(baseLoad+(adj.adj||0));
+        var fmt=setScheme(b.kind,j);
+        var parsedTarget2=parseTargetReps(fmt,reps);
         obj.exercises.push({
+          key:mvKey,
           title:movements[mvKey].name,
-          format:setScheme(b.kind,j),
+          format:fmt,
+          targetMin:parsedTarget2.min,
+          targetMax:parsedTarget2.max,
           load:lb(finalLoad)+(adj.arrow?" "+adj.arrow:""),
           rest:restFor(b.kind),
           note:adj.msg || "",
@@ -2115,6 +2286,43 @@ function renderGuidedWodMoves(moves){
   }
   return html;
 }
+function renderGuidedResultPanel(e){
+  var key=e.key || guidedExerciseKey(e.title);
+  var parsed=parseTargetReps(e.format,8);
+  var tmin=Number(e.targetMin||parsed.min||8), tmax=Number(e.targetMax||parsed.max||tmin);
+  var defaultReps=Math.round((tmin+tmax)/2);
+  var suggestedLoad=parseLoad(e.load)||0;
+  var loadVal=getGuidedResult(key,'load',suggestedLoad?suggestedLoad:'');
+  var repsVal=Number(getGuidedResult(key,'reps',defaultReps))||defaultReps;
+  var rpeVal=Number(getGuidedResult(key,'rpe',8))||8;
+  if(loadVal!=='' && loadVal!==undefined) setGuidedResult(key,'load',loadVal);
+  setGuidedResult(key,'reps',repsVal);
+  setGuidedResult(key,'rpe',rpeVal);
+
+  var repChips=buildRepsChips(tmin,tmax);
+  var html="<div class='guided-result-panel'>";
+  html+="<div class='guided-result-title'>Résultat</div>";
+  html+="<div class='guided-load-row'>"+
+        "<button type='button' class='guided-adj minus' data-key='"+escHtml(key)+"' data-guided-adjust='-5'>−5</button>"+
+        "<input class='guided-result-input guided-load-input' data-key='"+escHtml(key)+"' data-guided-field='load' type='number' inputmode='decimal' value='"+escHtml(loadVal)+"' placeholder='lb'/>"+
+        "<button type='button' class='guided-adj plus' data-key='"+escHtml(key)+"' data-guided-adjust='5'>+5</button>"+
+        "</div>";
+  html+="<div class='guided-result-grid'>";
+  html+="<div><span>Reps</span><div class='guided-chip-row'>";
+  repChips.forEach(function(n){
+    var target=n>=tmin&&n<=tmax;
+    html+="<button type='button' class='guided-chip"+(n===repsVal?' active':'')+(target?' target':'')+"' data-key='"+escHtml(key)+"' data-guided-reps='"+n+"'>"+n+"</button>";
+  });
+  html+="</div><input class='guided-result-input hidden-input' data-key='"+escHtml(key)+"' data-guided-field='reps' type='hidden' value='"+escHtml(repsVal)+"'/></div>";
+  html+="<div><span>RPE</span><div class='guided-chip-row'>";
+  [6,7,8,9,10].forEach(function(n){
+    html+="<button type='button' class='guided-chip"+(n===rpeVal?' active':'')+"' data-key='"+escHtml(key)+"' data-guided-rpe='"+n+"'>"+n+"</button>";
+  });
+  html+="</div><input class='guided-result-input hidden-input' data-key='"+escHtml(key)+"' data-guided-field='rpe' type='hidden' value='"+escHtml(rpeVal)+"'/></div>";
+  html+="</div></div>";
+  return html;
+}
+
 function renderGuidedExerciseList(exercises){
   var html="";
   if(!exercises||!exercises.length)return html;
@@ -2124,14 +2332,14 @@ function renderGuidedExerciseList(exercises){
     html+="<div class='guided-ex-card'>"+
           "<div class='guided-ex-index'>"+(idx+1)+"</div>"+
           "<div class='guided-ex-main'>"+
-            "<div class='guided-ex-title'>"+escHtml(e.title)+"</div>"+
+            "<div class='guided-ex-title'><span>"+escHtml(e.title)+"</span>"+tutorialButtonHtml(e.title)+"</div>"+
             "<div class='guided-ex-grid'>";
     if(e.format)html+="<div><span>Format</span><strong>"+escHtml(e.format)+"</strong></div>";
     if(e.load)html+="<div><span>Poids</span><strong class='accent'>"+escHtml(e.load)+"</strong></div>";
-    if(e.rest&&e.rest!=="—")html+="<div><span>Repos</span><strong>"+escHtml(e.rest)+"</strong></div>";
+    if(e.rest&&e.rest!=="—")html+="<div class='guided-rest-info'><span>Repos</span><strong>"+escHtml(e.rest)+"</strong></div>";
     html+="</div>";
+    html+=renderGuidedResultPanel(e);
     if(e.note)html+="<div class='guided-note compact'>"+escHtml(e.note)+"</div>";
-
     html+="</div></div>";
   });
   html+="</div>";
@@ -2159,7 +2367,7 @@ function renderGuidedStepList(text, kind){
     html += "<div class='guided-step-card'>"+
             "<div class='guided-step-num'>"+(idx+1)+"</div>"+
             "<div class='guided-step-body'>"+
-              "<div class='guided-step-name'>"+escHtml(name)+"</div>"+
+              "<div class='guided-step-name'><span>"+escHtml(name)+"</span>"+tutorialButtonHtml(name)+"</div>"+
               (dose?"<div class='guided-step-dose'>"+escHtml(dose)+"</div>":"")+
             "</div>"+
             "</div>";
@@ -2182,7 +2390,7 @@ function renderGuidedSession(){
   html+="<div class='guided-top'>"+
         "<button class='tb-btn' id='guidedCloseBtn'>✕</button>"+
         "<div class='guided-top-title'>Mode séance · "+escHtml(currentDayLabel())+" · S"+state.week+"</div>"+
-        "<div class='guided-count'>"+(i+1)+"/"+blocks.length+"</div>"+
+        "<div class='guided-top-right'><div id='guidedLiveClock' class='guided-live-clock' aria-label='Heure actuelle'></div><div class='guided-count'>"+(i+1)+"/"+blocks.length+"</div></div>"+
         "</div>";
   html+="<div class='guided-progress'><div style='width:"+pct+"%'></div></div>";
   html+="<div class='guided-card kind-"+escHtml(st.kind)+"'>";
@@ -2233,12 +2441,17 @@ function renderGuidedSession(){
 
   el.innerHTML=html;
   el.classList.remove("hidden");
+  updateGlobalClock();
   $("guidedCloseBtn").onclick=closeGuidedSession;
   $("guidedPrevBtn").onclick=guidedPrev;
   $("guidedNextBtn").onclick=function(){ if(isLast)closeGuidedSession(); else guidedNext(); };
   $("guidedBackToFullBtn").onclick=closeGuidedSession;
 
-
+  Array.prototype.forEach.call(el.querySelectorAll(".guided-rest[data-rest]"),function(btn){
+    btn.onclick=function(){ startRestTimer(Number(btn.getAttribute("data-rest"))||0); };
+  });
+  setupGuidedResultControls(el);
+  setupTutorialButtons(el);
 
   if(st.kind==="wod" && cfg){
     resetGuidedTimerState(cfg);
@@ -2356,9 +2569,7 @@ function renderProgressCharts(){
     var mv=movements[mvKey];if(!mv)return;
     var loads=[];
     state.history.forEach(function(s){
-      var res=s.results||s.resultats||{};
-      var r=res[mvKey]||res[mv.name]||null;
-      if(r&&r.load){loads.push(Number(r.load));}
+      if(s.results&&s.results[mvKey]&&s.results[mvKey].load){loads.push(Number(s.results[mvKey].load));}
     });
     if(loads.length<2)return;
     var max=Math.max.apply(null,loads),min=Math.min.apply(null,loads);
@@ -2645,8 +2856,7 @@ function switchView(v){
     if(main){if(v===x)main.classList.add("view-active");else main.classList.remove("view-active");}
     if(tab)tab.classList.toggle("active",v===x);
   });
-  if(v==="phone"){renderPhoneWod();}
-  if(v!=="phone"){closeGuidedSession();}
+  if(v==="phone"){renderPhoneWod();updateRestDisplay();}
   if(v==="cycle")renderCycle();
   if(v==="history")renderHistory();
   if(v==="profile")renderProfile();
@@ -2690,6 +2900,7 @@ setupSwipeNav();
 setupRestBar();
 setupSettingsSave();
 setupSessionSave();
+startGlobalClock();
 render();
 switchView("training");
 autoSyncFromGitHub();

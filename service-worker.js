@@ -1,11 +1,12 @@
-const CACHE_NAME = 'coach-bertin-v49.5';
+const CACHE_NAME = 'coach-bertin-v49.25';
 const FILES = [
   './', './index.html', './styles.css', './app.js', './manifest.json',
   './programs/index.js', './programs/epaules_3d.js',
   './programs/crossfit_maintenance.js', './programs/posture_cyphose.js',
   './programs/force.js', './programs/hypertrophy_base.js',
   './programs/force_performance.js', './programs/competition_peak.js',
-  './programs/config.js', './programs/workouts.js', './programs/tutorials.js'
+  './programs/config.js', './programs/workouts.js', './programs/tutorials.js',
+  './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png'
 ];
 const OPTIONAL_FILES = ['./data/charges.js', './charges.js'];
 

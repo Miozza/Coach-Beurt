@@ -2699,3 +2699,682 @@ label {
   font-size: 15px;
   font-weight: 800;
 }
+
+/* ═══════════════════════════════════════════
+   V49.7 — Mode séance : valeurs plus grosses + saisie directe
+   ═══════════════════════════════════════════ */
+.guided-ex-grid strong {
+  font-size: clamp(27px, 8.4vw, 48px) !important;
+  line-height: 1;
+}
+.guided-ex-grid strong.accent {
+  font-size: clamp(31px, 9.4vw, 54px) !important;
+  letter-spacing: .02em;
+}
+.guided-ex-grid span {
+  font-size: clamp(15px, 4vw, 21px) !important;
+}
+.guided-ex-title {
+  font-size: clamp(27px, 7.8vw, 46px) !important;
+}
+
+.guided-result-panel {
+  margin-top: 7px;
+  background: rgba(0, 212, 255, .055);
+  border: 1px solid rgba(0, 212, 255, .22);
+  border-radius: 10px;
+  padding: 7px;
+}
+.guided-result-title {
+  font-family: var(--font-hud);
+  color: var(--cyan);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.guided-load-row {
+  display: grid;
+  grid-template-columns: 52px 1fr 52px;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 7px;
+}
+.guided-adj {
+  min-height: 44px;
+  border-radius: 9px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  font-family: var(--font-hud);
+  font-size: 18px;
+  font-weight: 950;
+}
+.guided-adj.minus { color: var(--red); border-color: rgba(255,34,68,.35); }
+.guided-adj.plus { color: var(--green); border-color: rgba(77,255,136,.35); }
+.guided-load-input {
+  width: 100%;
+  min-height: 44px;
+  background: var(--bg);
+  border: 2px solid var(--blue);
+  color: var(--cyan);
+  border-radius: 9px;
+  font-family: var(--font-hud);
+  font-size: clamp(25px, 8vw, 42px);
+  font-weight: 950;
+  text-align: center;
+  padding: 4px 8px;
+}
+.guided-load-input::-webkit-inner-spin-button,
+.guided-load-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.guided-load-input[type=number] { -moz-appearance: textfield; }
+.guided-result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.guided-result-grid > div > span {
+  display: block;
+  color: var(--text2);
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.guided-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.guided-chip {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 7px;
+  min-width: 31px;
+  min-height: 31px;
+  padding: 4px 7px;
+  font-family: var(--font-hud);
+  font-size: 14px;
+  font-weight: 900;
+}
+.guided-chip.target {
+  border-color: rgba(0,212,255,.35);
+  color: var(--cyan);
+  background: rgba(0,212,255,.06);
+}
+.guided-chip.active {
+  background: rgba(30,144,255,.30);
+  border-color: var(--blue);
+  color: #fff;
+}
+.hidden-input { display: none !important; }
+
+@media (max-height: 760px) {
+  .guided-result-panel { padding: 5px; margin-top: 5px; }
+  .guided-load-row { grid-template-columns: 46px 1fr 46px; gap: 5px; margin-bottom: 5px; }
+  .guided-adj, .guided-load-input { min-height: 38px; }
+  .guided-chip { min-width: 28px; min-height: 28px; font-size: 13px; padding: 3px 6px; }
+  .guided-result-title { font-size: 9px; margin-bottom: 4px; }
+}
+
+
+/* ═══════════════════════════════════════════
+   V49.7 — Mode séance : plusieurs mouvements visibles
+   - Réduit seulement les noms et labels quand il y a 2+ exercices
+   - Garde les valeurs Format/Poids grosses
+   - Rend Reps/RPE visibles dans les blocs avec plusieurs mouvements
+   ═══════════════════════════════════════════ */
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-ex-card,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-card,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-card {
+  padding: 6px 6px;
+  gap: 5px;
+  grid-template-columns: 24px 1fr;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-ex-index,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-index,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-index {
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-ex-title,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-title,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-title {
+  font-size: clamp(20px, 5.4vw, 31px) !important;
+  line-height: .96;
+  margin-bottom: 4px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-ex-grid,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-grid,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-grid {
+  gap: 2px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-ex-grid div,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-grid div,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-grid div {
+  padding-top: 2px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-ex-grid span,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-grid span,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-grid span {
+  font-size: clamp(11px, 3vw, 15px) !important;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-ex-grid strong,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-grid strong,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-grid strong {
+  font-size: clamp(23px, 6.4vw, 38px) !important;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-ex-grid strong.accent,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-grid strong.accent,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-grid strong.accent {
+  font-size: clamp(25px, 7vw, 42px) !important;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-result-panel,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-result-panel,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-result-panel {
+  margin-top: 4px;
+  padding: 5px;
+  border-radius: 8px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-result-title,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-result-title,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-result-title {
+  display: none;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-load-row,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-load-row,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-load-row {
+  grid-template-columns: 42px 1fr 42px;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-adj,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-adj,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-adj,
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-load-input,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-load-input,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-load-input {
+  min-height: 36px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-load-input,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-load-input,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-load-input {
+  font-size: clamp(21px, 6.2vw, 34px);
+  padding: 2px 6px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-adj,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-adj,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-adj {
+  font-size: 16px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-result-grid,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-result-grid,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-result-grid {
+  gap: 4px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-result-grid > div > span,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-result-grid > div > span,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-result-grid > div > span {
+  font-size: 9px;
+  margin-bottom: 2px;
+  letter-spacing: .05em;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-chip-row,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-chip-row,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-chip-row {
+  gap: 3px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-chip,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-chip,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-chip {
+  min-width: 26px;
+  min-height: 26px;
+  font-size: 12px;
+  padding: 2px 5px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-rest.mini,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-rest.mini,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-rest.mini {
+  margin-top: 4px;
+  padding: 6px;
+  font-size: clamp(12px, 3.5vw, 16px);
+}
+
+@media (max-height: 760px) {
+  .guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-ex-title,
+  .guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-title,
+  .guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-title {
+    font-size: clamp(18px, 4.9vw, 28px) !important;
+  }
+  .guided-ex-list:has(.guided-ex-card:nth-child(2)) .guided-chip,
+  .guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-chip,
+  .guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-chip {
+    min-width: 24px;
+    min-height: 24px;
+    font-size: 11px;
+  }
+}
+
+
+/* V49.13 — Horloge de repos flottante en mode séance, sans changer la disposition */
+.rest-floating-clock {
+  position: fixed;
+  right: max(8px, env(safe-area-inset-right, 0px));
+  bottom: max(72px, calc(env(safe-area-inset-bottom, 0px) + 72px));
+  z-index: 950;
+  background: rgba(4, 6, 15, .94);
+  border: 1px solid rgba(0, 212, 255, .45);
+  border-radius: 12px;
+  padding: 7px 10px;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  column-gap: 9px;
+  align-items: center;
+  box-shadow: 0 8px 26px rgba(0,0,0,.55), 0 0 12px rgba(0,212,255,.18);
+  pointer-events: none;
+  min-width: 126px;
+}
+.rest-floating-clock.hidden { display: none; }
+.rest-floating-clock span {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  font-family: var(--font-hud);
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.rest-floating-clock strong {
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+  font-family: var(--font-hud);
+  font-size: 22px;
+  line-height: 1;
+  color: var(--cyan);
+  font-variant-numeric: tabular-nums;
+}
+.rest-floating-clock em {
+  grid-column: 2 / 3;
+  grid-row: 1 / 3;
+  font-family: var(--font-hud);
+  font-size: 13px;
+  color: var(--white);
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  align-self: end;
+  padding-bottom: 1px;
+}
+@media (max-width: 420px){
+  .rest-floating-clock { bottom: max(64px, calc(env(safe-area-inset-bottom, 0px) + 64px)); padding: 6px 8px; min-width: 116px; }
+  .rest-floating-clock strong { font-size: 20px; }
+  .rest-floating-clock em { font-size: 12px; }
+}
+
+
+/* V49.19 — Horloge intégrée au mode séance uniquement */
+.topnav-clock {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+  min-width: 76px;
+  padding: 4px 7px 3px;
+  border-radius: 8px;
+  background: rgba(0, 212, 255, .06);
+  border: 1px solid rgba(0, 212, 255, .18);
+  pointer-events: none;
+  font-family: var(--font-hud);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
+.topnav-clock .glc-hm {
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .03em;
+}
+.topnav-clock .glc-sec {
+  color: var(--cyan);
+  font-size: 24px;
+  font-weight: 900;
+  line-height: .86;
+  letter-spacing: .02em;
+  text-shadow: 0 0 8px rgba(0,212,255,.4);
+}
+@media (max-width: 420px){
+  .topnav-clock { min-width: 68px; padding: 3px 5px 2px; gap: 4px; }
+  .topnav-clock .glc-hm { font-size: 11px; }
+  .topnav-clock .glc-sec { font-size: 22px; }
+}
+@media (max-width: 360px){
+  .topnav-clock { min-width: 60px; padding: 3px 4px 2px; }
+  .topnav-clock .glc-hm { font-size: 10px; }
+  .topnav-clock .glc-sec { font-size: 20px; }
+}
+
+/* V49.13 — Fix saisie WOD tout en bas de la vue iPhone
+   Donne assez d'espace de scroll sous le dernier champ, surtout les For time du jeudi.
+   Ne change pas la disposition des cartes; ajoute seulement une zone respirable sous la saisie. */
+#phoneView.view-active {
+  padding-bottom: calc(120px + var(--safe-bot));
+}
+#phoneView .session-entry {
+  margin-bottom: calc(150px + var(--safe-bot));
+  overflow: visible;
+}
+#phoneView .session-footer {
+  padding-bottom: calc(24px + var(--safe-bot));
+}
+#phoneView select.sf-input {
+  min-height: 52px;
+  font-size: 18px;
+  line-height: 1.2;
+}
+#phoneView .wod-result-preview {
+  scroll-margin-bottom: calc(180px + var(--safe-bot));
+}
+#phoneView .sf-card:last-child,
+#phoneView .session-footer {
+  scroll-margin-bottom: calc(180px + var(--safe-bot));
+}
+@supports (-webkit-touch-callout: none) {
+  #phoneView .session-entry {
+    padding-bottom: calc(28px + var(--safe-bot));
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+   V49.18 — Horloge topnav + correctifs finition UI + iPhone 17 Pro
+   ═══════════════════════════════════════════ */
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.topnav-v {
+  display: block;
+  color: var(--muted);
+  font-size: 8px;
+  letter-spacing: .08em;
+  font-weight: 500;
+  margin-top: 1px;
+}
+.pr-save-panel {
+  margin-top: 14px;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+.pr-save-panel .btn-row { margin-top: 4px; }
+.sf-row {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border2);
+  border-radius: 9px;
+  padding: 9px;
+  display: grid;
+  gap: 7px;
+}
+.guided-result-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  font-family: var(--font-hud);
+  font-weight: 900;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.guided-result-input:focus {
+  outline: 2px solid rgba(0,212,255,.25);
+  border-color: var(--cyan);
+}
+.neutral { color: var(--cyan); }
+
+/* iPhone 17 Pro / largeur 402px : toolbar un peu plus compacte sans changer la disposition */
+@media (max-width: 402px) {
+  .phone-toolbar { gap: 4px; padding-left: 8px; padding-right: 8px; }
+  .tb-btn { padding-left: 7px; padding-right: 7px; font-size: 10px; }
+  .phone-day-nav { gap: 4px; }
+  .pill-row .tab { padding: 6px 10px; }
+  .week-day-nav .arrow-btn { padding-left: 7px; padding-right: 7px; }
+
+}
+
+/* Ancienne horloge de repos : gardée cachée pour éviter tout chevauchement bas de page */
+.rest-floating-clock { display: none !important; }
+
+
+/* V49.19 — Horloge utile surtout en mode séance : non affichée dans les autres vues */
+.topnav-clock { display: none !important; }
+.guided-top {
+  grid-template-columns: 42px 1fr minmax(82px, auto);
+}
+.guided-top-right {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
+}
+.guided-live-clock {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+  padding: 3px 6px 2px;
+  border-radius: 8px;
+  background: rgba(0, 212, 255, .07);
+  border: 1px solid rgba(0, 212, 255, .18);
+  font-family: var(--font-hud);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.guided-live-clock .glc-hm {
+  color: var(--text2);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .03em;
+}
+.guided-live-clock .glc-sec {
+  color: var(--cyan);
+  font-size: 23px;
+  font-weight: 900;
+  line-height: .86;
+  letter-spacing: .02em;
+  text-shadow: 0 0 8px rgba(0,212,255,.4);
+}
+@media (max-width: 402px) {
+  .guided-top { grid-template-columns: 38px 1fr minmax(76px, auto); gap: 4px; }
+  .guided-top-title { font-size: 10px; letter-spacing: .03em; }
+  .guided-top-right { gap: 4px; }
+  .guided-live-clock { padding: 3px 5px 2px; gap: 4px; }
+  .guided-live-clock .glc-hm { font-size: 10px; }
+  .guided-live-clock .glc-sec { font-size: 21px; }
+  .guided-count { font-size: 11px; }
+}
+
+
+/* V49.23 — Mode séance : repos affiché comme repos, pas comme reps; horloge uniforme */
+.guided-rest-info span { color: var(--muted); }
+.guided-rest-info strong { color: var(--text); }
+.guided-live-clock .glc-hm,
+.guided-live-clock .glc-sec {
+  font-size: 23px !important;
+  font-weight: 900;
+  line-height: .9;
+}
+.guided-live-clock .glc-hm {
+  color: var(--text2);
+}
+.guided-live-clock .glc-sec {
+  color: var(--cyan);
+  text-shadow: 0 0 8px rgba(0,212,255,.45);
+}
+.guided-live-clock {
+  gap: 6px;
+  padding: 3px 7px 2px;
+}
+@media (max-width: 402px) {
+  .guided-live-clock .glc-hm,
+  .guided-live-clock .glc-sec { font-size: 21px !important; }
+  .guided-live-clock { gap: 5px; padding: 3px 6px 2px; }
+}
+
+
+/* V49.24 — Mode séance : blocs à 3 mouvements plus compacts */
+.guided-card:has(.guided-ex-card:nth-child(3)) .guided-title,
+.guided-card:has(.guided-ex-card:nth-child(4)) .guided-title {
+  font-size: clamp(22px, 5.8vw, 34px) !important;
+  line-height: .94;
+  margin-bottom: 4px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)),
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) {
+  gap: 5px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-card,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-card {
+  padding: 5px 5px;
+  gap: 4px;
+  grid-template-columns: 22px 1fr;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-index,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-index {
+  width: 22px;
+  height: 22px;
+  font-size: 13px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-title,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-title {
+  font-size: clamp(17px, 4.7vw, 25px) !important;
+  line-height: .92;
+  margin-bottom: 2px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-grid,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-grid {
+  gap: 1px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-grid div,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-grid div {
+  padding-top: 1px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-grid span,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-grid span {
+  font-size: clamp(9px, 2.6vw, 12px) !important;
+  letter-spacing: .03em;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-grid strong,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-grid strong {
+  font-size: clamp(18px, 5vw, 28px) !important;
+  line-height: .95;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-grid strong.accent,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-grid strong.accent {
+  font-size: clamp(20px, 5.6vw, 31px) !important;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-rest.mini,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-rest.mini {
+  margin-top: 3px;
+  padding: 4px 6px;
+  font-size: clamp(11px, 3vw, 14px);
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-result-panel,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-result-panel {
+  margin-top: 3px;
+  padding: 4px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-load-row,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-load-row {
+  grid-template-columns: 38px 1fr 38px;
+  gap: 3px;
+  margin-bottom: 3px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-adj,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-adj,
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-load-input,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-load-input {
+  min-height: 32px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-adj,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-adj {
+  font-size: 14px;
+  border-radius: 8px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-load-input,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-load-input {
+  font-size: clamp(18px, 5.4vw, 28px);
+  padding: 1px 4px;
+  border-radius: 8px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-result-grid,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-result-grid {
+  gap: 3px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-result-grid > div > span,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-result-grid > div > span {
+  font-size: 8px;
+  margin-bottom: 1px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-chip-row,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-chip-row {
+  gap: 2px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-chip,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-chip {
+  min-width: 21px;
+  min-height: 21px;
+  padding: 1px 4px;
+  font-size: 10px;
+  border-radius: 6px;
+}
+
+
+/* V49.25 — Boutons tuto dans le mode séance */
+.guided-ex-title,
+.guided-step-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.guided-ex-title > span,
+.guided-step-name > span {
+  min-width: 0;
+}
+.guided-ex-title .tuto-btn,
+.guided-step-name .tuto-btn {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 13px;
+  line-height: 1;
+}
+.guided-step-name .tuto-btn {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  font-size: 12px;
+}
+.guided-ex-list:has(.guided-ex-card:nth-child(3)) .guided-ex-title .tuto-btn,
+.guided-ex-list:has(.guided-ex-card:nth-child(4)) .guided-ex-title .tuto-btn {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  font-size: 11px;
+}

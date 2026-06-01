@@ -1,7 +1,7 @@
-// Coach Bertin V49.5 — Programme autonome : Posture / Cyphose
+// Coach Bertin V48.9 — Programme autonome : Posture / Cyphose
 // Objectif : extension thoracique, serratus, trap inférieur, rotateurs externes,
 // haut du dos, ouverture cage/pecs/lats, chaîne postérieure sans surcharge lombaire.
-// V49.5 : le cycle posture n'utilise plus la structure PPL générique.
+// V48.9 : le cycle posture n'utilise plus la structure PPL générique.
 
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.posture = {
@@ -148,10 +148,6 @@ function postureBlocks(day,week){
      text:"Open book 1 min/côté + doorway stretch 1 min/côté + lat stretch 1 min + respiration 90/90."}
   ];
 }
-
-window.COACH_BERTIN_PROGRAMS.posture.getWeekNote = function(week){
-  return postureWeekPlan(week).note || "";
-};
 
 window.COACH_BERTIN_PROGRAMS.posture.getBlocks = function(day, week){
   return postureBlocks(day, week);

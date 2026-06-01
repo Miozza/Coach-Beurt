@@ -1,6 +1,6 @@
-// Coach Bertin V49.5 — Programme autonome : Force classique
+// Coach Bertin V48.9 — Programme autonome : Force classique
 // Objectif : force pure, repos longs, très peu de conditioning, aucun WOD destructeur.
-// V49.5 : ne dépend plus de la structure PPL générique.
+// V48.9 : ne dépend plus de la structure PPL générique.
 
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.strength = {
@@ -108,10 +108,6 @@ function strengthBlocks(day,week){
     {time:"5 min",title:"D. Mobilité",tag:"Mobilité",kind:"mobility",text:"Lat stretch 1 min/côté + couch stretch 1 min/côté + respiration 1 min."}
   ];
 }
-
-window.COACH_BERTIN_PROGRAMS.strength.getWeekNote = function(week){
-  return strengthWeekPlan(week).note || "";
-};
 
 window.COACH_BERTIN_PROGRAMS.strength.getBlocks = function(day, week){ return strengthBlocks(day, week); };
 window.COACH_BERTIN_PROGRAMS.strength.getWodText = function(day, week){
