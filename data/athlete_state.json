@@ -1,20 +1,20 @@
 {
   "version": "V49.4",
-  "updatedAt": "2026-06-01T00:54:29.193Z",
+  "updatedAt": "2026-06-01T00:55:43.430Z",
   "movements": {
     "Front squat": {
       "level": 17,
-      "xp": 35,
+      "xp": 70,
       "ranges": {
         "strength": {
-          "currentLoad": 216,
+          "currentLoad": 215,
           "currentReps": 1,
-          "actualLoad": 216,
+          "actualLoad": 215,
           "actualReps": 1,
           "rpe": 10,
           "confidence": 0.9,
           "status": "pr",
-          "estimated1RM": 223,
+          "estimated1RM": 222,
           "lastUpdated": "2026-05-31",
           "planned": {
             "source": "manual_pr"
@@ -30,6 +30,18 @@
           "range": "strength",
           "status": "pr",
           "capacityLoad": 216,
+          "planned": {
+            "source": "manual_pr"
+          }
+        },
+        {
+          "date": "2026-05-31",
+          "load": 215,
+          "reps": 1,
+          "rpe": 10,
+          "range": "strength",
+          "status": "pr",
+          "capacityLoad": 215,
           "planned": {
             "source": "manual_pr"
           }
