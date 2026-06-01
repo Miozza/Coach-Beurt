@@ -1,5 +1,5 @@
-// Coach Bertin V49.2
-var APP_VERSION = "V49.2";
+// Coach Bertin V49.4
+var APP_VERSION = "V49.4";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -1083,7 +1083,7 @@ function updateRefsFromResults(results,dateStr){
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
         date:dateStr,lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
-        rpe:Number(r.rpe)||8,note:"Saisi V49.2"
+        rpe:Number(r.rpe)||8,note:"Saisi V49.3"
       };
     }
     // Enregistrer RPE dans l'historique pour progression automatique
@@ -1304,7 +1304,7 @@ document.addEventListener("visibilitychange",function(){
   }
 });
 
-// V49.2 — volontairement neutralisé.
+// V49.3 — volontairement neutralisé.
 // Les résultats ne doivent plus réécrire les charges locales ou data/charges.js.
 // - data/charges.js = configuration stable / équipement / charges de départ
 // - data/resultats.json = journal brut
@@ -1328,11 +1328,60 @@ function buildSessionPayload(results){
 }
 
 // Génère le contenu du fichier charges.js mis à jour avec les nouveaux poids
-// V49.2 — supprimé/neutralisé : l'app ne doit jamais écrire data/charges.js automatiquement.
+// V49.3 — supprimé/neutralisé : l'app ne doit jamais écrire data/charges.js automatiquement.
 // data/charges.js est une configuration stable; le niveau réel est dans data/athlete_state.json.
 function buildChargesJsContent(){ return ""; }
 async function saveChargesToGitHub(token){
   return {ok:false,msg:"Désactivé : les charges stables ne sont pas modifiées automatiquement."};
+}
+
+
+// ─── GitHub API helpers ─────────────────────────────────────────────────────
+// V49.4 : ces fonctions doivent être globales. Sans elles, le test token/PR plante.
+function githubHeaders(token){
+  return {
+    "Authorization":"Bearer "+token,
+    "Accept":"application/vnd.github+json",
+    "X-GitHub-Api-Version":"2022-11-28"
+  };
+}
+async function githubErrorMessage(resp){
+  var msg=resp.status+" "+(resp.statusText||"");
+  try{
+    var j=await resp.json();
+    if(j&&j.message)msg += " — "+j.message;
+  }catch(e){}
+  return msg;
+}
+function githubEncodeContent(text){
+  return btoa(unescape(encodeURIComponent(String(text||""))));
+}
+function githubDecodeContent(content){
+  return decodeURIComponent(escape(atob(String(content||"").replace(/\n/g,""))));
+}
+async function readGithubJsonFile(token,path){
+  var url="https://api.github.com/repos/"+GITHUB_OWNER+"/"+GITHUB_REPO+"/contents/"+path;
+  try{
+    var resp=await fetch(url,{headers:githubHeaders(token)});
+    if(resp.status===404)return{ok:false,missing:true,msg:path+" introuvable"};
+    if(!resp.ok)return{ok:false,missing:false,msg:await githubErrorMessage(resp)};
+    var j=await resp.json();
+    var txt=githubDecodeContent(j.content||"");
+    var data;
+    try{data=JSON.parse(txt||"null");}
+    catch(e){return{ok:false,missing:false,msg:path+" contient du JSON invalide : "+e.message};}
+    return{ok:true,missing:false,sha:j.sha,data:data,text:txt};
+  }catch(e){return{ok:false,missing:false,msg:"Erreur réseau : "+e.message};}
+}
+async function writeGithubFile(token,path,text,message,sha){
+  var url="https://api.github.com/repos/"+GITHUB_OWNER+"/"+GITHUB_REPO+"/contents/"+path;
+  var body={message:message||("Mise à jour "+path),content:githubEncodeContent(text)};
+  if(sha)body.sha=sha;
+  try{
+    var resp=await fetch(url,{method:"PUT",headers:Object.assign(githubHeaders(token),{"Content-Type":"application/json"}),body:JSON.stringify(body)});
+    if(resp.ok){var j=await resp.json();return{ok:true,sha:j.content&&j.content.sha?j.content.sha:null,msg:"OK"};}
+    return{ok:false,msg:await githubErrorMessage(resp)};
+  }catch(e){return{ok:false,msg:"Erreur réseau : "+e.message};}
 }
 
 async function ensureResultatsFile(token){
@@ -1873,7 +1922,7 @@ function renderPhoneWod(){
 
 
 
-// ─── Mode séance guidé (optionnel) — V49.2 ────────────────────────────────
+// ─── Mode séance guidé (optionnel) — V49.3 ────────────────────────────────
 // Vue iPhone pleine largeur : 1 bloc = 1 page. Le WOD a son gros timer dédié.
 
 var guidedSessionState = { blocks: [], index: 0 };
@@ -2155,7 +2204,7 @@ function renderGuidedSession(){
       html+=renderGuidedExerciseList(st.exercises);
     } else if(text){
       // Certains blocs autonomes (ex.: Optionnel / Bonus) n'ont pas d'exercises[].
-      // Avant V49.2, ils s'affichaient vides en mode séance.
+      // Avant V49.3, ils s'affichaient vides en mode séance.
       html+=renderGuidedStepList(st.text, st.kind) || ("<div class='guided-note big'>"+escHtml(text)+"</div>");
     } else {
       html+="<div class='guided-note big'>Aucun contenu pour ce bloc.</div>";
@@ -2454,9 +2503,13 @@ async function savePrProfile(){
     type:"pr_update",
     date:dateStr,
     time:new Date().toLocaleTimeString("fr-CA"),
+    semaine:state.week,
+    jour:state.day,
     week:state.week,
     day:state.day,
+    cycle:state.cycle&&state.cycle.goal?state.cycle.goal:null,
     focus:"PR / Records personnels",
+    resultats:results,
     results:results,
     changes:changed,
     version:APP_VERSION
@@ -2465,16 +2518,36 @@ async function savePrProfile(){
   save();
   renderReferences();
   renderHistory();
-  var msg="✅ PR sauvegardés localement et inscrits dans l’historique.";
+
   var token=getToken();
-  if(token){
-    var payload={version:APP_VERSION,eventType:"pr_update",date:entry.date,time:entry.time,cycle:state.cycle&&state.cycle.goal?state.cycle.goal:null,focus:entry.focus,resultats:results,changes:changed,athleteState:ensureAthleteState()};
-    var gh=await saveToGitHub(payload);
-    var ps=await savePersistentStateToGitHub(token);
-    msg += " "+(gh.ok?"GitHub resultats ✅":"GitHub resultats ❌ "+gh.msg);
-    msg += " "+(ps.ok?"State ✅":"State ❌ "+ps.msg);
+  var msg="✅ PR sauvegardés localement et inscrits dans l’historique.";
+  var statusClass="status-msg ok";
+
+  if(!token){
+    msg += " ⚠ Non envoyé sur GitHub : token manquant ou non sauvegardé.";
+    statusClass="status-msg err";
+  } else {
+    if(st){st.textContent="Envoi PR vers GitHub...";st.className="status-msg";}
+    try{
+      // Vérifie/crée les fichiers durables avant l'écriture du PR.
+      var ensure=await ensureResultatsFile(token);
+      if(!ensure.ok){
+        msg += " GitHub resultats ❌ "+ensure.msg;
+        statusClass="status-msg err";
+      } else {
+        var payload=Object.assign({}, entry, { athleteState:ensureAthleteState() });
+        var gh=await saveToGitHub(payload);
+        var ps=await savePersistentStateToGitHub(token);
+        msg += " "+(gh.ok?"GitHub resultats ✅":"GitHub resultats ❌ "+gh.msg);
+        msg += " "+(ps.ok?"State ✅":"State ❌ "+ps.msg);
+        if(!gh.ok||!ps.ok)statusClass="status-msg err";
+      }
+    }catch(e){
+      msg += " GitHub ❌ "+e.message;
+      statusClass="status-msg err";
+    }
   }
-  if(st){st.textContent=msg;st.className="status-msg ok";}
+  if(st){st.textContent=msg;st.className=statusClass;}
 }
 
 // ─── Charges ─────────────────────────────────────────────────────────────────
