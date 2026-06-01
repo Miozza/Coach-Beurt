@@ -1,10 +1,17 @@
-// Coach Bertin V49.26
-var APP_VERSION = "V49.26";
+// Coach Bertin V50.0
+var APP_VERSION = "V50.0";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
-var ATHLETE_STATE_FILE = "data/athlete_state.json";
+var ATHLETE_STATE_FILE = "data/athlete_state.json"; // V50.0 : athlete_state externe désactivé. Les upgrades viennent des PR/historique.
 var CYCLE_STATE_FILE   = "data/cycle_state.json";
+
+// V50.0 — Architecture stable
+// programs/*.js = plan prévu
+// data/resultats.json = journal brut
+// data/athlete_state.json = force actuelle estimée, sans XP/level
+// data/cycle_state.json = position dans le cycle
+// data/charges.js = charges de base / équipement / préférences
 
 // Objectifs compétition janvier 2027
 var COMPETITION_DATE = new Date("2027-01-15");
@@ -118,7 +125,7 @@ var state = {
   sessionCount: {},      // { "lundi": 2, "mardi": 1, ... } — séances complétées par jour cette semaine
   completedDays: [],     // ["lundi", "mardi"] — jours complétés cette semaine
   deloadAlert: false,    // true si le système détecte fatigue RPE
-  athleteState: { movements:{}, updatedAt:null, version:null }, // Niveau réel durable par mouvement
+  athleteState: { movements:{}, updatedAt:null, version:null }, // Force actuelle durable par mouvement
   cycleState: null       // Où le cycle est rendu, sauvegardable indépendamment des versions
 };
 var customCharges = {};
@@ -196,7 +203,7 @@ function chargeList(){
 }
 
 
-// ─── Athlete State : niveau réel durable par mouvement ─────────────────────
+// ─── Athlete State : force actuelle durable par mouvement ─────────────────────
 
 function nowIso(){try{return new Date().toISOString();}catch(e){return String(new Date());}}
 function normalizeExerciseName(name){return chargeKeyFromName(name).toLowerCase().replace(/[^a-z0-9à-ÿ]+/g," ").trim();}
@@ -212,7 +219,7 @@ function ensureAthleteState(){
 }
 function epley1RM(load,reps){load=Number(load)||0;reps=Number(reps)||0;if(!load||!reps)return 0;return load*(1+reps/30);}
 function estimateLoadForRepsFrom1RM(oneRm,reps){oneRm=Number(oneRm)||0;reps=Number(reps)||1;if(!oneRm)return 0;return oneRm/(1+reps/30);}
-function simpleLevelFromLoad(load){load=Number(load)||0;return Math.max(1,Math.round(load/12.5));}
+function simpleStrengthIndexFromLoad(load){load=Number(load)||0;return Math.max(1,Math.round(load/12.5));}
 function movementLabelFromKeyOrName(key){var mvKey=resolveMovementKey ? resolveMovementKey(key) : null;return mvKey&&movements[mvKey]?movements[mvKey].name:chargeKeyFromName(key);}
 function plannedMapFromSessionExercises(){
   var map={};
@@ -286,14 +293,14 @@ function updateAthleteStateFromResults(results,dateStr){
     }else if(cls.status==="easy_success"){
       capacityLoad=load;
       confidence=0.85;
-      status="level_up_ready";
+      status="upgrade_ready";
     }else if(cls.status==="hard_success"){
       capacityLoad=load;
       confidence=0.70;
       status="hard";
     }
     if(!ast.movements[label]){
-      ast.movements[label]={level:1,xp:0,ranges:{},history:[],lastUpdated:null,status:"new"};
+      ast.movements[label]={ranges:{},history:[],lastUpdated:null,status:"new"};
     }
     var mv=ast.movements[label];
     mv.ranges=mv.ranges||{};mv.history=mv.history||[];
@@ -313,10 +320,8 @@ function updateAthleteStateFromResults(results,dateStr){
         planned:planned||null
       };
     }
-    var xpDelta = cls.status==="easy_success"?25:cls.status==="success"?15:cls.status==="hard_success"?10:cls.status==="failed"?-5:cls.status==="major_fail"?-15:5;
-    mv.xp=Math.max(0,Number(mv.xp||0)+xpDelta);
-    mv.level=simpleLevelFromLoad(Math.max(capacityLoad,Number(prev.currentLoad||0)));
     mv.status=status;
+    mv.upgradedAt = (cls.status==="easy_success"||cls.status==="success"||cls.status==="hard_success") ? dateStr : (mv.upgradedAt||null);
     mv.lastUpdated=dateStr;
     mv.history.push({date:dateStr,load:load,reps:reps,rpe:rpe,range:range,status:status,capacityLoad:capacityLoad,planned:planned||null});
     if(mv.history.length>12)mv.history=mv.history.slice(-12);
@@ -480,19 +485,11 @@ function wodTimerConfig(block){
 function stopWodTimer(){
   if(wodTimer.interval){clearInterval(wodTimer.interval);wodTimer.interval=null;}
   wodTimer.running=false;wodTimer.countdownActive=false;
-  var d=$("pcTimerDisplay");if(d)d.style.color="";
+
 }
 function wodTimerCurrentValue(){return wodTimer.mode==="up"?wodTimer.elapsed:wodTimer.remaining;}
 function updateWodTimerDisplay(){
-  var d=$("pcTimerDisplay");if(!d)return;
-  // Pendant le countdown 10s afficher le compte à rebours en rouge
-  if(wodTimer.countdownActive){
-    d.textContent=String(wodTimer.countdownRemaining);
-    d.style.color="var(--red)";d.style.fontSize="88px";
-  } else {
-    d.textContent=formatClock(wodTimerCurrentValue());
-    d.style.color="";d.style.fontSize="";
-  }
+  // V50.0 — timer WOD retiré de la vue iPhone. Aucun élément à mettre à jour.
 }
 function resetWodTimerState(dur,mode,label,isEmom){
   stopWodTimer();
@@ -528,7 +525,7 @@ function setupWodTimer(){
   var isEmom=box.getAttribute("data-emom")==="1";
   if(wodTimer.duration!==dur||wodTimer.mode!==mode)resetWodTimerState(dur,mode,label,isEmom);
   updateWodTimerDisplay();
-  var start=$("pcTimerStart"),pause=$("pcTimerPause"),reset=$("pcTimerReset");
+  var start=null,pause=null,reset=null; // V50.0 — timer WOD retiré
 
   if(start)start.onclick=function(){
     resumeAudio();
@@ -560,7 +557,7 @@ function setupWodTimer(){
   if(pause)pause.onclick=function(){stopWodTimer();updateWodTimerDisplay();};
   if(reset)reset.onclick=function(){
     resetWodTimerState(dur,mode,label,isEmom);
-    var s=$("pcTimerStart");if(s){s.textContent="▶";s.disabled=false;}
+
     updateWodTimerDisplay();
   };
 }
@@ -575,11 +572,9 @@ function currentClockWithSeconds(){
 }
 
 
-// V49.22 — horloge uniquement dans le mode séance; heure et secondes même grosseur.
+// V50.0 — horloge uniquement dans le mode séance; heure et secondes même grosseur.
 var globalClockInterval=null;
 function ensureGlobalClock(){
-  var old=$('globalLiveClock');
-  if(old) old.classList.add('hidden');
   return $('guidedLiveClock');
 }
 function updateGlobalClock(){
@@ -607,17 +602,13 @@ function ensureRestFloatingClock(){
   return el;
 }
 function updateRestFloatingClock(){
-  // V49.14 : l'heure permanente remplace l'ancienne horloge de repos.
+  // V50.0 : l'heure permanente remplace l'ancienne horloge de repos.
   // Les boutons Pause ont été retirés des vues iPhone et séance.
   var el=$("restFloatingClock");
   if(el){el.className="rest-floating-clock hidden";el.innerHTML="";}
 }
 function updateRestDisplay(){
-  var d=$("restDisplay");
-  if(d){
-    d.textContent=formatClock(restTimer.remaining);
-    d.className="rest-display"+(restTimer.running?" active":restTimer.remaining===0?" done":"");
-  }
+  // V50.0 — restDisplay retiré du DOM. Seul updateRestFloatingClock est conservé.
   updateRestFloatingClock();
 }
 function stopRestTimer(){
@@ -634,14 +625,14 @@ function startRestTimer(seconds){
     if(restTimer.remaining<=3&&restTimer.remaining>0){bipCountdown();vibrate([60]);}
     if(restTimer.remaining<=0){
       stopRestTimer();bipRestDone();vibrate([300,100,300,100,300]);
-      var d=$("restDisplay");if(d)d.className="rest-display done";
+
     }
   },1000);
 }
 function setupRestBar(){
   var map={rb45:45,rb60:60,rb90:90,rb120:120};
   Object.keys(map).forEach(function(id){var b=$(id);if(b)b.onclick=function(){resumeAudio();startRestTimer(map[id]);};});
-  var stop=$("rbStop");if(stop)stop.onclick=function(){stopRestTimer();restTimer.remaining=0;updateRestDisplay();};
+
 }
 
 // ─── Saisie résultats & GitHub sync ──────────────────────────────────────────
@@ -685,7 +676,7 @@ function parseWodStructure(text){
       .replace(/\s+/g,' ')
       .trim();
 
-    // V49.14 : dans la vue séance, on doit voir "Cal Row" et non juste "Row".
+    // V50.0 : dans la vue séance, on doit voir "Cal Row" et non juste "Row".
     // Si le texte original contient "cal", on conserve cette information dans le nom.
     var hadCal = !!isCal || /^cal\s+/i.test(n);
     n = n.replace(/^cal\s+/i,'').trim();
@@ -762,7 +753,7 @@ function estimateWodRounds(text, durationMin){
   return {min:3,max:6,def:4};
 }
 
-// V49.26 — Helpers For Time.
+// V50.0 — Helpers For Time.
 // Ces fonctions doivent exister avant renderSessionEntry(), sinon les WODs For Time
 // comme le jeudi Épaules 3D n'affichent pas le champ de temps final.
 function parseCapSeconds(text, fallbackMin){
@@ -1185,7 +1176,7 @@ function updateRefsFromResults(results,dateStr){
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
         date:dateStr,lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
-        rpe:Number(r.rpe)||8,note:"Saisi V49.3"
+        rpe:Number(r.rpe)||8,note:"Saisi V50.0"
       };
     }
     // Enregistrer RPE dans l'historique pour progression automatique
@@ -1268,6 +1259,7 @@ function checkDeloadAlert(){
 
 function buildSessionSummary(results){
   var lines=[], prLines=[], totalExercises=0, rpeSum=0, rpeCount=0;
+  var autoPrLines=[];
   Object.keys(results).forEach(function(key){
     var r=results[key];
     if(r.isWod||!r.load)return;
@@ -1286,6 +1278,9 @@ function buildSessionSummary(results){
     var name=movements[key]?movements[key].name:key;
     lines.push(name+" : "+load+" lb × "+reps+(arrow?"  "+arrow:"")+(rpe?" | RPE "+rpe:""));
     if(arrow.indexOf("↑")>=0) prLines.push(name);
+    if(r.autoPr){
+      autoPrLines.push((r.prLabel||name)+" : "+(r.prOld? r.prOld+" → ":"")+r.prNew+" lb × "+r.prReps);
+    }
   });
   var avgRpe = rpeCount>0 ? Math.round(rpeSum/rpeCount*10)/10 : 8;
   var rpeSignal = avgRpe<=7?"💚 Léger":avgRpe<=8?"✅ Bon":avgRpe<=8.5?"🟡 Solide":avgRpe<=9?"🟠 Intense":"🔴 Très dur";
@@ -1294,7 +1289,8 @@ function buildSessionSummary(results){
     prLines: prLines,
     avgRpe: avgRpe,
     rpeSignal: rpeSignal,
-    totalExercises: totalExercises
+    totalExercises: totalExercises,
+    autoPrLines: autoPrLines
   };
 }
 
@@ -1303,6 +1299,9 @@ function showSessionSummaryModal(summary){
   var existing=document.getElementById("summaryModal");
   if(existing)existing.remove();
 
+  var autoPrSection = summary.autoPrLines&&summary.autoPrLines.length>0
+    ? '<div class="modal-pr">🏆 Nouveau PR automatique : '+summary.autoPrLines.join(" · ")+'</div>'
+    : '';
   var prSection = summary.prLines.length>0
     ? '<div class="modal-pr">🏆 Progression : '+summary.prLines.join(", ")+'</div>'
     : '';
@@ -1327,6 +1326,7 @@ function showSessionSummaryModal(summary){
     '<div class="summary-modal-inner">'+
       '<div class="summary-modal-title">📊 Résumé de la séance</div>'+
       '<div class="summary-modal-sub">'+currentDayLabel()+' S'+state.week+' · RPE moyen '+summary.avgRpe+' '+summary.rpeSignal+'</div>'+
+      autoPrSection+
       prSection+
       deloadHtml+
       '<div class="summary-lines">'+
@@ -1406,11 +1406,11 @@ document.addEventListener("visibilitychange",function(){
   }
 });
 
-// V49.3 — volontairement neutralisé.
-// Les résultats ne doivent plus réécrire les charges locales ou data/charges.js.
-// - data/charges.js = configuration stable / équipement / charges de départ
+// V50.0 — volontairement neutralisé.
+// Les résultats ne doivent plus réécrire les charges locales ou charges.js.
+// - charges.js = configuration stable / équipement / charges de départ
 // - data/resultats.json = journal brut
-// - data/athlete_state.json = capacité réelle et recalibrage
+// - PR/historique = capacité déjà prouvée et upgrades
 function updateCustomChargesFromResults(results){
   return false;
 }
@@ -1430,8 +1430,8 @@ function buildSessionPayload(results){
 }
 
 // Génère le contenu du fichier charges.js mis à jour avec les nouveaux poids
-// V49.3 — supprimé/neutralisé : l'app ne doit jamais écrire data/charges.js automatiquement.
-// data/charges.js est une configuration stable; le niveau réel est dans data/athlete_state.json.
+// V50.0 — supprimé/neutralisé : l'app ne doit jamais écrire charges.js automatiquement.
+// charges.js est la seule configuration de charges. Les upgrades viennent des PR/historique.
 function buildChargesJsContent(){ return ""; }
 async function saveChargesToGitHub(token){
   return {ok:false,msg:"Désactivé : les charges stables ne sont pas modifiées automatiquement."};
@@ -1439,7 +1439,7 @@ async function saveChargesToGitHub(token){
 
 
 // ─── GitHub API helpers ─────────────────────────────────────────────────────
-// V49.8 : helpers GitHub globaux. Sans elles, le test token/PR plante.
+// V50.0 : helpers GitHub globaux. Sans elles, le test token/PR plante.
 function githubHeaders(token){
   return {
     "Authorization":"Bearer "+token,
@@ -1515,15 +1515,11 @@ async function saveJsonDataFile(token,path,data,message){
 }
 async function savePersistentStateToGitHub(token){
   if(!token)return{ok:false,msg:"Token manquant"};
-  var ast=ensureAthleteState();
-  ast.updatedAt=nowIso();ast.version=APP_VERSION;
   var cycle=buildCycleStatePayload();
   state.cycleState=cycle;
-  var a=await saveJsonDataFile(token,ATHLETE_STATE_FILE,ast,"Mise à jour athlete_state — "+new Date().toLocaleDateString("fr-CA"));
-  if(!a.ok)return{ok:false,msg:"athlete_state : "+a.msg};
   var c=await saveJsonDataFile(token,CYCLE_STATE_FILE,cycle,"Mise à jour cycle_state — "+new Date().toLocaleDateString("fr-CA"));
   if(!c.ok)return{ok:false,msg:"cycle_state : "+c.msg};
-  return{ok:true,msg:"state OK"};
+  return{ok:true,msg:"cycle_state OK"};
 }
 
 async function saveToGitHub(payload){
@@ -1554,12 +1550,10 @@ async function testGithubToken(){
 
     var ensure=await ensureResultatsFile(token);
     if(!ensure.ok){if(s){s.textContent="❌ "+ensure.msg;s.className="status-msg err";}return;}
-    var ast=await ensureJsonFile(token,ATHLETE_STATE_FILE,{version:APP_VERSION,updatedAt:nowIso(),movements:{}},"Création athlete_state.json");
-    if(!ast.ok){if(s){s.textContent="❌ "+ast.msg;s.className="status-msg err";}return;}
     var cyc=await ensureJsonFile(token,CYCLE_STATE_FILE,buildCycleStatePayload(),"Création cycle_state.json");
     if(!cyc.ok){if(s){s.textContent="❌ "+cyc.msg;s.className="status-msg err";}return;}
 
-    if(s){s.textContent="✅ Token OK · repo accessible · resultats + athlete_state + cycle_state OK";s.className="status-msg ok";}
+    if(s){s.textContent="✅ Token OK · repo accessible · resultats + cycle_state OK";s.className="status-msg ok";}
   }catch(e){
     if(s){s.textContent="❌ Erreur réseau/test : "+e.message;s.className="status-msg err";}
   }
@@ -1577,8 +1571,6 @@ async function syncHistoryFromGitHub(silent){
     state.history=mergeHistory(state.history||[],Array.isArray(ensure.data)?ensure.data:[]);
     rebuildRefsFromHistory();
     try{
-      var ast=await readGithubJsonFile(token,ATHLETE_STATE_FILE);
-      if(ast.ok&&ast.data&&ast.data.movements)state.athleteState=ast.data;
       var cyc=await readGithubJsonFile(token,CYCLE_STATE_FILE);
       if(cyc.ok&&cyc.data)applyCycleStatePayload(cyc.data);
     }catch(e){}
@@ -1609,13 +1601,15 @@ function setupSessionSave(){
     if(!hasData){var s=$("saveStatus");if(s){s.textContent="Aucun résultat saisi.";s.className="session-note";}return;}
     btn.disabled=true;btn.textContent="Envoi en cours...";
     results=enrichSessionResults(results);
+    var autoPrUpdates=detectAndApplyAutomaticPr(results,todayDateString());
     var payload=buildSessionPayload(results);
+    if(autoPrUpdates.length)payload.autoPrUpdates=autoPrUpdates;
     // 1. Mettre à jour références + historique RPE
     updateRefsFromResults(results);
     updateAthleteStateFromResults(results,payload.date);
     // 2. Ne plus modifier les charges locales depuis les résultats :
-    // data/charges.js et les charges locales sont une configuration/équipement, pas une capacité réelle.
-    // La capacité réelle est gérée par athlete_state.json.
+    // charges.js et les charges locales sont une configuration/équipement, pas une capacité réelle.
+    // Les upgrades viennent de ce qui a été réellement dépassé dans l’historique/PR.
     // updateCustomChargesFromResults(results);
     // 3. Marquer le jour complété
     markDayCompleted(state.day);
@@ -1624,15 +1618,16 @@ function setupSessionSave(){
     // 5. Ajouter à l'historique local
     state.history.push({date:payload.date,time:payload.time,week:state.week,day:state.day,focus:focus().label,results:results,version:APP_VERSION});
     save();
+    if(autoPrUpdates.length){ renderProfile(); renderReferences(); }
     // 6. Envoyer séance sur GitHub
     var result=await saveToGitHub(payload);
     // 7. Sauvegarder les états persistants durables si la séance est bien écrite
     var stateMsg="";
     if(result.ok&&getToken()){
       var stateSave=await savePersistentStateToGitHub(getToken());
-      stateMsg=stateSave.ok?" · niveaux/cycle ✅":" · état durable non sauvegardé ("+stateSave.msg+")";
+      stateMsg=stateSave.ok?" · niveaux/cycle ✅":" · cycle_state non sauvegardé ("+stateSave.msg+")";
     }
-    // 8. Ne pas modifier data/charges.js automatiquement : les charges stables ne doivent pas être écrasées par une mise à jour ou une séance.
+    // 8. Ne pas modifier charges.js automatiquement : les charges stables ne doivent pas être écrasées par une mise à jour ou une séance.
     var s=$("saveStatus");
     if(s){s.textContent=result.msg+stateMsg;s.className="session-note"+(result.ok?" ok":" err");}
     btn.disabled=false;btn.textContent="💾 Sauvegarder & envoyer sur GitHub";
@@ -1961,18 +1956,6 @@ function renderPhoneWod(){
       html+="<div class='pc-tag wod'>"+rk.tag+"</div>";
       html+="<div class='pc-wod-text'>"+cleanLine(displayChargeText(b.text||""))+"</div>";
       html+=phoneWodLoadHints(b.text||"");
-      var cfg=wodTimerConfig(b);
-      var initial=cfg.mode==="up"?0:cfg.seconds;
-      html+="<div class='pc-timer' data-duration='"+cfg.seconds+"' data-mode='"+cfg.mode+"' data-label='"+cfg.label+"' data-emom='"+(cfg.isEmom?"1":"0")+"'>";
-      html+="<div class='pc-timer-left'>";
-      html+="<div class='pc-timer-label'>"+cfg.label+(cfg.isEmom?" · bip/min":"")+"</div>";
-      html+="<div class='pc-timer-display' id='pcTimerDisplay'>"+formatClock(initial)+"</div>";
-      html+="<div class='pc-timer-hint'>▶ Démarrage dans 10s · bips aux 3 dernières secondes</div>";
-      html+="</div><div class='pc-timer-btns'>";
-      html+="<button class='pc-tbtn start' id='pcTimerStart'>&#9654;</button>";
-      html+="<button class='pc-tbtn' id='pcTimerPause'>&#9208;</button>";
-      html+="<button class='pc-tbtn' id='pcTimerReset'>&#8635;</button>";
-      html+="</div></div>";
 
     } else if(b.exercises&&b.exercises.length){
       if(b.text)html+="<div class='pc-plain-text' style='margin-bottom:12px'>"+cleanLine(displayChargeText(b.text))+"</div>";
@@ -2021,7 +2004,7 @@ function renderPhoneWod(){
 
 
 
-// ─── Mode séance guidé (optionnel) — V49.3 ────────────────────────────────
+// ─── Mode séance guidé (optionnel) — V50.0 ────────────────────────────────
 // Vue iPhone pleine largeur : 1 bloc = 1 page. Le WOD a son gros timer dédié.
 
 var guidedSessionState = { blocks: [], index: 0 };
@@ -2037,7 +2020,7 @@ function escHtml(v){
 }
 
 
-// V49.8 — Résultats saisis directement dans le mode séance.
+// V50.0 — Résultats saisis directement dans le mode séance.
 // On garde un cache persistant tant que la page est ouverte, puis collectSessionResults()
 // le fusionne aux champs de la vue iPhone.
 var guidedResultCache = {};
@@ -2054,7 +2037,7 @@ function findSessionInput(key, field){
   return found;
 }
 
-// V49.18 — synchronisation immédiate mode séance → saisie iPhone.
+// V50.0 — synchronisation immédiate mode séance → saisie iPhone.
 // Quand tu modifies poids/reps/RPE dans la vue séance, les champs et chips
 // correspondants dans la section résultats iPhone se mettent à jour tout de suite.
 function syncSessionEntryFromGuided(key, field, value){
@@ -2449,7 +2432,7 @@ function renderGuidedSession(){
       html+=renderGuidedExerciseList(st.exercises);
     } else if(text){
       // Certains blocs autonomes (ex.: Optionnel / Bonus) n'ont pas d'exercises[].
-      // Avant V49.3, ils s'affichaient vides en mode séance.
+      // Avant V50.0, ils s'affichaient vides en mode séance.
       html+=renderGuidedStepList(st.text, st.kind) || ("<div class='guided-note big'>"+escHtml(text)+"</div>");
     } else {
       html+="<div class='guided-note big'>Aucun contenu pour ce bloc.</div>";
@@ -2699,7 +2682,7 @@ function updateAthleteStateFromPR(cfg,load,dateStr){
   var range=cfg.range||repRange(cfg.reps);
   var oneRM=epley1RM(load,cfg.reps);
   if(!ast.movements[label]){
-    ast.movements[label]={level:1,xp:0,ranges:{},history:[],lastUpdated:null,status:"new"};
+    ast.movements[label]={ranges:{},history:[],lastUpdated:null,status:"new"};
   }
   var mv=ast.movements[label];
   mv.ranges=mv.ranges||{};mv.history=mv.history||[];
@@ -2715,13 +2698,77 @@ function updateAthleteStateFromPR(cfg,load,dateStr){
     lastUpdated:dateStr,
     planned:{source:"manual_pr"}
   };
-  mv.xp=Math.max(0,Number(mv.xp||0)+35);
-  mv.level=simpleLevelFromLoad(load);
   mv.status="pr";
+  mv.upgradedAt=dateStr;
   mv.lastUpdated=dateStr;
   mv.history.push({date:dateStr,load:load,reps:cfg.reps,rpe:10,range:range,status:"pr",capacityLoad:load,planned:{source:"manual_pr"}});
   if(mv.history.length>12)mv.history=mv.history.slice(-12);
   ast.updatedAt=nowIso();ast.version=APP_VERSION;
+}
+
+function normalizePrCompareName(s){
+  return String(s||"").toLowerCase()
+    .replace(/^[a-z][0-9]?\.\s*/i,"")
+    .replace(/technique|l[eé]ger|lourd|strict|contr[oô]l[eé]|c[aâ]ble bas|halt[eè]res|machine|\/|\(|\)/ig," ")
+    .replace(/[^a-z0-9à-ÿ]+/g," ")
+    .trim();
+}
+function prCfgMatchesResult(cfg,key){
+  if(!cfg||!key)return false;
+  var raw=String(key||"");
+  var clean=chargeKeyFromName(raw);
+  var a=normalizePrCompareName(clean);
+  var label=normalizePrCompareName(cfg.label);
+  if(a===label)return true;
+  if(cfg.mvKey){
+    if(clean===cfg.mvKey||raw===cfg.mvKey)return true;
+    if(movements&&movements[cfg.mvKey]){
+      var mvName=normalizePrCompareName(movements[cfg.mvKey].name);
+      if(a===mvName)return true;
+    }
+  }
+  // Correspondances pratiques pour les noms composés du programme.
+  if(cfg.label==="Incline DB press" && /incline.*db.*press/i.test(clean))return true;
+  if(cfg.label==="Chest Supported Row" && /chest.*supported.*row/i.test(clean))return true;
+  if(cfg.label==="Weighted Pull-up" && /(weighted.*pull|pull.*up|ring row)/i.test(clean))return true;
+  if(cfg.label==="Back Squat" && /back.*squat/i.test(clean))return true;
+  if(cfg.label==="Front squat" && /front.*squat/i.test(clean))return true;
+  if(cfg.label==="Hip thrust" && /hip.*thrust/i.test(clean))return true;
+  if(cfg.label==="DB RDL" && /(db.*rdl|romanian)/i.test(clean))return true;
+  if(cfg.label==="Bulgarian split squat" && /bulgarian/i.test(clean))return true;
+  if(cfg.label==="Power clean" && /power.*clean/i.test(clean))return true;
+  if(cfg.label==="Strict press" && /strict.*press/i.test(clean))return true;
+  if(cfg.label==="Bench press" && /^bench press$/i.test(clean))return true;
+  return false;
+}
+function detectAndApplyAutomaticPr(results,dateStr){
+  var updates=[];
+  dateStr=dateStr||todayDateString();
+  Object.keys(results||{}).forEach(function(key){
+    var r=results[key];
+    if(!r||r.isWod)return;
+    var load=parseLoad(r.load), reps=Number(r.reps)||0;
+    if(!load||!reps)return;
+    Object.keys(PR_FIELD_MAP).forEach(function(id){
+      var cfg=PR_FIELD_MAP[id];
+      if(!cfg||!prCfgMatchesResult(cfg,key))return;
+      var old=Number(state.profile[cfg.profile])||0;
+      // Un 5RM/8RM/10RM automatique exige au moins le nombre de reps du PR enregistré.
+      if(reps < Number(cfg.reps||1))return;
+      if(load <= old)return;
+      state.profile[cfg.profile]=load;
+      updateMovementRefFromPR(cfg,load,dateStr);
+      updateAthleteStateFromPR(cfg,load,dateStr);
+      r.autoPr=true;
+      r.prLabel=cfg.label;
+      r.prOld=old||null;
+      r.prNew=load;
+      r.prReps=cfg.reps;
+      r.note=(r.note?r.note+" · ":"")+"PR automatique détecté";
+      updates.push({label:cfg.label,old:old||null,new:load,reps:cfg.reps,key:key});
+    });
+  });
+  return updates;
 }
 
 async function savePrProfile(){

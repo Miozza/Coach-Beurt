@@ -1,4 +1,4 @@
-const CACHE_NAME = 'coach-bertin-v49.26';
+const CACHE_NAME = 'coach-bertin-v50.0';
 const FILES = [
   './', './index.html', './styles.css', './app.js', './manifest.json',
   './programs/index.js', './programs/epaules_3d.js',
@@ -8,7 +8,7 @@ const FILES = [
   './programs/config.js', './programs/workouts.js', './programs/tutorials.js',
   './apple-touch-icon.png', './apple-touch-icon-precomposed.png', './icon-180.png', './icon-192.png', './icon-512.png', './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png'
 ];
-const OPTIONAL_FILES = ['./data/charges.js', './charges.js'];
+const OPTIONAL_FILES = [];
 
 self.addEventListener('install', e => {
   e.waitUntil(

@@ -1,0 +1,26 @@
+Coach Bertin V50.0 — Architecture stable
+
+Objectif :
+Réduire la confusion et figer les responsabilités des fichiers.
+
+Règles :
+1. programs/*.js donne le plan d'entraînement.
+2. data/resultats.json garde ce qui a réellement été fait.
+3. data/athlete_state.json garde la force actuelle estimée.
+4. data/charges.js garde seulement les charges de base, l'équipement et les préférences.
+5. data/cycle_state.json garde où tu es rendu dans le cycle.
+6. Aucun fichier data ne doit être écrasé par une mise à jour de l'app.
+7. athlete_state.json n'est pas un système de jeu vidéo : pas de XP, pas de level.
+
+Statuts recommandés :
+- confirmed : charge confirmée.
+- upgrade : dépassement d'une performance précédente.
+- watch : réussite trop difficile, surveiller.
+- recalibrate : échec clair, charge surestimée.
+- deload_needed : fatigue élevée répétée.
+
+Priorité des charges à afficher :
+1. athlete_state.json si une force actuelle fiable existe.
+2. resultats.json reconstruit.
+3. data/charges.js.
+4. charge écrite dans le programme.
