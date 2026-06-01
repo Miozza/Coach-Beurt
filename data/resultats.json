@@ -1,1 +1,82 @@
-[]
+[
+  {
+    "uid": "pr_2026-05-31_1780275268426",
+    "type": "pr_update",
+    "date": "2026-05-31",
+    "time": "20:54:28",
+    "semaine": 1,
+    "jour": "lundi",
+    "week": 1,
+    "day": "lundi",
+    "cycle": "maintenance",
+    "focus": "PR / Records personnels",
+    "resultats": {
+      "Front squat": {
+        "load": "216",
+        "reps": "1",
+        "rpe": "10",
+        "note": "PR saisi manuellement",
+        "status": "pr"
+      }
+    },
+    "results": {
+      "Front squat": {
+        "load": "216",
+        "reps": "1",
+        "rpe": "10",
+        "note": "PR saisi manuellement",
+        "status": "pr"
+      }
+    },
+    "changes": {
+      "Front squat": {
+        "old": 215,
+        "new": 216,
+        "reps": 1
+      }
+    },
+    "version": "V49.4",
+    "athleteState": {
+      "version": "V49.4",
+      "updatedAt": "2026-06-01T00:54:28.426Z",
+      "movements": {
+        "Front squat": {
+          "level": 17,
+          "xp": 35,
+          "ranges": {
+            "strength": {
+              "currentLoad": 216,
+              "currentReps": 1,
+              "actualLoad": 216,
+              "actualReps": 1,
+              "rpe": 10,
+              "confidence": 0.9,
+              "status": "pr",
+              "estimated1RM": 223,
+              "lastUpdated": "2026-05-31",
+              "planned": {
+                "source": "manual_pr"
+              }
+            }
+          },
+          "history": [
+            {
+              "date": "2026-05-31",
+              "load": 216,
+              "reps": 1,
+              "rpe": 10,
+              "range": "strength",
+              "status": "pr",
+              "capacityLoad": 216,
+              "planned": {
+                "source": "manual_pr"
+              }
+            }
+          ],
+          "lastUpdated": "2026-05-31",
+          "status": "pr"
+        }
+      }
+    }
+  }
+]
