@@ -1,5 +1,236 @@
 {
-  "version": "V50.8",
-  "updatedAt": null,
-  "movements": {}
+  "version": "V49.25",
+  "updatedAt": "2026-06-02T14:54:55.215Z",
+  "movements": {
+    "Incline DB Press": {
+      "level": 4,
+      "xp": 15,
+      "ranges": {
+        "hypertrophy": {
+          "currentLoad": 55,
+          "currentReps": 10,
+          "actualLoad": 55,
+          "actualReps": 10,
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 73,
+          "lastUpdated": "2026-06-02",
+          "planned": {
+            "load": 55,
+            "reps": 10,
+            "targetMin": 10,
+            "targetMax": 10,
+            "format": "3×10",
+            "kind": "main"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-02",
+          "load": 55,
+          "reps": 10,
+          "rpe": 8,
+          "range": "hypertrophy",
+          "status": "success",
+          "capacityLoad": 55,
+          "planned": {
+            "load": 55,
+            "reps": 10,
+            "targetMin": 10,
+            "targetMax": 10,
+            "format": "3×10",
+            "kind": "main"
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-02",
+      "status": "success"
+    },
+    "Strict Press": {
+      "level": 9,
+      "xp": 15,
+      "ranges": {
+        "hypertrophy": {
+          "currentLoad": 110,
+          "currentReps": 8,
+          "actualLoad": 110,
+          "actualReps": 9,
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 143,
+          "lastUpdated": "2026-06-02",
+          "planned": {
+            "load": 110,
+            "reps": 8,
+            "targetMin": 8,
+            "targetMax": 10,
+            "format": "3×8-10",
+            "kind": "main"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-02",
+          "load": 110,
+          "reps": 9,
+          "rpe": 8,
+          "range": "hypertrophy",
+          "status": "success",
+          "capacityLoad": 110,
+          "planned": {
+            "load": 110,
+            "reps": 8,
+            "targetMin": 8,
+            "targetMax": 10,
+            "format": "3×8-10",
+            "kind": "main"
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-02",
+      "status": "success"
+    },
+    "Lateral Raise câble bas": {
+      "level": 1,
+      "xp": 15,
+      "ranges": {
+        "endurance": {
+          "currentLoad": 15,
+          "currentReps": 15,
+          "actualLoad": 15,
+          "actualReps": 18,
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 24,
+          "lastUpdated": "2026-06-02",
+          "planned": {
+            "load": 15,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-02",
+          "load": 15,
+          "reps": 18,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 15,
+          "planned": {
+            "load": 15,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-02",
+      "status": "success"
+    },
+    "Overhead Rope Extension": {
+      "level": 4,
+      "xp": 15,
+      "ranges": {
+        "endurance": {
+          "currentLoad": 50,
+          "currentReps": 10,
+          "actualLoad": 50,
+          "actualReps": 13,
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 72,
+          "lastUpdated": "2026-06-02",
+          "planned": {
+            "load": 50,
+            "reps": 10,
+            "targetMin": 10,
+            "targetMax": 15,
+            "format": "4×10-15",
+            "kind": "accessory"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-02",
+          "load": 50,
+          "reps": 13,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 50,
+          "planned": {
+            "load": 50,
+            "reps": 10,
+            "targetMin": 10,
+            "targetMax": 15,
+            "format": "4×10-15",
+            "kind": "accessory"
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-02",
+      "status": "success"
+    },
+    "Triceps Rope Pushdown": {
+      "level": 5,
+      "xp": 15,
+      "ranges": {
+        "endurance": {
+          "currentLoad": 60,
+          "currentReps": 12,
+          "actualLoad": 60,
+          "actualReps": 16,
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 92,
+          "lastUpdated": "2026-06-02",
+          "planned": {
+            "load": 60,
+            "reps": 12,
+            "targetMin": 12,
+            "targetMax": 20,
+            "format": "3×12-20",
+            "kind": "accessory"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-02",
+          "load": 60,
+          "reps": 16,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 60,
+          "planned": {
+            "load": 60,
+            "reps": 12,
+            "targetMin": 12,
+            "targetMax": 20,
+            "format": "3×12-20",
+            "kind": "accessory"
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-02",
+      "status": "success"
+    }
+  }
 }
