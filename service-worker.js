@@ -1,4 +1,4 @@
-const CACHE_NAME = 'coach-bertin-v50.0';
+const CACHE_NAME = 'coach-bertin-v50.1';
 const FILES = [
   './', './index.html', './styles.css', './app.js', './manifest.json',
   './programs/index.js', './programs/epaules_3d.js',
@@ -7,6 +7,7 @@ const FILES = [
   './programs/force_performance.js', './programs/competition_peak.js',
   './programs/config.js', './programs/workouts.js', './programs/tutorials.js',
   './apple-touch-icon.png', './apple-touch-icon-precomposed.png', './icon-180.png', './icon-192.png', './icon-512.png', './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png'
+  './data/charges.js',
 ];
 const OPTIONAL_FILES = [];
 
