@@ -2578,7 +2578,7 @@ label {
 }
 
 
-/* V50.8 — Tutos mouvements dans la vue WOD seulement */
+/* V50.13 — Tutos mouvements dans la vue WOD seulement */
 .exercise-name {
   display: flex;
   align-items: center;
@@ -2701,7 +2701,7 @@ label {
 }
 
 /* ═══════════════════════════════════════════
-   V50.8 — Mode séance : valeurs plus grosses + saisie directe
+   V50.13 — Mode séance : valeurs plus grosses + saisie directe
    ═══════════════════════════════════════════ */
 .guided-ex-grid strong {
   font-size: clamp(27px, 8.4vw, 48px) !important;
@@ -2821,7 +2821,7 @@ label {
 
 
 /* ═══════════════════════════════════════════
-   V50.8 — Mode séance : plusieurs mouvements visibles
+   V50.13 — Mode séance : plusieurs mouvements visibles
    - Réduit seulement les noms et labels quand il y a 2+ exercices
    - Garde les valeurs Format/Poids grosses
    - Rend Reps/RPE visibles dans les blocs avec plusieurs mouvements
@@ -2960,7 +2960,7 @@ label {
 }
 
 
-/* V50.8 — Horloge de repos flottante en mode séance, sans changer la disposition */
+/* V50.13 — Horloge de repos flottante en mode séance, sans changer la disposition */
 .rest-floating-clock {
   position: fixed;
   right: max(8px, env(safe-area-inset-right, 0px));
@@ -3016,7 +3016,7 @@ label {
 }
 
 
-/* V50.8 — Horloge intégrée au mode séance uniquement */
+/* V50.13 — Horloge intégrée au mode séance uniquement */
 .topnav-clock {
   flex-shrink: 0;
   display: inline-flex;
@@ -3059,7 +3059,7 @@ label {
   .topnav-clock .glc-sec { font-size: 20px; }
 }
 
-/* V50.8 — Fix saisie WOD tout en bas de la vue iPhone
+/* V50.13 — Fix saisie WOD tout en bas de la vue iPhone
    Donne assez d'espace de scroll sous le dernier champ, surtout les For time du jeudi.
    Ne change pas la disposition des cartes; ajoute seulement une zone respirable sous la saisie. */
 #phoneView.view-active {
@@ -3092,7 +3092,7 @@ label {
 
 
 /* ═══════════════════════════════════════════
-   V50.8 — Horloge topnav + correctifs finition UI + iPhone 17 Pro
+   V50.13 — Horloge topnav + correctifs finition UI + iPhone 17 Pro
    ═══════════════════════════════════════════ */
 .muted {
   color: var(--muted);
@@ -3156,7 +3156,7 @@ label {
 .rest-floating-clock { display: none !important; }
 
 
-/* V50.8 — Horloge utile surtout en mode séance : non affichée dans les autres vues */
+/* V50.13 — Horloge utile surtout en mode séance : non affichée dans les autres vues */
 .topnav-clock { display: none !important; }
 .guided-top {
   grid-template-columns: 42px 1fr minmax(82px, auto);
@@ -3208,7 +3208,7 @@ label {
 }
 
 
-/* V50.8 — Mode séance : repos affiché comme repos, pas comme reps; horloge uniforme */
+/* V50.13 — Mode séance : repos affiché comme repos, pas comme reps; horloge uniforme */
 .guided-rest-info span { color: var(--muted); }
 .guided-rest-info strong { color: var(--text); }
 .guided-live-clock .glc-hm,
@@ -3235,7 +3235,7 @@ label {
 }
 
 
-/* V50.8 — Mode séance : blocs à 3 mouvements plus compacts */
+/* V50.13 — Mode séance : blocs à 3 mouvements plus compacts */
 .guided-card:has(.guided-ex-card:nth-child(3)) .guided-title,
 .guided-card:has(.guided-ex-card:nth-child(4)) .guided-title {
   font-size: clamp(22px, 5.8vw, 34px) !important;
@@ -3343,7 +3343,7 @@ label {
 }
 
 
-/* V50.8 — Boutons tuto dans le mode séance */
+/* V50.13 — Boutons tuto dans le mode séance */
 .guided-ex-title,
 .guided-step-name {
   display: flex;
@@ -3380,7 +3380,7 @@ label {
 }
 
 
-/* V50.8 — Mode séance : horloge plus grosse sans nuire au contenu */
+/* V50.13 — Mode séance : horloge plus grosse sans nuire au contenu */
 .guided-top {
   grid-template-columns: 38px 1fr !important;
   min-height: 56px;
@@ -3435,4 +3435,149 @@ label {
   .guided-live-clock .glc-sec {
     font-size: clamp(30px, 8.4vw, 38px) !important;
   }
+}
+
+
+/* V50.13 — Historique : suppression manuelle d'un entraînement */
+.history-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+}
+.history-delete-btn{
+  border:1px solid rgba(255,90,90,.45);
+  background:rgba(255,90,90,.10);
+  color:#ff8d8d;
+  border-radius:10px;
+  padding:8px 10px;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.history-delete-btn:active{
+  transform:scale(.97);
+}
+.history-item.deletable{
+  position:relative;
+}
+#historyStatus{
+  margin:8px 0 12px;
+}
+@media (max-width:420px){
+  .history-head{
+    gap:6px;
+  }
+  .history-delete-btn{
+    padding:7px 8px;
+    font-size:11px;
+  }
+}
+
+
+/* V50.13 — EMOM : alerte visuelle à chaque minute */
+.guided-wod-timer.emom-blue,
+.guided-wod-timer.emom-yellow,
+.guided-wod-timer.emom-red,
+.guided-wod-timer.emom-go{
+  position: relative;
+}
+
+.guided-wod-timer.emom-blue{
+  border-color: rgba(120,220,255,.85) !important;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(120,220,255,.18), transparent 44%),
+    linear-gradient(180deg, rgba(120,220,255,.08), rgba(0,180,255,.08)) !important;
+  box-shadow:
+    0 0 0 2px rgba(120,220,255,.12),
+    0 0 22px rgba(120,220,255,.22),
+    inset 0 0 22px rgba(120,220,255,.10) !important;
+}
+.guided-wod-timer.emom-blue .guided-timer-display{
+  color:#8feaff !important;
+  text-shadow:0 0 12px rgba(120,220,255,.55) !important;
+}
+
+.guided-wod-timer.emom-yellow{
+  border-color: rgba(255,210,70,.95) !important;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255,210,70,.25), transparent 44%),
+    linear-gradient(180deg, rgba(255,210,70,.12), rgba(255,170,0,.10)) !important;
+  box-shadow:
+    0 0 0 2px rgba(255,210,70,.18),
+    0 0 26px rgba(255,210,70,.32),
+    inset 0 0 24px rgba(255,210,70,.12) !important;
+}
+.guided-wod-timer.emom-yellow .guided-timer-display{
+  color:#ffd84a !important;
+  text-shadow:0 0 14px rgba(255,216,74,.75) !important;
+}
+
+.guided-wod-timer.emom-red{
+  border-color: rgba(255,65,100,.98) !important;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255,65,100,.32), transparent 44%),
+    linear-gradient(180deg, rgba(255,65,100,.16), rgba(255,30,60,.16)) !important;
+  box-shadow:
+    0 0 0 2px rgba(255,65,100,.24),
+    0 0 34px rgba(255,65,100,.45),
+    inset 0 0 28px rgba(255,65,100,.15) !important;
+  animation: emomPulseRed .32s alternate infinite;
+}
+.guided-wod-timer.emom-red .guided-timer-display{
+  color:#ff4164 !important;
+  text-shadow:
+    0 0 14px rgba(255,65,100,.9),
+    0 0 30px rgba(255,65,100,.55) !important;
+}
+
+.guided-wod-timer.emom-go{
+  border-color: rgba(0,255,170,.98) !important;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(0,255,170,.34), transparent 44%),
+    linear-gradient(180deg, rgba(0,255,170,.18), rgba(0,212,255,.16)) !important;
+  box-shadow:
+    0 0 0 2px rgba(0,255,170,.28),
+    0 0 40px rgba(0,255,170,.55),
+    inset 0 0 30px rgba(0,212,255,.18) !important;
+  animation: emomFlashGo .18s alternate 4;
+}
+.guided-wod-timer.emom-go .guided-timer-display{
+  color:#00ffb0 !important;
+  text-shadow:
+    0 0 16px rgba(0,255,170,.95),
+    0 0 34px rgba(0,212,255,.60) !important;
+}
+
+.guided-wod-timer.emom-blue::after,
+.guided-wod-timer.emom-yellow::after,
+.guided-wod-timer.emom-red::after,
+.guided-wod-timer.emom-go::after{
+  content: attr(data-emom-warning);
+  position:absolute;
+  top:8px;
+  right:10px;
+  min-width:44px;
+  text-align:center;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:14px;
+  font-weight:950;
+  letter-spacing:.05em;
+  background:rgba(0,0,0,.38);
+  border:1px solid currentColor;
+}
+.guided-wod-timer.emom-blue::after{color:#8feaff;}
+.guided-wod-timer.emom-yellow::after{color:#ffd84a;}
+.guided-wod-timer.emom-red::after{color:#ff4164;}
+.guided-wod-timer.emom-go::after{content:"GO";color:#00ffb0;}
+
+@keyframes emomPulseRed{
+  from{transform:scale(1);filter:brightness(1);}
+  to{transform:scale(1.012);filter:brightness(1.18);}
+}
+@keyframes emomFlashGo{
+  from{filter:brightness(1);}
+  to{filter:brightness(1.35);}
 }

@@ -1,12 +1,12 @@
-// Coach Bertin V50.8
-var APP_VERSION = "V50.8";
+// Coach Bertin V50.13
+var APP_VERSION = "V50.13";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
 var ATHLETE_STATE_FILE = "data/athlete_state.json"; // force actuelle estimée par mouvement. Les upgrades viennent des PR/historique.
 var CYCLE_STATE_FILE   = "data/cycle_state.json";
 
-// V50.8 — Architecture stable
+// V50.13 — Architecture stable
 // programs/*.js = plan prévu
 // data/resultats.json = journal brut
 // data/athlete_state.json = force actuelle estimée, sans XP/level
@@ -489,7 +489,7 @@ function stopWodTimer(){
 }
 function wodTimerCurrentValue(){return wodTimer.mode==="up"?wodTimer.elapsed:wodTimer.remaining;}
 function updateWodTimerDisplay(){
-  // V50.8 — timer WOD retiré de la vue iPhone. Aucun élément à mettre à jour.
+  // V50.13 — timer WOD retiré de la vue iPhone. Aucun élément à mettre à jour.
 }
 function resetWodTimerState(dur,mode,label,isEmom){
   stopWodTimer();
@@ -525,7 +525,7 @@ function setupWodTimer(){
   var isEmom=box.getAttribute("data-emom")==="1";
   if(wodTimer.duration!==dur||wodTimer.mode!==mode)resetWodTimerState(dur,mode,label,isEmom);
   updateWodTimerDisplay();
-  var start=null,pause=null,reset=null; // V50.8 — timer WOD retiré
+  var start=null,pause=null,reset=null; // V50.13 — timer WOD retiré
 
   if(start)start.onclick=function(){
     resumeAudio();
@@ -572,7 +572,7 @@ function currentClockWithSeconds(){
 }
 
 
-// V50.8 — horloge uniquement dans le mode séance; heure et secondes même grosseur.
+// V50.13 — horloge uniquement dans le mode séance; heure et secondes même grosseur.
 var globalClockInterval=null;
 function ensureGlobalClock(){
   return $('guidedLiveClock');
@@ -602,13 +602,13 @@ function ensureRestFloatingClock(){
   return el;
 }
 function updateRestFloatingClock(){
-  // V50.8 : l'heure permanente remplace l'ancienne horloge de repos.
+  // V50.13 : l'heure permanente remplace l'ancienne horloge de repos.
   // Les boutons Pause ont été retirés des vues iPhone et séance.
   var el=$("restFloatingClock");
   if(el){el.className="rest-floating-clock hidden";el.innerHTML="";}
 }
 function updateRestDisplay(){
-  // V50.8 — restDisplay retiré du DOM. Seul updateRestFloatingClock est conservé.
+  // V50.13 — restDisplay retiré du DOM. Seul updateRestFloatingClock est conservé.
   updateRestFloatingClock();
 }
 function stopRestTimer(){
@@ -676,7 +676,7 @@ function parseWodStructure(text){
       .replace(/\s+/g,' ')
       .trim();
 
-    // V50.8 : dans la vue séance, on doit voir "Cal Row" et non juste "Row".
+    // V50.13 : dans la vue séance, on doit voir "Cal Row" et non juste "Row".
     // Si le texte original contient "cal", on conserve cette information dans le nom.
     var hadCal = !!isCal || /^cal\s+/i.test(n);
     n = n.replace(/^cal\s+/i,'').trim();
@@ -753,7 +753,7 @@ function estimateWodRounds(text, durationMin){
   return {min:3,max:6,def:4};
 }
 
-// V50.8 — Helpers For Time.
+// V50.13 — Helpers For Time.
 // Ces fonctions doivent exister avant renderSessionEntry(), sinon les WODs For Time
 // comme le jeudi Épaules 3D n'affichent pas le champ de temps final.
 function parseCapSeconds(text, fallbackMin){
@@ -1176,7 +1176,7 @@ function updateRefsFromResults(results,dateStr){
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
         date:dateStr,lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
-        rpe:Number(r.rpe)||8,note:"Saisi V50.8"
+        rpe:Number(r.rpe)||8,note:"Saisi V50.13"
       };
     }
     // Enregistrer RPE dans l'historique pour progression automatique
@@ -1186,6 +1186,25 @@ function updateRefsFromResults(results,dateStr){
     // Garder seulement les 3 dernières
     if(state.rpeHistory[rpeKey].length>3)state.rpeHistory[rpeKey].shift();
   });
+}
+
+
+function historyDeleteUid(s){
+  var n=normalizeRemoteSession(s||{});
+  var id=sessionUid(n);
+  if(id && id.replace(/\|/g,"").trim()) return id;
+  return [
+    s.uid||"",
+    s.date||"",
+    s.time||"",
+    s.semaine||s.week||"",
+    s.jour||s.day||"",
+    s.focus||"",
+    JSON.stringify(s.results||s.resultats||{})
+  ].join("|");
+}
+function sameHistorySession(a,b){
+  return historyDeleteUid(a) === historyDeleteUid(b);
 }
 
 function sessionUid(s){
@@ -1406,7 +1425,7 @@ document.addEventListener("visibilitychange",function(){
   }
 });
 
-// V50.8 — volontairement neutralisé.
+// V50.13 — volontairement neutralisé.
 // Les résultats ne doivent plus réécrire les charges locales ou charges.js.
 // - charges.js = configuration stable / équipement / charges de départ
 // - data/resultats.json = journal brut
@@ -1430,7 +1449,7 @@ function buildSessionPayload(results){
 }
 
 // Génère le contenu du fichier charges.js mis à jour avec les nouveaux poids
-// V50.8 — supprimé/neutralisé : l'app ne doit jamais écrire charges.js automatiquement.
+// V50.13 — supprimé/neutralisé : l'app ne doit jamais écrire charges.js automatiquement.
 // charges.js est la seule configuration de charges. Les upgrades viennent des PR/historique.
 function buildChargesJsContent(){ return ""; }
 async function saveChargesToGitHub(token){
@@ -1439,7 +1458,7 @@ async function saveChargesToGitHub(token){
 
 
 // ─── GitHub API helpers ─────────────────────────────────────────────────────
-// V50.8 : helpers GitHub globaux. Sans elles, le test token/PR plante.
+// V50.13 : helpers GitHub globaux. Sans elles, le test token/PR plante.
 function githubHeaders(token){
   return {
     "Authorization":"Bearer "+token,
@@ -1641,13 +1660,13 @@ function setupSessionSave(){
 // ─── Swipe ───────────────────────────────────────────────────────────────────
 
 function setupSwipeGesture(el,cb){
-  // V50.8 — Swipe désactivé.
+  // V50.13 — Swipe désactivé.
   // Navigation seulement par boutons pour éviter les changements accidentels
   // de semaine/jour/cycle sur iPhone.
   return;
 }
 function setupSwipeNav(){
-  // V50.8 : les swipes sont désactivés; seuls les boutons restent actifs.
+  // V50.13 : les swipes sont désactivés; seuls les boutons restent actifs.
   // Flèches semaine
   var wp=$("weekPrev"),wn=$("weekNext");
   if(wp)wp.onclick=function(){if(state.week>1){state.week--;save();render();}};
@@ -1998,7 +2017,7 @@ function renderPhoneWod(){
 
 
 
-// ─── Mode séance guidé (optionnel) — V50.8 ────────────────────────────────
+// ─── Mode séance guidé (optionnel) — V50.13 ────────────────────────────────
 // Vue iPhone pleine largeur : 1 bloc = 1 page. Le WOD a son gros timer dédié.
 
 var guidedSessionState = { blocks: [], index: 0 };
@@ -2014,7 +2033,7 @@ function escHtml(v){
 }
 
 
-// V50.8 — Résultats saisis directement dans le mode séance.
+// V50.13 — Résultats saisis directement dans le mode séance.
 // On garde un cache persistant tant que la page est ouverte, puis collectSessionResults()
 // le fusionne aux champs de la vue iPhone.
 var guidedResultCache = {};
@@ -2031,7 +2050,7 @@ function findSessionInput(key, field){
   return found;
 }
 
-// V50.8 — synchronisation immédiate mode séance → saisie iPhone.
+// V50.13 — synchronisation immédiate mode séance → saisie iPhone.
 // Quand tu modifies poids/reps/RPE dans la vue séance, les champs et chips
 // correspondants dans la section résultats iPhone se mettent à jour tout de suite.
 function syncSessionEntryFromGuided(key, field, value){
@@ -2220,6 +2239,37 @@ function resetGuidedTimerState(cfg){
   updateGuidedTimerDisplay();
 }
 function guidedTimerCurrentValue(){return guidedTimer.mode==="up"?guidedTimer.elapsed:guidedTimer.remaining;}
+
+function guidedEmomMinuteState(){
+  if(!guidedTimer || !guidedTimer.isEmom || guidedTimer.countdownActive || !guidedTimer.running) return null;
+  var elapsed = guidedTimer.mode==="up" ? guidedTimer.elapsed : (guidedTimer.duration - guidedTimer.remaining);
+  if(elapsed < 0) elapsed = 0;
+
+  // Alerte indépendante de la durée totale : chaque minute a son cycle.
+  // 30s restantes = bleu clair, 10s = jaune, 3s = rouge, 0s = flash GO.
+  var secInMinute = elapsed % 60;
+
+  if(elapsed > 0 && secInMinute === 0) return {cls:"emom-go", label:"GO"};
+  var left = 60 - secInMinute;
+  if(left <= 3) return {cls:"emom-red", label:String(left)};
+  if(left <= 10) return {cls:"emom-yellow", label:"10s"};
+  if(left <= 30) return {cls:"emom-blue", label:"30s"};
+  return null;
+}
+function updateGuidedEmomVisualWarning(){
+  var d=$("guidedTimerDisplay");
+  var box=d ? d.closest(".guided-wod-timer") : null;
+  if(!box) return;
+
+  box.classList.remove("emom-blue","emom-yellow","emom-red","emom-go");
+  box.removeAttribute("data-emom-warning");
+
+  var st = guidedEmomMinuteState();
+  if(!st) return;
+  box.classList.add(st.cls);
+  box.setAttribute("data-emom-warning", st.label);
+}
+
 function updateGuidedTimerDisplay(){
   var d=$("guidedTimerDisplay"); if(!d)return;
   if(guidedTimer.countdownActive){
@@ -2229,11 +2279,13 @@ function updateGuidedTimerDisplay(){
     d.textContent=formatClock(guidedTimerCurrentValue());
     d.classList.remove("countdown");
   }
+  updateGuidedEmomVisualWarning();
 }
 function stopGuidedTimer(){
   if(guidedTimer.interval){clearInterval(guidedTimer.interval);guidedTimer.interval=null;}
   guidedTimer.running=false;
   guidedTimer.countdownActive=false;
+  updateGuidedEmomVisualWarning();
 }
 function startGuidedTimerCountdown(onDone){
   guidedTimer.countdownActive=true;
@@ -2458,7 +2510,7 @@ function renderGuidedSession(){
       html+=renderGuidedExerciseList(st.exercises);
     } else if(text){
       // Certains blocs autonomes (ex.: Optionnel / Bonus) n'ont pas d'exercises[].
-      // Avant V50.8, ils s'affichaient vides en mode séance.
+      // Avant V50.13, ils s'affichaient vides en mode séance.
       html+=renderGuidedStepList(st.text, st.kind) || ("<div class='guided-note big'>"+escHtml(text)+"</div>");
     } else {
       html+="<div class='guided-note big'>Aucun contenu pour ce bloc.</div>";
@@ -2581,19 +2633,119 @@ function newCycle(){
 
 // ─── Historique ──────────────────────────────────────────────────────────────
 
+
+async function deleteHistorySession(index){
+  index = Number(index);
+  if(isNaN(index) || !state.history || !state.history[index]) return;
+
+  var item = state.history[index];
+  var label = (item.date||"date inconnue")+" · "+((item.day&&baseDays[item.day])?baseDays[item.day].label:(item.jour||item.day||""))+" · "+(item.focus||"");
+  if(!confirm("Supprimer cet entraînement de l’historique?\n\n"+label+"\n\nCette action va aussi essayer de le retirer de data/resultats.json sur GitHub.")) return;
+
+  var removed = state.history.splice(index,1)[0];
+  rebuildRefsFromHistory();
+  save();
+  renderHistory();
+  renderWorkout();
+  renderReferences();
+  renderWeekProgress();
+
+  var status = $("historyStatus");
+  if(status){status.textContent="Suppression locale OK. Mise à jour GitHub...";status.className="status-msg";}
+
+  var token = getToken();
+  if(!token){
+    if(status){status.textContent="✅ Supprimé localement. ⚠ GitHub non modifié : token manquant.";status.className="status-msg err";}
+    return;
+  }
+
+  try{
+    var r = await readGithubJsonFile(token, GITHUB_FILE);
+    if(!r.ok){
+      if(status){status.textContent="✅ Supprimé localement. ❌ GitHub non modifié : "+r.msg;status.className="status-msg err";}
+      return;
+    }
+    var data = Array.isArray(r.data) ? r.data : [];
+    var before = data.length;
+    data = data.filter(function(s){ return !sameHistorySession(s, removed); });
+
+    if(data.length === before){
+      if(status){status.textContent="✅ Supprimé localement. ⚠ Entrée non trouvée dans GitHub resultats.json.";status.className="status-msg err";}
+    } else {
+      var w = await writeGithubFile(
+        token,
+        GITHUB_FILE,
+        JSON.stringify(data,null,2),
+        "Suppression entraînement "+(removed.date||"")+" — "+(removed.jour||removed.day||""),
+        r.sha
+      );
+      if(!w.ok){
+        if(status){status.textContent="✅ Supprimé localement. ❌ GitHub resultats.json non modifié : "+w.msg;status.className="status-msg err";}
+        return;
+      }
+
+      // Sauvegarder aussi la force actuelle recalculée si le fichier existe.
+      try{
+        await saveJsonDataFile(token, ATHLETE_STATE_FILE, ensureAthleteState(), "Recalcul athlete_state après suppression historique");
+      }catch(e){}
+
+      if(status){status.textContent="✅ Entraînement supprimé localement et sur GitHub.";status.className="status-msg ok";}
+    }
+  }catch(e){
+    if(status){status.textContent="✅ Supprimé localement. ❌ Erreur GitHub : "+e.message;status.className="status-msg err";}
+  }
+}
+
 function renderHistory(){
   var h=$("history");if(!h)return;
   h.innerHTML="";
-  if(!state.history||!state.history.length){h.innerHTML='<p style="color:var(--muted);font-size:13px">Aucune séance enregistrée.</p>';return;}
-  // Graphiques progression pour les mouvements principaux
+  var status=$("historyStatus");
+  if(!status){
+    status=document.createElement("div");
+    status.id="historyStatus";
+    status.className="status-msg";
+    h.parentNode.insertBefore(status,h);
+  }
+  if(!state.history||!state.history.length){
+    h.innerHTML='<p style="color:var(--muted);font-size:13px">Aucune séance enregistrée.</p>';
+    return;
+  }
   renderProgressCharts();
-  state.history.slice().reverse().forEach(function(s){
-    var div=document.createElement("div");div.className="history-item";
-    var title=(s.day&&baseDays[s.day]?baseDays[s.day].label:s.day||"")+" — S"+(s.week||"")+" — "+(s.focus||"");
+
+  state.history.slice().reverse().forEach(function(s,revIndex){
+    var originalIndex = state.history.length - 1 - revIndex;
+    var div=document.createElement("div");
+    div.className="history-item deletable";
+    var dayKey=s.day||s.jour;
+    var title=(dayKey&&baseDays[dayKey]?baseDays[dayKey].label:dayKey||"")+" — S"+(s.week||s.semaine||"")+" — "+(s.focus||"");
     var rows="";
-    if(s.results){Object.keys(s.results).forEach(function(k){var r=s.results[k];if(r.load||r.result){rows+='<div class="history-row"><span class="mv">'+k+'</span><span class="val">'+(r.load?r.load+" lb"+(r.reps?" × "+r.reps:"")+(r.rpe?" RPE "+r.rpe:""):r.result||"")+'</span></div>';}});}
-    div.innerHTML='<div class="history-date">'+s.date+'</div><div class="history-title">'+title+'</div><div class="history-rows">'+rows+'</div>';
+    var res=s.results||s.resultats||{};
+    if(res){
+      Object.keys(res).forEach(function(k){
+        var r=res[k];
+        if(r.load||r.result){
+          rows+='<div class="history-row"><span class="mv">'+escHtml(k)+'</span><span class="val">'+
+            (r.load?escHtml(r.load+" lb"+(r.reps?" × "+r.reps:"")+(r.rpe?" RPE "+r.rpe:"")):escHtml(r.result||""))+
+            '</span></div>';
+        }
+      });
+    }
+    div.innerHTML=
+      '<div class="history-head">'+
+        '<div>'+
+          '<div class="history-date">'+escHtml(s.date||"")+'</div>'+
+          '<div class="history-title">'+escHtml(title)+'</div>'+
+        '</div>'+
+        '<button type="button" class="history-delete-btn" data-history-index="'+originalIndex+'">Supprimer</button>'+
+      '</div>'+
+      '<div class="history-rows">'+rows+'</div>';
     h.appendChild(div);
+  });
+
+  h.querySelectorAll(".history-delete-btn").forEach(function(btn){
+    btn.onclick=function(){
+      deleteHistorySession(btn.getAttribute("data-history-index"));
+    };
   });
 }
 

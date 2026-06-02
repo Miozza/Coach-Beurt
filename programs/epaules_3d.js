@@ -1,4 +1,4 @@
-// Coach Bertin V50.8 — Phase 1 : Épaules 3D + Triceps (6 semaines)
+// Coach Bertin V50.13 — Phase 1 : Épaules 3D + Triceps (6 semaines)
 // Objectif : spécialisation épaules/triceps crédible, 4 jours/semaine, 55-60 min.
 // Structure : lundi push + épaules session 1, mardi pull/rear delt, jeudi legs zéro épaules, vendredi épaules session 2 angles différents + power clean technique APRÈS les épaules.
 
@@ -99,13 +99,16 @@ function shouldersBlocks(day,week){
   // MARDI — Pull / dos / arrière d'épaule / biceps. Pas de triceps, pas de press.
   if(day==="mardi")return[
     {time:"7 min",title:"Échauffement pull + scapula",tag:"Préparation",kind:"warmup",
-     text:"Row facile 2 min + Band External Rotation — elbow tucked 15/côté + Band Pull Apart 15 + Scap Ring Row 8 + Face Pull léger 20 + montée Chest Supported Row : 1-2 séries progressives."},
+     text:"Row facile 2 min + Band External Rotation — elbow tucked 15/côté + Band Pull Apart 15 + Scap Ring Row 8 + Face Pull léger 20 + montée Barbell Row : 1-2 séries progressives."},
 
     {time:"11 min",title:"A. Row principal",tag:"Dos",kind:"main",
-     exercises:[ex("Chest Supported Row",p.row,week>=3&&week<=5?"125 lb":"115 lb","1:45-2:00","Tirage strict, poitrine collée, pas de swing. RPE 8.")]},
+     exercises:[ex("Barbell Row",p.row,week>=3&&week<=5?"125 lb":"115 lb","1:45-2:00","Tirage strict, buste solide, pas de swing. RPE 8.")]},
 
-    {time:"9 min",title:"B. Tirage vertical / anneaux",tag:"Dos",kind:"accessory",
-     exercises:[exFixed("Weighted Pull-up / Ring Row lourd",p.pull,week>=4&&!isDeload?"+15 à +30 lb ou angle difficile":"poids du corps / angle difficile","1:30","Choisir la version propre. Stop avant les coudes ou les épaules irritées.")]},
+    {time:"12 min",title:"B. Superset tirage + biceps",tag:"Dos / Biceps",kind:"accessory",
+     exercises:[
+       exFixed("B1. Weighted Pull-up / Ring Row lourd",p.pull,week>=4&&!isDeload?"+15 à +30 lb ou angle difficile":"poids du corps / angle difficile","0:20 avant B2","B1 du superset. Choisir la version propre. Stop avant les coudes ou les épaules irritées."),
+       exFixed("B2. Cable Curl",p.curl,"modéré","1:30 après B2","B2 du superset. Contrôle complet, pas d'élan du dos.")
+     ]},
 
     {time:"12 min",title:"C. Rear delts / posture",tag:"Arrière épaule",kind:"accessory",
      exercises:[
@@ -114,13 +117,10 @@ function shouldersBlocks(day,week){
        ex("C3. Trap-3 Raise",p.trap,"léger","1:00 après C3","Trap inférieur. Pouce vers le haut, zéro shrug.")
      ]},
 
-    {time:"6 min",title:"D. Biceps",tag:"Bras",kind:"accessory",
-     exercises:[exFixed("DB Curl / Cable Curl",p.curl,"modéré","0:45-1:00","Biceps avec le pull seulement. Contrôle, pas d'élan du dos.")]},
-
-    {time:"10 min",title:"E. WOD pull / engine",tag:"Conditioning",kind:"wod",
+    {time:"10 min",title:"D. WOD pull / engine",tag:"Conditioning",kind:"wod",
      text:"EMOM 10 : min 1 = 12 cal row ; min 2 = 8-10 ring rows stricts. "+p.wodNote+". RPE global 7-8, pas de sprint."},
 
-    {time:"5 min",title:"F. Mobilité",tag:"Mobilité",kind:"mobility",
+    {time:"5 min",title:"E. Mobilité",tag:"Mobilité",kind:"mobility",
      text:"Child pose lat stretch 1 min/côté + open book lent 1 min/côté + neck/trap stretch léger 1 min + respiration 1 min."}
   ];
 
