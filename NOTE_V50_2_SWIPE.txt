@@ -1,9 +1,0 @@
-V50.2 — Swipe désactivé
-
-Correction :
-- Les gestes de swipe ne changent plus la semaine ni la journée.
-- Les boutons restent actifs.
-- Objectif : éviter les changements accidentels de jour/cycle sur iPhone.
-
-Navigation :
-- Utiliser les boutons/flèches de la vue WOD.
