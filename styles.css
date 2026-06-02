@@ -2578,7 +2578,7 @@ label {
 }
 
 
-/* V50.4 — Tutos mouvements dans la vue WOD seulement */
+/* V50.5 — Tutos mouvements dans la vue WOD seulement */
 .exercise-name {
   display: flex;
   align-items: center;
@@ -2701,7 +2701,7 @@ label {
 }
 
 /* ═══════════════════════════════════════════
-   V50.4 — Mode séance : valeurs plus grosses + saisie directe
+   V50.5 — Mode séance : valeurs plus grosses + saisie directe
    ═══════════════════════════════════════════ */
 .guided-ex-grid strong {
   font-size: clamp(27px, 8.4vw, 48px) !important;
@@ -2821,7 +2821,7 @@ label {
 
 
 /* ═══════════════════════════════════════════
-   V50.4 — Mode séance : plusieurs mouvements visibles
+   V50.5 — Mode séance : plusieurs mouvements visibles
    - Réduit seulement les noms et labels quand il y a 2+ exercices
    - Garde les valeurs Format/Poids grosses
    - Rend Reps/RPE visibles dans les blocs avec plusieurs mouvements
@@ -2960,7 +2960,7 @@ label {
 }
 
 
-/* V50.4 — Horloge de repos flottante en mode séance, sans changer la disposition */
+/* V50.5 — Horloge de repos flottante en mode séance, sans changer la disposition */
 .rest-floating-clock {
   position: fixed;
   right: max(8px, env(safe-area-inset-right, 0px));
@@ -3016,7 +3016,7 @@ label {
 }
 
 
-/* V50.4 — Horloge intégrée au mode séance uniquement */
+/* V50.5 — Horloge intégrée au mode séance uniquement */
 .topnav-clock {
   flex-shrink: 0;
   display: inline-flex;
@@ -3059,7 +3059,7 @@ label {
   .topnav-clock .glc-sec { font-size: 20px; }
 }
 
-/* V50.4 — Fix saisie WOD tout en bas de la vue iPhone
+/* V50.5 — Fix saisie WOD tout en bas de la vue iPhone
    Donne assez d'espace de scroll sous le dernier champ, surtout les For time du jeudi.
    Ne change pas la disposition des cartes; ajoute seulement une zone respirable sous la saisie. */
 #phoneView.view-active {
@@ -3092,7 +3092,7 @@ label {
 
 
 /* ═══════════════════════════════════════════
-   V50.4 — Horloge topnav + correctifs finition UI + iPhone 17 Pro
+   V50.5 — Horloge topnav + correctifs finition UI + iPhone 17 Pro
    ═══════════════════════════════════════════ */
 .muted {
   color: var(--muted);
@@ -3156,7 +3156,7 @@ label {
 .rest-floating-clock { display: none !important; }
 
 
-/* V50.4 — Horloge utile surtout en mode séance : non affichée dans les autres vues */
+/* V50.5 — Horloge utile surtout en mode séance : non affichée dans les autres vues */
 .topnav-clock { display: none !important; }
 .guided-top {
   grid-template-columns: 42px 1fr minmax(82px, auto);
@@ -3208,7 +3208,7 @@ label {
 }
 
 
-/* V50.4 — Mode séance : repos affiché comme repos, pas comme reps; horloge uniforme */
+/* V50.5 — Mode séance : repos affiché comme repos, pas comme reps; horloge uniforme */
 .guided-rest-info span { color: var(--muted); }
 .guided-rest-info strong { color: var(--text); }
 .guided-live-clock .glc-hm,
@@ -3235,7 +3235,7 @@ label {
 }
 
 
-/* V50.4 — Mode séance : blocs à 3 mouvements plus compacts */
+/* V50.5 — Mode séance : blocs à 3 mouvements plus compacts */
 .guided-card:has(.guided-ex-card:nth-child(3)) .guided-title,
 .guided-card:has(.guided-ex-card:nth-child(4)) .guided-title {
   font-size: clamp(22px, 5.8vw, 34px) !important;
@@ -3343,7 +3343,7 @@ label {
 }
 
 
-/* V50.4 — Boutons tuto dans le mode séance */
+/* V50.5 — Boutons tuto dans le mode séance */
 .guided-ex-title,
 .guided-step-name {
   display: flex;
@@ -3377,4 +3377,62 @@ label {
   height: 20px;
   min-width: 20px;
   font-size: 11px;
+}
+
+
+/* V50.5 — Mode séance : horloge plus grosse sans nuire au contenu */
+.guided-top {
+  grid-template-columns: 38px 1fr !important;
+  min-height: 56px;
+  gap: 6px !important;
+  align-items: center;
+}
+.guided-top-title {
+  display: none !important;
+}
+.guided-top-right {
+  grid-column: 2;
+  justify-content: flex-end !important;
+  width: 100%;
+  min-width: 0;
+}
+.guided-count {
+  display: none !important;
+}
+.guided-live-clock {
+  gap: 8px !important;
+  padding: 6px 10px 5px !important;
+  border-radius: 12px !important;
+  background: rgba(0, 212, 255, .09) !important;
+  border: 1px solid rgba(0, 212, 255, .24) !important;
+  box-shadow: 0 0 18px rgba(0,212,255,.08);
+}
+.guided-live-clock .glc-hm,
+.guided-live-clock .glc-sec {
+  font-size: clamp(32px, 8.8vw, 44px) !important;
+  line-height: .85 !important;
+  font-weight: 950 !important;
+  letter-spacing: .015em !important;
+}
+.guided-live-clock .glc-hm {
+  color: var(--white) !important;
+}
+.guided-live-clock .glc-sec {
+  color: var(--cyan) !important;
+  text-shadow: 0 0 10px rgba(0,212,255,.55), 0 0 22px rgba(0,212,255,.22) !important;
+}
+@media (max-width: 402px) {
+  .guided-top {
+    grid-template-columns: 34px 1fr !important;
+    min-height: 52px;
+    gap: 4px !important;
+  }
+  .guided-live-clock {
+    gap: 7px !important;
+    padding: 5px 8px 4px !important;
+  }
+  .guided-live-clock .glc-hm,
+  .guided-live-clock .glc-sec {
+    font-size: clamp(30px, 8.4vw, 38px) !important;
+  }
 }

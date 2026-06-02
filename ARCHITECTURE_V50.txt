@@ -1,4 +1,4 @@
-Coach Bertin V50.4 — Architecture stable
+Coach Bertin V50.5 — Architecture stable
 
 Objectif :
 Réduire la confusion et figer les responsabilités des fichiers.
@@ -25,6 +25,6 @@ Priorité des charges à afficher :
 3. data/charges.js.
 4. charge écrite dans le programme.
 
-Note V50.4 : le dossier `data/programs/` ne doit pas exister. `programs/` doit rester à la racine seulement.
+Note V50.5 : le dossier `data/programs/` ne doit pas exister. `programs/` doit rester à la racine seulement.
 
 Note maintenance : utiliser `VERSION_HISTORY.md` comme historique durable des versions. Ne pas accumuler de fichiers LIRE_MOI_* ou NOTE_*.
