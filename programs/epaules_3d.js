@@ -1,4 +1,4 @@
-// Coach Bertin V50.1 — Phase 1 : Épaules 3D + Triceps (6 semaines)
+// Coach Bertin V50.4 — Phase 1 : Épaules 3D + Triceps (6 semaines)
 // Objectif : spécialisation épaules/triceps crédible, 4 jours/semaine, 55-60 min.
 // Structure : lundi push + épaules session 1, mardi pull/rear delt, jeudi legs zéro épaules, vendredi épaules session 2 angles différents + power clean technique APRÈS les épaules.
 
