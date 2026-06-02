@@ -1,6 +1,5 @@
 // Coach Bertin — charges de base / équipement
-// Ce fichier est une configuration stable. Il ne représente pas ta capacité réelle.
-// Ta capacité réelle est dans data/athlete_state.json.
+// Configuration stable unique. Les upgrades/PR viennent de l’historique, pas d’un niveau implicite.
 
 window.DEFAULT_CHARGES = {
   "Strict Press": "115 lb",
@@ -27,27 +26,4 @@ window.DEFAULT_CHARGES = {
   "DB Snatch": "50 lb"
 };
 
-window.CHARGE_ORDER = [
-  "Strict Press",
-  "Lateral Raise",
-  "Rear Delt Fly",
-  "Triceps Rope Pushdown",
-  "Face Pull",
-  "Chest Supported Row",
-  "Trap-3 Raise",
-  "Ring Row Strict",
-  "Front Squat",
-  "Back Squat",
-  "Bulgarian Split Squat",
-  "Standing Calf Raise",
-  "Power Clean",
-  "Overhead Rope Extension",
-  "Farmer Carry",
-  "Reverse Sled Drag",
-  "Wall Ball",
-  "Power Clean WOD",
-  "Light DB Push Press",
-  "Hang Power Clean",
-  "KB Swings",
-  "DB Snatch"
-];
+window.CHARGE_ORDER = Object.keys(window.DEFAULT_CHARGES);
