@@ -1,12 +1,12 @@
-// Coach Bertin V50.2
-var APP_VERSION = "V50.2";
+// Coach Bertin V50.4
+var APP_VERSION = "V50.4";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
 var ATHLETE_STATE_FILE = "data/athlete_state.json"; // force actuelle estimée par mouvement. Les upgrades viennent des PR/historique.
 var CYCLE_STATE_FILE   = "data/cycle_state.json";
 
-// V50.2 — Architecture stable
+// V50.4 — Architecture stable
 // programs/*.js = plan prévu
 // data/resultats.json = journal brut
 // data/athlete_state.json = force actuelle estimée, sans XP/level
@@ -489,7 +489,7 @@ function stopWodTimer(){
 }
 function wodTimerCurrentValue(){return wodTimer.mode==="up"?wodTimer.elapsed:wodTimer.remaining;}
 function updateWodTimerDisplay(){
-  // V50.2 — timer WOD retiré de la vue iPhone. Aucun élément à mettre à jour.
+  // V50.4 — timer WOD retiré de la vue iPhone. Aucun élément à mettre à jour.
 }
 function resetWodTimerState(dur,mode,label,isEmom){
   stopWodTimer();
@@ -525,7 +525,7 @@ function setupWodTimer(){
   var isEmom=box.getAttribute("data-emom")==="1";
   if(wodTimer.duration!==dur||wodTimer.mode!==mode)resetWodTimerState(dur,mode,label,isEmom);
   updateWodTimerDisplay();
-  var start=null,pause=null,reset=null; // V50.2 — timer WOD retiré
+  var start=null,pause=null,reset=null; // V50.4 — timer WOD retiré
 
   if(start)start.onclick=function(){
     resumeAudio();
@@ -572,7 +572,7 @@ function currentClockWithSeconds(){
 }
 
 
-// V50.2 — horloge uniquement dans le mode séance; heure et secondes même grosseur.
+// V50.4 — horloge uniquement dans le mode séance; heure et secondes même grosseur.
 var globalClockInterval=null;
 function ensureGlobalClock(){
   return $('guidedLiveClock');
@@ -602,13 +602,13 @@ function ensureRestFloatingClock(){
   return el;
 }
 function updateRestFloatingClock(){
-  // V50.2 : l'heure permanente remplace l'ancienne horloge de repos.
+  // V50.4 : l'heure permanente remplace l'ancienne horloge de repos.
   // Les boutons Pause ont été retirés des vues iPhone et séance.
   var el=$("restFloatingClock");
   if(el){el.className="rest-floating-clock hidden";el.innerHTML="";}
 }
 function updateRestDisplay(){
-  // V50.2 — restDisplay retiré du DOM. Seul updateRestFloatingClock est conservé.
+  // V50.4 — restDisplay retiré du DOM. Seul updateRestFloatingClock est conservé.
   updateRestFloatingClock();
 }
 function stopRestTimer(){
@@ -676,7 +676,7 @@ function parseWodStructure(text){
       .replace(/\s+/g,' ')
       .trim();
 
-    // V50.2 : dans la vue séance, on doit voir "Cal Row" et non juste "Row".
+    // V50.4 : dans la vue séance, on doit voir "Cal Row" et non juste "Row".
     // Si le texte original contient "cal", on conserve cette information dans le nom.
     var hadCal = !!isCal || /^cal\s+/i.test(n);
     n = n.replace(/^cal\s+/i,'').trim();
@@ -753,7 +753,7 @@ function estimateWodRounds(text, durationMin){
   return {min:3,max:6,def:4};
 }
 
-// V50.2 — Helpers For Time.
+// V50.4 — Helpers For Time.
 // Ces fonctions doivent exister avant renderSessionEntry(), sinon les WODs For Time
 // comme le jeudi Épaules 3D n'affichent pas le champ de temps final.
 function parseCapSeconds(text, fallbackMin){
@@ -1176,7 +1176,7 @@ function updateRefsFromResults(results,dateStr){
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
         date:dateStr,lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
-        rpe:Number(r.rpe)||8,note:"Saisi V50.2"
+        rpe:Number(r.rpe)||8,note:"Saisi V50.4"
       };
     }
     // Enregistrer RPE dans l'historique pour progression automatique
@@ -1406,7 +1406,7 @@ document.addEventListener("visibilitychange",function(){
   }
 });
 
-// V50.2 — volontairement neutralisé.
+// V50.4 — volontairement neutralisé.
 // Les résultats ne doivent plus réécrire les charges locales ou charges.js.
 // - charges.js = configuration stable / équipement / charges de départ
 // - data/resultats.json = journal brut
@@ -1430,7 +1430,7 @@ function buildSessionPayload(results){
 }
 
 // Génère le contenu du fichier charges.js mis à jour avec les nouveaux poids
-// V50.2 — supprimé/neutralisé : l'app ne doit jamais écrire charges.js automatiquement.
+// V50.4 — supprimé/neutralisé : l'app ne doit jamais écrire charges.js automatiquement.
 // charges.js est la seule configuration de charges. Les upgrades viennent des PR/historique.
 function buildChargesJsContent(){ return ""; }
 async function saveChargesToGitHub(token){
@@ -1439,7 +1439,7 @@ async function saveChargesToGitHub(token){
 
 
 // ─── GitHub API helpers ─────────────────────────────────────────────────────
-// V50.2 : helpers GitHub globaux. Sans elles, le test token/PR plante.
+// V50.4 : helpers GitHub globaux. Sans elles, le test token/PR plante.
 function githubHeaders(token){
   return {
     "Authorization":"Bearer "+token,
@@ -1641,13 +1641,13 @@ function setupSessionSave(){
 // ─── Swipe ───────────────────────────────────────────────────────────────────
 
 function setupSwipeGesture(el,cb){
-  // V50.2 — Swipe désactivé.
+  // V50.4 — Swipe désactivé.
   // Navigation seulement par boutons pour éviter les changements accidentels
   // de semaine/jour/cycle sur iPhone.
   return;
 }
 function setupSwipeNav(){
-  // V50.2 : les swipes sont désactivés; seuls les boutons restent actifs.
+  // V50.4 : les swipes sont désactivés; seuls les boutons restent actifs.
   // Flèches semaine
   var wp=$("weekPrev"),wn=$("weekNext");
   if(wp)wp.onclick=function(){if(state.week>1){state.week--;save();render();}};
@@ -1998,7 +1998,7 @@ function renderPhoneWod(){
 
 
 
-// ─── Mode séance guidé (optionnel) — V50.2 ────────────────────────────────
+// ─── Mode séance guidé (optionnel) — V50.4 ────────────────────────────────
 // Vue iPhone pleine largeur : 1 bloc = 1 page. Le WOD a son gros timer dédié.
 
 var guidedSessionState = { blocks: [], index: 0 };
@@ -2014,7 +2014,7 @@ function escHtml(v){
 }
 
 
-// V50.2 — Résultats saisis directement dans le mode séance.
+// V50.4 — Résultats saisis directement dans le mode séance.
 // On garde un cache persistant tant que la page est ouverte, puis collectSessionResults()
 // le fusionne aux champs de la vue iPhone.
 var guidedResultCache = {};
@@ -2031,7 +2031,7 @@ function findSessionInput(key, field){
   return found;
 }
 
-// V50.2 — synchronisation immédiate mode séance → saisie iPhone.
+// V50.4 — synchronisation immédiate mode séance → saisie iPhone.
 // Quand tu modifies poids/reps/RPE dans la vue séance, les champs et chips
 // correspondants dans la section résultats iPhone se mettent à jour tout de suite.
 function syncSessionEntryFromGuided(key, field, value){
@@ -2426,7 +2426,7 @@ function renderGuidedSession(){
       html+=renderGuidedExerciseList(st.exercises);
     } else if(text){
       // Certains blocs autonomes (ex.: Optionnel / Bonus) n'ont pas d'exercises[].
-      // Avant V50.2, ils s'affichaient vides en mode séance.
+      // Avant V50.4, ils s'affichaient vides en mode séance.
       html+=renderGuidedStepList(st.text, st.kind) || ("<div class='guided-note big'>"+escHtml(text)+"</div>");
     } else {
       html+="<div class='guided-note big'>Aucun contenu pour ce bloc.</div>";
