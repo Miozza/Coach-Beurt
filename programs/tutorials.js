@@ -4,25 +4,25 @@
 window.COACH_BERTIN_TUTORIALS = {
 
   "Band External Rotation — elbow tucked": {
-    goal: "Rotator cuff activation before pressing or pulling.",
-    setup: ["Attach band at elbow height.", "Stand side-on to the anchor.", "Keep elbow tucked against ribs and bent at 90 degrees."],
-    execution: ["Rotate hand away from body.", "Keep shoulder low and elbow glued to ribs.", "Return slowly."],
-    mistakes: ["Letting elbow drift away.", "Shrugging.", "Going too heavy."],
-    cue: "Elbow glued, shoulder down."
+    goal: "Activer la coiffe des rotateurs avant les mouvements de poussée ou de tirage.",
+    setup: ["Fixe l’élastique à la hauteur du coude.", "Place-toi de côté par rapport au point d’ancrage.", "Garde le coude collé aux côtes et plié à 90 degrés."],
+    execution: ["Tourne la main vers l’extérieur.", "Garde l’épaule basse et le coude collé aux côtes.", "Reviens lentement."],
+    mistakes: ["Décoller le coude.", "Hausser l’épaule.", "Utiliser un élastique trop dur."],
+    cue: "Coude collé, épaule basse."
   },
   "Band Internal Rotation — elbow tucked": {
-    goal: "Subscapularis activation and shoulder centering before pressing.",
-    setup: ["Attach band at elbow height.", "Stand with working arm away from anchor.", "Keep elbow tucked against ribs and bent at 90 degrees."],
-    execution: ["Pull hand toward belly.", "Do not let shoulder roll forward.", "Return slowly under control."],
-    mistakes: ["Turning the torso.", "Letting shoulder dump forward.", "Using too much band tension."],
-    cue: "Hand to belly, shoulder stays back."
+    goal: "Activer le subscapulaire et aider à centrer l’épaule avant les press.",
+    setup: ["Fixe l’élastique à la hauteur du coude.", "Place le bras qui travaille du côté opposé au point d’ancrage.", "Garde le coude collé aux côtes et plié à 90 degrés."],
+    execution: ["Ramène la main vers le ventre.", "Ne laisse pas l’épaule rouler vers l’avant.", "Reviens lentement en contrôle."],
+    mistakes: ["Tourner le tronc.", "Laisser l’épaule tomber vers l’avant.", "Mettre trop de tension dans l’élastique."],
+    cue: "Main vers le ventre, épaule stable."
   },
   "Serratus Wall Slide": {
-    goal: "Serratus activation and upward scapular rotation.",
-    setup: ["Forearms on wall.", "Ribs down.", "Light pressure into the wall."],
-    execution: ["Slide forearms upward.", "Reach slightly at the top.", "Keep neck relaxed."],
-    mistakes: ["Shrugging.", "Arching lower back.", "Losing rib position."],
-    cue: "Ribs down, reach up."
+    goal: "Activer le serratus et améliorer la rotation vers le haut de la scapula.",
+    setup: ["Avant-bras sur le mur.", "Côtes basses.", "Légère pression dans le mur."],
+    execution: ["Glisse les avant-bras vers le haut.", "Allonge légèrement en haut.", "Garde le cou détendu."],
+    mistakes: ["Hausser les épaules.", "Creuser le bas du dos.", "Perdre la position des côtes."],
+    cue: "Côtes basses, allonge vers le haut."
   },
 
   "Rear Delt Fly câble bas": {

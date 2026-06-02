@@ -1,4 +1,4 @@
-// Coach Bertin V50.6 — Phase 1 : Épaules 3D + Triceps (6 semaines)
+// Coach Bertin V50.7 — Phase 1 : Épaules 3D + Triceps (6 semaines)
 // Objectif : spécialisation épaules/triceps crédible, 4 jours/semaine, 55-60 min.
 // Structure : lundi push + épaules session 1, mardi pull/rear delt, jeudi legs zéro épaules, vendredi épaules session 2 angles différents + power clean technique APRÈS les épaules.
 
@@ -70,8 +70,8 @@ function shouldersBlocks(day,week){
 
   // LUNDI — Push + épaules session 1. Pas de rear delt, pas de face pull, pas de biceps.
   if(day==="lundi")return[
-    {time:"7 min",title:"Warm-up push + rotator cuff",tag:"Préparation",kind:"warmup",
-     text:"2 rounds : Band External Rotation — elbow tucked 12/side + Band Internal Rotation — elbow tucked 12/side + Scap Push-up 8 + Wall Slide 8. Then : Incline DB Press light 10 + Strict Press ramp-up : empty bar×8, 40%×5."},
+    {time:"7 min",title:"Échauffement push + coiffe des rotateurs",tag:"Préparation",kind:"warmup",
+     text:"2 tours : Band External Rotation — elbow tucked 12/côté + Band Internal Rotation — elbow tucked 12/côté + Scap Push-up 8 + Wall Slide 8. Puis : Incline DB Press léger 10 + montée Strict Press : barre à vide×8, 40%×5."},
 
     {time:"10 min",title:"A. Incline DB Press",tag:"Masse",kind:"main",
      exercises:[exFixed("Incline DB Press",p.incline,p.inclineLoad,"1:30-2:00","Haut de pec + deltoïde antérieur. Mouvement de masse, amplitude propre, RPE 7-8. Pas d'échec.")]},
@@ -98,8 +98,8 @@ function shouldersBlocks(day,week){
 
   // MARDI — Pull / dos / arrière d'épaule / biceps. Pas de triceps, pas de press.
   if(day==="mardi")return[
-    {time:"7 min",title:"Warm-up pull + scapula",tag:"Préparation",kind:"warmup",
-     text:"Row easy 2 min + Band External Rotation — elbow tucked 15/side + Band Pull Apart 15 + Scap Ring Row 8 + Face Pull light 20 + Chest Supported Row ramp-up 1-2 sets."},
+    {time:"7 min",title:"Échauffement pull + scapula",tag:"Préparation",kind:"warmup",
+     text:"Row facile 2 min + Band External Rotation — elbow tucked 15/côté + Band Pull Apart 15 + Scap Ring Row 8 + Face Pull léger 20 + montée Chest Supported Row : 1-2 séries progressives."},
 
     {time:"11 min",title:"A. Row principal",tag:"Dos",kind:"main",
      exercises:[ex("Chest Supported Row",p.row,week>=3&&week<=5?"125 lb":"115 lb","1:45-2:00","Tirage strict, poitrine collée, pas de swing. RPE 8.")]},
@@ -153,8 +153,8 @@ function shouldersBlocks(day,week){
 
   // VENDREDI — Épaules session 2 angles différents + Power Clean technique APRÈS les épaules.
   return[
-    {time:"7 min",title:"Warm-up shoulders 3D + rotator cuff",tag:"Préparation",kind:"warmup",
-     text:"2 rounds : Band External Rotation — elbow tucked 12/side + Band Internal Rotation — elbow tucked 12/side + Serratus Wall Slide 8 + PVC Pass-through 10. Then : DB Shoulder Press light 12 + Lateral Raise very light 15."},
+    {time:"7 min",title:"Échauffement épaules 3D + coiffe des rotateurs",tag:"Préparation",kind:"warmup",
+     text:"2 tours : Band External Rotation — elbow tucked 12/côté + Band Internal Rotation — elbow tucked 12/côté + Serratus Wall Slide 8 + PVC Pass-through 10. Puis : DB Shoulder Press léger 12 + Lateral Raise très léger 15."},
 
     {time:"10 min",title:"A. Press contrôlé",tag:"Épaules",kind:"main",
      exercises:[exFixed("DB Shoulder Press / Landmine Press",p.shPress,p.shPressLoad,"1:15-1:30","Session 2 : press contrôlé, pas strict press lourd. RPE 7-8, amplitude propre.")]},
