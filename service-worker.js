@@ -1,7 +1,7 @@
-// Coach Bertin V50.7 — Service worker reset
+// Coach Bertin V50.8 — Service worker reset
 // Objectif : casser les vieux caches iPhone/PWA et laisser le réseau servir les nouveaux fichiers.
 
-const CACHE_NAME = "coach-bertin-v50-7-reset";
+const CACHE_NAME = "coach-bertin-v50-8-reset";
 
 self.addEventListener("install", event => {
   self.skipWaiting();

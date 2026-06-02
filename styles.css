@@ -2578,7 +2578,7 @@ label {
 }
 
 
-/* V50.7 — Tutos mouvements dans la vue WOD seulement */
+/* V50.8 — Tutos mouvements dans la vue WOD seulement */
 .exercise-name {
   display: flex;
   align-items: center;
@@ -2701,7 +2701,7 @@ label {
 }
 
 /* ═══════════════════════════════════════════
-   V50.7 — Mode séance : valeurs plus grosses + saisie directe
+   V50.8 — Mode séance : valeurs plus grosses + saisie directe
    ═══════════════════════════════════════════ */
 .guided-ex-grid strong {
   font-size: clamp(27px, 8.4vw, 48px) !important;
@@ -2821,7 +2821,7 @@ label {
 
 
 /* ═══════════════════════════════════════════
-   V50.7 — Mode séance : plusieurs mouvements visibles
+   V50.8 — Mode séance : plusieurs mouvements visibles
    - Réduit seulement les noms et labels quand il y a 2+ exercices
    - Garde les valeurs Format/Poids grosses
    - Rend Reps/RPE visibles dans les blocs avec plusieurs mouvements
@@ -2960,7 +2960,7 @@ label {
 }
 
 
-/* V50.7 — Horloge de repos flottante en mode séance, sans changer la disposition */
+/* V50.8 — Horloge de repos flottante en mode séance, sans changer la disposition */
 .rest-floating-clock {
   position: fixed;
   right: max(8px, env(safe-area-inset-right, 0px));
@@ -3016,7 +3016,7 @@ label {
 }
 
 
-/* V50.7 — Horloge intégrée au mode séance uniquement */
+/* V50.8 — Horloge intégrée au mode séance uniquement */
 .topnav-clock {
   flex-shrink: 0;
   display: inline-flex;
@@ -3059,7 +3059,7 @@ label {
   .topnav-clock .glc-sec { font-size: 20px; }
 }
 
-/* V50.7 — Fix saisie WOD tout en bas de la vue iPhone
+/* V50.8 — Fix saisie WOD tout en bas de la vue iPhone
    Donne assez d'espace de scroll sous le dernier champ, surtout les For time du jeudi.
    Ne change pas la disposition des cartes; ajoute seulement une zone respirable sous la saisie. */
 #phoneView.view-active {
@@ -3092,7 +3092,7 @@ label {
 
 
 /* ═══════════════════════════════════════════
-   V50.7 — Horloge topnav + correctifs finition UI + iPhone 17 Pro
+   V50.8 — Horloge topnav + correctifs finition UI + iPhone 17 Pro
    ═══════════════════════════════════════════ */
 .muted {
   color: var(--muted);
@@ -3156,7 +3156,7 @@ label {
 .rest-floating-clock { display: none !important; }
 
 
-/* V50.7 — Horloge utile surtout en mode séance : non affichée dans les autres vues */
+/* V50.8 — Horloge utile surtout en mode séance : non affichée dans les autres vues */
 .topnav-clock { display: none !important; }
 .guided-top {
   grid-template-columns: 42px 1fr minmax(82px, auto);
@@ -3208,7 +3208,7 @@ label {
 }
 
 
-/* V50.7 — Mode séance : repos affiché comme repos, pas comme reps; horloge uniforme */
+/* V50.8 — Mode séance : repos affiché comme repos, pas comme reps; horloge uniforme */
 .guided-rest-info span { color: var(--muted); }
 .guided-rest-info strong { color: var(--text); }
 .guided-live-clock .glc-hm,
@@ -3235,7 +3235,7 @@ label {
 }
 
 
-/* V50.7 — Mode séance : blocs à 3 mouvements plus compacts */
+/* V50.8 — Mode séance : blocs à 3 mouvements plus compacts */
 .guided-card:has(.guided-ex-card:nth-child(3)) .guided-title,
 .guided-card:has(.guided-ex-card:nth-child(4)) .guided-title {
   font-size: clamp(22px, 5.8vw, 34px) !important;
@@ -3343,7 +3343,7 @@ label {
 }
 
 
-/* V50.7 — Boutons tuto dans le mode séance */
+/* V50.8 — Boutons tuto dans le mode séance */
 .guided-ex-title,
 .guided-step-name {
   display: flex;
@@ -3380,7 +3380,7 @@ label {
 }
 
 
-/* V50.7 — Mode séance : horloge plus grosse sans nuire au contenu */
+/* V50.8 — Mode séance : horloge plus grosse sans nuire au contenu */
 .guided-top {
   grid-template-columns: 38px 1fr !important;
   min-height: 56px;
