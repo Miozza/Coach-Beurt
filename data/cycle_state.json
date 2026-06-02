@@ -1,9 +1,12 @@
 {
-  "version": "V50.8",
-  "updatedAt": null,
+  "version": "V49.25",
+  "updatedAt": "2026-06-02T14:54:55.215Z",
   "activeCycle": "shoulders3d",
   "activeWeek": 1,
   "activeDay": "lundi",
-  "completedDays": [],
-  "startedAt": null
+  "completedDays": [
+    "lundi"
+  ],
+  "focus": "Épaules 3D + Triceps — Phase 1",
+  "cycleStartedAt": "2026-06-02T14:54:54.095Z"
 }
