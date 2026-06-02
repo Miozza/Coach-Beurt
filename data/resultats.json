@@ -100,5 +100,123 @@
         "rpe": "8"
       }
     }
+  },
+  {
+    "version": "V50.8",
+    "date": "2026-06-02",
+    "time": "13:08:07",
+    "semaine": 1,
+    "jour": "mardi",
+    "cycle": "shoulders3d",
+    "focus": "Épaules 3D + Triceps — Phase 1",
+    "cycleState": {
+      "version": "V50.8",
+      "updatedAt": "2026-06-02T17:08:07.480Z",
+      "activeCycle": "shoulders3d",
+      "activeWeek": 1,
+      "activeDay": "mardi",
+      "completedDays": [
+        "lundi",
+        "mardi"
+      ],
+      "focus": "Épaules 3D + Triceps — Phase 1",
+      "cycleStartedAt": "2026-06-02T14:54:54.095Z"
+    },
+    "resultats": {
+      "Chest Supported Row": {
+        "load": "145",
+        "reps": "12",
+        "rpe": "7",
+        "planned": {
+          "load": 115,
+          "reps": 10,
+          "targetMin": 10,
+          "targetMax": 10,
+          "format": "4×10",
+          "kind": "main"
+        },
+        "status": "easy_success",
+        "performanceRatio": 1.2
+      },
+      "Weighted Pull-up / Ring Row lourd": {
+        "load": "0",
+        "reps": "8",
+        "rpe": "9",
+        "planned": {
+          "load": null,
+          "reps": 8,
+          "targetMin": 8,
+          "targetMax": 8,
+          "format": "3×8",
+          "kind": "accessory"
+        },
+        "status": "logged",
+        "performanceRatio": 1
+      },
+      "Rear Delt Fly câble bas": {
+        "load": "15",
+        "reps": "18",
+        "rpe": "8",
+        "planned": {
+          "load": 15,
+          "reps": 15,
+          "targetMin": 15,
+          "targetMax": 20,
+          "format": "4×15-20",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1.2
+      },
+      "Face Pull": {
+        "load": "60",
+        "reps": "19",
+        "rpe": "8",
+        "planned": {
+          "load": 60,
+          "reps": 15,
+          "targetMin": 15,
+          "targetMax": 20,
+          "format": "2×15-20",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1.27
+      },
+      "Trap-3 Raise": {
+        "load": "5",
+        "reps": "14",
+        "rpe": "8",
+        "planned": {
+          "load": null,
+          "reps": 12,
+          "targetMin": 12,
+          "targetMax": 12,
+          "format": "2×12",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1.17
+      },
+      "DB Curl / Cable Curl": {
+        "load": "100",
+        "reps": "12",
+        "rpe": "8",
+        "planned": {
+          "load": null,
+          "reps": 10,
+          "targetMin": 10,
+          "targetMax": 15,
+          "format": "3×10-15",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1.2
+      },
+      "wod_E. WOD pull / engine": {
+        "result": "EMOM complété",
+        "rpe": "8"
+      }
+    }
   }
 ]
