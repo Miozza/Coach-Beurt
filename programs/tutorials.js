@@ -2,6 +2,29 @@
 // Fiches utilisées par la vue WOD et le mode séance via bouton "?" à côté du nom.
 
 window.COACH_BERTIN_TUTORIALS = {
+
+  "Band External Rotation — elbow tucked": {
+    goal: "Rotator cuff activation before pressing or pulling.",
+    setup: ["Attach band at elbow height.", "Stand side-on to the anchor.", "Keep elbow tucked against ribs and bent at 90 degrees."],
+    execution: ["Rotate hand away from body.", "Keep shoulder low and elbow glued to ribs.", "Return slowly."],
+    mistakes: ["Letting elbow drift away.", "Shrugging.", "Going too heavy."],
+    cue: "Elbow glued, shoulder down."
+  },
+  "Band Internal Rotation — elbow tucked": {
+    goal: "Subscapularis activation and shoulder centering before pressing.",
+    setup: ["Attach band at elbow height.", "Stand with working arm away from anchor.", "Keep elbow tucked against ribs and bent at 90 degrees."],
+    execution: ["Pull hand toward belly.", "Do not let shoulder roll forward.", "Return slowly under control."],
+    mistakes: ["Turning the torso.", "Letting shoulder dump forward.", "Using too much band tension."],
+    cue: "Hand to belly, shoulder stays back."
+  },
+  "Serratus Wall Slide": {
+    goal: "Serratus activation and upward scapular rotation.",
+    setup: ["Forearms on wall.", "Ribs down.", "Light pressure into the wall."],
+    execution: ["Slide forearms upward.", "Reach slightly at the top.", "Keep neck relaxed."],
+    mistakes: ["Shrugging.", "Arching lower back.", "Losing rib position."],
+    cue: "Ribs down, reach up."
+  },
+
   "Rear Delt Fly câble bas": {
     goal: "Arrière d’épaule sans trap supérieur.",
     setup: ["Câble réglé au plus bas.", "Buste légèrement penché, cage stable.", "Épaule basse, cou détendu.", "Bras presque long, coude seulement légèrement fléchi."],
