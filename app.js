@@ -1,12 +1,12 @@
-// Coach Bertin V50.13
-var APP_VERSION = "V50.13";
+// Coach Bertin V50.17
+var APP_VERSION = "V50.17";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
 var ATHLETE_STATE_FILE = "data/athlete_state.json"; // force actuelle estimée par mouvement. Les upgrades viennent des PR/historique.
 var CYCLE_STATE_FILE   = "data/cycle_state.json";
 
-// V50.13 — Architecture stable
+// V50.17 — Architecture stable
 // programs/*.js = plan prévu
 // data/resultats.json = journal brut
 // data/athlete_state.json = force actuelle estimée, sans XP/level
@@ -489,7 +489,7 @@ function stopWodTimer(){
 }
 function wodTimerCurrentValue(){return wodTimer.mode==="up"?wodTimer.elapsed:wodTimer.remaining;}
 function updateWodTimerDisplay(){
-  // V50.13 — timer WOD retiré de la vue iPhone. Aucun élément à mettre à jour.
+  // V50.17 — timer WOD retiré de la vue iPhone. Aucun élément à mettre à jour.
 }
 function resetWodTimerState(dur,mode,label,isEmom){
   stopWodTimer();
@@ -525,7 +525,7 @@ function setupWodTimer(){
   var isEmom=box.getAttribute("data-emom")==="1";
   if(wodTimer.duration!==dur||wodTimer.mode!==mode)resetWodTimerState(dur,mode,label,isEmom);
   updateWodTimerDisplay();
-  var start=null,pause=null,reset=null; // V50.13 — timer WOD retiré
+  var start=null,pause=null,reset=null; // V50.17 — timer WOD retiré
 
   if(start)start.onclick=function(){
     resumeAudio();
@@ -572,7 +572,7 @@ function currentClockWithSeconds(){
 }
 
 
-// V50.13 — horloge uniquement dans le mode séance; heure et secondes même grosseur.
+// V50.17 — horloge uniquement dans le mode séance; heure et secondes même grosseur.
 var globalClockInterval=null;
 function ensureGlobalClock(){
   return $('guidedLiveClock');
@@ -602,13 +602,13 @@ function ensureRestFloatingClock(){
   return el;
 }
 function updateRestFloatingClock(){
-  // V50.13 : l'heure permanente remplace l'ancienne horloge de repos.
+  // V50.17 : l'heure permanente remplace l'ancienne horloge de repos.
   // Les boutons Pause ont été retirés des vues iPhone et séance.
   var el=$("restFloatingClock");
   if(el){el.className="rest-floating-clock hidden";el.innerHTML="";}
 }
 function updateRestDisplay(){
-  // V50.13 — restDisplay retiré du DOM. Seul updateRestFloatingClock est conservé.
+  // V50.17 — restDisplay retiré du DOM. Seul updateRestFloatingClock est conservé.
   updateRestFloatingClock();
 }
 function stopRestTimer(){
@@ -676,7 +676,7 @@ function parseWodStructure(text){
       .replace(/\s+/g,' ')
       .trim();
 
-    // V50.13 : dans la vue séance, on doit voir "Cal Row" et non juste "Row".
+    // V50.17 : dans la vue séance, on doit voir "Cal Row" et non juste "Row".
     // Si le texte original contient "cal", on conserve cette information dans le nom.
     var hadCal = !!isCal || /^cal\s+/i.test(n);
     n = n.replace(/^cal\s+/i,'').trim();
@@ -753,7 +753,7 @@ function estimateWodRounds(text, durationMin){
   return {min:3,max:6,def:4};
 }
 
-// V50.13 — Helpers For Time.
+// V50.17 — Helpers For Time.
 // Ces fonctions doivent exister avant renderSessionEntry(), sinon les WODs For Time
 // comme le jeudi Épaules 3D n'affichent pas le champ de temps final.
 function parseCapSeconds(text, fallbackMin){
@@ -1176,7 +1176,7 @@ function updateRefsFromResults(results,dateStr){
         movement:mvKey,range:repRange(reps),load:load,reps:reps,
         date:dateStr,lastActual:load,
         status:Number(r.rpe)>=9?"hard":"success",quality:"clean",
-        rpe:Number(r.rpe)||8,note:"Saisi V50.13"
+        rpe:Number(r.rpe)||8,note:"Saisi V50.17"
       };
     }
     // Enregistrer RPE dans l'historique pour progression automatique
@@ -1425,7 +1425,7 @@ document.addEventListener("visibilitychange",function(){
   }
 });
 
-// V50.13 — volontairement neutralisé.
+// V50.17 — volontairement neutralisé.
 // Les résultats ne doivent plus réécrire les charges locales ou charges.js.
 // - charges.js = configuration stable / équipement / charges de départ
 // - data/resultats.json = journal brut
@@ -1449,7 +1449,7 @@ function buildSessionPayload(results){
 }
 
 // Génère le contenu du fichier charges.js mis à jour avec les nouveaux poids
-// V50.13 — supprimé/neutralisé : l'app ne doit jamais écrire charges.js automatiquement.
+// V50.17 — supprimé/neutralisé : l'app ne doit jamais écrire charges.js automatiquement.
 // charges.js est la seule configuration de charges. Les upgrades viennent des PR/historique.
 function buildChargesJsContent(){ return ""; }
 async function saveChargesToGitHub(token){
@@ -1458,7 +1458,7 @@ async function saveChargesToGitHub(token){
 
 
 // ─── GitHub API helpers ─────────────────────────────────────────────────────
-// V50.13 : helpers GitHub globaux. Sans elles, le test token/PR plante.
+// V50.17 : helpers GitHub globaux. Sans elles, le test token/PR plante.
 function githubHeaders(token){
   return {
     "Authorization":"Bearer "+token,
@@ -1660,13 +1660,13 @@ function setupSessionSave(){
 // ─── Swipe ───────────────────────────────────────────────────────────────────
 
 function setupSwipeGesture(el,cb){
-  // V50.13 — Swipe désactivé.
+  // V50.17 — Swipe désactivé.
   // Navigation seulement par boutons pour éviter les changements accidentels
   // de semaine/jour/cycle sur iPhone.
   return;
 }
 function setupSwipeNav(){
-  // V50.13 : les swipes sont désactivés; seuls les boutons restent actifs.
+  // V50.17 : les swipes sont désactivés; seuls les boutons restent actifs.
   // Flèches semaine
   var wp=$("weekPrev"),wn=$("weekNext");
   if(wp)wp.onclick=function(){if(state.week>1){state.week--;save();render();}};
@@ -1770,12 +1770,25 @@ function renderDays(){
   });
 }
 function kindRank(kind){
-  if(kind==="wod")      return{rank:"WOD", cls:"rank-S",tag:"Conditioning",tagCls:"wod-tag"};
-  if(kind==="main")     return{rank:"A",   cls:"rank-A",tag:"Principal",   tagCls:"main-tag"};
-  if(kind==="accessory")return{rank:"B",   cls:"rank-B",tag:"Accessoire",  tagCls:"acc-tag"};
-  if(kind==="mobility") return{rank:"M",   cls:"rank-C",tag:"Mobilité",    tagCls:"mob-tag"};
-  if(kind==="warmup")   return{rank:"W",   cls:"rank-D",tag:"Warm-up",     tagCls:""};
+  if(kind==="wod")         return{rank:"WOD", cls:"rank-S",tag:"Conditioning",tagCls:"wod-tag"};
+  if(kind==="main")        return{rank:"A",   cls:"rank-A",tag:"Principal",   tagCls:"main-tag"};
+  if(kind==="secondary")   return{rank:"B",   cls:"rank-B",tag:"Secondaire",  tagCls:"acc-tag"};
+  if(kind==="hypertrophy") return{rank:"H",   cls:"rank-B",tag:"Hypertrophie",tagCls:"acc-tag"};
+  if(kind==="technique")   return{rank:"T",   cls:"rank-B",tag:"Technique",   tagCls:"acc-tag"};
+  if(kind==="core")        return{rank:"C",   cls:"rank-B",tag:"Core",        tagCls:"acc-tag"};
+  if(kind==="accessory")   return{rank:"B",   cls:"rank-B",tag:"Accessoire",  tagCls:"acc-tag"};
+  if(kind==="mobility")    return{rank:"M",   cls:"rank-C",tag:"Mobilité",    tagCls:"mob-tag"};
+  if(kind==="warmup")      return{rank:"W",   cls:"rank-D",tag:"Warm-up",     tagCls:""};
   return{rank:"B",cls:"rank-D",tag:"Bonus",tagCls:""};
+}
+function displayRankForBlock(block, mainSeen){
+  var rk=kindRank(block&&block.kind);
+  // Garde-fou global V50.17 : une séance ne doit pas afficher deux Principaux.
+  // Si un vieux programme contient plusieurs kind:"main", seul le premier garde le badge Principal.
+  if(block&&block.kind==="main"&&mainSeen>1){
+    return{rank:"B",cls:"rank-B",tag:"Secondaire",tagCls:"acc-tag"};
+  }
+  return rk;
 }
 
 function rpeArrowHtml(mvKey, reps){
@@ -1800,6 +1813,62 @@ function tutorialButtonHtml(name){
   var t = window.findCoachBertinTutorial(name);
   if(!t) return "";
   return '<button type="button" class="tuto-btn" data-tuto-name="'+escapeHtml(t.key)+'">?</button>';
+}
+function isAmbiguousLoad(load){
+  var l=String(load||"").toLowerCase().trim();
+  if(!l||l==="—"||l==="-")return true;
+  return /\b(léger|leger|modéré|modere|rpe|facile|difficile|selon|au choix|optionnel)\b/.test(l);
+}
+function loadInfoText(exercise, shownLoad){
+  if(!exercise)return "";
+  var raw=String(exercise.load||"").trim();
+  var shown=String(shownLoad||raw||"").trim();
+  var note=String(exercise.note||"").trim();
+  var name=chargeKeyFromName(exercise.name||"Mouvement");
+  if(note.toLowerCase().indexOf("charge réduite")>=0){
+    return name+" : "+shown+". Charge volontairement réduite parce que le Strict Press est le mouvement prioritaire de la séance. L'objectif est de garder l'hypertrophie sans empiler deux press lourds.";
+  }
+  if(shown.indexOf("⚠")>=0){
+    return name+" : "+shown+". La charge est cappée par l'historique/RPE récent, parce que le mouvement est sous surveillance ou en recalibrage.";
+  }
+  if(isAmbiguousLoad(raw)){
+    return name+" : "+(shown||raw||"charge inconnue")+". Charge non chiffrée parce que l'exercice dépend du matériel, de la qualité technique ou du RPE du jour. Utilise une charge qui respecte la note du bloc; si aucune note utile n'apparaît, le bouton est masqué.";
+  }
+  return "";
+}
+function loadInfoButtonHtml(exercise, shownLoad){
+  var msg=loadInfoText(exercise, shownLoad);
+  if(!msg)return "";
+  return '<button type="button" class="tuto-btn load-info-btn" data-load-info="'+encodeURIComponent(msg)+'">?</button>';
+}
+function showLoadInfoModal(msg){
+  msg=String(msg||"").trim();
+  if(!msg)return;
+  var existing=document.getElementById("loadInfoModal");
+  if(existing) existing.remove();
+  var modal=document.createElement("div");
+  modal.id="loadInfoModal";
+  modal.className="tuto-modal";
+  modal.innerHTML =
+    '<div class="tuto-modal-inner">'+
+      '<div class="tuto-topline">EXPLICATION DE CHARGE</div>'+
+      '<div class="tuto-title">Pourquoi cette charge?</div>'+
+      '<div class="tuto-goal">'+escapeHtml(msg)+'</div>'+
+      '<button id="closeLoadInfoBtn" class="btn-accent" style="width:100%;margin-top:14px">Fermer</button>'+
+    '</div>';
+  document.body.appendChild(modal);
+  setTimeout(function(){modal.classList.add("visible");},20);
+  var close=function(){modal.classList.remove("visible");setTimeout(function(){modal.remove();},220);};
+  var btn=document.getElementById("closeLoadInfoBtn"); if(btn) btn.onclick=close;
+  modal.addEventListener("click",function(e){ if(e.target===modal) close(); });
+}
+function setupLoadInfoButtons(scope){
+  (scope||document).querySelectorAll(".load-info-btn[data-load-info]").forEach(function(btn){
+    btn.onclick=function(e){
+      e.preventDefault(); e.stopPropagation();
+      showLoadInfoModal(decodeURIComponent(btn.getAttribute("data-load-info")||""));
+    };
+  });
 }
 function showTutorialModal(name){
   if(!window.findCoachBertinTutorial) return;
@@ -1858,8 +1927,10 @@ function renderWorkout(){
     "<small>"+cycleRules().slice(0,3).join(" · ")+"</small>";
 
   if(!c)return;c.innerHTML="";
+  var mainSeen=0;
   w.blocks.forEach(function(b){
-    var rk=kindRank(b.kind);
+    if(b.kind==="main")mainSeen++;
+    var rk=displayRankForBlock(b,mainSeen);
     var div=document.createElement("div");
     div.className="block kind-"+b.kind;
     var inner=
@@ -1879,7 +1950,7 @@ function renderWorkout(){
             '<div class="exercise-name"><span>'+e.name+'</span>'+tutorialButtonHtml(e.name)+'</div>'+
             '<div class="exercise-meta">'+
               '<div class="exercise-format">'+e.format+'</div>'+
-              '<div class="exercise-load">'+athleteSuggestedLoad(e.name,e.load,(parseTargetReps(e.format,10).min||parseTargetReps(e.format,10).max))+'</div>'+
+              '<div class="exercise-load">'+(function(){var target=(parseTargetReps(e.format,10).min||parseTargetReps(e.format,10).max);var shown=athleteSuggestedLoad(e.name,e.load,target);return shown+loadInfoButtonHtml(e,shown);})()+'</div>'+
             '</div>'+
           '</div>';
         if(e.note)inner+='<div class="exercise-note">'+e.note+'</div>';
@@ -1901,7 +1972,7 @@ function renderWorkout(){
           '</div>';
       });
     }
-    div.innerHTML=inner;c.appendChild(div);setupTutorialButtons(div);
+    div.innerHTML=inner;c.appendChild(div);setupTutorialButtons(div);setupLoadInfoButtons(div);
   });
   if(pa)pa.textContent="Poids ajustés selon ton RPE. Saisis tes résultats en fin de séance.";
 }
@@ -1955,10 +2026,12 @@ function renderPhoneWod(){
   html+="</ul></div>";
 
   // Blocs
+  var mainSeen=0;
   w.blocks.forEach(function(b){
-    var rk=kindRank(b.kind);
+    if(b.kind==="main")mainSeen++;
+    var rk=displayRankForBlock(b,mainSeen);
     var isWod=b.kind==="wod";
-    var cardCls="pc"+(isWod?" wod":b.kind==="accessory"?" accessory":b.kind==="main"?" main-card":"");
+    var cardCls="pc"+(isWod?" wod":(b.kind==="accessory"||b.kind==="hypertrophy"||b.kind==="secondary"||b.kind==="technique"||b.kind==="core")?" accessory":b.kind==="main"?" main-card":"");
     html+="<div class='"+cardCls+"'>";
     html+="<div class='pc-block-title'>";
     html+="<div class='block-rank "+rk.cls+" rank-badge'>"+rk.rank+"</div>";
@@ -1977,7 +2050,9 @@ function renderPhoneWod(){
         html+="<div class='pc-exercise'><div class='pc-ex-name'>"+e.name+"</div>";
         html+="<div class='pc-ex-rows'>";
         html+="<div class='pc-ex-row'><span class='pc-ex-label'>Format</span><span class='pc-ex-value'>"+e.format+"</span></div>";
-        html+="<div class='pc-ex-row'><span class='pc-ex-label'>Poids</span><span class='pc-ex-value accent'>"+athleteSuggestedLoad(e.name,e.load,(parseTargetReps(e.format,10).min||parseTargetReps(e.format,10).max))+"</span></div>";
+        var phoneTarget=(parseTargetReps(e.format,10).min||parseTargetReps(e.format,10).max);
+        var phoneShown=athleteSuggestedLoad(e.name,e.load,phoneTarget);
+        html+="<div class='pc-ex-row'><span class='pc-ex-label'>Poids</span><span class='pc-ex-value accent'>"+phoneShown+loadInfoButtonHtml(e,phoneShown)+"</span></div>";
         html+="<div class='pc-ex-row'><span class='pc-ex-label'>Repos</span><span class='pc-ex-value'>"+e.rest+"</span></div>";
         html+="</div>";
         if(e.note)html+="<div class='pc-ex-note'>"+e.note+"</div>";
@@ -2013,11 +2088,12 @@ function renderPhoneWod(){
   el.innerHTML=html;
   renderSessionEntry();
   setupWodTimer();
+  setupLoadInfoButtons(el);
 }
 
 
 
-// ─── Mode séance guidé (optionnel) — V50.13 ────────────────────────────────
+// ─── Mode séance guidé (optionnel) — V50.17 ────────────────────────────────
 // Vue iPhone pleine largeur : 1 bloc = 1 page. Le WOD a son gros timer dédié.
 
 var guidedSessionState = { blocks: [], index: 0 };
@@ -2033,7 +2109,7 @@ function escHtml(v){
 }
 
 
-// V50.13 — Résultats saisis directement dans le mode séance.
+// V50.17 — Résultats saisis directement dans le mode séance.
 // On garde un cache persistant tant que la page est ouverte, puis collectSessionResults()
 // le fusionne aux champs de la vue iPhone.
 var guidedResultCache = {};
@@ -2050,7 +2126,7 @@ function findSessionInput(key, field){
   return found;
 }
 
-// V50.13 — synchronisation immédiate mode séance → saisie iPhone.
+// V50.17 — synchronisation immédiate mode séance → saisie iPhone.
 // Quand tu modifies poids/reps/RPE dans la vue séance, les champs et chips
 // correspondants dans la section résultats iPhone se mettent à jour tout de suite.
 function syncSessionEntryFromGuided(key, field, value){
@@ -2510,7 +2586,7 @@ function renderGuidedSession(){
       html+=renderGuidedExerciseList(st.exercises);
     } else if(text){
       // Certains blocs autonomes (ex.: Optionnel / Bonus) n'ont pas d'exercises[].
-      // Avant V50.13, ils s'affichaient vides en mode séance.
+      // Avant V50.17, ils s'affichaient vides en mode séance.
       html+=renderGuidedStepList(st.text, st.kind) || ("<div class='guided-note big'>"+escHtml(text)+"</div>");
     } else {
       html+="<div class='guided-note big'>Aucun contenu pour ce bloc.</div>";
@@ -2602,8 +2678,12 @@ function renderFocusDetails(){
   if(cfg.nextPhase&&focusConfigs[cfg.nextPhase]){
     nextHtml='<div style="margin-top:8px;font-size:12px;color:var(--muted)">Phase suivante → '+focusConfigs[cfg.nextPhase].label+'</div>';
   }
+  var draftHtml = cfg.draft
+    ? '<div class="draft-cycle-warning">⚠️ Brouillon futur — À retravailler lorsque le projet sera activé.</div>'
+    : '';
   fd.innerHTML=
-    '<strong>'+cfg.label+'</strong><br>'+cfg.impact+
+    '<strong>'+cfg.label+'</strong>'+(cfg.status?' <span class="draft-pill">'+cfg.status+'</span>':'')+'<br>'+cfg.impact+
+    draftHtml+
     '<br><br><strong>Structure :</strong> '+cfg.sets.join(" → ")+
     '<br><strong>Repos :</strong> '+cfg.rest+
     targetHtml+nextHtml;

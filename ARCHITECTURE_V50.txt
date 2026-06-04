@@ -1,4 +1,4 @@
-Coach Bertin V50.13 — Architecture stable
+Coach Bertin V50.17 — Architecture stable
 
 Objectif :
 Réduire la confusion et figer les responsabilités des fichiers.
@@ -25,6 +25,8 @@ Priorité des charges à afficher :
 3. data/charges.js.
 4. charge écrite dans le programme.
 
-Note V50.13 : le dossier `data/programs/` ne doit pas exister. `programs/` doit rester à la racine seulement.
+Note V50.17 : le dossier `data/programs/` ne doit pas exister. `programs/` doit rester à la racine seulement.
 
 Note maintenance : utiliser `VERSION_HISTORY.md` comme historique durable des versions. Ne pas accumuler de fichiers LIRE_MOI_* ou NOTE_*.
+
+Note V50.17 : Coach Beurt est gardé séparé de Racine Builder. Cette app ne contient pas de Builder intégré. Racine doit rester un laboratoire externe jusqu’à ce qu’un format d’export validé soit prêt.

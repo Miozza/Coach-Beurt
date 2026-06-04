@@ -1,4 +1,4 @@
-// Coach Bertin V50.13 — Phase 1 : Épaules 3D + Triceps (6 semaines)
+// Coach Bertin V50.17 — Phase 1 : Épaules 3D + Triceps (6 semaines)
 // Objectif : spécialisation épaules/triceps crédible, 4 jours/semaine, 55-60 min.
 // Structure : lundi push + épaules session 1, mardi pull/rear delt, jeudi legs zéro épaules, vendredi épaules session 2 angles différents + power clean technique APRÈS les épaules.
 
@@ -30,36 +30,36 @@ window.COACH_BERTIN_PROGRAMS.shoulders3d = {
 function shouldersWeekPlan(week){
   return({
     1:{label:"S1 Base",note:"Qualité et repères. RPE 7-8. Aucun échec.",
-       incline:"3×10",inclineLoad:"55 lb / main",press:"3×8-10",pressLoad:"110 lb",lat:"4×15-20",triOh:"4×10-15",triPush:"3×12-20",
+       incline:"3×10",inclineLoad:"45-50 lb / main",press:"3×8-10",pressLoad:"110 lb",lat:"4×15-20",triOh:"4×10-15",triPush:"3×12-20",
        row:"4×10",pull:"3×8",rear:"4×15-20",face:"2×15-20",trap:"2×12",curl:"3×10-15",
        squat:"5×5",squatLoad:"165 lb",hip:"3×10",hinge:"3×10",
        shPress:"3×10",shPressLoad:"léger",lat2:"3×15-20",rear2:"3×15-20",face2:"3×15-20",serratus:"2×12/côté",triFri:"2×12-15",clean:"5×2 léger",cleanLoad:"115-135 lb",wodNote:"pacing propre"},
     2:{label:"S2 Technique",note:"Même qualité, transitions plus courtes. Toujours 1-2 reps en réserve.",
-       incline:"4×8-10",inclineLoad:"55-60 lb / main",press:"4×8",pressLoad:"115 lb",lat:"5×12-20",triOh:"4×10-15",triPush:"3×12-20",
+       incline:"4×8-10",inclineLoad:"50 lb / main",press:"4×8",pressLoad:"115 lb",lat:"5×12-20",triOh:"4×10-15",triPush:"3×12-20",
        row:"5×8-10",pull:"4×6-8",rear:"4×15-20",face:"3×15-20",trap:"2×12-15",curl:"3×10-15",
        squat:"5×5",squatLoad:"175 lb",hip:"3×10",hinge:"3×10",
        shPress:"3×8-10",shPressLoad:"léger à modéré",lat2:"3×15-20",rear2:"3×15-20",face2:"3×15-20",serratus:"2×12-15/côté",triFri:"2×12-15",clean:"5×2 léger",cleanLoad:"125-145 lb",wodNote:"contrôlé"},
     3:{label:"S3 Volume",note:"Volume utile plus élevé. Pas de mouvement redondant juste pour remplir.",
-       incline:"4×8-10",inclineLoad:"60 lb / main",press:"4×8-10",pressLoad:"120 lb",lat:"5×15-20",triOh:"4×12-15",triPush:"3×15-20",
+       incline:"4×8-10",inclineLoad:"50-55 lb / main",press:"4×8-10",pressLoad:"120 lb",lat:"5×15-20",triOh:"4×12-15",triPush:"3×15-20",
        row:"4×8",pull:"4×6-8",rear:"5×15-20",face:"3×15-20",trap:"3×12-15",curl:"3×10-15",
        squat:"5×4",squatLoad:"185 lb",hip:"4×8-10",hinge:"3×10",
        shPress:"4×8-10",shPressLoad:"modéré",lat2:"4×12-20",rear2:"4×15-20",face2:"3×15-20",serratus:"3×12-15/côté",triFri:"3×12-15",clean:"5×2 technique",cleanLoad:"135-155 lb",wodNote:"modéré"},
     4:{label:"S4 Surcharge",note:"Semaine la plus dense. RPE 8-9 max, aucune compensation.",
-       incline:"4×8",inclineLoad:"60-65 lb / main",press:"4×8",pressLoad:"125 lb",lat:"5×12-20",triOh:"4×10-15",triPush:"3×12-20",
+       incline:"4×8",inclineLoad:"50-55 lb / main",press:"4×8",pressLoad:"125 lb",lat:"5×12-20",triOh:"4×10-15",triPush:"3×12-20",
        row:"5×8",pull:"4×6",rear:"5×15-20",face:"3×15-20",trap:"3×12-15",curl:"3×10-12",
        squat:"5×4",squatLoad:"190 lb",hip:"4×8",hinge:"3×8-10",
        shPress:"4×8",shPressLoad:"modéré",lat2:"4×12-20",rear2:"4×15-20",face2:"3×15-20",serratus:"3×12-15/côté",triFri:"3×12-15",clean:"5×2 technique",cleanLoad:"145-165 lb",wodNote:"fort mais pas redline"},
     5:{label:"S5 Intensité",note:"Charges les plus sérieuses. Volume légèrement réduit, qualité avant ego.",
-       incline:"3×8 lourd",inclineLoad:"65 lb / main",press:"3×8",pressLoad:"130 lb",lat:"4×12-18",triOh:"4×8-12",triPush:"2×12-15",
+       incline:"3×8 contrôlé",inclineLoad:"55 lb / main",press:"3×8",pressLoad:"130 lb",lat:"4×12-18",triOh:"4×8-12",triPush:"2×12-15",
        row:"4×6",pull:"4×5-6",rear:"4×12-20",face:"2×15-20",trap:"2×12",curl:"3×8-12",
        squat:"5×3",squatLoad:"195 lb",hip:"3×8",hinge:"3×8",
        shPress:"3×8",shPressLoad:"modéré",lat2:"3×12-18",rear2:"3×12-20",face2:"2×15-20",serratus:"2×12/côté",triFri:"2×12",clean:"4×2 technique",cleanLoad:"145-165 lb",wodNote:"court et propre"},
     6:{label:"S6 Deload",note:"Deload actif. Réduire volume et charge. Sortir plus frais.",
-       incline:"2×10 léger",inclineLoad:"45-50 lb / main",press:"2×10 léger",pressLoad:"95 lb",lat:"2×15",triOh:"2×12",triPush:"2×12",
+       incline:"2×10 léger",inclineLoad:"40-45 lb / main",press:"2×10 léger",pressLoad:"95 lb",lat:"2×15",triOh:"2×12",triPush:"2×12",
        row:"3×10 léger",pull:"2×6 facile",rear:"2×15",face:"2×15",trap:"2×10",curl:"2×12",
        squat:"3×5 léger",squatLoad:"140 lb",hip:"2×10 léger",hinge:"2×10 léger",
        shPress:"2×10 léger",shPressLoad:"très léger",lat2:"2×15",rear2:"2×15",face2:"2×15",serratus:"2×10/côté",triFri:"2×12",clean:"3×2 facile",cleanLoad:"95-115 lb",wodNote:"facile"}
-  })[week] || {label:"S1",note:"",incline:"3×10",inclineLoad:"55 lb / main",press:"3×8-10",pressLoad:"110 lb",lat:"4×15-20",triOh:"4×10-15",triPush:"3×12-20",row:"4×10",pull:"3×8",rear:"4×15-20",face:"2×15-20",trap:"2×12",curl:"3×10-15",squat:"5×5",squatLoad:"165 lb",hip:"3×10",hinge:"3×10",shPress:"3×10",shPressLoad:"léger",lat2:"3×15-20",rear2:"3×15-20",face2:"3×15-20",serratus:"2×12/côté",triFri:"2×12-15",clean:"5×2 léger",cleanLoad:"115-135 lb",wodNote:"contrôlé"};
+  })[week] || {label:"S1",note:"",incline:"3×10",inclineLoad:"45-50 lb / main",press:"3×8-10",pressLoad:"110 lb",lat:"4×15-20",triOh:"4×10-15",triPush:"3×12-20",row:"4×10",pull:"3×8",rear:"4×15-20",face:"2×15-20",trap:"2×12",curl:"3×10-15",squat:"5×5",squatLoad:"165 lb",hip:"3×10",hinge:"3×10",shPress:"3×10",shPressLoad:"léger",lat2:"3×15-20",rear2:"3×15-20",face2:"3×15-20",serratus:"2×12/côté",triFri:"2×12-15",clean:"5×2 léger",cleanLoad:"115-135 lb",wodNote:"contrôlé"};
 }
 function ex(name,format,load,rest,note){return{name:name,format:format,load:charge(name,load||"—"),rest:rest||"—",note:note||""};}
 function exFixed(name,format,load,rest,note){return{name:name,format:format,load:load||"—",rest:rest||"—",note:note||""};}
@@ -68,31 +68,38 @@ function shouldersBlocks(day,week){
   var p=shouldersWeekPlan(week);
   var isDeload=week===6;
 
-  // LUNDI — Push + épaules session 1. Pas de rear delt, pas de face pull, pas de biceps.
+  // LUNDI — Push + épaules session 1. V50.17 : overhead prioritaire, tampon scapulaire, incline allégé.
   if(day==="lundi")return[
     {time:"7 min",title:"Échauffement push + coiffe des rotateurs",tag:"Préparation",kind:"warmup",
-     text:"2 tours : Band External Rotation — elbow tucked 12/côté + Band Internal Rotation — elbow tucked 12/côté + Scap Push-up 8 + Wall Slide 8. Puis : Incline DB Press léger 10 + montée Strict Press : barre à vide×8, 40%×5."},
+     text:"2 tours : Band External Rotation — elbow tucked 12/côté + Band Internal Rotation — elbow tucked 12/côté + Scap Push-up 8 + Wall Slide 8. Puis : montée Strict Press : barre à vide×8, 40%×5, 60%×3."},
 
-    {time:"10 min",title:"A. Incline DB Press",tag:"Masse",kind:"main",
-     exercises:[exFixed("Incline DB Press",p.incline,p.inclineLoad,"1:30-2:00","Haut de pec + deltoïde antérieur. Mouvement de masse, amplitude propre, RPE 7-8. Pas d'échec.")]},
+    {time:"10 min",title:"A. Strict Press",tag:"Force",kind:"main",
+     exercises:[exFixed("Strict Press",p.press,p.pressLoad,"2:00","Principal du jour : force overhead sous-maximale, liée à la progression Héritage 225. RPE 7-8. Stop si compensation lombaire.")]},
 
-    {time:"9 min",title:"B. Strict Press",tag:"Force",kind:"main",
-     exercises:[exFixed("Strict Press",p.press,p.pressLoad,"2:00","Force overhead sous-maximale. RPE 7-8. Stop si compensation lombaire.")]},
-
-    {time:"8 min",title:"C. Deltoïde latéral",tag:"Hypertrophie",kind:"accessory",
-     exercises:[exFixed("Lateral Raise câble bas",p.lat,"15-20 lb","0:45-1:00","Session 1 : câble bas = tension constante. Épaule basse, aucun élan, RPE 8.")]},
-
-    {time:"10 min",title:"D. Triceps",tag:"Hypertrophie",kind:"accessory",
-     text:"Overhead en premier pour la longue portion, pushdown ensuite pour finir sans charger l'épaule.",
+    {time:"7 min",title:"B. Tampon scapulaire",tag:"Scapulaire",kind:"secondary",
+     text:"Bloc volontaire entre les deux press : il casse la redondance deltoïde antérieur/triceps avant l'incline.",
      exercises:[
-       ex("D1. Overhead Rope Extension",p.triOh,"50-60 lb","0:30 avant D2","Longue portion triceps. Coudes stables. Étirement contrôlé, pas agressif."),
-       ex("D2. Triceps Rope Pushdown",p.triPush,"60-70 lb","1:00 après D2","Coudes fixes, extension complète, RPE 8. Pas de balançoire.")
+       exFixed("B1. Chest Supported Row léger",isDeload?"2×10":"3×10","léger à modéré","0:30 avant B2","Tirage propre, poitrine appuyée. But : scapulas stables, pas un max de dos."),
+       exFixed("B2. Band Pull Apart",isDeload?"2×15":"3×15-20","élastique","0:45 après B2","Arrière d'épaule/posture. Cou relâché, aucune brûlure de trap supérieur.")
      ]},
 
-    {time:"8 min",title:"E. WOD court push",tag:"Conditioning",kind:"wod",
+    {time:"9 min",title:"C. Incline DB Press",tag:"Hypertrophie",kind:"hypertrophy",
+     exercises:[exFixed("Incline DB Press",p.incline,p.inclineLoad,"1:30-2:00","Accessoire hypertrophie : haut de pec + deltoïde antérieur. Charge réduite parce que le Strict Press est prioritaire aujourd'hui. RPE 7-8, pas d'échec.")]},
+
+    {time:"7 min",title:"D. Deltoïde latéral",tag:"Hypertrophie",kind:"hypertrophy",
+     exercises:[exFixed("Lateral Raise câble bas",p.lat,"15-20 lb","0:45-1:00","Session 1 : câble bas = tension constante. Épaule basse, aucun élan, RPE 8.")]},
+
+    {time:"9 min",title:"E. Triceps",tag:"Hypertrophie",kind:"hypertrophy",
+     text:"Overhead en premier pour la longue portion, pushdown ensuite pour finir sans charger l'épaule.",
+     exercises:[
+       ex("E1. Overhead Rope Extension",p.triOh,"50-60 lb","0:30 avant E2","Longue portion triceps. Coudes stables. Étirement contrôlé, pas agressif."),
+       ex("E2. Triceps Rope Pushdown",p.triPush,"60-70 lb","1:00 après E2","Coudes fixes, extension complète, RPE 8. Pas de balançoire.")
+     ]},
+
+    {time:"8 min",title:"F. WOD court push",tag:"Conditioning",kind:"wod",
      text:"AMRAP 8 : 8 burpees contrôlés + 10 cal row + 12 sit-ups. "+p.wodNote+". Ce n'est pas un test : garder le moteur sans tuer les épaules."},
 
-    {time:"5 min",title:"F. Mobilité",tag:"Mobilité",kind:"mobility",
+    {time:"5 min",title:"G. Mobilité",tag:"Mobilité",kind:"mobility",
      text:"Doorway pec stretch 1 min/côté + lat stretch sur rig 1 min/côté + triceps overhead stretch 1 min + respiration 1 min."}
   ];
 
