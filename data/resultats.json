@@ -219,5 +219,126 @@
         "note": "1350 cal/hr"
       }
     }
+  },
+  {
+    "version": "V50.17",
+    "date": "2026-06-04",
+    "time": "13:28:40",
+    "semaine": 1,
+    "jour": "jeudi",
+    "cycle": "shoulders3d",
+    "focus": "Épaules 3D + Triceps — Phase 1",
+    "cycleState": {
+      "version": "V50.17",
+      "updatedAt": "2026-06-04T17:28:40.011Z",
+      "activeCycle": "shoulders3d",
+      "activeWeek": 1,
+      "activeDay": "jeudi",
+      "completedDays": [
+        "lundi",
+        "mardi",
+        "jeudi"
+      ],
+      "focus": "Épaules 3D + Triceps — Phase 1",
+      "cycleStartedAt": "2026-06-02T14:54:54.095Z"
+    },
+    "resultats": {
+      "Front Squat": {
+        "load": "165",
+        "reps": "5",
+        "rpe": "8",
+        "planned": {
+          "load": 165,
+          "reps": 5,
+          "targetMin": 5,
+          "targetMax": 5,
+          "format": "5×5",
+          "kind": "main"
+        },
+        "status": "success",
+        "performanceRatio": 1
+      },
+      "Bulgarian Split Squat": {
+        "load": "35",
+        "reps": "8",
+        "rpe": "7",
+        "planned": {
+          "load": 50,
+          "reps": 8,
+          "targetMin": 8,
+          "targetMax": 10,
+          "format": "3×8-10/jambe",
+          "kind": "accessory"
+        },
+        "status": "easy_success",
+        "performanceRatio": 1
+      },
+      "Hip Thrust": {
+        "load": "185",
+        "reps": "10",
+        "rpe": "7",
+        "planned": {
+          "load": 225,
+          "reps": 10,
+          "targetMin": 10,
+          "targetMax": 10,
+          "format": "3×10",
+          "kind": "accessory"
+        },
+        "status": "easy_success",
+        "performanceRatio": 1
+      },
+      "DB RDL": {
+        "load": "60",
+        "reps": "10",
+        "rpe": "8",
+        "planned": {
+          "load": 60,
+          "reps": 10,
+          "targetMin": 10,
+          "targetMax": 10,
+          "format": "3×10",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1
+      },
+      "Dead Bug / Hollow Hold": {
+        "reps": "10",
+        "rpe": "8"
+      },
+      "wod_D. WOD jambes / engine": {
+        "result": "05:15",
+        "note": "5:15 très difficile côté bike",
+        "rpe": "10"
+      },
+      "Barbell Row": {
+        "load": "115",
+        "reps": "10",
+        "rpe": "8"
+      },
+      "Weighted Pull-up / Ring Row lourd": {
+        "reps": "8",
+        "rpe": "8"
+      },
+      "Cable Curl": {
+        "reps": "13",
+        "rpe": "8"
+      },
+      "Rear Delt Fly câble bas": {
+        "load": "15",
+        "reps": "18",
+        "rpe": "8"
+      },
+      "Face Pull": {
+        "load": "60",
+        "reps": "18",
+        "rpe": "8"
+      },
+      "Trap-3 Raise": {
+        "reps": "12",
+        "rpe": "8"
+      }
+    }
   }
 ]
