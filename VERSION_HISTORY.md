@@ -1,4 +1,17 @@
+# V50.19 — TMS outils séparés
+
+- Ajout d’un bouton TMS en mode iPhone.
+- Ajout de deux séances libres indépendantes : TMS complet et Routine matin/soir.
+- TMS est dans `tools/tms_session.js`, pas dans `programs/`, pour ne pas interférer avec les cycles ni Builder.
+- Aucun impact sur `cycle_state`, `athlete_state`, `resultats` ou la progression du cycle actif.
+
 # Coach Bertin — historique des versions
+
+## V50.18 — Écran actif automatique en mode séance
+- Le mode séance active automatiquement le maintien de l’écran au démarrage.
+- En quittant le mode séance, l’écran actif est relâché si l’app l’avait activé automatiquement.
+- Si l’écran actif était déjà activé manuellement avant la séance, il reste actif en quittant.
+- Reprise automatique du Wake Lock quand l’app revient au premier plan, tant qu’il est demandé.
 
 ## V50.17 — Épaules 3D + règles globales de programmation
 - Épaules 3D : lundi réordonné en Strict Press principal, tampon scapulaire, puis Incline DB Press allégé.

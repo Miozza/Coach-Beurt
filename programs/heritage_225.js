@@ -1,4 +1,4 @@
-// Coach Bertin V50.17 — Cycle futur : Héritage 225
+// Coach Bertin V50.18 — Cycle futur : Héritage 225
 // Statut : PROJET FUTUR — construit, mais non actif par défaut.
 // Objectif potentiel pour l'année des 50 ans : Push Press 225 lb.
 // Hommage à Théodore (Théo).

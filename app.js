@@ -1,5 +1,5 @@
-// Coach Bertin V50.17
-var APP_VERSION = "V50.17";
+// Coach Bertin V50.19
+var APP_VERSION = "V50.19";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -1403,25 +1403,61 @@ function advanceWeek(){
 // ─── Wake Lock — empêcher l'écran de se mettre en veille ─────────────────────
 
 var wakeLock = null;
-async function requestWakeLock(){
-  try{
-    if("wakeLock" in navigator){
-      wakeLock = await navigator.wakeLock.request("screen");
-      var btn=$("wakeLockBtn");
-      if(btn){btn.textContent="🔆 Écran actif";btn.classList.add("active");}
-    }
-  }catch(e){}
-}
-function releaseWakeLock(){
-  if(wakeLock){try{wakeLock.release();}catch(e){}wakeLock=null;}
+var wakeLockWanted = false;
+var guidedWakeLockAuto = false;
+
+function updateWakeLockButton(active, unsupported){
   var btn=$("wakeLockBtn");
-  if(btn){btn.textContent="💤 Garder écran";btn.classList.remove("active");}
+  if(!btn)return;
+  if(unsupported){
+    btn.textContent="⚠️ Écran non supporté";
+    btn.classList.remove("active");
+    return;
+  }
+  btn.textContent=active?"🔆 Écran actif":"💤 Garder écran";
+  btn.classList.toggle("active",!!active);
 }
-// Re-acquérir si l'app revient au premier plan
+
+async function requestWakeLock(){
+  wakeLockWanted = true;
+  try{
+    if(!("wakeLock" in navigator)){
+      updateWakeLockButton(false,true);
+      return false;
+    }
+    if(wakeLock){
+      updateWakeLockButton(true,false);
+      return true;
+    }
+    wakeLock = await navigator.wakeLock.request("screen");
+    if(wakeLock && wakeLock.addEventListener){
+      wakeLock.addEventListener("release",function(){
+        wakeLock=null;
+        if(wakeLockWanted && document.visibilityState==="visible"){
+          setTimeout(function(){ requestWakeLock(); },250);
+        }else{
+          updateWakeLockButton(false,false);
+        }
+      });
+    }
+    updateWakeLockButton(true,false);
+    return true;
+  }catch(e){
+    updateWakeLockButton(false,false);
+    return false;
+  }
+}
+
+function releaseWakeLock(){
+  wakeLockWanted = false;
+  if(wakeLock){try{wakeLock.release();}catch(e){}wakeLock=null;}
+  updateWakeLockButton(false,false);
+}
+
+// Re-acquérir si l'app revient au premier plan pendant une séance ou si l'utilisateur l'a demandé.
 document.addEventListener("visibilitychange",function(){
-  if(document.visibilityState==="visible"&&wakeLock===null){
-    var btn=$("wakeLockBtn");
-    if(btn&&btn.classList.contains("active"))requestWakeLock();
+  if(document.visibilityState==="visible" && wakeLockWanted && wakeLock===null){
+    requestWakeLock();
   }
 });
 
@@ -2276,6 +2312,10 @@ function buildGuidedSessionBlocks(){
 
 function openGuidedSession(){
   resumeAudio();
+  // V50.18 — Démarrer une séance active automatiquement le maintien de l’écran.
+  // Comme l’ouverture vient d’un clic utilisateur, iOS/PWA a les meilleures chances d’accepter le Wake Lock.
+  guidedWakeLockAuto = !wakeLockWanted;
+  requestWakeLock();
   guidedSessionState.blocks = buildGuidedSessionBlocks();
   guidedSessionState.index = 0;
   renderGuidedSession();
@@ -2285,6 +2325,10 @@ function closeGuidedSession(){
   stopGuidedTimer();
   var el=$("guidedSession");
   if(el){ el.classList.add("hidden"); el.innerHTML=""; }
+  // Si le Wake Lock a été activé seulement par le mode séance, on le relâche en quittant.
+  // S’il était déjà activé manuellement avant, on le laisse actif.
+  if(guidedWakeLockAuto){ releaseWakeLock(); }
+  guidedWakeLockAuto=false;
 }
 
 function guidedNext(){
@@ -3205,7 +3249,7 @@ function bind(){
   var btb=$("backTrainingBtn");if(btb)btb.onclick=function(){switchView("training");};
   var fs=$("fullscreenBtn");if(fs)fs.onclick=function(){var el=document.documentElement,fn=el.requestFullscreen||el.webkitRequestFullscreen;if(fn)try{fn.call(el);}catch(e){}};
   var smb=$("sessionModeBtn");if(smb)smb.onclick=openGuidedSession;
-  var wl=$("wakeLockBtn");if(wl)wl.onclick=function(){if(wakeLock)releaseWakeLock();else requestWakeLock();};  var cp=$("copyPhoneBtn");if(cp)cp.onclick=function(){navigator.clipboard.writeText(stableIphoneText()).then(function(){alert("Copié.");}).catch(function(){alert("Copie bloquée.");});};
+  var wl=$("wakeLockBtn");if(wl)wl.onclick=function(){if(wakeLockWanted||wakeLock)releaseWakeLock();else requestWakeLock();};  var cp=$("copyPhoneBtn");if(cp)cp.onclick=function(){navigator.clipboard.writeText(stableIphoneText()).then(function(){alert("Copié.");}).catch(function(){alert("Copie bloquée.");});};
   var sc=$("saveCycleBtn");if(sc)sc.onclick=saveCycle;
   var nc=$("newCycleBtn");if(nc)nc.onclick=newCycle;
   var spr=$("savePrBtn");if(spr)spr.onclick=savePrProfile;

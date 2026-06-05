@@ -1,4 +1,4 @@
-// Coach Bertin V50.17 — Phase 1 : Épaules 3D + Triceps (6 semaines)
+// Coach Bertin V50.18 — Phase 1 : Épaules 3D + Triceps (6 semaines)
 // Objectif : spécialisation épaules/triceps crédible, 4 jours/semaine, 55-60 min.
 // Structure : lundi push + épaules session 1, mardi pull/rear delt, jeudi legs zéro épaules, vendredi épaules session 2 angles différents + power clean technique APRÈS les épaules.
 
@@ -68,7 +68,7 @@ function shouldersBlocks(day,week){
   var p=shouldersWeekPlan(week);
   var isDeload=week===6;
 
-  // LUNDI — Push + épaules session 1. V50.17 : overhead prioritaire, tampon scapulaire, incline allégé.
+  // LUNDI — Push + épaules session 1. V50.18 : overhead prioritaire, tampon scapulaire, incline allégé.
   if(day==="lundi")return[
     {time:"7 min",title:"Échauffement push + coiffe des rotateurs",tag:"Préparation",kind:"warmup",
      text:"2 tours : Band External Rotation — elbow tucked 12/côté + Band Internal Rotation — elbow tucked 12/côté + Scap Push-up 8 + Wall Slide 8. Puis : montée Strict Press : barre à vide×8, 40%×5, 60%×3."},

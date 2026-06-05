@@ -3101,7 +3101,7 @@ label {
 }
 .topnav-v {
   display: block;
-  color: var(--muted);
+  color: var(--gold);
   font-size: 8px;
   letter-spacing: .08em;
   font-weight: 500;
