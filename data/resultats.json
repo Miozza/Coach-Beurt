@@ -340,5 +340,140 @@
         "rpe": "8"
       }
     }
+  },
+  {
+    "version": "V50.17",
+    "date": "2026-06-05",
+    "time": "13:13:42",
+    "semaine": 1,
+    "jour": "vendredi",
+    "cycle": "shoulders3d",
+    "focus": "Épaules 3D + Triceps — Phase 1",
+    "cycleState": {
+      "version": "V50.17",
+      "updatedAt": "2026-06-05T17:13:42.292Z",
+      "activeCycle": "shoulders3d",
+      "activeWeek": 1,
+      "activeDay": "vendredi",
+      "completedDays": [
+        "lundi",
+        "mardi",
+        "jeudi",
+        "vendredi"
+      ],
+      "focus": "Épaules 3D + Triceps — Phase 1",
+      "cycleStartedAt": "2026-06-02T14:54:54.095Z"
+    },
+    "resultats": {
+      "DB Shoulder Press / Landmine Press": {
+        "load": "30",
+        "reps": "10",
+        "rpe": "8",
+        "planned": {
+          "load": null,
+          "reps": 10,
+          "targetMin": 10,
+          "targetMax": 10,
+          "format": "3×10",
+          "kind": "main"
+        },
+        "status": "success",
+        "performanceRatio": 1
+      },
+      "Lateral Raise haltères / machine": {
+        "load": "15",
+        "reps": "15",
+        "rpe": "8",
+        "planned": {
+          "load": null,
+          "reps": 15,
+          "targetMin": 15,
+          "targetMax": 20,
+          "format": "3×15-20",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1
+      },
+      "Rear Delt Fly haltères / machine": {
+        "load": "10",
+        "reps": "15",
+        "rpe": "8",
+        "planned": {
+          "load": null,
+          "reps": 15,
+          "targetMin": 15,
+          "targetMax": 20,
+          "format": "3×15-20",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1
+      },
+      "Face Pull câble": {
+        "load": "50",
+        "reps": "18",
+        "rpe": "8",
+        "planned": {
+          "load": 50,
+          "reps": 15,
+          "targetMin": 15,
+          "targetMax": 20,
+          "format": "3×15-20",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1.2
+      },
+      "Serratus Cable Punch": {
+        "load": "20",
+        "reps": "12",
+        "rpe": "7",
+        "planned": {
+          "load": null,
+          "reps": 12,
+          "targetMin": 12,
+          "targetMax": 12,
+          "format": "2×12/côté",
+          "kind": "accessory"
+        },
+        "status": "easy_success",
+        "performanceRatio": 1
+      },
+      "Overhead Rope Extension": {
+        "load": "70",
+        "reps": "12",
+        "rpe": "7",
+        "planned": {
+          "load": 50,
+          "reps": 12,
+          "targetMin": 12,
+          "targetMax": 15,
+          "format": "2×12-15",
+          "kind": "accessory"
+        },
+        "status": "easy_success",
+        "performanceRatio": 1
+      },
+      "Power Clean technique": {
+        "load": "135",
+        "reps": "5",
+        "rpe": "7",
+        "planned": {
+          "load": 115,
+          "reps": 2,
+          "targetMin": 2,
+          "targetMax": 2,
+          "format": "5×2 léger",
+          "kind": "accessory"
+        },
+        "status": "easy_success",
+        "performanceRatio": 2.5
+      },
+      "wod_F. WOD full body court": {
+        "result": "4 rounds + 5 power cleans légers + 8 wall balls 14 lb + 9 Cal Row",
+        "rpe": "8"
+      }
+    }
   }
 ]
