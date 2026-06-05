@@ -1,13 +1,14 @@
 {
   "version": "V50.17",
-  "updatedAt": "2026-06-04T17:28:41.330Z",
+  "updatedAt": "2026-06-05T17:13:43.501Z",
   "activeCycle": "shoulders3d",
   "activeWeek": 1,
-  "activeDay": "jeudi",
+  "activeDay": "vendredi",
   "completedDays": [
     "lundi",
     "mardi",
-    "jeudi"
+    "jeudi",
+    "vendredi"
   ],
   "focus": "Épaules 3D + Triceps — Phase 1",
   "cycleStartedAt": "2026-06-02T14:54:54.095Z"
