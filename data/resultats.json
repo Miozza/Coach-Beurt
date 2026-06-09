@@ -612,5 +612,112 @@
         "key": "Barbell Row léger"
       }
     ]
+  },
+  {
+    "version": "V50.19",
+    "date": "2026-06-09",
+    "time": "13:14:37",
+    "semaine": 2,
+    "jour": "mardi",
+    "cycle": "shoulders3d",
+    "focus": "Épaules 3D + Triceps — Phase 1",
+    "cycleState": {
+      "version": "V50.19",
+      "updatedAt": "2026-06-09T17:14:37.867Z",
+      "activeCycle": "shoulders3d",
+      "activeWeek": 2,
+      "activeDay": "mardi",
+      "completedDays": [
+        "lundi",
+        "mardi"
+      ],
+      "focus": "Épaules 3D + Triceps — Phase 1",
+      "cycleStartedAt": "2026-06-02T14:54:54.095Z"
+    },
+    "resultats": {
+      "Barbell Row": {
+        "load": "155",
+        "reps": "9",
+        "rpe": "8",
+        "planned": {
+          "load": 155,
+          "reps": 8,
+          "targetMin": 8,
+          "targetMax": 10,
+          "format": "5×8-10",
+          "kind": "main"
+        },
+        "status": "success",
+        "performanceRatio": 1.13
+      },
+      "Weighted Pull-up / Ring Row lourd": {
+        "reps": "7",
+        "rpe": "8"
+      },
+      "Cable Curl": {
+        "load": "80",
+        "reps": "15",
+        "rpe": "7",
+        "planned": {
+          "load": 75,
+          "reps": 10,
+          "targetMin": 10,
+          "targetMax": 15,
+          "format": "3×10-15",
+          "kind": "accessory"
+        },
+        "status": "easy_success",
+        "performanceRatio": 1.5
+      },
+      "Rear Delt Fly câble bas": {
+        "load": "10",
+        "reps": "16",
+        "rpe": "8",
+        "planned": {
+          "load": 20,
+          "reps": 15,
+          "targetMin": 15,
+          "targetMax": 20,
+          "format": "4×15-20",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1.07
+      },
+      "Face Pull": {
+        "load": "60",
+        "reps": "15",
+        "rpe": "8",
+        "planned": {
+          "load": 65,
+          "reps": 15,
+          "targetMin": 15,
+          "targetMax": 20,
+          "format": "3×15-20",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1
+      },
+      "Trap-3 Raise": {
+        "load": "5",
+        "reps": "15",
+        "rpe": "8",
+        "planned": {
+          "load": 5,
+          "reps": 12,
+          "targetMin": 12,
+          "targetMax": 15,
+          "format": "2×12-15",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1.25
+      },
+      "wod_D. WOD pull / engine": {
+        "result": "EMOM complété",
+        "rpe": "8"
+      }
+    }
   }
 ]
