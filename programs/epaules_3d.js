@@ -27,7 +27,7 @@ window.COACH_BERTIN_PROGRAMS.shoulders3d = {
   rest: "0:45–2:30",
   tag: "épaules 3D",
   versionDate: "2026-06-09",
-  versionLabel: "2026-06-09 — lundi push strict sans pull"
+  versionLabel: "2026-06-09 — lundi push strict, jeudi blocs terrain, vendredi hypertrophie delts/triceps"
 };
 
 function shouldersWeekPlan(week){
@@ -71,32 +71,33 @@ function shouldersBlocks(day,week){
   var p=shouldersWeekPlan(week);
   var isDeload=week===6;
 
-  // LUNDI — Push strict + épaules session 1. Aucun pull direct : tout le tirage reste le mardi.
+  // LUNDI — Push + épaules session 1. Version 2026-06-09 : push strict, aucun pull avant le mardi.
   if(day==="lundi")return[
-    {time:"6 min",title:"Échauffement push + coiffe des rotateurs",tag:"Préparation",kind:"warmup",
-     text:"2 tours rapides : Band External Rotation — elbow tucked 10/côté + Band Internal Rotation — elbow tucked 10/côté + Scap Push-up 8 + Wall Slide 8. Puis : montée Strict Press : barre à vide×8, 40%×5, 60%×3."},
+    {time:"7 min",title:"Échauffement push + coiffe des rotateurs",tag:"Préparation",kind:"warmup",
+     text:"2 tours : Band External Rotation — elbow tucked 12/côté + Band Internal Rotation — elbow tucked 12/côté + Scap Push-up 8 + Wall Slide 8. Puis : montée Strict Press : barre à vide×8, 40%×5, 60%×3."},
 
     {time:"10 min",title:"A. Strict Press",tag:"Force",kind:"main",
      exercises:[exFixed("Strict Press",p.press,p.pressLoad,"2:00","Principal du jour : force overhead sous-maximale, liée à la progression Héritage 225. RPE 7-8. Stop si compensation lombaire.")]},
 
-    {time:"9 min",title:"B. Incline DB Press",tag:"Hypertrophie push",kind:"hypertrophy",
-     exercises:[exFixed("Incline DB Press",p.incline,p.inclineLoad,"1:30-2:00","Accessoire push : haut de pec + deltoïde antérieur. Charge réduite parce que le Strict Press est prioritaire aujourd'hui. RPE 7-8, pas d'échec.")]},
-
-    {time:"7 min",title:"C. Deltoïde latéral",tag:"Hypertrophie épaules",kind:"hypertrophy",
-     exercises:[exFixed("Lateral Raise câble bas",p.lat,"15-20 lb","0:45-1:00","Session 1 : câble bas = tension constante. Épaule basse, aucun élan, RPE 8.")]},
-
-    {time:"12 min",title:"D. Triceps push",tag:"Hypertrophie triceps",kind:"hypertrophy",
-     text:"Bloc triceps utile sans mouvement pull. Weighted Dips = mouvement unique à suivre; inscrire 0 lb si poids du corps seulement.",
+    {time:"13 min",title:"B. Superset Incline DB Press + deltoïde latéral",tag:"Superset hypertrophie",kind:"hypertrophy",
+     text:"Push strict : haut de pec, deltoïde antérieur et deltoïde latéral. Aucun row, aucun band pull-apart, aucun rear delt direct avant le mardi.",
      exercises:[
-       ex("Weighted Dips",isDeload?"2×6-8":"3×6-10","0 lb si poids du corps / ajouter poids si propre","1:15 avant D2","Triceps lourd + lockout. Torse contrôlé, amplitude propre, aucune douleur d'épaule. Si aucun lest : charge 0 lb."),
-       ex("Overhead Rope Extension",p.triOh,"50-60 lb","1:00 après D2","Longue portion triceps. Coudes stables. Étirement contrôlé, pas agressif. RPE 8 max.")
+       exFixed("B1. Incline DB Press",p.incline,p.inclineLoad,"0:20 avant B2","Accessoire hypertrophie : haut de pec + deltoïde antérieur. Charge réduite parce que le Strict Press est prioritaire aujourd'hui. RPE 7-8, pas d'échec."),
+       exFixed("B2. Lateral Raise câble bas",p.lat,"15-20 lb","1:15 après B2","Session 1 : câble bas = tension constante. Épaule basse, aucun élan. RPE 8 max, surtout après le press.")
      ]},
 
-    {time:"8 min",title:"E. WOD court push",tag:"Conditioning",kind:"wod",
+    {time:"12 min",title:"C. Triceps push",tag:"Hypertrophie",kind:"hypertrophy",
+     text:"Bloc triceps principal du lundi. Weighted Dips = mouvement officiel; utiliser 0 lb si aucun poids ajouté, pour éviter les doublons Dips / Bodyweight Dips.",
+     exercises:[
+       ex("C1. Weighted Dips",isDeload?"2×6-8 facile":"3×6-10",isDeload?"0 lb":"0-45 lb","0:45 avant C2","Poussée lourde triceps/lockout. Amplitude contrôlée, épaules basses. Ajouter du poids seulement si les reps restent propres."),
+       ex("C2. Overhead Rope Extension",p.triOh,"50-60 lb","1:00 après C2","Longue portion triceps. Coudes stables. Étirement contrôlé, pas agressif.")
+     ]},
+
+    {time:"8 min",title:"D. WOD court push",tag:"Conditioning",kind:"wod",
      text:"AMRAP 8 : 8 burpees contrôlés + 10 cal row + 12 sit-ups. "+p.wodNote+". Ce n'est pas un test : garder le moteur sans tuer les épaules."},
 
-    {time:"4 min",title:"F. Mobilité",tag:"Mobilité",kind:"mobility",
-     text:"Doorway pec stretch 1 min/côté + triceps overhead stretch 1 min/côté + respiration 1 min."}
+    {time:"5 min",title:"E. Mobilité",tag:"Mobilité",kind:"mobility",
+     text:"Doorway pec stretch 1 min/côté + lat stretch sur rig 1 min/côté + triceps overhead stretch 1 min + respiration 1 min."}
   ];
 
   // MARDI — Pull / dos / arrière d'épaule / biceps. Pas de triceps, pas de press.
@@ -135,16 +136,18 @@ function shouldersBlocks(day,week){
     {time:"14 min",title:"A. Squat principal",tag:"Jambes",kind:"main",
      exercises:[exFixed("Front Squat",p.squat,p.squatLoad,"2:00","RPE 7-8. Dos protégé, aucune tentative héroïque.")]},
 
-    {time:"12 min",title:"B. Unilatéral / fessiers",tag:"Jambes",kind:"accessory",
+    {time:"12 min",title:"B. Unilatéral + core",tag:"Jambes / Core",kind:"accessory",
+     text:"Structure terrain : Bulgarian Split Squat jumelé avec core pour récupérer les jambes sans courir entre deux stations lourdes.",
      exercises:[
        ex("B1. Bulgarian Split Squat",isDeload?"2×8/jambe":"3×8-10/jambe","45-55 lb / main","0:45 avant B2","Amplitude propre, genou stable."),
-       ex("B2. Hip Thrust",isDeload?"2×10 léger":p.hip,"225-275 lb","1:00 après B2","Pause en haut. Fessiers, pas lombaires.")
+       exFixed("B2. Dead Bug / Hollow Hold",isDeload?"2 séries faciles":"3 séries","poids du corps","0:45 après B2","Côtes basses, respiration contrôlée.")
      ]},
 
-    {time:"10 min",title:"C. Chaîne postérieure / core",tag:"Accessoire",kind:"accessory",
+    {time:"10 min",title:"C. Chaîne postérieure",tag:"Fessiers / Ischios",kind:"accessory",
+     text:"Bloc plus fluide : deux mouvements de chaîne postérieure ensemble, sans mélanger unilatéral lourd et hip thrust.",
      exercises:[
-       ex("C1. DB RDL",isDeload?"2×10 léger":p.hinge,"60-70 lb / main","0:45 avant C2","Ischios. Dos neutre. Aucun ego."),
-       exFixed("C2. Dead Bug / Hollow Hold",isDeload?"2 séries faciles":"3 séries","poids du corps","0:45 après C2","Côtes basses, respiration contrôlée.")
+       ex("C1. Hip Thrust",isDeload?"2×10 léger":p.hip,"225-275 lb","0:45 avant C2","Pause en haut. Fessiers, pas lombaires."),
+       ex("C2. DB RDL",isDeload?"2×10 léger":p.hinge,"60-70 lb / main","1:00 après C2","Ischios. Dos neutre. Aucun ego.")
      ]},
 
     {time:"8 min",title:"D. WOD jambes / engine",tag:"Conditioning",kind:"wod",
@@ -170,19 +173,20 @@ function shouldersBlocks(day,week){
        ex("B3. Face Pull câble",p.face2,"50-70 lb","1:15 après B3","Posture/scapulas. RPE 7-8, cou relâché.")
      ]},
 
-    {time:"6 min",title:"C. Serratus",tag:"Posture",kind:"accessory",
-     exercises:[exFixed("Serratus Cable Punch",p.serratus,"léger à modéré","0:45","Serratus et contrôle scapulaire. Cage basse, protraction complète sans hausser l'épaule.")]},
+    {time:"10 min",title:"C. Delts/triceps rappel",tag:"Hypertrophie",kind:"accessory",
+     text:"Remplace le serratus punch : bloc plus cohérent avec l'objectif hypertrophie. Upright row prise large à la poulie = deltoïde latéral/haut d'épaule, sans tirer vers le menton.",
+     exercises:[
+       ex("C1. Wide-Grip Cable Upright Row",isDeload?"2×10 léger":"3×10-15","modéré","0:30 avant C2","Prise large, coudes ouverts. Tirer vers bas de poitrine/haut du sternum, pas vers le menton. Stop si pincement d'épaule."),
+       ex("C2. Overhead Rope Extension",p.triFri,"50-60 lb","1:00 après C2","Rappel triceps longue portion. RPE 8 max, coudes propres.")
+     ]},
 
-    {time:"6 min",title:"D. Triceps rappel",tag:"Bras",kind:"accessory",
-     exercises:[ex("Overhead Rope Extension",p.triFri,"50-60 lb","1:00","Rappel triceps seulement. RPE 8 max, coudes propres.")]},
-
-    {time:"6 min",title:"E. Power Clean technique",tag:"Haltéro",kind:"accessory",
+    {time:"6 min",title:"D. Power Clean technique",tag:"Haltéro",kind:"accessory",
      exercises:[exFixed("Power Clean technique",p.clean,p.cleanLoad,"1:00-1:30","Après les épaules : maintien du pattern seulement. Léger/modéré, vitesse propre, aucune rep grindée.")]},
 
-    {time:"8 min",title:"F. WOD full body court",tag:"Conditioning",kind:"wod",
+    {time:"8 min",title:"E. WOD full body court",tag:"Conditioning",kind:"wod",
      text:"AMRAP 8 : 5 power cleans légers + 8 wall balls 14 lb + 10 cal row. "+p.wodNote+". Modéré, pas redline."},
 
-    {time:"5 min",title:"G. Mobilité",tag:"Mobilité",kind:"mobility",
+    {time:"5 min",title:"F. Mobilité",tag:"Mobilité",kind:"mobility",
      text:"Lat stretch 1 min/côté + front rack stretch 1 min + pec stretch 1 min + wrist stretch 1 min."}
   ];
 }
@@ -197,26 +201,26 @@ window.COACH_BERTIN_PROGRAMS.shoulders3d.getWodText = function(day, week){
 };
 
 window.COACH_BERTIN_PROGRAMS.shoulders3d.cycleRules = [
-  "Structure stricte : lundi push strict/latéral/triceps sans pull direct, mardi pull/rear delts/biceps, jeudi jambes/core, vendredi épaules angles différents + haltéro technique.",
-  "Aucun pull direct le lundi : pas de row, pas de face pull, pas de band pull apart, pas de rear delt direct avant le mardi pull.",
+  "Structure stricte : lundi push strict/triceps, mardi pull/rear delts/biceps, jeudi jambes/core en blocs terrain, vendredi épaules angles différents + rappel delts/triceps + haltéro technique.",
+  "Aucun travail direct du même muscle deux jours consécutifs.",
   "Vendredi : Power Clean APRÈS les épaules, léger/modéré, technique seulement.",
   "Lundi et vendredi ne doivent pas répéter exactement le même angle : câble bas lundi, haltères/machine vendredi.",
   "Aucun échec sur press, squat, power clean ou isolations.",
   "Deltoïde latéral : strict, pas d'élan, pas de trap supérieur.",
-  "Triceps lundi : Weighted Dips + Overhead Rope Extension. Weighted Dips garde ce nom; utiliser 0 lb si poids du corps.",
+  "Triceps : lundi Weighted Dips + overhead extension; vendredi rappel overhead extension seulement, jamais au prix des coudes.",
   "WODs courts et cohérents avec le jour : push lundi, pull mardi, jambes jeudi, full body vendredi."
 ];
 
 window.COACH_BERTIN_PROGRAMS.shoulders3d.dayIntentions = {
-  lundi: "Push strict + épaules session 1 : strict press, incline DB, câble latéral, Weighted Dips, overhead extension. Aucun pull, aucun biceps, aucun rear delt direct.",
+  lundi: "Push + épaules session 1 : strict press, incline DB, câble latéral, weighted dips, overhead triceps. Aucun pull, aucun biceps, aucun rear delt direct.",
   mardi: "Pull + arrière d'épaule + biceps : dos, rear delt, face pull, trap-3, curl. Aucun triceps, aucun press.",
-  jeudi: "Jambes + core seulement. Aucune épaule directe, aucun bras direct.",
-  vendredi: "Épaules session 2 angles différents + power clean technique après les épaules. Objectif masse avant haltéro."
+  jeudi: "Jambes + core seulement : front squat, Bulgarian + core, hip thrust + DB RDL. Aucune épaule directe, aucun bras direct.",
+  vendredi: "Épaules session 2 angles différents + rappel delts/triceps + power clean technique après les épaules. Objectif hypertrophie avant haltéro."
 };
 
 window.COACH_BERTIN_PROGRAMS.shoulders3d.dayMeta = {
-  lundi:   {label:"Lundi",   base:"Push strict + delts/triceps",focus:"Strict press, incline DB press, lateral raise câble, Weighted Dips, overhead extension, WOD court."},
+  lundi:   {label:"Lundi",   base:"Push strict + delts/triceps", focus:"Strict press, incline DB press + lateral raise câble, weighted dips + overhead triceps, WOD court."},
   mardi:   {label:"Mardi",   base:"Pull + rear delts/biceps", focus:"Row, pull-up/ring row, rear delt, face pull, trap-3, curls."},
-  jeudi:   {label:"Jeudi",   base:"Jambes + core",            focus:"Squat, unilatéral, fessiers/ischios, core, WOD jambes."},
-  vendredi:{label:"Vendredi",base:"Épaules 3D + technique",   focus:"Press contrôlé, giant set angle différent, serratus, triceps, power clean technique après épaules."}
+  jeudi:   {label:"Jeudi",   base:"Jambes + core",            focus:"Front squat, Bulgarian + core, hip thrust + DB RDL, WOD jambes."},
+  vendredi:{label:"Vendredi",base:"Épaules 3D + technique",   focus:"Press contrôlé, giant set angle différent, wide-grip cable upright row + overhead triceps, power clean technique après épaules."}
 };
