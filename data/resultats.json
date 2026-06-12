@@ -825,5 +825,153 @@
         "rpe": "9"
       }
     }
+  },
+  {
+    "version": "V51.10",
+    "date": "2026-06-12",
+    "time": "13:07:28",
+    "semaine": 2,
+    "jour": "vendredi",
+    "plannedDay": "vendredi",
+    "actualDate": "2026-06-12",
+    "actualDayName": "vendredi",
+    "cycle": "shoulders3d",
+    "focus": "Épaules 3D + Triceps — Phase 1",
+    "cycleState": {
+      "version": "V51.10",
+      "updatedAt": "2026-06-12T17:07:28.711Z",
+      "activeCycle": "shoulders3d",
+      "activeWeek": 2,
+      "activeDay": "vendredi",
+      "activeDays": [
+        "lundi",
+        "mardi",
+        "jeudi",
+        "vendredi"
+      ],
+      "completedDays": [
+        "lundi",
+        "mardi",
+        "jeudi",
+        "vendredi"
+      ],
+      "missedDays": [],
+      "weekTransitions": [],
+      "savedCycles": [],
+      "archivedCycles": [],
+      "focus": "Épaules 3D + Triceps — Phase 1",
+      "cycleStartedAt": "2026-06-02T14:54:54.095Z"
+    },
+    "resultats": {
+      "DB Shoulder Press": {
+        "load": "40",
+        "reps": "10",
+        "rpe": "7.5",
+        "planned": {
+          "load": null,
+          "reps": 8,
+          "targetMin": 8,
+          "targetMax": 10,
+          "format": "3×8-10",
+          "kind": "main"
+        },
+        "status": "success",
+        "performanceRatio": 1.25
+      },
+      "Lateral Raise haltères": {
+        "load": "20",
+        "reps": "16",
+        "rpe": "8",
+        "planned": {
+          "load": null,
+          "reps": 15,
+          "targetMin": 15,
+          "targetMax": 20,
+          "format": "3×15-20",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1.07
+      },
+      "Rear Delt Fly haltères": {
+        "load": "15",
+        "reps": "16",
+        "rpe": "8",
+        "planned": {
+          "load": null,
+          "reps": 15,
+          "targetMin": 15,
+          "targetMax": 20,
+          "format": "3×15-20",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1.07
+      },
+      "Face Pull câble": {
+        "load": "60",
+        "reps": "18",
+        "rpe": "8",
+        "planned": {
+          "load": 50,
+          "reps": 15,
+          "targetMin": 15,
+          "targetMax": 20,
+          "format": "3×15-20",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1.2
+      },
+      "Wide-Grip Cable Upright Row": {
+        "load": "60",
+        "reps": "20",
+        "rpe": "8",
+        "planned": {
+          "load": null,
+          "reps": 10,
+          "targetMin": 10,
+          "targetMax": 15,
+          "format": "3×10-15",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 2
+      },
+      "Overhead Rope Extension — rappel vendredi": {
+        "load": "60",
+        "reps": "15",
+        "rpe": "8",
+        "planned": {
+          "load": 60,
+          "reps": 12,
+          "targetMin": 12,
+          "targetMax": 15,
+          "format": "2×12-15",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1.25
+      },
+      "Power Clean technique": {
+        "load": "125",
+        "reps": "3",
+        "rpe": "8",
+        "planned": {
+          "load": 125,
+          "reps": 2,
+          "targetMin": 2,
+          "targetMax": 2,
+          "format": "5×2 léger",
+          "kind": "accessory"
+        },
+        "status": "success",
+        "performanceRatio": 1.5
+      },
+      "wod_E. WOD full body court": {
+        "result": "4 rounds + 5 power cleans légers + 5 wall balls 14 lb",
+        "rpe": "8"
+      }
+    }
   }
 ]
