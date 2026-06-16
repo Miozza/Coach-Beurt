@@ -1,57 +1,214 @@
-// Coach Bertin V48.9 — séances détaillées extraites de app.js
-// app.js doit rester le moteur; ce fichier contient la construction des workouts.
+# Phase 2 — Extraction prudente moteur de charges
 
-// Coach Bertin V48.9 — moteur générique de construction des workouts
-// Les programmes autonomes peuvent exposer cfg.getBlocks(day, week).
+## Version
 
-function ex(name,format,load,rest,note){return{name:name,format:format,load:charge(name,load||"—"),rest:rest||"—",note:note||""};}
-function exFixed(name,format,load,rest,note){return{name:name,format:format,load:load||"—",rest:rest||"—",note:note||""};}
+V51.37 — extraction progressive du moteur de charges hors de `app.js`.
 
-// ─── Construction WOD ────────────────────────────────────────────────────────
+## Objectif
 
-function buildWorkout(day,week){
-  var cfg=focus();
-  var d=baseDays[day] || {label:day,base:"",focus:""};
-  if(cfg && cfg.dayMeta && cfg.dayMeta[day]) d = Object.assign({}, d, cfg.dayMeta[day]);
+Extraire progressivement les fonctions de charge vers `scripts/*` sans changer le comportement visible de Coach Beurt.
 
-  // V48.9 — aucun fallback PPL silencieux.
-  // Si un programme actif ne fournit pas getBlocks(), on affiche une erreur claire
-  // au lieu d'inventer une séance Push/Pull/Legs générique.
-  if(cfg && typeof cfg.getBlocks === "function"){
-    var blocks=[];
-    try{ blocks = cfg.getBlocks(day,week) || []; }
-    catch(e){
-      blocks = [{
-        time:"—",title:"Erreur programme",tag:"Erreur",kind:"error",
-        text:"Le programme actif a planté pendant la construction de la séance : "+(e&&e.message?e.message:e)
-      }];
-    }
-    if(!blocks.length){
-      blocks = [{time:"—",title:"Programme vide",tag:"Erreur",kind:"error",text:"Aucun bloc retourné par le programme actif."}];
-    }
-    return {day:d, blocks:blocks, progress:[]};
-  }
+Règles respectées :
 
-  return {
-    day:d,
-    blocks:[{
-      time:"—",
-      title:"Programme incomplet ou non chargé",
-      tag:"Erreur",
-      kind:"error",
-      text:"Le cycle actif ne fournit pas de getBlocks(day, week). L'app refuse maintenant le fallback Push/Pull/Legs pour éviter de te faire suivre le mauvais entraînement. Vérifie que le fichier du programme est bien chargé dans GitHub et que le cache iPhone est à jour."
-    }],
-    progress:[]
-  };
-}
+- aucun fichier dans `data/` modifié;
+- le ZIP update V51.37 exclut complètement `data/`;
+- aucun programme dans `programs/` modifié;
+- aucune modification volontaire de la logique de suggestion de charges;
+- pas de ES modules;
+- pas de build system;
+- pas de framework;
+- scripts globaux chargés dans `index.html`, comme le reste de l’app.
 
-function cycleRules(){
-  var cfg = focus();
-  if(cfg && cfg.cycleRules && cfg.cycleRules.length) return cfg.cycleRules;
-  return["Aucun échec sur les mouvements principaux.","Technique propre avant intensité.","Si douleur articulaire : baisse la charge, garde l'amplitude propre."];
-}
-function dayIntention(day){
-  var cfg = focus();
-  if(cfg && cfg.dayIntentions && cfg.dayIntentions[day]) return cfg.dayIntentions[day];
-  return"Qualité avant intensité.";
-}
+## Fichiers lus avant intervention
+
+- `ETAT_ACTUEL.md`
+- `app.js`
+- `index.html`
+- `programs/config.js`
+
+## Modules créés
+
+Ordre de chargement ajouté dans `index.html` après `scripts/app_helpers.js` et avant les vues/app :
+
+1. `scripts/charge/equipement.js`
+2. `scripts/charge/utilitaires.js`
+3. `scripts/charge/mouvements.js`
+4. `scripts/charge/historique.js`
+5. `scripts/charge/rpe.js`
+6. `scripts/charge/suggestion.js`
+
+## Fonctions extraites
+
+### `scripts/charge/equipement.js`
+
+Extrait de `scripts/app_helpers.js`, sans changement fonctionnel :
+
+- `defaultEquipmentLoadRules`
+- `effectiveEquipmentLoadRules`
+- `normalizeChargeText`
+- `equipmentRuleForExercise`
+- `roundToStep`
+- `roundToAvailableList`
+- `roundLoadForExercise`
+- `lbForExercise`
+- `displayLoadForEquipment`
+- `nextLoadForExercise`
+- `equipmentStepLabelForExercise`
+
+### `scripts/charge/utilitaires.js`
+
+Extrait de `app.js`, sans changement fonctionnel :
+
+- `chargeKeyFromName`
+- `officialCharges`
+- `charge`
+- `displayChargeText`
+- `chargeList`
+
+### `scripts/charge/mouvements.js`
+
+Extrait de `app.js`, sans changement fonctionnel :
+
+- `normalizeExerciseName`
+- `coachNormalizeMoveText`
+- `coachMovementEquipmentFamily`
+- `coachEquipmentCompatibleForAlias`
+- `canonicalMovementLabel`
+- `athleteMoveId`
+- `movementLabelFromKeyOrName`
+- `coachMovementLookupLabels`
+
+### `scripts/charge/historique.js`
+
+Extrait de `app.js`, sans changement fonctionnel :
+
+- `ensureAthleteState`
+- `epley1RM`
+- `estimateLoadForRepsFrom1RM`
+- `simpleStrengthIndexFromLoad`
+- `athleteMovementRecord`
+- `coachDefaultLoadSeedForMovement`
+- `latestMovementHistory`
+- `coachHistoryLoadNumber`
+- `coachHistoryRepsNumber`
+- `coachRecentBestControlledLoad`
+- `coachMaxJumpForExercise`
+- `coachIsFridayContext`
+- `coachIsMondayContext`
+- `coachLoadStepForExercise`
+- `isIsolationMovement`
+- `isTechnicalMovement`
+- `storeLoadDecisionHint`
+
+### `scripts/charge/rpe.js`
+
+Extrait de `app.js`, sans changement fonctionnel :
+
+- `repRange`
+- `repRangeLabel`
+- `getRpeAdjustment`
+- `checkDeloadAlert`
+
+### `scripts/charge/suggestion.js`
+
+Extrait de `app.js`, sans changement fonctionnel :
+
+- `guardedSuggestedLoadDecision`
+- `plannedMapFromSessionExercises`
+- `classifyPerformance`
+- `enrichSessionResults`
+- `updateAthleteStateFromResults`
+- `athleteSuggestedLoad`
+- `window.coachSafeSuggestedLoad`
+
+## Fonctions laissées dans `app.js`
+
+La phase 2 prudente laisse dans `app.js` les fonctions encore trop liées au rendu, au cycle, au stockage ou à la sync :
+
+- cycle / programmes : `activeProgramId`, `currentDayOrder`, `currentDayMeta`, `focus`, `weekIdx`, `buildCycleStatePayload`, `applyCycleStatePayload`, `suggestLoad`, `referenceBase`, `tmFromProfile`;
+- rendu / résultats : `collectSessionExercises`, `renderSessionEntry`, `collectSessionResults`, `updateRefsFromResults`, `rebuildRefsFromHistory`;
+- GitHub / données : `buildSessionPayload`, `setupSessionSave`, `autoSyncFromGitHub`, `readSyncStatus`, `writeSyncStatus`;
+- UI : timers, WOD, Cycle, Historique, PR, Paramètres.
+
+Raison : ces fonctions dépendent encore fortement de `state`, du DOM ou de l’ordre de rendu. Les extraire maintenant aurait créé plus de risque qu’un gain réel.
+
+## Vérification après chaque module
+
+### `scripts/charge/equipement.js`
+
+- Fonctions globales nécessaires conservées.
+- `index.html` charge le module avant `view_session.js` et `app.js`.
+- `nextLoadForExercise`, `roundLoadForExercise`, `equipmentRuleForExercise` restent disponibles pour Résultats et Séance.
+
+### `scripts/charge/utilitaires.js`
+
+- Fonctions globales nécessaires conservées.
+- Le module est chargé après `data/charges.js` et avant `app.js`.
+- Les accès à `customCharges` restent résolus au runtime, car `customCharges` reste global dans `app.js`.
+
+### `scripts/charge/mouvements.js`
+
+- Fonctions globales nécessaires conservées.
+- Le module est chargé avant `charge_gestion.js` et `moteur_charges.js`.
+- Les accès à `window.movements` / `movements` restent résolus au runtime après chargement de `programs/config.js`.
+
+### `scripts/charge/historique.js`
+
+- Fonctions globales nécessaires conservées.
+- Le module est chargé avant `moteur_charges.js`.
+- Les accès à `state` restent résolus au runtime; aucune lecture immédiate de `state` au chargement.
+
+### `scripts/charge/rpe.js`
+
+- Fonctions globales nécessaires conservées.
+- Le module est chargé avant `app.js`.
+- Les accès à `state.rpeHistory` et `movements` restent au runtime.
+
+### `scripts/charge/suggestion.js`
+
+- Fonctions globales nécessaires conservées.
+- Le module est chargé avant `app.js`.
+- `window.coachSafeSuggestedLoad` reste exposé.
+- Les fonctions qui appellent `collectSessionExercises` le font seulement au runtime, après le chargement complet de `app.js`.
+
+## Risques connus
+
+- Les modules restent des scripts globaux. C’est volontaire pour éviter une conversion ES modules.
+- Plusieurs fonctions extraites dépendent encore de `state`, `customCharges`, `window.DEFAULT_CHARGES` ou `movements`. C’est acceptable en phase prudente parce que les fonctions ne lisent pas ces dépendances au chargement, mais au moment de l’appel.
+- `app.js` contient encore une partie importante du moteur historique/résultats parce que les fonctions sont liées au DOM et à la sauvegarde.
+
+## Tests automatiques réalisés
+
+- `node --check app.js`
+- `node --check scripts/*.js`
+- `node --check dev/*.js`
+- `node --check programs/*.js`
+- `node dev/regression_checks.js`
+- `node dev/regression_checks.js --update-package`
+
+## Tests manuels à faire
+
+1. Ouvrir DEV et vérifier que l’app démarre sans message d’erreur.
+2. Sélectionner `Épaules 3D v2 — Midi dense`.
+3. Vérifier une séance vendredi : suggestions de charge visibles et cohérentes.
+4. Ouvrir le bouton jaune `!` sur un mouvement avec historique.
+5. Remplir Résultats : poids `− valeur +`, reps, RPE.
+6. Sauvegarder une séance test locale.
+7. Vérifier que l’historique et les références restent cohérents.
+8. Vérifier que `data/resultats.json`, `data/athlete_state.json`, `data/cycle_state.json` n’ont pas été remplacés par l’import update.
+
+## Verdict
+
+Extraction réussie pour une première phase prudente. Aucun changement volontaire de comportement. Les fonctions trop fortement couplées à `app.js` sont laissées en place et documentées.
+
+## Mise à jour V51.39 — Nettoyage après extraction
+
+Après audit V51.38, `programs/config.js` contenait encore un vieux patch runtime capable de remplacer des fonctions liées aux charges et à la modale. En V51.39, ce patch est retiré.
+
+Résultat :
+
+- les modules `scripts/*` restent responsables du moteur de charges;
+- `scripts/ui_modals.js` reste responsable de la modale `!`;
+- `programs/config.js` redevient une configuration statique;
+- aucune nouvelle extraction de `app.js` n’a été faite.
+

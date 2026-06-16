@@ -1,178 +1,263 @@
-// Coach Bertin V48.9 — Phase 2 : Hypertrophie / Force Base (6 semaines)
-// Objectif : masse générale, force de base, chaîne postérieure, densité musculaire jambes
-// V48.9 : programme autonome. Les séances complètes vivent ici, pas dans app.js.
+// Coach Bertin 2026-06-09 — Héritage 225 v2 (16 semaines)
+// Statut : PROJET FUTUR — parcours majeur après Phase 3 si la route Héritage est choisie.
+// Mission : vieillir fort, mobile, explosif et capable.
+// Objectifs marqueurs : Push Press 225 lb + Bench Press 315 lb, seulement si le corps est prêt.
+// Hommage à Théodore (Théo). Le chiffre se mérite; il ne se force pas.
 
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
-window.COACH_BERTIN_PROGRAMS.hypertrophy_base = {
-  id: "hypertrophy_base",
-  label: "Hypertrophie / Force Base — Phase 2",
-  phase: 2,
-  phaseName: "Construction masse + force",
-  phaseEnd: "décembre 2025",
-  nextPhase: "force_performance",
-  impact: "Bench vers 285 lb, back squat vers 260 lb x5, chaîne postérieure (RDL, hip thrust), densité musculaire jambes pour tolérance lactique. Épaules maintenues.",
-  weekLabels: ["S1 Base","S2 Volume","S3 Volume+","S4 Surcharge","S5 Intensité","S6 Deload"],
-  weekGoals: [
-    "Réintroduction charges sérieuses. Repères force. Dos protégé.",
-    "Volume augmente. +5 lb principaux. RDL et hip thrust en place.",
-    "Volume maximal. Densité jambes. Supersets postérieure.",
-    "Charges les plus lourdes. Technique prioritaire. Bench lourd.",
-    "Intensité maximale du cycle. Volume réduit. Qualité > tout.",
-    "Deload. -40% volume. Récupération complète avant prochain cycle."
-  ],
-  sets: ["5 x 5","5 x 5","4 x 6","5 x 4","6 x 3","3 x 5 léger"],
-  targetReps: [5,5,6,4,3,5],
-  mult: [0.75,0.78,0.80,0.83,0.87,0.60],
-  rest: "2:00–2:30",
-  tag: "force base"
-};
 
-function hypertrophyWeekPlan(week){
-  return({
-    1:{label:"S1 Base",note:"Reprendre les repères. RPE 7-8. Aucun échec.",bench:"5×5",benchLoad:"225 lb",squat:"4×6",squatLoad:"185 lb",hinge:"3×10",wodNote:"facile à modéré"},
-    2:{label:"S2 Volume",note:"Augmenter légèrement le volume. Charges solides, technique propre.",bench:"5×5",benchLoad:"230 lb",squat:"5×5",squatLoad:"195 lb",hinge:"4×10",wodNote:"modéré"},
-    3:{label:"S3 Volume+",note:"Plus gros volume du cycle. Pump et densité, pas de grind.",bench:"4×6",benchLoad:"235 lb",squat:"5×5",squatLoad:"205 lb",hinge:"4×8-10",wodNote:"contrôlé"},
-    4:{label:"S4 Surcharge",note:"Charges les plus sérieuses avant l'intensité. RPE 8-9 max.",bench:"5×4",benchLoad:"245 lb",squat:"5×4",squatLoad:"215 lb",hinge:"4×8",wodNote:"court, pas destructeur"},
-    5:{label:"S5 Intensité",note:"Intensité maximale du cycle. Moins de volume, plus lourd.",bench:"6×3",benchLoad:"255 lb",squat:"5×3",squatLoad:"225 lb",hinge:"3×8",wodNote:"très court"},
-    6:{label:"S6 Deload",note:"Baisser le volume et garder le mouvement. Préparer la phase force.",bench:"3×5 léger",benchLoad:"205 lb",squat:"3×5 léger",squatLoad:"165 lb",hinge:"2×10 léger",wodNote:"flush seulement"}
-  })[week] || {label:"S1",note:"",bench:"5×5",benchLoad:"225 lb",squat:"4×6",squatLoad:"185 lb",hinge:"3×10",wodNote:"modéré"};
-}
+(function(){
+  function wk(i){ return Math.max(1, Math.min(16, Number(i)||1)); }
+  function blockOf(week){
+    week = wk(week);
+    if(week <= 4) return 1;
+    if(week <= 8) return 2;
+    if(week <= 12) return 3;
+    return 4;
+  }
+  function isDeload(week){ return week===4 || week===8 || week===12; }
+  function isTest(week){ return week===16; }
 
-function hbEx(name,format,load,rest,note){return {name:name,format:format,load:load||"—",rest:rest||"—",note:note||""};}
-
-function hypertrophyBlocks(day,week){
-  var p = hypertrophyWeekPlan(week);
-  var deload = week === 6;
-  var heavy = week >= 4 && week <= 5;
-
-  // LUNDI — Haut du corps lourd : bench + tirage
-  if(day === "lundi") return [
-    {time:"8 min",title:"Warm-up haut du corps",tag:"Préparation",kind:"warmup",
-     text:"Bike ou row 3 min + band pull-aparts 2×20 + scap push-ups 2×10 + push-ups contrôlés 2×8 + ramp-up bench : barre ×10, 135×5, 185×3."},
-
-    {time:"16 min",title:"A. Bench priorité",tag:"Force",kind:"main",
-     exercises:[hbEx("Bench press",p.bench,p.benchLoad,heavy?"2:30-3:00":"2:00-2:30","Objectif force de base. Stop à RPE 9. Garde 1 rep en réserve.")]},
-
-    {time:"13 min",title:"B. Superset lourd haut du corps",tag:"Superset",kind:"accessory",
-     text:"Alterner B1 → B2. Repos après B2. Le tirage doit protéger les épaules et soutenir le bench.",
-     exercises:[
-       hbEx("B1. Incline DB press",deload?"2×10":"4×8-10",week>=4&&!deload?"65 lb / main":"60 lb / main","0:30 avant B2","Contrôle complet. Pas d'échec."),
-       hbEx("B2. Chest Supported Row",deload?"2×10":"4×8-10",week>=4&&!deload?"125-135 lb":"115-125 lb","1:15 après B2","Tirage strict. Omoplates fortes.")
-     ]},
-
-    {time:"9 min",title:"C. Bras / épaules maintien",tag:"Hypertrophie",kind:"accessory",
-     exercises:[
-       hbEx("C1. Triceps Rope Pushdown",deload?"2×12":"3×12-15","60-70 lb","0:30","Pompe triceps, coude fixe."),
-       hbEx("C2. Lateral Raise",deload?"2×15":"3×15-20","20-25 lb","0:45","Épaules maintenues, pas de trapèzes.")
-     ]},
-
-    {time:deload?"6 min":"8 min",title:"D. Finisher court",tag:"Conditioning",kind:"wod",
-     text:(deload?"Bike 6 min zone 2 facile. ":"AMRAP 8 : 8 push-ups + 10 cal row + 12 sit-ups. ")+p.wodNote+". Le but est de garder le moteur sans nuire au bench."},
-
-    {time:"5 min",title:"E. Mobilité",tag:"Mobilité",kind:"mobility",
-     text:"Doorway pec stretch 1 min/côté + lat stretch 1 min/côté + respiration thoracique 1 min."}
+  var weekLabels = [
+    "S1 Socle", "S2 Technique+", "S3 Volume propre", "S4 Deload",
+    "S5 Construction", "S6 Force", "S7 Force lourde", "S8 Deload",
+    "S9 Spécifique", "S10 Singles", "S11 Pré-peak", "S12 Deload",
+    "S13 Héritage I", "S14 Héritage II", "S15 Pré-test", "S16 Évaluation"
   ];
 
-  // MARDI — Bas du corps : squat + chaîne postérieure
-  if(day === "mardi") return [
-    {time:"9 min",title:"Warm-up bas du corps",tag:"Préparation",kind:"warmup",
-     text:"Bike 3 min + ankle rocks 10/côté + goblet squat 2×10 + glute bridge 2×15 + ramp-up front squat : barre ×8, 135×5, 155×3."},
-
-    {time:"16 min",title:"A. Squat force base",tag:"Jambes",kind:"main",
-     exercises:[hbEx("Front Squat",p.squat,p.squatLoad,heavy?"2:30":"2:00","Dos protégé. Profondeur propre. Aucune tentative héroïque.")]},
-
-    {time:"14 min",title:"B. Chaîne postérieure",tag:"Force base",kind:"accessory",
-     text:"Priorité fessiers/ischios. Le bas du dos ne doit pas voler le mouvement.",
-     exercises:[
-       hbEx("B1. Hip Thrust",deload?"2×10":p.hinge,week>=4&&!deload?"275-315 lb":"245-275 lb","0:45 avant B2","Pause 1 sec en haut. Fessiers, pas lombaires."),
-       hbEx("B2. DB RDL",deload?"2×10":"3×10","60-70 lb / main","1:15 après B2","Étirement ischios. Dos neutre.")
-     ]},
-
-    {time:"8 min",title:"C. Unilatéral",tag:"Accessoire",kind:"accessory",
-     exercises:[hbEx("Bulgarian Split Squat",deload?"2×8/jambe":"3×8-10/jambe",deload?"35 lb / main":"45-55 lb / main","1:00","Stable, amplitude propre.")]},
-
-    {time:deload?"6 min":"9 min",title:"D. Conditioning jambes contrôlé",tag:"Conditioning",kind:"wod",
-     text:(deload?"Row 6 min facile zone 2.":"For time 3 rounds : 12 cal bike + 12 KB swings + 10 box step-ups. Cap 9 min.")+" "+p.wodNote+". Pas de redline."},
-
-    {time:"5 min",title:"E. Mobilité",tag:"Mobilité",kind:"mobility",
-     text:"Couch stretch 1 min/côté + hamstring stretch 1 min/côté + respiration 1 min."}
+  var weekGoals = [
+    "Bâtir le socle : technique, mobilité, stabilité, aucune rep grindée.",
+    "Augmenter légèrement le volume sans irriter épaules, coudes ou bas du dos.",
+    "Semaine de volume propre : devenir plus solide, pas plus cassé.",
+    "Deload : récupérer, garder vitesse et mobilité.",
+    "Construire la force spécifique : jambes, triceps, lockout, bench.",
+    "Charges sérieuses mais propres. RPE 8 max sur les mouvements principaux.",
+    "Force lourde contrôlée. Aucune bataille inutile.",
+    "Deload : consolidation technique et récupération.",
+    "Transformer la force en push press et bench lourds.",
+    "Singles propres : confiance, vitesse, trajectoire.",
+    "Dernière grosse exposition contrôlée. Garder de la fraîcheur.",
+    "Deload nerveux : vitesse, mobilité, sommeil.",
+    "Héritage I : singles faciles, corps frais, confiance.",
+    "Héritage II : singles modérés, aucun ego.",
+    "Pré-test : 205/215 doivent être propres, sinon pas de test.",
+    "Évaluation Héritage : 225/315 autorisés seulement si les barres précédentes sont propres."
   ];
 
-  // JEUDI — Haut du corps volume/posture
-  if(day === "jeudi") return [
-    {time:"8 min",title:"Warm-up dos / épaules",tag:"Préparation",kind:"warmup",
-     text:"Row 3 min + dead hang 2×20 sec + band face pull 2×20 + wall slides 2×10 + 2 séries progressives de tirage."},
+  function ppPlan(week){
+    week = wk(week);
+    if(week===1) return {format:"5×5", load:"RPE 7 / ~70%", rest:"2:00-2:30", note:"Dip vertical, drive agressif, lockout propre. Aucun grind."};
+    if(week===2) return {format:"5×5", load:"+5 lb si S1 propre", rest:"2:00-2:30", note:"Même vitesse. Si le tronc plie, ne monte pas."};
+    if(week===3) return {format:"6×4", load:"RPE 8", rest:"2:15-2:45", note:"Volume propre. Stop si trapèze, épaule ou coude parle."};
+    if(week===4) return {format:"3×5", load:"60-65%", rest:"1:45-2:00", note:"Deload. Vitesse et trajectoire seulement."};
+    if(week===5) return {format:"5×3", load:"RPE 8", rest:"2:30", note:"Force spécifique. Toutes les reps doivent être identiques."};
+    if(week===6) return {format:"6×3", load:"+5 lb si S5 propre", rest:"2:30-3:00", note:"Solide, mais pas de max."};
+    if(week===7) return {format:"6×2", load:"RPE 8-9", rest:"3:00", note:"Plus lourd. Si la barre ralentit trop, couper une série."};
+    if(week===8) return {format:"3×3", load:"60-65%", rest:"2:00", note:"Deload. Rien à prouver."};
+    if(week===9) return {format:"6×1", load:"RPE 8", rest:"2:30-3:00", note:"Singles propres, rapides, aucune lutte."};
+    if(week===10) return {format:"7×1", load:"RPE 8-8.5", rest:"3:00", note:"Approche lourde. Lockout stable 2 sec."};
+    if(week===11) return {format:"5×1", load:"RPE 8.5-9", rest:"3:00", note:"Dernier lourd. Objectif confiance, pas fatigue."};
+    if(week===12) return {format:"3×2", load:"60%", rest:"1:30-2:00", note:"Deload nerveux. Bar speed."};
+    if(week===13) return {format:"5×1", load:"75-82%", rest:"2:30", note:"Singles faciles. Le corps doit ressortir mieux."};
+    if(week===14) return {format:"4×1", load:"82-88%", rest:"3:00", note:"Singles modérés. Aucun grind."};
+    if(week===15) return {format:"3×1", load:"185 → 205 → 215 si propre", rest:"3:00", note:"Pré-test. 215 doit être propre pour autoriser 225 en S16."};
+    return {format:"Évaluation", load:"185 → 205 → 215 → 225 si autorisé", rest:"3:00-4:00", note:"225 seulement si 205 rapide et 215 propre. Sinon 215/220 qualité = réussite."};
+  }
 
-    {time:"14 min",title:"A. Tirage principal",tag:"Dos",kind:"main",
-     exercises:[hbEx("Chest Supported Row",deload?"3×8 léger":week>=4?"5×6-8":"4×8-10",deload?"100 lb":week>=4?"130-140 lb":"120-130 lb","1:45-2:15","Construire le haut du dos pour le bench et la posture.")]},
+  function benchPlan(week){
+    week = wk(week);
+    if(week===1) return {format:"5×5", load:"RPE 7 / ~72%", rest:"2:00-2:30", note:"Bench technique. Pause courte, trajectoire stable."};
+    if(week===2) return {format:"5×5", load:"+5 lb si S1 propre", rest:"2:00-2:30", note:"Contrôle identique, pas d'échec."};
+    if(week===3) return {format:"4×6", load:"RPE 8", rest:"2:30", note:"Volume fort, épaules stables."};
+    if(week===4) return {format:"3×5", load:"60-65%", rest:"1:45", note:"Deload, vitesse."};
+    if(week===5) return {format:"5×4", load:"RPE 8", rest:"2:30", note:"Force de base vers 315."};
+    if(week===6) return {format:"6×3", load:"RPE 8", rest:"2:30-3:00", note:"Triples solides, aucune rep laide."};
+    if(week===7) return {format:"5×3", load:"RPE 8-9", rest:"3:00", note:"Lourd contrôlé."};
+    if(week===8) return {format:"3×5", load:"60-65%", rest:"1:45", note:"Deload."};
+    if(week===9) return {format:"5×2", load:"RPE 8", rest:"3:00", note:"Doubles propres, vitesse."};
+    if(week===10) return {format:"6×1", load:"RPE 8-8.5", rest:"3:00", note:"Singles contrôlés."};
+    if(week===11) return {format:"4×1", load:"RPE 8.5-9", rest:"3:00", note:"Dernière exposition lourde."};
+    if(week===12) return {format:"3×3", load:"60%", rest:"1:30", note:"Deload nerveux."};
+    if(week===13) return {format:"4×1", load:"80-85%", rest:"3:00", note:"Singles faciles."};
+    if(week===14) return {format:"3×1", load:"85-90%", rest:"3:00", note:"Singles modérés."};
+    if(week===15) return {format:"2-3×1", load:"285 → 300 si propre", rest:"3:00-4:00", note:"300 doit être solide pour autoriser 315 en S16."};
+    return {format:"Évaluation", load:"275 → 295 → 305 → 315 si autorisé", rest:"3:00-4:00", note:"315 seulement si 305 est propre et rapide. Sinon 305/310 qualité = réussite."};
+  }
 
-    {time:"13 min",title:"B. Superset haut du corps volume",tag:"Hypertrophie",kind:"accessory",
-     exercises:[
-       hbEx("B1. Incline DB press",deload?"2×10":"4×10-12",deload?"45 lb / main":"55-65 lb / main","0:30 avant B2","Volume propre. Étirement contrôlé."),
-       hbEx("B2. Weighted Pull-up",deload?"2×6":"4×6-8",deload?"poids du corps":"+10 à +25 lb","1:15 après B2","Strict. Si ça tire dans les coudes : ring rows lourds.")
-     ]},
+  function speedPP(week){
+    week = wk(week);
+    if(week<=3) return {format:"8×2", load:"60-65%", rest:"1:00", note:"Vitesse maximale. Chaque rep doit claquer."};
+    if(week===4) return {format:"5×2", load:"55-60%", rest:"1:00", note:"Technique légère."};
+    if(week<=7) return {format:"10×1", load:"65-72%", rest:"0:45-1:00", note:"Singles explosifs. Dip court, drive violent."};
+    if(week===8) return {format:"5×1", load:"55-60%", rest:"1:00", note:"Vitesse facile."};
+    if(week<=11) return {format:"6×1", load:"60-68%", rest:"1:00", note:"Pattern parfait, aucune fatigue inutile."};
+    if(week===12) return {format:"4×1", load:"50-55%", rest:"1:00", note:"Primer léger."};
+    if(week<=15) return {format:"3×1", load:"50-60%", rest:"1:00", note:"Vitesse seulement, couper si fatigue."};
+    return {format:"Optionnel", load:"barre à vide à 50%", rest:"—", note:"À couper si le test est dans la même semaine."};
+  }
 
-    {time:"10 min",title:"C. Épaules / posture",tag:"Accessoire",kind:"accessory",
-     exercises:[
-       hbEx("C1. Face Pull",deload?"2×15":"3×15-20","60-70 lb","0:30","Rotation externe en fin."),
-       hbEx("C2. Rear Delt Fly",deload?"2×15":"3×15-20","20-25 lb","0:45","Arrière d'épaule, trapèzes calmes.")
-     ]},
+  function lowerPlan(week){
+    week = wk(week);
+    if(isDeload(week)) return {front:"3×5 léger", frontLoad:"60-65%", bulgarian:"2×8/jambe", hip:"2×10 léger", rdl:"2×10 léger"};
+    if(week<=3) return {front:"5×4-6", frontLoad:"RPE 7-8", bulgarian:"3×8-10/jambe", hip:"3×8-12", rdl:"3×8-10"};
+    if(week<=7) return {front:"5×3-5", frontLoad:"RPE 8", bulgarian:"3×8/jambe", hip:"4×6-8", rdl:"3×8"};
+    if(week<=11) return {front:"4×3", frontLoad:"RPE 7-8", bulgarian:"2-3×8/jambe", hip:"3×6-8", rdl:"2-3×8"};
+    if(week<=15) return {front:"3×3 léger/modéré", frontLoad:"RPE 6-7", bulgarian:"2×8/jambe", hip:"2×8", rdl:"2×8 léger"};
+    return {front:"2×3 activation", frontLoad:"léger", bulgarian:"optionnel", hip:"optionnel", rdl:"optionnel"};
+  }
 
-    {time:deload?"6 min":"8 min",title:"D. Finisher posture",tag:"Conditioning",kind:"wod",
-     text:(deload?"SkiErg 6 min facile.":"EMOM 8 : min 1 = 10 cal SkiErg ; min 2 = 12 ring rows stricts.")+" "+p.wodNote+"."},
+  function mission(week){
+    var b = blockOf(week);
+    if(b===1) return "Bloc 1 — Fondations : technique, mobilité, stabilité, capacité de travail.";
+    if(b===2) return "Bloc 2 — Construction : triceps, jambes, drive, lockout, bench.";
+    if(b===3) return "Bloc 3 — Force spécifique : transformer la force en push press/bench lourds.";
+    return "Bloc 4 — Héritage : exprimer la force sans forcer le corps à mentir.";
+  }
 
-    {time:"5 min",title:"E. Mobilité",tag:"Mobilité",kind:"mobility",
-     text:"Open book 1 min/côté + pec minor stretch 1 min/côté + lat stretch 1 min."}
-  ];
+  function rules(){
+    return [
+      "Projet futur majeur : route Héritage après Phase 3 si la compétition n'est pas prioritaire.",
+      "Mission : vieillir fort, mobile, explosif et capable.",
+      "Objectifs marqueurs : Push Press 225 lb + Bench Press 315 lb.",
+      "Les chiffres sont autorisés seulement si les barres précédentes sont propres.",
+      "225 push press seulement si 205 est rapide et 215 est propre.",
+      "315 bench seulement si 305 est propre et rapide.",
+      "Aucun overhead grindé. Aucun bench grindé.",
+      "Aucun WOD overhead destructeur.",
+      "La récupération fait partie du programme.",
+      "Le cycle est réussi si tu finis plus fort, plus mobile, plus stable et encore capable de t'entraîner.",
+      "Le chiffre se mérite; il ne se force pas."
+    ];
+  }
 
-  // VENDREDI — Full body force base + haltéro léger
-  return [
-    {time:"9 min",title:"Warm-up full body",tag:"Préparation",kind:"warmup",
-     text:"Row 3 min + front rack mobility 1 min + tall muscle clean 2×5 + air squats 2×10 + ramp-up power clean : barre ×5, 95×3, 135×2."},
+  function warmupPush(){
+    return "2 tours : Band External Rotation — elbow tucked 12/côté + Scap Push-up 8 + Wall Slide 8 + PVC Pass-through 10. Puis ramp-up push press : barre×8, 40%×5, 55%×3.";
+  }
 
-    {time:"14 min",title:"A. Puissance maintenue",tag:"Haltéro",kind:"main",
-     exercises:[hbEx("Power Clean",deload?"5×2 léger":week>=4?"7×2":"6×3",deload?"135 lb":week>=4?"175-185 lb":"155-170 lb","1:30-2:00","Vitesse avant charge. Zéro grind. Maintenir l'haltéro vivant.")]},
+  window.COACH_BERTIN_PROGRAMS.heritage225 = {
+    id: "heritage225",
+    label: "Héritage 225",
+    phase: 5,
+    status: "Disponible — projet futur",
+    draft: false,
+    phaseName: "Force durable — année des 50 ans",
+    nextPhase: null,
+    impact: "Héritage 225 v2 : parcours narratif de 16 semaines. Objectif apparent : Push Press 225 lb + Bench Press 315 lb. Objectif réel : vieillir fort, mobile, explosif et capable, sans se blesser. Hommage à Théodore (Théo).",
+    days: ["lundi", "mardi", "jeudi", "vendredi"],
+    weekLabels: weekLabels,
+    weekGoals: weekGoals,
+    sets: ["Bloc 1 fondations","Bloc 2 construction","Bloc 3 force spécifique","Bloc 4 héritage"],
+    targetReps: [5,5,4,3,3,3,2,3,1,1,1,2,1,1,1,1],
+    mult: [0.70,0.72,0.75,0.62,0.78,0.82,0.86,0.62,0.88,0.90,0.92,0.60,0.82,0.88,0.92,0.95],
+    rest: "1:00-4:00 selon bloc",
+    tag: "héritage",
+    versionDate: "2026-06-09",
+    versionLabel: "2026-06-09 — Héritage 225 v2, Push Press 225 + Bench 315",
+    cycleRules: rules,
 
-    {time:"13 min",title:"B. Full body hypertrophie",tag:"Superset",kind:"accessory",
-     exercises:[
-       hbEx("B1. DB Bench Press",deload?"2×10":"3×10-12",deload?"50 lb / main":"60-70 lb / main","0:30 avant B2","Contrôle, amplitude."),
-       hbEx("B2. Farmer Carry",deload?"2×30 m":"4×40 m","lourd propre","1:00 après B2","Gainage fort, posture haute.")
-     ]},
+    dayIntentions: {
+      lundi: "Jour 1 — Push Press priorité + triceps/lockout. Objectif : construire le 225 sans grind.",
+      mardi: "Jour 2 — Jambes / drive / gainage. Objectif : base solide pour pousser fort sans casser le dos.",
+      jeudi: "Jour 3 — Bench 315 + Push Press vitesse. Objectif : force haut du corps et explosivité propre.",
+      vendredi: "Jour 4 — Athlète Héritage. Carries, grip, moteur, CrossFit minimal sans volume overhead destructeur."
+    },
 
-    {time:"8 min",title:"C. Core / chaîne postérieure",tag:"Accessoire",kind:"accessory",
-     exercises:[
-       hbEx("C1. Hollow Hold",deload?"2×20 sec":"3×30 sec","poids du corps","0:30","Côtes basses, bas du dos collé."),
-       hbEx("C2. Reverse Sled Drag",deload?"2 min facile":"4 min continu","léger à modéré","—","Quads et genoux, pas une épreuve cardio.")
-     ]},
+    dayMeta: {
+      lundi:   {label:"Lundi",   base:"Push Press priorité", focus:"Push press, lockout, triceps, stabilité overhead."},
+      mardi:   {label:"Mardi",   base:"Jambes / Drive",      focus:"Front Squat, unilatéral, chaîne postérieure, core."},
+      jeudi:   {label:"Jeudi",   base:"Bench + Vitesse",     focus:"Bench lourd, speed push press, épaules stables."},
+      vendredi:{label:"Vendredi",base:"Athlète Héritage",    focus:"Carries, grip, moteur, WOD court, mobilité."}
+    },
 
-    {time:deload?"6 min":"10 min",title:"D. Finisher CrossFit court",tag:"Conditioning",kind:"wod",
-     text:(deload?"Bike 6 min zone 2 facile.":"AMRAP 10 : 6 power cleans légers + 10 wall balls 14 lb + 10 cal row.")+" "+p.wodNote+". Court et propre, pas un test compétition."},
+    getBlocks: function(day, week, ctx) {
+      week = wk(week);
+      var pp = ppPlan(week);
+      var bp = benchPlan(week);
+      var sp = speedPP(week);
+      var lp = lowerPlan(week);
+      var deload = isDeload(week);
+      var test = isTest(week);
+      var note = mission(week);
 
-    {time:"5 min",title:"E. Mobilité",tag:"Mobilité",kind:"mobility",
-     text:"Front rack stretch 1 min + lat stretch 1 min/côté + couch stretch 1 min/côté."}
-  ];
-}
+      if(day==="lundi") return [
+        {time:"8 min", title:"Échauffement push + coiffe", tag:"Préparation", kind:"warmup", text:warmupPush()},
+        {time:test?"22 min":"18 min", title:"A. Push Press priorité", tag:"Force", kind:"main",
+          exercises:[{name:"Push Press", format:pp.format, load:pp.load, rest:pp.rest, note:pp.note}]},
+        {time:"10 min", title:"B. Lockout / triceps", tag:"Triceps", kind:"accessory",
+          text:"Triceps utile pour push press et bench. Aucun échec.",
+          exercises:[
+            {name:"Close-Grip Bench Press", format:deload?"2×8 léger":week>=13?"2×5 léger/modéré":"3×6-8", load:deload?"léger":week>=13?"RPE 6-7":"RPE 7-8", rest:"0:45 avant B2", note:"Aide le lockout sans transformer lundi en deuxième journée bench lourde."},
+            {name:"Overhead Rope Extension", format:deload?"2×12":"3×10-15", load:"modéré", rest:"1:00 après B2", note:"Longue portion du triceps. Coude stable."}
+          ]},
+        {time:"8 min", title:"C. Stabilité overhead", tag:"Stabilité", kind:"accessory",
+          exercises:[
+            {name:"Overhead Hold", format:deload?"2×20 sec":"3×20-30 sec", load:"modéré", rest:"0:45 avant C2", note:"Lockout stable, côtes basses."},
+            {name:"Dead Bug", format:"3×8/côté", load:"contrôle", rest:"0:45 après C2", note:"Anti-extension. Protéger le bas du dos."}
+          ]},
+        {time:"5 min", title:"D. Mobilité", tag:"Mobilité", kind:"mobility",
+          text:"Lat stretch 1 min/côté + triceps overhead stretch 1 min + respiration 1 min. "+note}
+      ];
 
-window.COACH_BERTIN_PROGRAMS.hypertrophy_base.getBlocks = function(day, week){
-  return hypertrophyBlocks(day, week);
-};
+      if(day==="mardi") return [
+        {time:"8 min", title:"Échauffement jambes / tronc", tag:"Préparation", kind:"warmup",
+          text:"Bike 3 min + ankle rocks 10/côté + world's greatest stretch 5/côté + glute bridge 2×12 + goblet squat léger 10."},
+        {time:"16 min", title:"A. Front Squat", tag:"Jambes", kind:"main",
+          exercises:[{name:"Front Squat", format:lp.front, load:lp.frontLoad, rest:"2:00-2:30", note:"Drive de jambes pour push press. Torse vertical, tronc rigide."}]},
+        {time:"12 min", title:"B. Unilatéral + core", tag:"Jambes / Core", kind:"accessory",
+          exercises:[
+            {name:"Bulgarian Split Squat", format:lp.bulgarian, load:deload?"léger":"45-55 lb / main", rest:"0:45 avant B2", note:"Stable, amplitude propre."},
+            {name:"Pallof Press", format:"3×10/côté", load:"contrôle", rest:"0:45 après B2", note:"Anti-rotation. Tronc solide pour le dip-drive."}
+          ]},
+        {time:"11 min", title:"C. Chaîne postérieure", tag:"Fessiers / Ischios", kind:"accessory",
+          exercises:[
+            {name:"Hip Thrust", format:lp.hip, load:deload?"léger":"RPE 7-8", rest:"0:45 avant C2", note:"Drive de hanches utile sans surcharger les épaules."},
+            {name:"DB RDL", format:lp.rdl, load:deload?"léger":"60-70 lb / main", rest:"1:00 après C2", note:"Ischios/fessiers, dos neutre. Aucun ego."}
+          ]},
+        {time:"6 min", title:"D. Mobilité", tag:"Mobilité", kind:"mobility",
+          text:"Couch stretch 1 min/côté + lat stretch 1 min/côté + thoracic extension 2 min + respiration 1 min. "+note}
+      ];
 
-window.COACH_BERTIN_PROGRAMS.hypertrophy_base.getWodText = function(day, week){
-  var b = hypertrophyBlocks(day, week).filter(function(x){ return x.kind === "wod"; })[0];
-  return b ? b.text : "";
-};
+      if(day==="jeudi") return [
+        {time:"8 min", title:"Échauffement bench + vitesse", tag:"Préparation", kind:"warmup",
+          text:"Row facile 2 min + scap push-up 10 + band external rotation 12/côté + empty bar bench 2×10 + push press technique barre à vide×8."},
+        {time:test?"22 min":"18 min", title:"A. Bench Press", tag:"Force", kind:"main",
+          exercises:[{name:"Bench Press", format:bp.format, load:bp.load, rest:bp.rest, note:bp.note}]},
+        {time:"10 min", title:"B. Push Press vitesse", tag:"Explosivité", kind:"accessory",
+          exercises:[{name:"Push Press", format:sp.format, load:sp.load, rest:sp.rest, note:sp.note}]},
+        {time:"10 min", title:"C. Épaules santé / puissance", tag:"Épaules", kind:"accessory",
+          exercises:[
+            {name:"Lateral Raise DB", format:deload?"2×15":"3×12-20", load:"léger/modéré", rest:"0:30 avant C2", note:"Deltoïdes sans voler la récupération."},
+            {name:"Face Pull", format:deload?"2×15":"3×15-20", load:"60-70 lb", rest:"0:45 après C2", note:"Épaules solides, posture, rotation externe."}
+          ]},
+        {time:"5 min", title:"D. Mobilité", tag:"Mobilité", kind:"mobility",
+          text:"Doorway pec stretch 1 min/côté + lat stretch 1 min/côté + respiration 2 min. "+note}
+      ];
 
-window.COACH_BERTIN_PROGRAMS.hypertrophy_base.cycleRules = [
-  "Objectif phase 2 : construire de la masse utile et de la force de base.",
-  "Les finishers sont courts : ils ne doivent pas voler la récupération du strength.",
-  "Aucun échec sur bench, squat ou clean.",
-  "Chaîne postérieure prioritaire : fessiers/ischios avant ego.",
-  "Si le bas du dos ou les épaules compensent : baisse la charge immédiatement."
-];
+      if(day==="vendredi") return [
+        {time:"7 min", title:"Échauffement athlète", tag:"Préparation", kind:"warmup",
+          text:"Bike ou row facile 3 min + scap push-up 10 + KB deadlift léger 10 + front rack stretch 1 min/côté."},
+        {time:"12 min", title:"A. Carries / grip", tag:"Carries", kind:"main",
+          exercises:[
+            {name:"Farmer Carry", format:deload?"2×30 m":"4×40 m", load:"lourd propre", rest:"0:45 avant A2", note:"Tronc rigide. Ne pas transformer en grip max."},
+            {name:"Front Rack Carry", format:deload?"2×20 m":"3×30 m", load:"modéré", rest:"1:00 après A2", note:"Rack solide, respiration contrôlée."}
+          ]},
+        {time:"10 min", title:"B. Haut du corps durable", tag:"Accessoire", kind:"accessory",
+          exercises:[
+            {name:"DB Bench Press", format:deload?"2×10":"3×8-12", load:deload?"léger":"modéré", rest:"0:30 avant B2", note:"Volume utile sans stress lourd."},
+            {name:"Hammer Curl", format:deload?"2×12":"3×10-12", load:"modéré", rest:"0:45 après B2", note:"Coudes, grip, bras forts."}
+          ]},
+        {time:"10 min", title:"C. WOD maintien CrossFit", tag:"Conditioning", kind:"wod",
+          text:(week>=13?"AMRAP 8":"AMRAP 10")+" : 10 cal row + 10 box step-ups + 8 burpees contrôlés + 40 m farmer carry. RPE 7-8. Aucun volume overhead inutile."},
+        {time:"8 min", title:"D. Mobilité récupération", tag:"Mobilité", kind:"mobility",
+          text:"Lat stretch 1 min/côté + pec stretch 1 min/côté + couch stretch 1 min/côté + respiration 2 min. "+note}
+      ];
 
-window.COACH_BERTIN_PROGRAMS.hypertrophy_base.dayIntentions = {
-  lundi: "Haut du corps lourd : bench prioritaire, tirage lourd pour protéger les épaules.",
-  mardi: "Bas du corps force base : squat propre, fessiers et ischios solides, dos protégé.",
-  jeudi: "Volume haut du corps : dos, pectoraux, épaules maintenues et posture.",
-  vendredi: "Full body : garder l'haltéro vivant et terminer avec un finisher court, pas une compétition."
-};
+      return [{time:"—", title:"Héritage 225", tag:"Projet futur", kind:"warmup", text:"Projet futur — À activer après Phase 3 si la route Héritage est choisie."}];
+    },
+
+    getWodText: function(day, week){
+      var b = this.getBlocks(day, week).filter(function(x){ return x.kind === "wod"; })[0];
+      return b ? b.text : "";
+    }
+  };
+})();

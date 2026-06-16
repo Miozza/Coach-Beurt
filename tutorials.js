@@ -1,181 +1,256 @@
-// Coach Bertin V48.9 — Programme autonome : Posture / Cyphose
-// Objectif : extension thoracique, serratus, trap inférieur, rotateurs externes,
-// haut du dos, ouverture cage/pecs/lats, chaîne postérieure sans surcharge lombaire.
-// V48.9 : le cycle posture n'utilise plus la structure PPL générique.
+// Coach Beurt — Hypertrophie Fessiers Stéphanie
+// Programme local simplifié : bibliothèque de séances, sans cycle obligatoire.
+// V50.40 : nettoyage équipement et noms de mouvements précis pour Stéphanie.
 
-window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
-window.COACH_BERTIN_PROGRAMS.posture = {
-  id: "posture",
-  label: "Posture / cyphose",
-  phase: 0,
-  phaseName: "Correction posture / mobilité scapulo-thoracique",
-  impact: "Cycle correctif : haut du dos, serratus, trap inférieur, mobilité thoracique, ouverture de cage, gainage positionnel. Aucun WOD destructeur.",
-  weekLabels: ["S1 Alignement","S2 Volume contrôle","S3 Force posture","S4 Deload intégration"],
-  weekGoals: [
-    "Réapprendre les positions : cage basse, scapulas contrôlées, respiration thoracique.",
-    "Augmenter le volume correctif sans douleur aux épaules, coudes ou cou.",
-    "Renforcer les positions : tirages plus solides, carries, chaîne postérieure propre.",
-    "Deload actif : conserver la mobilité et intégrer les gains sans fatigue."
-  ],
-  sets: ["4 x 8 propre", "4 x 10 contrôlé", "5 x 6 solide", "3 x 8 léger"],
-  targetReps: [8,10,6,8],
-  mult: [0.62,0.66,0.72,0.50],
-  rest: "1:00–2:00",
-  tag: "posture"
-};
+(function(){
+  window.COACH_STEPHANIE_PROGRAMS = window.COACH_STEPHANIE_PROGRAMS || {};
 
-function postureWeekPlan(week){
-  return ({
-    1:{label:"S1 Alignement",note:"Contrôle avant charge. Sentir serratus, trap inférieur et extension thoracique.",rowLoad:"115 lb",hingeLoad:"60 lb / main",pressLoad:"léger",carryLoad:"modéré",density:"facile"},
-    2:{label:"S2 Volume contrôle",note:"Un peu plus de volume. Aucun shrug, aucun cou crispé, aucune douleur antérieure d'épaule.",rowLoad:"120-125 lb",hingeLoad:"65 lb / main",pressLoad:"léger à modéré",carryLoad:"modéré lourd",density:"modéré"},
-    3:{label:"S3 Force posture",note:"Semaine la plus solide. Charges plus lourdes, mais posture impeccable. Pas de grind.",rowLoad:"130-140 lb",hingeLoad:"70 lb / main",pressLoad:"modéré",carryLoad:"lourd propre",density:"contrôlé"},
-    4:{label:"S4 Deload intégration",note:"Réduire charge et volume. Garder la qualité, respirer mieux, sortir plus droit.",rowLoad:"95-105 lb",hingeLoad:"50-55 lb / main",pressLoad:"très léger",carryLoad:"facile",density:"facile"}
-  })[week] || {label:"S1 Alignement",note:"Contrôle.",rowLoad:"115 lb",hingeLoad:"60 lb / main",pressLoad:"léger",carryLoad:"modéré",density:"facile"};
-}
+  function ex(name, format, load, note){
+    return { name:name, format:format, load:load || "RPE 7", note:note || "" };
+  }
 
-function pstEx(name,format,load,rest,note){
-  return {name:name,format:format,load:load||"—",rest:rest||"—",note:note||""};
-}
+  window.COACH_STEPHANIE_PROGRAMS.hypertrophie_fesse_stephanie = {
+    id: "hypertrophie_fesse_stephanie",
+    label: "Hypertrophie Fessiers",
+    athlete: "Stéphanie",
+    mode: "simple_sessions",
+    shoulderNote: "Épaule à respecter : pas d’overhead, pas de burpees en volume, pas de front rack lourd. Les charges doivent rester guidées par le RPE.",
+    sessions: [
+      {
+        id: "glutes_heavy_hip_thrust",
+        title: "Fessiers lourd — Hip Thrust",
+        duration: "55–65 min",
+        fatigue: "Élevée",
+        goal: "Séance principale lourde : hip thrust, unilatéral contrôlé, abduction.",
+        caution: "RPE 7–8. Pas d’échec. Stop si douleur hanche, dos ou épaule.",
+        blocks: [
+          {title:"Warm-up général", time:"8 min", text:"Bike 5 min + respiration côtes basses + Hip Switch + Hip CARs."},
+          {title:"Activation fessiers", time:"8 min", text:"2 rondes : 15 glute bridge + 12 side-lying hip abduction/côté + 12 bodyweight reverse lunge/jambe."},
+          {title:"A. Hip Thrust lourd", time:"18 min", exercises:[ex("Barbell Hip Thrust", "5×6-8", "RPE 7–8", "Pause 1 sec en haut, bassin stable. Monter seulement si la technique reste propre.")]},
+          {title:"B. Split Squat", time:"12 min", exercises:[ex("DB Bulgarian Split Squat", "3×8/jambe", "RPE 7", "Amplitude contrôlée, buste stable, pas d’échec.")]},
+          {title:"C. Abduction", time:"8 min", exercises:[ex("Cable Hip Abduction", "3×15-20/côté", "RPE 8", "Brûlure locale. Éviter de compenser avec le bas du dos.")]},
+          {title:"Finisher", time:"5 min", text:"Glute bridge hold : 5×30 sec, repos 30 sec."},
+          {title:"Retour au calme", time:"5 min", text:"Couch Stretch + Figure-4 Stretch + Box Breathing."}
+        ]
+      },
+      {
+        id: "glutes_heavy_unilateral",
+        title: "Fessiers lourd — Unilatéral",
+        duration: "55–65 min",
+        fatigue: "Élevée",
+        goal: "Mettre l’accent sur les fessiers jambe par jambe, sans charger l’épaule.",
+        caution: "Choisir des charges contrôlables. Si le genou ou la hanche compense, réduire.",
+        blocks: [
+          {title:"Warm-up", time:"8 min", text:"Bike 5 min + Knee-to-Wall Ankle Rocks + Hip Switch + 10 step-up poids du corps/jambe."},
+          {title:"Activation", time:"7 min", text:"2 rondes : 12 single-leg glute bridge/jambe + 15 banded seated hip abductions/côté."},
+          {title:"A. Step-up haut", time:"16 min", exercises:[ex("DB Step-up", "4×8/jambe", "RPE 7–8", "Pousser par le talon, descente lente, pas d’élan.")]},
+          {title:"B. Reverse Lunge", time:"12 min", exercises:[ex("DB Reverse Lunge", "3×10/jambe", "RPE 7", "Long pas arrière pour charger plus le fessier.")]},
+          {title:"C. Hip Thrust modéré", time:"10 min", exercises:[ex("Hip Thrust", "3×12", "RPE 7", "Série propre, congestion, pas lourd maximal.")]},
+          {title:"D. Abduction pump", time:"6 min", text:"2 rondes : 20 banded seated hip abductions + 20 frog pumps."},
+          {title:"Retour au calme", time:"5 min", text:"Box Breathing + Hip Switch."}
+        ]
+      },
+      {
+        id: "glutes_volume_classic",
+        title: "Fessiers volume",
+        duration: "55–65 min",
+        fatigue: "Moyenne",
+        goal: "Accumuler du volume efficace sans écraser la récupération.",
+        caution: "Chercher la congestion, pas le max. RPE 7–8 maximum.",
+        blocks: [
+          {title:"Warm-up", time:"8 min", text:"Row ou bike facile 5 min + activation élastique."},
+          {title:"A. Hip Thrust volume", time:"15 min", exercises:[ex("Hip Thrust", "4×10-12", "RPE 7", "2 reps en réserve. Pause en haut sur chaque rep.")]},
+          {title:"B. Goblet Squat", time:"12 min", exercises:[ex("Goblet Squat", "3×12", "RPE 7", "Pieds placés pour sentir fessiers. Mouvement contrôlé.")]},
+          {title:"C. Slider Curl", time:"10 min", exercises:[ex("Slider Curl", "3×12-15", "RPE 8", "Ischios actifs, bassin stable.")]},
+          {title:"D. Abduction", time:"8 min", exercises:[ex("Cable Hip Abduction", "3×20/côté", "RPE 8", "Sensation locale, pas de vitesse inutile.")]},
+          {title:"Finisher", time:"5 min", text:"AMRAP qualité : 12 glute bridge + 12 side-lying hip abduction/côté + 12 air squat tempo."},
+          {title:"Retour au calme", time:"5 min", text:"Figure-4 Stretch + Couch Stretch."}
+        ]
+      },
+      {
+        id: "posterior_chain_rdl",
+        title: "Chaîne postérieure — RDL",
+        duration: "50–60 min",
+        fatigue: "Moyenne à élevée",
+        goal: "Renforcer ischios/fessiers avec hinge contrôlé.",
+        caution: "Dos neutre. Si le bas du dos prend toute la charge, réduire immédiatement.",
+        blocks: [
+          {title:"Warm-up", time:"8 min", text:"Bike 5 min + good morning PVC + hip hinge drill."},
+          {title:"A. RDL", time:"18 min", exercises:[ex("DB RDL", "4×8", "RPE 7", "Charnière de hanche contrôlée, charge proche des jambes, aucune douleur lombaire.")]},
+          {title:"B. Glute Bridge", time:"12 min", exercises:[ex("Glute Bridge", "4×10-12", "RPE 7", "Pause en haut, côtes basses, bassin stable.")]},
+          {title:"C. Hamstring", time:"10 min", exercises:[ex("Slider Curl", "3×10-12", "RPE 8", "Contrôle lent, surtout à l’excentrique.")]},
+          {title:"D. Core anti-extension", time:"7 min", exercises:[ex("Dead Bug", "3×8/côté", "poids du corps", "Expiration lente, lombaires stables.")]},
+          {title:"Retour au calme", time:"5 min", text:"Supine Hamstring Stretch + Figure-4 Stretch + Box Breathing."}
+        ]
+      },
+      {
+        id: "glutes_quad_mix",
+        title: "Fessiers + jambes",
+        duration: "55–65 min",
+        fatigue: "Moyenne",
+        goal: "Travailler fessiers avec jambes complètes, sans focus épaule.",
+        caution: "Pas besoin de charge maximale. Le contrôle compte plus que le poids.",
+        blocks: [
+          {title:"Warm-up", time:"8 min", text:"Bike 5 min + air squats tempo + activation fessiers."},
+          {title:"A. Squat pattern", time:"15 min", exercises:[ex("Goblet Squat", "4×10", "RPE 7", "Amplitude propre. Éviter front rack si l’épaule est sensible.")]},
+          {title:"B. Hip Thrust", time:"12 min", exercises:[ex("Hip Thrust", "3×10", "RPE 7", "Pause en haut. Série stable.")]},
+          {title:"C. Walking Lunge", time:"10 min", exercises:[ex("Walking Lunge", "3×12 pas/jambe", "RPE 7", "Long pas, contrôle, pas de douleur genou.")]},
+          {title:"D. Abduction + mollets", time:"8 min", text:"2 rondes : 20 banded seated hip abductions + 20 calf raises."},
+          {title:"Retour au calme", time:"5 min", text:"Hip Switch + Couch Stretch + Box Breathing."}
+        ]
+      },
+      {
+        id: "cable_glutes",
+        title: "Fessiers câble / isolation",
+        duration: "45–55 min",
+        fatigue: "Moyenne",
+        goal: "Séance plus isolée : kickback, abduction, contrôle et congestion.",
+        caution: "Très peu de stress systémique. Idéal si elle veut éviter une grosse séance lourde.",
+        blocks: [
+          {title:"Warm-up", time:"7 min", text:"Bike + Hip Switch + Hip CARs + side-lying hip abduction."},
+          {title:"A. Cable Kickback", time:"14 min", exercises:[ex("Cable Kickback", "4×12-15/côté", "RPE 7–8", "Bassin stable, amplitude contrôlée, pas de dos creux.")]},
+          {title:"B. Cable Hip Abduction", time:"12 min", exercises:[ex("Cable Hip Abduction", "4×15-20/côté", "RPE 8", "Chercher le moyen fessier, pas les lombaires.")]},
+          {title:"C. Hip Thrust", time:"10 min", exercises:[ex("Hip Thrust", "3×15", "RPE 7", "Pompe musculaire, pas lourd.")]},
+          {title:"D. Pump circuit", time:"8 min", text:"2 rondes : 20 frog pumps + 20 banded seated hip abductions + 30 sec glute bridge hold."},
+          {title:"Retour au calme", time:"4 min", text:"Box Breathing + Hip Switch."}
+        ]
+      },
+      {
+        id: "pump_long",
+        title: "Pump long",
+        duration: "45–55 min",
+        fatigue: "Faible à moyenne",
+        goal: "Longue séance de pump sans grosses charges. Bonne option entre deux séances lourdes.",
+        caution: "Si ça brûle, c’est correct. Si ça fait mal aux articulations, non.",
+        blocks: [
+          {title:"Warm-up", time:"6 min", text:"Bike + Hip Switch + Hip CARs."},
+          {title:"A. Circuit 1", time:"14 min", text:"3 rondes : 15 glute bridge + 12 step-up/jambe + 20 side-lying hip abduction/côté."},
+          {title:"B. Circuit 2", time:"14 min", text:"3 rondes : 15 frog pumps + 15 side-lying hip abduction/côté + 12 reverse lunge/jambe."},
+          {title:"C. Finisher", time:"8 min", text:"EMOM 8 : min impaires 35 sec wall sit, min paires 35 sec banded seated hip abduction."},
+          {title:"Core", time:"6 min", text:"2 rondes : 8 dead bug/côté + 20 sec side plank/côté."},
+          {title:"Retour au calme", time:"5 min", text:"Hip Switch + Couch Stretch + Box Breathing."}
+        ]
+      },
+      {
+        id: "low_impact_engine_glutes",
+        title: "Fessiers + cardio doux",
+        duration: "45–60 min",
+        fatigue: "Moyenne",
+        goal: "Bouger plus longtemps avec un peu de conditioning sans irriter l’épaule.",
+        caution: "Cardio contrôlé. Pas une séance CrossFit à fond.",
+        blocks: [
+          {title:"Warm-up", time:"7 min", text:"Bike + activation fessiers."},
+          {title:"A. Hip Thrust", time:"12 min", exercises:[ex("Hip Thrust", "3×10", "RPE 7", "Stable, sans grind.")]},
+          {title:"B. Step-up", time:"10 min", exercises:[ex("Step-up", "3×12/jambe", "RPE 7", "Poids léger ou corps libre selon fatigue.")]},
+          {title:"C. Conditioning doux", time:"16 min", text:"AMRAP 16 facile : 10 cal bike + 12 air squats tempo + 12 glute bridge + 10 band pull-aparts. RPE 6–7."},
+          {title:"D. Core", time:"6 min", text:"Dead bug 2×8/côté + side plank 2×20 sec/côté."},
+          {title:"Retour au calme", time:"5 min", text:"Box Breathing + Hip Switch."}
+        ]
+      },
+      {
+        id: "recovery_glutes_mobility",
+        title: "Récupération active fessiers",
+        duration: "40–50 min",
+        fatigue: "Faible",
+        goal: "Séance longue mais facile : mobilité, activation, circulation sanguine.",
+        caution: "Aucun mouvement ne devrait dépasser RPE 6.",
+        blocks: [
+          {title:"Cardio facile", time:"12 min", text:"Bike ou marche inclinée en aisance respiratoire."},
+          {title:"Activation", time:"10 min", text:"2 rondes : 15 glute bridge + 12 side-lying clamshell/côté + 12 bird dog/côté."},
+          {title:"Hip Switch + Hip CARs", time:"12 min", text:"90/90 hanches + couch stretch + pigeon modifié + respiration lente."},
+          {title:"Core léger", time:"8 min", text:"2 rondes : 8 dead bug/côté + 20 sec side plank/côté + 8 pallof press/côté si câble disponible."},
+          {title:"Option pump", time:"5 min", text:"Banded seated hip abduction légère 2×20 si elle veut finir avec une activation."}
+        ]
+      },
+      {
+        id: "short_but_complete",
+        title: "Séance complète efficace",
+        duration: "45–50 min",
+        fatigue: "Moyenne",
+        goal: "Option claire quand elle veut une vraie séance sans y passer 1 h 15.",
+        caution: "Garder le rythme, mais ne pas sacrifier la technique.",
+        blocks: [
+          {title:"Warm-up", time:"6 min", text:"Bike 4 min + glute bridge + Side-Lying Hip Abduction."},
+          {title:"A. Mouvement principal", time:"14 min", exercises:[ex("Hip Thrust", "4×8", "RPE 7", "Pause en haut, stable.")]},
+          {title:"B. Unilatéral", time:"10 min", exercises:[ex("DB Reverse Lunge", "3×10/jambe", "RPE 7", "Choisir l’option la plus confortable.")]},
+          {title:"C. Isolation", time:"8 min", exercises:[ex("Cable Hip Abduction", "3×15-20/côté", "RPE 8", "Contrôle et sensation locale.")]},
+          {title:"D. Finisher", time:"6 min", text:"AMRAP 6 : 12 glute bridge + 10 air squat tempo + 12 side-lying hip abduction/côté."},
+          {title:"Retour au calme", time:"4 min", text:"Hip Switch + Box Breathing."}
+        ]
+      }
+    ]
+  };
 
-function postureBlocks(day,week){
-  var p = postureWeekPlan(week);
-  var deload = week === 4;
-  var strong = week === 3;
+  // Informations affichées sur les cartes de sélection.
+  // But : Stéphanie doit comprendre vite ce qu'il y a dans la séance, pourquoi elle existe,
+  // et dans quel contexte la choisir. L'évaluation sert de garde-fou de programmation.
+  var sessionDetails = {
+    glutes_heavy_hip_thrust: {
+      intention: "Construire la force principale des fessiers avec un hip thrust lourd, puis compléter avec unilatéral et abduction.",
+      contenu: ["Hip Thrust lourd", "Bulgarian Split Squat", "Abduction", "Finisher isométrique"],
+      meilleurChoix: "elle est fraîche, pas de douleur bas du dos/hanche, et veut la séance la plus productive de la semaine.",
+      evaluation: {niveau:"Solide", raison:"Bonne séance pivot : tension mécanique élevée, un seul vrai mouvement lourd, accessoires ciblés. Volume élevé mais logique si elle ne la répète pas trop souvent.", surveillance:"ne pas faire la veille ou le lendemain d'une autre séance fessiers lourde; surveiller bas du dos et hanche."}
+    },
+    glutes_heavy_unilateral: {
+      intention: "Développer les fessiers jambe par jambe et corriger les asymétries sans utiliser l'épaule.",
+      contenu: ["Step-up haut", "Reverse lunge", "Hip Thrust modéré", "Pump abduction"],
+      meilleurChoix: "elle veut une séance lourde mais différente du hip thrust principal, ou si la barre de hip thrust est moins disponible.",
+      evaluation: {niveau:"Solide", raison:"Très bon complément au hip thrust : beaucoup de travail unilatéral, amplitude longue, peu de stress épaule.", surveillance:"risque de fatigue genou/hanche si les pas sont trop courts ou si elle force la charge."}
+    },
+    glutes_volume_classic: {
+      intention: "Accumuler du volume hypertrophie sans chercher un max, avec une fatigue contrôlée.",
+      contenu: ["Hip Thrust volume", "Squat/goblet squat", "Slider curl", "Abduction", "Circuit qualité"],
+      meilleurChoix: "elle veut une vraie séance complète fessiers/jambes mais sans charge maximale.",
+      evaluation: {niveau:"Très utile", raison:"Bonne séance de volume : combine extension de hanche, squat pattern, ischios et moyen fessier. Plus hypertrophie que performance.", surveillance:"si courbatures fortes, réduire le finisher ou une série d'abduction."}
+    },
+    posterior_chain_rdl: {
+      intention: "Renforcer ischios et fessiers avec un hinge contrôlé, sans transformer ça en séance de dos.",
+      contenu: ["RDL", "Glute bridge", "Slider curl", "Core anti-extension"],
+      meilleurChoix: "elle veut travailler la chaîne postérieure ou varier d'une séance centrée hip thrust.",
+      evaluation: {niveau:"Solide mais technique", raison:"Très pertinent pour les fessiers/ischios si le RDL reste propre. Le core aide à protéger la zone lombaire.", surveillance:"baisser la charge immédiatement si le bas du dos travaille plus que les ischios/fessiers."}
+    },
+    glutes_quad_mix: {
+      intention: "Travailler fessiers avec jambes complètes pour garder une base athlétique, pas seulement isolation.",
+      contenu: ["Squat pattern", "Hip Thrust", "Walking lunge", "Abduction"],
+      meilleurChoix: "elle veut une séance plus générale jambes/fessiers avec un bon transfert CrossFit.",
+      evaluation: {niveau:"Bien balancée", raison:"Bon équilibre entre fessiers et jambes. Moins spécialisée, mais utile pour garder une progression globale.", surveillance:"éviter le front rack si l'épaule est sensible; choisir goblet ou goblet squat."}
+    },
+    cable_glutes: {
+      intention: "Créer un stimulus local fessiers avec peu de fatigue générale et presque aucun stress épaule.",
+      contenu: ["Cable kickback", "Abduction", "Hip Thrust léger", "Pump circuit"],
+      meilleurChoix: "elle veut sentir les fessiers sans se démolir, ou entre deux séances plus lourdes.",
+      evaluation: {niveau:"Très sécuritaire", raison:"Bonne séance d'isolation : faible coût de récupération, utile pour pratiquer la connexion fessiers.", surveillance:"ne pas la compter comme remplacement complet d'une séance lourde trop souvent."}
+    },
+    pump_long: {
+      intention: "Faire une séance longue, productive et légère, surtout orientée congestion et constance.",
+      contenu: ["Circuits fessiers", "Air squat tempo", "Wall sit", "Core"],
+      meilleurChoix: "elle veut bouger longtemps sans charges lourdes ou quand la fatigue nerveuse est plus haute.",
+      evaluation: {niveau:"Bon outil", raison:"Utile pour ajouter du volume sans charge lourde. Très bon choix quand l'épaule ou le système nerveux doit rester tranquille.", surveillance:"la brûlure musculaire est correcte; la douleur articulaire ne l'est pas."}
+    },
+    low_impact_engine_glutes: {
+      intention: "Combiner fessiers et cardio doux sans tomber dans un WOD agressif pour l'épaule.",
+      contenu: ["Hip Thrust", "Step-up", "AMRAP doux", "Core"],
+      meilleurChoix: "elle veut transpirer un peu tout en gardant un objectif fessiers clair.",
+      evaluation: {niveau:"Intelligent", raison:"Bon compromis CrossFit/hypertrophie : un peu de moteur, mais les mouvements restent contrôlables.", surveillance:"garder RPE cardio 6–7; si ça devient une course, la qualité fessiers baisse."}
+    },
+    recovery_glutes_mobility: {
+      intention: "Récupérer, bouger et garder l'activation sans créer de nouvelle fatigue.",
+      contenu: ["Cardio facile", "Activation", "Hip Switch + Hip CARs", "Core léger"],
+      meilleurChoix: "elle est courbaturée, fatiguée, ou veut faire quelque chose sans nuire à la prochaine grosse séance.",
+      evaluation: {niveau:"Essentielle", raison:"Bonne séance de récupération active. Elle rend le plan plus durable et réduit le risque d'empiler trop de volume lourd.", surveillance:"ne pas la transformer en séance intense; tout doit rester facile."}
+    },
+    short_but_complete: {
+      intention: "Donner une vraie séance fessiers complète en moins de temps, sans trop de décisions.",
+      contenu: ["Hip Thrust", "Unilatéral", "Abduction", "Finisher court"],
+      meilleurChoix: "elle manque de temps mais veut quand même une séance efficace.",
+      evaluation: {niveau:"Très pratique", raison:"Structure simple et complète : un principal, un unilatéral, une isolation, un finisher. Bon choix par défaut.", surveillance:"si elle a plus de temps et beaucoup d'énergie, choisir une séance plus complète plutôt que celle-ci."}
+    }
+  };
 
-  // LUNDI — Haut du dos + serratus
-  if(day === "lundi") return [
-    {time:"8 min",title:"Warm-up thoracique",tag:"Préparation",kind:"warmup",
-     text:"Row facile 2 min + foam roller extension thoracique 6 reps + open book 6/côté + wall slides 2×10 + scap push-up 2×10."},
+  var program = window.COACH_STEPHANIE_PROGRAMS.hypertrophie_fesse_stephanie;
+  (program.sessions || []).forEach(function(session){
+    var details = sessionDetails[session.id] || {};
+    Object.keys(details).forEach(function(key){ session[key] = details[key]; });
+  });
 
-    {time:"14 min",title:"A. Tirage postural principal",tag:"Dos",kind:"main",
-     exercises:[pstEx("Chest Supported Row",deload?"3×8 léger":strong?"5×6":"4×8-10",p.rowLoad,strong?"2:00":"1:30-1:45","Poitrine collée, cou long, omoplates vers les poches arrière. Aucun élan.")]},
-
-    {time:"12 min",title:"B. Serratus + trap inférieur",tag:"Correctif",kind:"accessory",
-     text:"Alterner B1 → B2. Repos après B2. Qualité musculaire, pas ego.",
-     exercises:[
-       pstEx("B1. Serratus Cable Punch",deload?"2×12/côté":"3×12-15/côté","léger à modéré","0:30 avant B2","Cage basse. Protraction complète sans hausser l'épaule."),
-       pstEx("B2. Trap-3 Raise",deload?"2×12":"3×12-15","léger","1:00 après B2","Pouce vers le haut. Cherche trap inférieur, pas trap supérieur.")
-     ]},
-
-    {time:"10 min",title:"C. Arrière épaule / rotation externe",tag:"Accessoire",kind:"accessory",
-     exercises:[
-       pstEx("C1. Face Pull",deload?"2×15":"3×15-20","60-70 lb","0:30","Tirer vers le visage, rotation externe en fin."),
-       pstEx("C2. Rear Delt Fly",deload?"2×15":"3×15-20","20-25 lb","0:45","Bras longs, épaules basses, aucun swing.")
-     ]},
-
-    {time:deload?"6 min":"8 min",title:"D. Conditioning posture",tag:"Conditioning",kind:"wod",
-     text:(deload?"Row 6 min zone 2 facile.":"EMOM 8 : min 1 = 10 cal row ; min 2 = 10 ring rows stricts.")+" RPE 6-7. Le but est de sortir plus droit, pas de gagner le WOD."},
-
-    {time:"5 min",title:"E. Mobilité cage",tag:"Mobilité",kind:"mobility",
-     text:"Doorway pec stretch 1 min/côté + lat stretch sur rig 1 min/côté + respiration 90/90 1 min."}
-  ];
-
-  // MARDI — Hanches + chaîne postérieure + respiration
-  if(day === "mardi") return [
-    {time:"9 min",title:"Warm-up hanches / colonne",tag:"Préparation",kind:"warmup",
-     text:"Bike 3 min + cat-cow 10 reps + world's greatest stretch 5/côté + glute bridge 2×15 + hip airplane assisté 5/côté."},
-
-    {time:"14 min",title:"A. Charnière posturale",tag:"Chaîne postérieure",kind:"main",
-     exercises:[pstEx("DB RDL",deload?"3×8 léger":strong?"4×8":"4×10",p.hingeLoad,strong?"1:45":"1:30","Dos neutre, lats engagés, étirement ischios. Stop si lombaires prennent tout.")]},
-
-    {time:"12 min",title:"B. Fessiers + gainage anti-extension",tag:"Correctif",kind:"accessory",
-     exercises:[
-       pstEx("B1. Hip Thrust",deload?"2×10":"3×10-12",deload?"185-225 lb":strong?"275-315 lb":"225-275 lb","0:45 avant B2","Pause en haut. Bassin neutre, pas d'hyperextension."),
-       pstEx("B2. Dead Bug",deload?"2×8/côté":"3×8-10/côté","poids du corps","1:00 après B2","Côtes basses, expiration longue, contrôle total.")
-     ]},
-
-    {time:"9 min",title:"C. Unilatéral propre",tag:"Accessoire",kind:"accessory",
-     exercises:[pstEx("Bulgarian Split Squat",deload?"2×8/jambe":"3×8-10/jambe",deload?"35 lb / main":strong?"50-60 lb / main":"40-50 lb / main","1:00","Reste haut, bassin stable, genou propre.")]},
-
-    {time:deload?"6 min":"10 min",title:"D. Zone 2 posture",tag:"Conditioning",kind:"wod",
-     text:(deload?"Bike 6 min facile, nasal si possible.":"Bike 10 min zone 2 avec posture haute. Toutes les 2 min : 5 respirations lentes cage basse.")+" Aucun sprint."},
-
-    {time:"5 min",title:"E. Mobilité hanches",tag:"Mobilité",kind:"mobility",
-     text:"Couch stretch 1 min/côté + hamstring stretch 1 min/côté + respiration crocodile 1 min."}
-  ];
-
-  // JEUDI — Overhead mobility + scapula
-  if(day === "jeudi") return [
-    {time:"9 min",title:"Warm-up overhead",tag:"Préparation",kind:"warmup",
-     text:"Row 2 min + PVC pass through 2×10 + wall slides 2×10 + lat stretch 45 sec/côté + scap pull-ups 2×6 + front rack rotations 10 reps."},
-
-    {time:"13 min",title:"A. Press technique posturale",tag:"Overhead",kind:"main",
-     exercises:[pstEx("Strict Press",deload?"3×6 léger":strong?"5×5 technique":"4×6-8",deload?"85-95 lb":strong?"115-125 lb":"95-115 lb",strong?"2:00":"1:30-1:45","Cage basse, fessiers serrés, trajectoire verticale. Pas de compensation lombaire.")]},
-
-    {time:"12 min",title:"B. Scapula overhead",tag:"Correctif",kind:"accessory",
-     exercises:[
-       pstEx("B1. Wall Slide Lift-off",deload?"2×8":"3×8-10","poids du corps","0:30 avant B2","Lent. Cherche rotation supérieure sans trap supérieur."),
-       pstEx("B2. Face Pull to External Rotation",deload?"2×12":"3×12-15","léger à modéré","1:00 après B2","Rotation externe propre, coudes hauts, cou relâché.")
-     ]},
-
-    {time:"10 min",title:"C. Tirage vertical contrôlé",tag:"Accessoire",kind:"accessory",
-     exercises:[
-       pstEx("C1. Weighted Pull-up",deload?"2×5 strict":"3×5-8",deload?"poids du corps":strong?"+20 à +30 lb":"+10 à +20 lb","1:15","Strict, amplitude propre. Remplacer par ring rows si coudes sensibles."),
-       pstEx("C2. Serratus Wall Slide",deload?"2×10":"3×10-12","mini-band optionnel","0:45","Pousser le mur, cage basse.")
-     ]},
-
-    {time:deload?"6 min":"8 min",title:"D. EMOM qualité",tag:"Conditioning",kind:"wod",
-     text:(deload?"SkiErg 6 min facile.":"EMOM 8 : min 1 = 8 cal SkiErg ; min 2 = 8 strict press très légers ou PVC overhead hold 20 sec.")+" RPE 6-7. Qualité overhead seulement."},
-
-    {time:"5 min",title:"E. Mobilité overhead",tag:"Mobilité",kind:"mobility",
-     text:"Lat stretch 1 min/côté + pec minor stretch 1 min/côté + thoracic extension breathing 1 min."}
-  ];
-
-  // VENDREDI — Full body posture + conditioning léger
-  return [
-    {time:"8 min",title:"Warm-up full body posture",tag:"Préparation",kind:"warmup",
-     text:"Row facile 3 min + band pull-aparts 2×20 + goblet squat pry 1 min + hollow body breathing 5 reps + farmer carry léger 2×20 m."},
-
-    {time:"13 min",title:"A. Carry postural",tag:"Gainage",kind:"main",
-     exercises:[pstEx("Farmer Carry",deload?"3×30 m":"5×40 m",p.carryLoad,strong?"1:30":"1:00-1:15","Grandis-toi. Côtes basses, épaules basses, marche contrôlée.")]},
-
-    {time:"12 min",title:"B. Full body correctif",tag:"Correctif",kind:"accessory",
-     exercises:[
-       pstEx("B1. Goblet Squat Tempo",deload?"2×8":"3×10","24-32 kg","0:30 avant B2","Tempo 3 sec descente. Torse haut, respiration calme."),
-       pstEx("B2. Ring Row Strict",deload?"2×8":"3×10-12","poids du corps","1:00 après B2","Poitrine aux anneaux, omoplates fortes.")
-     ]},
-
-    {time:"10 min",title:"C. Reset scapula / core",tag:"Accessoire",kind:"accessory",
-     exercises:[
-       pstEx("C1. Pallof Press",deload?"2×10/côté":"3×10-12/côté","léger à modéré","0:30","Anti-rotation. Bassin stable."),
-       pstEx("C2. Band Pull Apart",deload?"2×20":"3×25","élastique","0:45","Volume facile, qualité posturale.")
-     ]},
-
-    {time:deload?"8 min":"12 min",title:"D. Conditioning léger",tag:"Conditioning",kind:"wod",
-     text:(deload?"Row 8 min zone 2 facile.":"AMRAP 12 qualité : 8 cal row + 10 air squats tempo + 12 band pull-aparts + 20 m farmer carry léger.")+" RPE 6-7. Respiration et posture > score."},
-
-    {time:"5 min",title:"E. Mobilité finale",tag:"Mobilité",kind:"mobility",
-     text:"Open book 1 min/côté + doorway stretch 1 min/côté + lat stretch 1 min + respiration 90/90."}
-  ];
-}
-
-window.COACH_BERTIN_PROGRAMS.posture.getBlocks = function(day, week){
-  return postureBlocks(day, week);
-};
-
-window.COACH_BERTIN_PROGRAMS.posture.getWodText = function(day, week){
-  var b = postureBlocks(day, week).filter(function(x){ return x.kind === "wod"; })[0];
-  return b ? b.text : "";
-};
-
-window.COACH_BERTIN_PROGRAMS.posture.cycleRules = [
-  "Objectif posture : sortir plus droit, pas finir détruit.",
-  "Le cou doit rester relâché : si les trapèzes supérieurs dominent, baisse la charge.",
-  "Cage basse, respiration contrôlée, amplitude propre.",
-  "Les conditionings sont légers à modérés : RPE 6-7, aucun redline.",
-  "Douleur antérieure d'épaule ou irritation coude : remplace par tirage strict ou mobilité."
-];
-
-window.COACH_BERTIN_PROGRAMS.posture.dayIntentions = {
-  lundi: "Haut du dos et serratus : renforcer ce qui ouvre la cage et ramène les épaules en bonne position.",
-  mardi: "Chaîne postérieure et respiration : hanches fortes, bas du dos protégé, cage mieux contrôlée.",
-  jeudi: "Overhead propre : améliorer la mobilité scapulo-thoracique sans compenser avec les lombaires.",
-  vendredi: "Full body posture : carries, gainage et conditioning léger pour intégrer les positions."
-};
-
-window.COACH_BERTIN_PROGRAMS.posture.dayMeta = {
-  lundi:   {label:"Lundi",   base:"Haut du dos + serratus", focus:"Scapulas, trap inférieur, serratus, ouverture thoracique."},
-  mardi:   {label:"Mardi",   base:"Hanches + respiration",  focus:"Chaîne postérieure, hanches, respiration et posture."},
-  jeudi:   {label:"Jeudi",   base:"Overhead + scapula",    focus:"Mobilité overhead, rotateurs externes, contrôle scapulaire."},
-  vendredi:{label:"Vendredi",base:"Full body posture",     focus:"Intégrer posture dans mouvements globaux et conditioning léger."}
-};
+})();

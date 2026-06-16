@@ -3,52 +3,51 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>Coach Bertin V50.19</title>
+  <title>Coach Bertin V51.52</title>
   <link rel="manifest" href="manifest.json"/>
   <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
   <link rel="apple-touch-icon-precomposed" sizes="180x180" href="./apple-touch-icon-precomposed.png">
   <link rel="icon" type="image/png" sizes="180x180" href="./icon-180.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
-  <meta name="theme-color" content="#0a0a0f"/>
+  <meta name="theme-color" content="#04060f"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="styles.css?v=51.52"/>
 </head>
 <body>
 
 <!-- ═══ TOPNAV ═══ -->
 <nav class="topnav">
-  <span class="topnav-brand">CB <span class="topnav-v">V50.19</span></span>
+  <span class="topnav-brand">CB <span class="topnav-v">V51.52</span></span><button type="button" id="syncStatusDot" class="sync-dot pending" title="Synchro non vérifiée" aria-label="Statut GitHub">◐</button>
   <div class="topnav-tabs" id="mainTabs">
     <button id="trainingTab"    class="tab active">WOD</button>
-    <button id="phoneTab"       class="tab">iPhone</button>
     <button id="profileTab"     class="tab">PR</button>
     <button id="referencesTab"  class="tab">Réfs</button>
     <button id="cycleTab"       class="tab">Cycle</button>
     <button id="historyTab"     class="tab">Historique</button>
+    <button id="phoneTab"       class="tab tab-pc-discreet">PC</button>
     <button id="settingsTab"    class="tab">⚙</button>
   </div>
-  <button class="hamburger" id="hamburgerBtn">&#9776;</button>
 </nav>
-<div class="hamburger-menu hidden" id="hamburgerMenu">
-  <button id="backupTabM"  class="tab-menu">💾 Backup</button>
-  <button id="githubTabM"  class="tab-menu">⚡ GitHub sync</button>
-</div>
 
 <div class="app">
 
 <!-- ═══ VUE : WOD ═══ -->
 <main id="trainingView" class="view-active">
-  <div class="view-header">
+  <div class="view-header wodplus-main-header">
     <div>
       <h2 id="workoutTitle" class="view-title"></h2>
       <p id="workoutFocus" class="view-sub"></p>
     </div>
-    <button id="phoneViewBtn" class="btn-accent">Mode iPhone →</button>
+    <div class="wodplus-header-tools">
+      <button type="button" id="wodPlusTmsBtn" class="btn-ghost wodplus-tool-btn">TMS</button>
+      <button type="button" id="wodPlusWakeBtn" class="btn-ghost wodplus-tool-btn">Écran</button>
+      <button id="phoneViewBtn" class="btn-ghost wodplus-legacy-btn">PC →</button>
+    </div>
   </div>
 
   <div class="week-day-nav">
@@ -77,13 +76,13 @@
   <p id="progressionAdvice" class="advice"></p>
 </main>
 
-<!-- ═══ VUE : MODE IPHONE ═══ -->
+<!-- ═══ VUE : PC / INSPECTION PROGRAMME ═══ -->
 <main id="phoneView">
 
 
-  <!-- Toolbar -->
-  <div class="phone-toolbar">
-    <button class="tb-btn" id="backTrainingBtn">← Retour</button>
+  <!-- Toolbar PC -->
+  <div class="phone-toolbar pc-toolbar">
+    <button class="tb-btn" id="backTrainingBtn">← WOD</button>
     <div class="phone-day-nav">
       <button class="arrow-btn sm" id="phoneDayPrev">&#8249;</button>
       <span id="phoneDayLabel" class="phone-day-label"></span>
@@ -98,10 +97,16 @@
 
   <div id="phoneWod" class="phone-wod"></div>
 
-  <!-- ═══ MODE SÉANCE GUIDÉ — optionnel, ne remplace pas la vue iPhone ═══ -->
+  <!-- ═══ MODE SÉANCE GUIDÉ — optionnel, ne remplace pas la vue PC ═══ -->
   <div id="guidedSession" class="guided-session hidden"></div>
+</main>
 
-  <!-- ═══ SAISIE FIN DE SÉANCE ═══ -->
+<!-- ═══ VUE : RÉSULTATS FIN DE SÉANCE ═══ -->
+<main id="resultsView" class="results-view">
+  <div class="results-topbar">
+    <button class="tb-btn" id="resultsBackPcTopBtn" type="button">← Retour WOD</button>
+    <span class="results-topbar-title">Résultats de la séance</span>
+  </div>
   <div class="session-entry" id="sessionEntry">
     <div class="session-header">
       <h2 class="session-title">📝 Résultats de la séance</h2>
@@ -110,6 +115,7 @@
     <div id="sessionFields" class="session-fields"></div>
     <div class="session-footer">
       <button class="btn-save" id="saveSessionBtn">💾 Sauvegarder &amp; envoyer sur GitHub</button>
+      <button class="btn-ghost session-return-btn" id="sessionBackPcBtn" type="button">← Retour WOD</button>
       <p class="session-note" id="saveStatus"></p>
     </div>
   </div>
@@ -122,10 +128,22 @@
     <p class="muted">Sauvegardé localement sur cet appareil.</p>
     <label>Focus</label>
     <select id="cycleGoal" class="select-field"></select>
+
+    <div class="cycle-start-card">
+      <label>Date de départ du cycle</label>
+      <input id="cycleStartDateInput" type="date" class="input-field"/>
+      <p class="field-hint">Cette date sert seulement à recaler semaine/jour du calendrier. Les charges restent basées sur l’historique réel.</p>
+      <div class="btn-row">
+        <button id="cycleStartTodayBtn" type="button" class="btn-ghost">Aujourd’hui</button>
+        <button id="cycleStartMondayBtn" type="button" class="btn-ghost">Lundi cette semaine</button>
+        <button id="applyCycleStartDateBtn" type="button" class="btn-accent">Appliquer date</button>
+      </div>
+    </div>
+
     <div id="focusDetails" class="focus-details"></div>
     <div class="btn-row">
-      <button id="saveCycleBtn" class="btn-accent">Sauvegarder</button>
-      <button id="newCycleBtn"  class="btn-ghost">Nouveau cycle (S1)</button>
+      <button id="saveCycleBtn" class="btn-accent">Démarrer ce programme</button>
+      <button id="newCycleBtn"  class="btn-ghost">Archiver cycle actif</button>
     </div>
   </div>
 </main>
@@ -147,6 +165,38 @@
 
 <!-- ═══ VUE : PARAMÈTRES ═══ -->
 <main id="settingsView">
+  <div class="panel settings-priority-panel">
+    <div class="system-tag" style="margin-bottom:12px">Réglages · priorité</div>
+    <h2>Actions principales</h2>
+    <p class="muted">Les actions utiles au quotidien passent en premier. Les sauvegardes locales restent plus bas.</p>
+    <div class="settings-action-grid">
+      <button id="openStephanieProfileBtn" class="btn-ghost">Profil Stéphanie</button>
+      <button id="exportWeekBtnSettings" class="btn-ghost">Exporter la semaine en texte</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Diagnostic charges</h2>
+    <p class="muted">Lecture seule. Analyse la séance affichée avec l’historique enregistré, ajoute des commentaires de cycle et repère les aberrations possibles.</p>
+    <div class="btn-row">
+      <button id="refreshChargeDiagnosticBtn" class="btn-ghost">Analyser séance actuelle</button>
+      <button id="copyChargeDiagnosticDayBtn" class="btn-ghost">Copier JSON séance</button>
+      <button id="exportChargeDiagnosticDayBtn" class="btn-ghost">Exporter JSON séance</button>
+      <button id="exportChargeDiagnosticWeekBtn" class="btn-ghost">Exporter JSON semaine</button>
+    </div>
+    <div id="chargeDiagnosticOutput" class="notice" style="margin-top:12px"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Diagnostic app</h2>
+    <p class="muted">Journal local des erreurs runtime. Utile quand quelque chose plante sur iPhone : copie le rapport et envoie-le dans le chat de dev.</p>
+    <div class="btn-row">
+      <button id="copyErrorLogBtn" class="btn-ghost" type="button">Copier rapport erreurs</button>
+      <button id="clearErrorLogBtn" class="btn-danger" type="button">Effacer erreurs</button>
+    </div>
+    <p id="errorLogStatus" class="status-msg"></p>
+  </div>
+
   <div class="panel">
     <h2>⚡ GitHub — Sauvegarde automatique</h2>
     <p class="muted">Tes résultats sont sauvegardés dans <code>Miozza/Coach-Beurt</code> après chaque séance.</p>
@@ -158,7 +208,7 @@
       <button id="testTokenBtn" class="btn-ghost">Tester le token GitHub</button>
       <button id="syncGithubBtn" class="btn-ghost">Synchroniser depuis GitHub</button>
     </div>
-    <p class="field-hint">V50.18 : la sync lit <code>data/resultats.json</code>, reconstruit l'historique local et remet les références/RPE à jour.</p>
+    <p class="field-hint">La sync lit <code>data/resultats.json</code>, reconstruit l'historique local et remet les références/RPE à jour.</p>
     <p id="tokenStatus" class="status-msg"></p>
   </div>
 
@@ -168,6 +218,17 @@
     <button id="resetCustomChargesBtn" class="btn-danger">Réinitialiser charges locales</button>
     <div id="chargeSettingsList" class="charge-grid"></div>
   </div>
+
+  <div class="panel settings-backup-panel">
+    <h2>Sauvegarde locale</h2>
+    <p class="muted">À utiliser au besoin seulement : avant un gros test, pour transférer tes données ou pour restaurer une sauvegarde locale.</p>
+    <div class="settings-action-grid settings-action-grid-secondary">
+      <button id="exportBackupBtnSettings" class="btn-ghost">Sauvegarder mes données</button>
+      <label class="btn-ghost file-label settings-file-label">Restaurer mes données<input id="importBackupFileSettings" type="file" accept="application/json"/></label>
+    </div>
+    <p class="field-hint">Format : JSON</p>
+  </div>
+
 </main>
 
 
@@ -303,23 +364,55 @@
   </div>
 </main>
 
-<footer class="footer">V50.18 · Coach Bertin · GitHub sync · Saisie résultats · iPhone optimisé</footer>
+<footer class="footer">V51.52 · Coach Bertin · WOD+ mobile-first · Vue PC · Roadmap · GitHub sync</footer>
 </div>
 
-<script src="programs/index.js"></script>
-<script src="programs/epaules_3d.js"></script>
-  <script src="programs/heritage_225.js"></script>
-<script src="programs/crossfit_maintenance.js"></script>
-<script src="programs/posture_cyphose.js"></script>
-<script src="programs/force.js"></script>
-<script src="programs/hypertrophy_base.js"></script>
-<script src="programs/force_performance.js"></script>
-<script src="programs/competition_peak.js"></script>
-<script src="programs/config.js"></script>
-<script src="programs/workouts.js"></script>
-<script src="programs/tutorials.js"></script>
-<script src="data/charges.js"></script>
-<script src="app.js"></script>
-<script src="tools/tms_session.js"></script>
+<script src="scripts/core/logger.js?v=51.52"></script>
+<script src="programs/index.js?v=51.52"></script>
+<script src="programs/epaules_3d.js?v=51.52"></script>
+<script src="programs/epaules_3d_v2.js?v=51.52"></script>
+<script src="programs/hypertrophy_base.js?v=51.52"></script>
+<script src="programs/force_performance.js?v=51.52"></script>
+<script src="programs/competition_peak.js?v=51.52"></script>
+<script src="programs/hypertrophie_fesse.js?v=51.52"></script>
+<script src="programs/posture_cyphose.js?v=51.52"></script>
+<script src="programs/force.js?v=51.52"></script>
+<script src="programs/heritage_225.js?v=51.52"></script>
+<script src="programs/config.js?v=51.52"></script>
+<script src="programs/workouts.js?v=51.52"></script>
+<script src="programs/tutorials.js?v=51.52"></script>
+<script src="data/charges.js?v=51.52"></script>
+<script src="programs/hypertrophie_fesse_stephanie.js?v=51.52"></script>
+<script src="scripts/app_helpers.js?v=51.52"></script>
+<script src="scripts/charge/equipement.js?v=51.52"></script>
+<script src="scripts/charge/utilitaires.js?v=51.52"></script>
+<script src="scripts/charge/mouvements.js?v=51.52"></script>
+<script src="scripts/charge/historique.js?v=51.52"></script>
+<script src="scripts/charge/rpe.js?v=51.52"></script>
+<script src="scripts/charge/suggestion.js?v=51.52"></script>
+<script src="scripts/charge/index.js?v=51.52"></script>
+<script src="scripts/view_pc.js?v=51.52"></script>
+<script src="scripts/charge_diagnostic_ui.js?v=51.52"></script>
+<script src="scripts/ui_modals.js?v=51.52"></script>
+<script src="scripts/app_navigation.js?v=51.52"></script>
+<script src="scripts/view_wodplus.js?v=51.52"></script>
+<script src="scripts/session/view.js?v=51.52"></script>
+<script src="scripts/session/timer.js?v=51.52"></script>
+<script src="scripts/session/results.js?v=51.52"></script>
+<script src="scripts/session/save.js?v=51.52"></script>
+<script src="scripts/session/index.js?v=51.52"></script>
+<script src="scripts/stephanie_mode.js?v=51.52"></script>
+<script src="app.js?v=51.52"></script>
+<script src="scripts/tms_session.js?v=51.52"></script>
+<script>
+  setTimeout(function(){
+    if (!window.APP_VERSION) {
+      var box = document.createElement("div");
+      box.style.cssText = "position:fixed;inset:16px;z-index:99999;background:#160b0b;color:#fff;border:1px solid #ff6b6b;border-radius:14px;padding:16px;font-family:system-ui;line-height:1.35";
+      box.innerHTML = "<strong>Erreur de chargement Coach Beurt</strong><br>app.js n’a pas démarré. Recharge la page ou efface le cache Safari.";
+      document.body.appendChild(box);
+    }
+  }, 1200);
+</script>
 </body>
 </html>

@@ -1,186 +1,178 @@
-// Coach Bertin V48.9 — Phase 4 : Compétition CrossFit Peak (8 semaines)
-// Objectif : performance Open CrossFit janvier 2027
-// V48.9 : programme autonome. Logique compétition réelle : pacing, benchmarks, simulations, taper.
+// Coach Beurt — Programme autonome : Hypertrophie Fessiers (4 semaines)
+// Objectif : spécialisation fessiers réaliste, sans frapper les hanches/lombaires lourdement 4 jours de suite.
+// Structure : 4 jours/semaine, 4 semaines. Deux vrais stimuli fessiers, un jour support haut du corps/posture, un jour pump/récupération active.
+// Règle centrale : progression par RPE/RIR et qualité, pas par charges inventées.
 
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
-window.COACH_BERTIN_PROGRAMS.competition_peak = {
-  id: "competition_peak",
-  label: "Compétition CrossFit Peak — Phase 4",
-  phase: 4,
-  phaseName: "Peaking compétition janvier 2027",
-  phaseEnd: "janvier 2027",
-  nextPhase: null,
-  impact: "Performance CrossFit. WODs longs 15–35 min, benchmarks, pacing, transitions, haltéro sous fatigue et taper. La force est maintenue, le WOD devient central.",
-  weekLabels: ["S1 Pacing","S2 Volume Open","S3 Intensité","S4 Chipper","S5 Benchmarks","S6 Simulation","S7 Taper","S8 Compétition"],
+window.COACH_BERTIN_PROGRAMS.hypertrophie_fesse = {
+  id: "hypertrophie_fesse",
+  label: "Hypertrophie Fessiers — 4 semaines",
+  phase: 0,
+  phaseName: "Spécialisation fessiers contrôlée",
+  phaseEnd: "4 semaines",
+  nextPhase: "shoulders3d",
+  impact: "Développer les fessiers avec deux séances stimulantes par semaine, une séance support et une séance pump/récupération. Priorité : tension utile, amplitude, récupération et dos protégé.",
+  days: ["lundi", "mardi", "jeudi", "vendredi"],
+  weekLabels: ["S1 Base", "S2 Volume", "S3 Surcharge contrôlée", "S4 Consolidation"],
   weekGoals: [
-    "Construire le pacing. WODs contrôlés, transitions propres, aucune redline inutile.",
-    "Volume Open. Plus de densité, WODs 18–25 min, garder la technique sous fatigue.",
-    "Intensité courte/moyenne. Apprendre à pousser sans exploser.",
-    "Chippers longs. Endurance musculaire et stratégie de cassure.",
-    "Benchmarks adaptés. Mesurer sans se détruire.",
-    "Simulation compétition. Deux efforts dans la semaine, gestion récupération.",
-    "Taper. Volume réduit, intensité vive, fraîcheur prioritaire.",
-    "Semaine compétition/test. Très peu de volume. Arriver nerveux et frais."
+    "Trouver les charges propres. Garder 3 reps en réserve sur les mouvements lourds.",
+    "Ajouter un peu de volume sur les mouvements principaux sans augmenter toutes les charges en même temps.",
+    "Semaine la plus stimulante : 1-2 reps en réserve, aucune série grindée, aucun signal lombaire.",
+    "Réduire le volume de 30-40 %, garder le mouvement, sortir frais et sans douleur."
   ],
-  sets: ["WOD 15-20","WOD 18-25","WOD 12-20","WOD 25-35","Benchmarks","Simulation","Taper","Compétition"],
-  targetReps: [8,8,6,8,5,5,5,3],
-  mult: [0.70,0.72,0.75,0.70,0.78,0.72,0.60,0.55],
-  rest: "selon WOD",
-  tag: "peak compétition"
+  sets: ["2-3 séries utiles", "3-4 séries utiles", "3-5 séries utiles", "2 séries faciles"],
+  targetReps: [10, 10, 8, 10],
+  mult: [0.66, 0.70, 0.74, 0.60],
+  rest: "1:00–2:30 selon le bloc",
+  tag: "fessiers hypertrophie récupérable",
+  trainingStyle: "hypertrophy"
 };
 
-function cpWeekPlan(week){
+function gfWeekPlan(week){
   return ({
-    1:{label:"S1 Pacing",note:"Rythme contrôlé. Tu dois finir les WODs en contrôle, pas mort.",clean:"6×2",cleanLoad:"155-165 lb",front:"4×4",frontLoad:"165-175 lb",skill:"base",long:"AMRAP 20",wodNote:"pacing nasal le plus longtemps possible"},
-    2:{label:"S2 Volume Open",note:"Volume compétitif. Transitions plus rapides, mais technique stable.",clean:"7×2",cleanLoad:"165-175 lb",front:"5×3",frontLoad:"175-185 lb",skill:"volume",long:"AMRAP 24",wodNote:"volume Open, pas de sprint au départ"},
-    3:{label:"S3 Intensité",note:"Plus intense, moins de bavardage entre les mouvements. Push sans exploser.",clean:"8×1",cleanLoad:"175-190 lb",front:"5×3",frontLoad:"185-195 lb",skill:"intensity",long:"For time",wodNote:"intense mais avec cassures planifiées"},
-    4:{label:"S4 Chipper",note:"Grosse semaine endurance musculaire. Stratégie de cassure obligatoire.",clean:"6×1",cleanLoad:"185-195 lb",front:"4×3",frontLoad:"185-195 lb",skill:"chipper",long:"Chipper 30",wodNote:"long effort, aucune panique"},
-    5:{label:"S5 Benchmarks",note:"Benchmarks adaptés. Mesurer, pas prouver ton ego.",clean:"5×1",cleanLoad:"190-205 lb",front:"3×3",frontLoad:"190-200 lb",skill:"benchmark",long:"Benchmark",wodNote:"tester proprement"},
-    6:{label:"S6 Simulation",note:"Simulation compétition. Gestion de deux efforts. Récupération active importante.",clean:"4×1",cleanLoad:"185-200 lb",front:"3×2",frontLoad:"185-195 lb",skill:"simulation",long:"Simulation 35",wodNote:"compétition simulée, stratégie avant intensité"},
-    7:{label:"S7 Taper",note:"Volume réduit. Garder vitesse et timing. Tu dois sortir plus frais que tu es entré.",clean:"5×1 facile",cleanLoad:"155-175 lb",front:"3×2 léger",frontLoad:"155-165 lb",skill:"taper",long:"AMRAP 15",wodNote:"court et vif, jamais destructeur"},
-    8:{label:"S8 Compétition",note:"Aucun nouveau stimulus. Activer, respirer, performer.",clean:"3×1 facile",cleanLoad:"135-155 lb",front:"2×2 léger",frontLoad:"135-155 lb",skill:"comp",long:"Test",wodNote:"effort choisi, fraîcheur prioritaire"}
-  })[week] || {label:"S1 Pacing",note:"",clean:"6×2",cleanLoad:"155 lb",front:"4×4",frontLoad:"165 lb",skill:"base",long:"AMRAP 20",wodNote:"contrôlé"};
+    1: {
+      label:"S1 Base", rir:"3 RIR", mainSets:"3", supportSets:"2", pumpSets:"2", repMain:"8-10", repSupport:"10-12", repPump:"15-25", intensity:"RPE 6-7", note:"Base technique. On doit finir avec l'impression qu'on aurait pu en faire plus."
+    },
+    2: {
+      label:"S2 Volume", rir:"2-3 RIR", mainSets:"4", supportSets:"3", pumpSets:"3", repMain:"8-10", repSupport:"10-12", repPump:"15-25", intensity:"RPE 7", note:"Ajoute surtout du volume, pas une course aux charges."
+    },
+    3: {
+      label:"S3 Surcharge contrôlée", rir:"1-2 RIR", mainSets:"4-5", supportSets:"3", pumpSets:"3-4", repMain:"6-8", repSupport:"8-10", repPump:"12-20", intensity:"RPE 7.5-8", note:"Plus lourd, mais propre. Zéro grind lombaire."
+    },
+    4: {
+      label:"S4 Consolidation", rir:"3-4 RIR", mainSets:"2-3", supportSets:"2", pumpSets:"2", repMain:"8-10", repSupport:"10", repPump:"15-20", intensity:"RPE 6", note:"Volume réduit. Le but est d'assimiler, pas de prouver quelque chose."
+    }
+  })[week] || {label:"S1 Base", rir:"3 RIR", mainSets:"3", supportSets:"2", pumpSets:"2", repMain:"8-10", repSupport:"10-12", repPump:"15-25", intensity:"RPE 6-7", note:"Base technique."};
 }
 
-function cpEx(name,format,load,rest,note){return {name:name,format:format,load:load||"—",rest:rest||"—",note:note||""};}
-
-function cpWarmup(text){
-  return {time:"9 min",title:"Warm-up compétition",tag:"Préparation",kind:"warmup",text:text};
-}
-function cpMob(text){
-  return {time:"5 min",title:"Mobilité / retour au calme",tag:"Mobilité",kind:"mobility",text:text||"Respiration 1 min + lat stretch 1 min/côté + couch stretch 1 min/côté + marche lente."};
+function gfEx(name, format, load, rest, note){
+  return { name:name, format:format, load:load || "—", rest:rest || "—", note:note || "" };
 }
 
-function competitionPeakBlocks(day,week){
-  var p = cpWeekPlan(week);
-  var taper = week >= 7;
-  var simulation = week === 6;
-  var benchmark = week === 5;
+function gfBlocks(day, week){
+  var p = gfWeekPlan(week);
+  var deload = week === 4;
 
-  // LUNDI — Skill + WOD court/moyen intense. Pas une journée PPL.
   if(day === "lundi") return [
-    cpWarmup("Row facile 3 min + air squats 2×10 + inchworm 6 reps + wall ball léger 2×8 + burpees step-down 2×5 + montée rythme 2 min."),
+    { time:"8 min", title:"Warm-up hanches / fessiers", tag:"Préparation", kind:"warmup",
+      text:"Bike 3 min + 90/90 hip switch 8/côté + glute bridge 2×12 avec pause + lateral band walk 2×10/côté + 2-3 ramp-up sets du hip thrust." },
 
-    {time:"10 min",title:"A. Skill transitions",tag:"Skill",kind:"main",
-     exercises:[cpEx("Transitions wall ball / burpee",taper?"6×30 sec":"8×40 sec","Wall Ball 14 lb","0:40-1:00","Objectif : cycle régulier, respiration, pas de précipitation.")]},
+    { time:"18 min", title:"A. Hip Thrust — stimulus principal", tag:"Principal", kind:"main",
+      exercises:[gfEx("Barbell Hip Thrust", p.mainSets + "×" + p.repMain, "charge du jour selon " + p.intensity, "2:00-2:30", "Pause 1 sec en haut. Côtes basses, menton rentré. Arrête la série si le bas du dos compense. " + p.rir)] },
 
-    {time:taper?"12 min":week>=3?"16 min":"15 min",title:"B. WOD Open court",tag:"Conditioning",kind:"wod",
-     text:(week===1?"AMRAP 15 : 12 wall balls 14 lb + 10 cal row + 8 burpees." :
-       week===2?"AMRAP 18 : 14 wall balls 14 lb + 12 cal row + 10 burpees." :
-       week===3?"For time 5 rounds : 12 wall balls 14 lb + 10 burpees + 12 cal row. Cap 16 min." :
-       week===4?"AMRAP 18 : 15 wall balls 14 lb + 12 box step-ups + 10 burpees." :
-       week===5?"Benchmark style Open — AMRAP 15 : 10 wall balls 14 lb + 10 cal row + 10 burpees." :
-       week===6?"AMRAP 16 : 12 wall balls 14 lb + 12 cal row + 8 burpees over line." :
-       week===7?"AMRAP 12 : 8 wall balls 14 lb + 8 cal row + 6 burpees. Reste frais." :
-       "AMRAP 10 : 6 wall balls 14 lb + 6 cal row + 4 burpees. Activation seulement.")+" "+p.wodNote+"."},
+    { time:"13 min", title:"B. Amplitude longue sans ego", tag:"Hypertrophie", kind:"accessory",
+      exercises:[
+        gfEx("Front-Foot Elevated Split Squat", p.supportSets + "×" + p.repSupport + "/jambe", "modéré, " + p.rir, "0:30 avant B2", "Grand pas. Descente contrôlée. Tu dois sentir l'étirement fessier, pas chercher un record."),
+        gfEx("Cable Pull-Through", p.supportSets + "×12-15", "léger à modéré", "1:15 après B2", "Hinge propre. Les bras ne tirent pas.")
+      ] },
 
-    {time:"10 min",title:"C. Reset moteur",tag:"Recovery",kind:"accessory",
-     exercises:[cpEx("Bike facile",taper?"6 min":"8 min","zone 2","—","Faire redescendre le système. Tu dois finir mieux, pas écrasé.")]},
+    { time:"7 min", title:"C. Moyen fessier / stabilité", tag:"Accessoire", kind:"accessory",
+      exercises:[gfEx("Cable Hip Abduction", p.pumpSets + "×" + p.repPump + "/côté", "léger", "0:30-0:45", "Brûlure locale OK. Échec inutile.")] },
 
-    cpMob()
+    { time:"6-8 min", title:"D. Conditioning bas impact", tag:"Conditioning", kind:"wod",
+      text:(deload ? "Bike 6 min facile." : "EMOM 8 : min 1 = 10-12 cal bike modéré ; min 2 = 8 KB deadlifts légers.") + " RPE 6-7 max. Le WOD ne doit pas devenir une deuxième séance de jambes." },
+
+    { time:"5 min", title:"E. Mobilité", tag:"Mobilité", kind:"mobility",
+      text:"Couch stretch 1 min/côté + pigeon stretch 1 min/côté + respiration 90/90 1 min." }
   ];
 
-  // MARDI — Gymnastics + engine intervals. Objectif : capacité CrossFit, pas pull day.
   if(day === "mardi") return [
-    cpWarmup("SkiErg ou row 3 min + dead hang 2×20 sec + scap pull-up 2×8 + hollow hold 2×20 sec + ring row 2×8 + 3 accélérations de 15 sec."),
+    { time:"8 min", title:"Warm-up posture / haut du corps", tag:"Préparation", kind:"warmup",
+      text:"Row facile 3 min + band pull-apart 2×15 + scap push-up 2×10 + dead bug 2×8/côté + activation fessiers légère 1×20." },
 
-    {time:"12 min",title:"A. Gymnastics skill",tag:"Skill",kind:"main",
-     exercises:[
-       cpEx("Pull-up / chest-to-bar technique",taper?"4×4 facile":benchmark?"5×4":"6×4-6","poids du corps","0:45","Qualité. Stop avant de perdre le rythme."),
-       cpEx("Toes-to-bar progression / hanging knee raise",taper?"4×5":"5×6-8","poids du corps","0:45","Garder le tronc serré. Pas de swing incontrôlé.")
-     ]},
+    { time:"16 min", title:"A. Haut du corps — maintien force", tag:"Principal", kind:"main",
+      exercises:[gfEx("Bench Press", deload ? "3×8" : "4×6-8", "RPE 7, pas d'échec", "2:00", "Garder le haut du corps actif sans ajouter de fatigue aux hanches.")] },
 
-    {time:week>=4&&!taper?"18 min":taper?"12 min":"16 min",title:"B. Intervalles engine",tag:"Conditioning",kind:"wod",
-     text:(week===1?"EMOM 16 : min 1 = 12 cal row ; min 2 = 10 ring rows ; min 3 = 12 cal bike ; min 4 = 10 sit-ups." :
-       week===2?"EMOM 20 : min 1 = 14 cal row ; min 2 = 8 pull-ups ; min 3 = 14 cal bike ; min 4 = 12 sit-ups." :
-       week===3?"EMOM 16 : min 1 = 15 cal row ; min 2 = 10 burpees ; min 3 = 12 cal ski ; min 4 = 8 pull-ups." :
-       week===4?"AMRAP 18 : 12 cal ski + 10 pull-ups/ring rows + 12 sit-ups + 10 box step-ups." :
-       week===5?"Helen adapté — 3 rounds for time : 400 m row + 21 KB swings + 12 pull-ups/ring rows. Cap 15 min." :
-       week===6?"EMOM 18 : min 1 = 15 cal row ; min 2 = 10 burpees ; min 3 = 10 pull-ups/ring rows." :
-       week===7?"EMOM 12 : min 1 = 10 cal row ; min 2 = 6 pull-ups/ring rows ; min 3 = 8 sit-ups." :
-       "EMOM 8 : min 1 = 8 cal row ; min 2 = 5 pull-ups/ring rows. Activation.")+" "+p.wodNote+"."},
+    { time:"14 min", title:"B. Dos / posture", tag:"Secondaire", kind:"accessory",
+      exercises:[
+        gfEx("Chest-Supported Row", deload ? "2×10" : "3×10-12", "modéré", "0:30 avant B2", "Support poitrine pour ne pas charger le bas du dos."),
+        gfEx("Face Pull", deload ? "2×15" : "3×15-20", "léger", "1:00 après B2", "Scapulas arrière/bas, cou relax.")
+      ] },
 
-    {time:"10 min",title:"C. Posture rapide",tag:"Accessoire",kind:"accessory",
-     exercises:[
-       cpEx("Face Pull",taper?"2×15":"3×15-20","60-70 lb","0:45","Santé épaules."),
-       cpEx("Farmer Carry",taper?"2×30 m":"3×40 m","lourd propre","1:00","Posture haute, respiration contrôlée.")
-     ]},
+    { time:"8 min", title:"C. Activation fessiers optionnelle", tag:"Préhab", kind:"accessory",
+      exercises:[gfEx("Mini-Band Lateral Walk", "2 tours faciles", "bande légère", "0:45", "Seulement activation. Pas une séance fessiers cachée.")] },
 
-    cpMob("Lat stretch 1 min/côté + pec minor stretch 1 min/côté + respiration 2 min.")
+    { time:"8-10 min", title:"D. Core et cardio léger", tag:"Core", kind:"wod",
+      text:(deload ? "2 tours faciles : 30 sec dead bug + 30 sec side plank/côté." : "AMRAP 9 contrôlé : 8 dead bug/côté + 10 ring rows + 30 sec farmer carry.") + " RPE 6-7. Zéro congestion fessiers recherchée." },
+
+    { time:"5 min", title:"E. Mobilité", tag:"Mobilité", kind:"mobility",
+      text:"Child pose breathing 1 min + doorway pec stretch 1 min/côté + hamstring floss léger 1 min/côté." }
   ];
 
-  // JEUDI — Haltéro + WOD moyen. Maintenir la force, performer sous fatigue.
   if(day === "jeudi") return [
-    cpWarmup("Row 3 min + front rack stretch 1 min + tall muscle clean 2×5 + clean pull 2×3 + front squat barre 2×5 + montée clean progressive."),
+    { time:"8 min", title:"Warm-up hinge", tag:"Préparation", kind:"warmup",
+      text:"Bike 3 min + hamstring sweep 8/côté + hip airplane assisté 5/côté + KB RDL léger 2×10 + ramp-up RDL." },
 
-    {time:"14 min",title:"A. Haltéro maintien",tag:"Haltéro",kind:"main",
-     exercises:[cpEx("Power Clean",p.clean,p.cleanLoad,taper?"1:30":"1:30-2:00","Vitesse. Réception propre. Pas de grind pendant une phase compétition.")]},
+    { time:"17 min", title:"A. Hinge — tension longue", tag:"Principal", kind:"main",
+      exercises:[gfEx("Romanian Deadlift", p.mainSets + "×" + p.repMain, "charge du jour selon " + p.intensity, "2:00-2:30", "Descente lente 2-3 sec. Étirement ischios/fessiers. Stop si le dos devient le moteur. " + p.rir)] },
 
-    {time:"10 min",title:"B. Front squat / thruster prep",tag:"Force maintien",kind:"accessory",
-     exercises:[cpEx("Front Squat",p.front,p.frontLoad,taper?"1:30":"2:00","Maintenir les jambes et le rack. Aucune bataille.")]},
+    { time:"13 min", title:"B. Unilatéral contrôlé", tag:"Hypertrophie", kind:"accessory",
+      exercises:[
+        gfEx("Step-Up", p.supportSets + "×" + p.repSupport + "/jambe", "modéré", "0:30 avant B2", "Pousser par la jambe sur la box. Pas d'élan avec la jambe arrière."),
+        gfEx("Single-Leg Hip Thrust", p.supportSets + "×10-12/jambe", "poids du corps ou DB légère", "1:15 après B2", "Contrôle du bassin. Contraction propre.")
+      ] },
 
-    {time:taper?"10 min":week>=4?"18 min":"14 min",title:"C. WOD haltéro sous fatigue",tag:"Conditioning",kind:"wod",
-     text:(week===1?"AMRAP 14 : 6 power cleans légers + 10 wall balls 14 lb + 12 cal row." :
-       week===2?"AMRAP 18 : 5 power cleans légers + 10 box step-ups + 12 wall balls 14 lb + 10 cal row." :
-       week===3?"For time 21-15-9 : wall balls 14 lb + cal row, puis 15 power cleans légers. Cap 14 min." :
-       week===4?"AMRAP 18 : 4 power cleans + 8 front squats légers + 12 burpees + 14 cal row." :
-       week===5?"Grace adapté — For time : 30 clean and jerk légers à modérés. Cap 8 min, puis 5 min easy row." :
-       week===6?"For time 4 rounds : 10 power cleans légers + 12 wall balls 14 lb + 12 cal row. Cap 18 min." :
-       week===7?"AMRAP 10 : 4 power cleans légers + 8 wall balls 14 lb + 8 cal row. Vif, frais." :
-       "AMRAP 8 : 3 power cleans légers + 6 wall balls 14 lb + 6 cal row. Activation.")+" "+p.wodNote+"."},
+    { time:"7 min", title:"C. Pump local court", tag:"Pump", kind:"accessory",
+      exercises:[gfEx("Frog Bridge", p.pumpSets + "×" + p.repPump, "léger", "0:45", "Sensation locale, pas d'échec obligatoire.")] },
 
-    cpMob("Front rack stretch 1 min + lat stretch 1 min/côté + wrist stretch 1 min + respiration 1 min.")
+    { time:"7-9 min", title:"D. Conditioning sans impact", tag:"Conditioning", kind:"wod",
+      text:(deload ? "SkiErg 6 min facile." : "9 min contrôlé : 8 cal SkiErg + 8 push-ups + 10 anchored sit-ups.") + " On évite les sauts et les lunges ici pour ne pas cumuler." },
+
+    { time:"5 min", title:"E. Mobilité", tag:"Mobilité", kind:"mobility",
+      text:"Hamstring stretch 1 min/côté + adductor rockback 1 min + figure-4 stretch 1 min/côté." }
   ];
 
-  // VENDREDI — WOD long compétition 15–35 min. Cœur de la phase.
   return [
-    cpWarmup("Bike/row 4 min + mobilité hanches/épaules 2 min + 2 tours faciles : 6 wall balls + 6 cal row + 4 burpees + 6 box step-ups."),
+    { time:"8 min", title:"Warm-up récupération active", tag:"Préparation", kind:"warmup",
+      text:"Bike ou row facile 4 min + mobilité hanches 2 min + band walk léger 1×12/côté + respiration 90/90 1 min." },
 
-    {time:taper?"6 min":"8 min",title:"A. Prep spécifique",tag:"Primer",kind:"main",
-     exercises:[cpEx("Primer transitions",taper?"3 tours faciles":"4 tours", "6 reps / mouvement", "0:45", "Tester le rythme du WOD sans créer de fatigue.")]},
+    { time:"14 min", title:"A. Pump fessiers léger", tag:"Accessoire", kind:"main",
+      exercises:[gfEx("Hip Thrust", p.pumpSets + "×" + p.repPump, "léger à modéré, RPE 6", "1:00", "Tempo 2-1-2. Aucun grind. Si les hanches sont lourdes, remplacer par glute bridge au sol.")] },
 
-    {time:week===6?"35 min":week===4?"30 min":week===2?"24 min":week===7?"15 min":week===8?"12 min":week===5?"20 min":"20 min",title:"B. WOD long compétition",tag:"Conditioning",kind:"wod",
-     text:(week===1?"AMRAP 20 : 12 wall balls 14 lb + 12 cal row + 10 box step-ups + 8 burpees." :
-       week===2?"AMRAP 24 : 15 wall balls 14 lb + 15 cal row + 12 box step-ups + 10 burpees + 8 ring rows." :
-       week===3?"For time 5 rounds : 20 cal row + 20 wall balls 14 lb + 15 box step-ups + 10 burpees. Cap 25 min." :
-       week===4?"Chipper for time : 50 cal row + 50 wall balls 14 lb + 50 box step-ups + 40 KB swings + 30 burpees + 20 ring rows. Cap 30 min." :
-       week===5?"Benchmark long — AMRAP 20 : 5 power cleans légers + 10 wall balls 14 lb + 15 cal row + 20 sit-ups." :
-       week===6?"Simulation compétition — For time : 60 cal row + 50 wall balls 14 lb + 40 box step-ups + 30 burpees + 20 power cleans légers + 10 pull-ups/ring rows. Cap 35 min." :
-       week===7?"AMRAP 15 : 10 wall balls 14 lb + 10 cal row + 8 box step-ups + 6 burpees. Reste frais." :
-       "Test court — AMRAP 12 : 8 wall balls 14 lb + 8 cal row + 6 burpees + 6 sit-ups. Activation compétitive.")+" "+p.wodNote+"."},
+    { time:"14 min", title:"B. Carries + tronc", tag:"Core", kind:"accessory",
+      exercises:[
+        gfEx("Farmer Carry", deload ? "3×30 sec" : "4×30-40 sec", "lourd mais propre", "0:30 avant B2", "Tronc solide. Pas de compensation lombaire."),
+        gfEx("Pallof Press", deload ? "2×10/côté" : "3×10-12/côté", "modéré", "1:00 après B2", "Anti-rotation. Bassin stable.")
+      ] },
 
-    {time:"5 min",title:"C. Cooldown obligatoire",tag:"Recovery",kind:"mobility",
-     text:"Marche lente 2 min + respiration nasale 1 min + couch stretch 1 min/côté. Évalue stratégie : départ, cassures, transitions."}
+    { time:"8 min", title:"C. Mobilité active hanches", tag:"Préhab", kind:"accessory",
+      exercises:[gfEx("Hip Switch", "2-3 tours", "poids du corps", "0:30", "Qualité d'amplitude. Ce bloc sert à récupérer.")] },
+
+    { time:"8-10 min", title:"D. WOD court non destructeur", tag:"Conditioning", kind:"wod",
+      text:(deload ? "Bike 6 min facile + marche légère." : "AMRAP 10 : 10 cal row + 8 DB push press légers + 10 sit-ups.") + " Pas de lunges, pas de deadlift lourd, pas de box jump. RPE 7 max." },
+
+    { time:"5 min", title:"E. Retour au calme", tag:"Mobilité", kind:"mobility",
+      text:"Pigeon stretch 1 min/côté + couch stretch 1 min/côté + respiration couchée 1 min." }
   ];
 }
 
-window.COACH_BERTIN_PROGRAMS.competition_peak.getBlocks = function(day, week){
-  return competitionPeakBlocks(day, week);
+window.COACH_BERTIN_PROGRAMS.hypertrophie_fesse.getBlocks = function(day, week){
+  return gfBlocks(day, week);
 };
 
-window.COACH_BERTIN_PROGRAMS.competition_peak.getWodText = function(day, week){
-  var b = competitionPeakBlocks(day, week).filter(function(x){ return x.kind === "wod"; })[0];
+window.COACH_BERTIN_PROGRAMS.hypertrophie_fesse.getWodText = function(day, week){
+  var b = gfBlocks(day, week).filter(function(x){ return x.kind === "wod"; })[0];
   return b ? b.text : "";
 };
 
-window.COACH_BERTIN_PROGRAMS.competition_peak.cycleRules = [
-  "Phase compétition : le WOD est central, la force est maintenue.",
-  "Vendredi = WOD long 15–35 min. Stratégie avant ego.",
-  "Aucune séance ne doit te laisser détruit pendant 3 jours.",
-  "Les charges haltéro doivent rester rapides. Pas de grind.",
-  "S7 et S8 : fraîcheur prioritaire. Réduire le volume, garder la vitesse."
+window.COACH_BERTIN_PROGRAMS.hypertrophie_fesse.cycleRules = [
+  "Deux vrais jours fessiers par semaine : lundi hip thrust, jeudi hinge. Mardi et vendredi ne doivent pas devenir des séances fessiers lourdes déguisées.",
+  "Progression par RPE/RIR : les charges viennent de la performance réelle, pas de chiffres inventés dans le programme.",
+  "Volume utile visé : commencer bas, monter progressivement, puis réduire en S4. Si les fessiers ou le bas du dos restent lourds plus de 48 h, retirer une série aux blocs A/B.",
+  "Aucune série lourde à l'échec. L'échec est tolérable seulement sur un petit exercice pump, et même là ce n'est pas nécessaire.",
+  "Stop ou remplacement si douleur lombaire, douleur hanche vive, compensation majeure ou perte d'amplitude."
 ];
 
-window.COACH_BERTIN_PROGRAMS.competition_peak.dayIntentions = {
-  lundi: "Skill + WOD Open court/moyen. Apprendre le bon départ et les transitions propres.",
-  mardi: "Gymnastics + engine intervals. Construire le moteur et garder les tirages utiles.",
-  jeudi: "Haltéro sous fatigue contrôlée. Maintenir la puissance sans te vider.",
-  vendredi: "WOD long compétition. C'est la journée centrale de la phase peak."
+window.COACH_BERTIN_PROGRAMS.hypertrophie_fesse.dayIntentions = {
+  lundi: "Stimulus fessiers principal : hip thrust + amplitude longue, volume contrôlé.",
+  mardi: "Support haut du corps/posture : récupération des hanches, maintien de la force générale.",
+  jeudi: "Deuxième stimulus fessiers : hinge contrôlé + unilatéral, sans surcharge lombaire.",
+  vendredi: "Pump léger, core et récupération active : finir la semaine sans accumuler trop de fatigue."
 };
 
-window.COACH_BERTIN_PROGRAMS.competition_peak.dayMeta = {
-  lundi:   {label:"Lundi",   base:"Open court/moyen",     focus:"Skill rapide + WOD type Open court ou moyen."},
-  mardi:   {label:"Mardi",   base:"Gym + engine",         focus:"Gymnastics, intervalles, pacing respirable."},
-  jeudi:   {label:"Jeudi",   base:"Haltéro + WOD moyen", focus:"Barbell cycling, transitions, intensité contrôlée."},
-  vendredi:{label:"Vendredi",base:"WOD long compétition",focus:"Chipper/AMRAP long 15–35 min, stratégie et pacing."}
+window.COACH_BERTIN_PROGRAMS.hypertrophie_fesse.dayMeta = {
+  lundi: "Fessiers lourd récupérable.",
+  mardi: "Haut du corps, posture et activation légère.",
+  jeudi: "Hinge contrôlé et tension longue.",
+  vendredi: "Pump léger, core et récupération."
 };

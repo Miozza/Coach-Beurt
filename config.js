@@ -1,10 +1,219 @@
-// Coach Bertin V48.9 — index des programmes
-window.COACH_BERTIN_PROGRAM_INDEX = [
-  { id: "shoulders3d",       file: "programs/epaules_3d.js",         name: "Phase 1 — Épaules 3D + Triceps",          phase: 1 },
-  { id: "hypertrophy_base",  file: "programs/hypertrophy_base.js",   name: "Phase 2 — Hypertrophie / Force Base",      phase: 2 },
-  { id: "force_performance", file: "programs/force_performance.js",  name: "Phase 3 — Force + Résistance musculaire",  phase: 3 },
-  { id: "competition_peak",  file: "programs/competition_peak.js",   name: "Phase 4 — Compétition CrossFit Peak",      phase: 4 },
-  { id: "maintenance",       file: "programs/crossfit_maintenance.js",name: "Maintien / Récupération",                 phase: 0 },
-  { id: "posture",           file: "programs/posture_cyphose.js",    name: "Posture / Cyphose",                        phase: 0 },
-  { id: "strength",          file: "programs/force.js",              name: "Force classique",                          phase: 0 }
-];
+# Contrat de structure durable — Coach Beurt
+
+## Objectif
+
+Coach Beurt ne doit plus grossir par patchs dispersés. Chaque fichier doit avoir une responsabilité claire et servir à l’application, à la validation ou à la documentation stable.
+
+Ce contrat vise à éviter de refaire le même ménage : noms de mouvements, logique de charges dans le mauvais fichier, dossiers temporaires, patchs runtime cachés et fichiers historiques inutiles.
+
+## Structure autorisée
+
+```txt
+app.js                  orchestration principale
+index.html              structure HTML + ordre explicite de chargement
+styles.css              interface visuelle
+manifest.json           PWA
+service-worker.js       service worker sans cache durable
+programs/               programmes d’entraînement seulement
+scripts/                code runtime chargé par l’app
+data/                   données et bases de charges
+dev/                    validations et outils de développement
+docs/                   contrats et documentation stable
+CHANGELOG.md            seul historique de version
+ETAT_ACTUEL.md          état court de référence
+README.md               lecture rapide du projet
+RELEASE_CHECKLIST.md    procédure de livraison
+```
+
+Le dossier `tools/` est interdit. Les fichiers de type `RELEASE_NOTES_V*`, `AUDIT_V*`, `REPORT_V*` ou autre historique versionné sont interdits.
+
+## Rôle de `app.js`
+
+`app.js` reste le chef d’orchestre. Il peut :
+
+- initialiser l’application;
+- maintenir le `state` principal;
+- brancher les événements;
+- coordonner les vues;
+- appeler les modules spécialisés.
+
+Il ne devrait plus recevoir de nouvelle logique métier profonde si un domaine clair existe déjà.
+
+## Rôle de `scripts/`
+
+`scripts/` contient le code runtime chargé par `index.html`.
+
+Règle : un problème doit être corrigé dans son domaine.
+
+```txt
+charge / progression     scripts/charge/equipement.js, scripts/charge/mouvements.js, scripts/charge/historique.js, scripts/charge/rpe.js, scripts/charge/suggestion.js
+session terrain         scripts/session/view.js, scripts/session/timer.js, scripts/session/results.js, scripts/session/save.js, scripts/session/index.js
+core runtime            scripts/core/logger.js
+WOD mobile               scripts/view_wodplus.js
+PC / inspection          scripts/view_pc.js
+navigation               scripts/app_navigation.js
+modales                  scripts/ui_modals.js
+TMS                      scripts/tms_session.js
+Stéphanie                scripts/stephanie_mode.js
+diagnostic UI charges    scripts/charge_diagnostic_ui.js
+helpers communs          scripts/app_helpers.js
+```
+
+Les domaines `scripts/charge/`, `scripts/session/` et `scripts/core/` sont maintenant présents. Les futurs regroupements (`scripts/ui/`, `scripts/sync/`) doivent rester des versions dédiées et testées.
+
+## Rôle de `programs/`
+
+`programs/` contient le contenu d’entraînement. Autorisé : cycles, séances, blocs, mouvements, notes de programmation.
+
+Interdit dans `programs/` :
+
+- patch runtime;
+- logique de suggestion de charges;
+- modale ou rendu UI;
+- logique GitHub;
+- migration de données;
+- correction globale de l’application.
+
+`programs/config.js` doit rester une configuration statique. Il ne doit pas contenir `coachBeurtV5018RuntimePatch`, `smartSuggestedLoad`, `athleteSuggestedLoad`, `loadInfoButtonHtml`, `showLoadInfoModal` ou logique équivalente.
+
+## Rôle de `data/`
+
+`data/` contient les données et bases de charges. Les ZIP `update-files-no-durable-data` ne doivent contenir aucun fichier `data/`.
+
+Fichiers durables protégés :
+
+```txt
+data/resultats.json
+data/athlete_state.json
+data/cycle_state.json
+```
+
+`data/charges.js` ne doit pas être modifié sauf demande explicite.
+
+## Rôle de `dev/`
+
+`dev/` contient les validations. Un fichier dev doit être appelé dans `RELEASE_CHECKLIST.md` ou justifié par une documentation stable.
+
+Validations obligatoires :
+
+```bash
+node dev/regression_checks.js
+node dev/charge_engine_checks.js
+node dev/progression_contract_checks.js
+node dev/structure_checks.js
+```
+
+## Rôle de `docs/`
+
+`docs/` contient des contrats stables. Un document doit expliquer une règle durable ou un audit encore utile. Aucun document versionné temporaire ne doit être ajouté.
+
+## Règle des noms de mouvements
+
+Nom de mouvement = nom simple + équipement seulement si utile à la charge.
+
+Autorisé :
+
+```txt
+Bench Press
+DB Bench
+Lateral Raise DB
+Lateral Raise câble
+Rear Delt Fly DB
+Power Clean
+Knee Raise
+```
+
+Interdit :
+
+```txt
+B1. Hip Thrust
+Power Clean technique
+Pull-Up progression
+Overhead Rope Extension — rappel vendredi
+DB Shoulder Press / Landmine Press
+DB RDL ou Barbell RDL
+```
+
+Les intentions (`technique`, `progression`, `léger`, `rappel`, `WOD`) doivent vivre dans le contexte, la note ou le bloc, pas dans le nom du mouvement.
+
+## Règle de communication entre fichiers
+
+Les modules exposent des fonctions. `app.js` orchestre.
+
+Direction souhaitée :
+
+```txt
+app.js → modules spécialisés
+modules → helpers/globaux nécessaires
+```
+
+À éviter :
+
+```txt
+module A appelle module B qui appelle app.js qui rappelle module A
+```
+
+Un module ne doit pas devenir un deuxième `app.js` caché.
+
+## Critère “un fichier sert à quelque chose”
+
+Un fichier est utile s’il remplit au moins une condition :
+
+- chargé par `index.html`;
+- utilisé comme programme actif/sélectionnable;
+- lu par un script de validation;
+- document stable cité dans `README.md`, `ETAT_ACTUEL.md` ou `RELEASE_CHECKLIST.md`;
+- donnée durable explicitement protégée;
+- asset PWA référencé par `index.html` ou `manifest.json`.
+
+Sinon, il doit être supprimé ou justifié avant livraison.
+
+## Application V51.50 — domaine charge
+
+Le moteur de charges doit vivre dans `scripts/charge/`.
+
+Porte d’entrée publique :
+
+```txt
+scripts/charge/index.js → window.CoachCharge
+```
+
+Les anciens emplacements directs dans `scripts/` sont interdits :
+
+```txt
+scripts/equipement.js
+scripts/utilitaires_charges.js
+scripts/mouvement.js
+scripts/charge_gestion.js
+scripts/progression_rpe.js
+scripts/moteur_charges.js
+```
+
+Le commentaire d’en-tête de `app.js` doit toujours correspondre à `APP_VERSION`.
+
+
+## Domaine session
+
+La séance terrain doit vivre dans `scripts/session/`.
+
+```txt
+scripts/session/index.js → window.CoachSession
+```
+
+Hors `scripts/session/`, les appels doivent passer par `CoachSession.*` quand ils déclenchent l’ouverture de séance, le rendu des résultats ou la sauvegarde session.
+
+
+### V51.50 — Domaine session
+
+`session/` contient `view.js`, `timer.js`, `results.js`, `save.js`, `index.js`. Le timer guidé appartient à `scripts/session/timer.js`; le rendu de séance appartient à `scripts/session/view.js`.
+
+
+## Logger d’erreurs
+
+Le journal d’erreurs runtime vit dans `scripts/core/logger.js` et est documenté dans `docs/ERROR_LOGGING.md`.
+
+Règles :
+
+- `CoachLog` est une API de diagnostic, pas une logique métier.
+- Le logger peut être appelé par les domaines, mais aucun domaine ne doit dépendre de lui pour fonctionner.
+- Les erreurs sont stockées localement dans `localStorage`, jamais dans `data/`.
