@@ -1,6 +1,6 @@
 {
-  "version": "V51.36",
-  "updatedAt": "2026-06-15T16:58:54.804Z",
+  "version": "V51.51",
+  "updatedAt": "2026-06-16T01:35:07.888Z",
   "activeCycle": "shoulders3d_v2",
   "activeWeek": 3,
   "activeDay": "lundi",
@@ -10,9 +10,7 @@
     "jeudi",
     "vendredi"
   ],
-  "completedDays": [
-    "lundi"
-  ],
+  "completedDays": [],
   "missedDays": [],
   "weekTransitions": [
     {
@@ -46,5 +44,6 @@
   ],
   "archivedCycles": [],
   "focus": "Épaules 3D v2 — Midi dense",
-  "cycleStartedAt": "2026-06-02T14:54:54.095Z"
+  "activeCycleStartDate": "2026-06-01",
+  "cycleStartedAt": "2026-06-01"
 }
