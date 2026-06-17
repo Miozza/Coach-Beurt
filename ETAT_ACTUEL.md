@@ -1,7 +1,7 @@
 # ETAT_ACTUEL.md — Coach Beurt
 
-## Dernière modification — V51.52
-### V51.52 — Cohérence décision charge
+## Dernière modification — V51.53
+### V51.53 — Cohérence décision charge
 
 - Corrige la cohérence entre la carte séance et la fenêtre `!` : la modale lit la même décision `CoachCharge` que la charge affichée.
 - Déduplique les lignes d’historique quand la même séance existe dans `athlete_state` et `resultats`.
@@ -14,7 +14,7 @@
 
 - Application : Coach Beurt / Coach Bertin.
 - Type : PWA d’entraînement personnelle, JavaScript vanilla, sans framework.
-- Version actuelle : V51.52
+- Version actuelle : V51.53
 - Date du document : 2026-06-12.
 - Repo GitHub principal : `Miozza/Coach-Beurt`.
 - Repo GitHub dev : `Miozza/Coach-Beurt-Dev`.
@@ -23,10 +23,10 @@
 
 Détails version :
 
-- `app.js` : `APP_VERSION = "V51.52"`.
-- `index.html` : titre/topnav/footer/cache-bust `51.52`.
-- `manifest.json` : `Coach Bertin V51.52`.
-- `service-worker.js` : `coach-bertin-v51-52-no-cache`.
+- `app.js` : `APP_VERSION = "V51.53"`.
+- `index.html` : titre/topnav/footer/cache-bust `51.53`.
+- `manifest.json` : `Coach Bertin V51.53`.
+- `service-worker.js` : `coach-bertin-v51-53-no-cache`.
 
 ---
 
@@ -174,8 +174,15 @@ node dev/structure_checks.js --update-package
 
 Priorités à garder séparées :
 
-1. Tester V51.52 sur DEV après import.
+1. Tester V51.53 sur DEV après import.
 2. Revalider la vue séance sur iPhone.
 3. Vérifier Épaules 3D v2 S3 avec vraies données.
 4. Nettoyer seulement si un test structurel échoue.
 5. Future migration possible vers `scripts/charge/`, mais uniquement dans une version dédiée.
+
+## V51.53 — WOD+ source unique charge
+
+- WOD+ ne force plus le contexte `kind:"wodplus"` pour les exercices de blocs.
+- Les cartes WOD+ appellent `CoachCharge.suggestLoad()` avec le vrai contexte du bloc : `kind`, `blockTitle`, `note`, `text`, `format`, `day`, `week`.
+- Objectif : même décision de charge entre WOD+, Séance, PC et fenêtre `!`.
+- Aucun fichier `data/` ni `programs/` modifié.

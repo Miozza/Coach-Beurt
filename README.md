@@ -4,7 +4,7 @@ Coach Beurt est une PWA personnelle d’entraînement en JavaScript vanilla, san
 
 ## État courant
 
-- Version : `V51.52`
+- Version : `V51.53`
 - Source courte de vérité : `ETAT_ACTUEL.md`
 - Historique des changements : `CHANGELOG.md`
 - Checklist de livraison : `RELEASE_CHECKLIST.md`
@@ -71,7 +71,7 @@ node dev/structure_checks.js
 
 Le flag `--update-package` reste accepté, et `--full` force une validation complète.
 
-## V51.52 — Cohérence décision charge
+## V51.53 — Cohérence décision charge
 
 - La fenêtre `!` de charge utilise la même décision que la carte séance.
 - Le moteur verrouille mieux les cas RPE ≥ 9 et RPE ≤ 7 avec reps atteintes.

@@ -1,6 +1,6 @@
-// Coach Bertin V48.9 — Programme autonome : Force classique
+// Coach Bertin Programme autonome : Force classique
 // Objectif : force pure, repos longs, très peu de conditioning, aucun WOD destructeur.
-// V48.9 : ne dépend plus de la structure PPL générique.
+// ne dépend plus de la structure PPL générique.
 
 window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
 window.COACH_BERTIN_PROGRAMS.strength = {
@@ -9,6 +9,7 @@ window.COACH_BERTIN_PROGRAMS.strength = {
   phase: 0,
   phaseName: "Force pure",
   impact: "Priorité aux lifts. Charges lourdes, volume contrôlé, repos longs. Aucun WOD obligatoire. Objectif : monter les mouvements sans fatigue CrossFit inutile.",
+  days: ["lundi", "mardi", "jeudi", "vendredi"],
   weekLabels: ["S1 Base","S2 Charge","S3 Intensité","S4 Deload"],
   weekGoals: [
     "Installer les repères. RPE 7-8, technique parfaite.",
@@ -56,8 +57,8 @@ function strengthBlocks(day,week){
   if(day==="lundi") return [
     {time:"9 min",title:"Warm-up bench",tag:"Préparation",kind:"warmup",
      text:"Row facile 3 min + band pull-aparts 2×20 + scap push-ups 2×10 + push-ups 2×8 + ramp-up bench : barre×10, 135×5, 185×3, 215×1."},
-    {time:"20 min",title:"A. Bench press priorité",tag:"Force",kind:"main",
-     exercises:[stEx("Bench press",p.bench,p.benchLoad,heavy?"3:00-3:30":"2:30-3:00","Force pure. Setup identique à chaque série. Stop si la vitesse s'effondre.")]},
+    {time:"20 min",title:"A. Bench Press priorité",tag:"Force",kind:"main",
+     exercises:[stEx("Bench Press",p.bench,p.benchLoad,heavy?"3:00-3:30":"2:30-3:00","Force pure. Setup identique à chaque série. Stop si la vitesse s'effondre.")]},
     {time:"14 min",title:"B. Tirage lourd",tag:"Force",kind:"accessory",
      exercises:[stEx("Chest Supported Row",deload?"3×8 léger":heavy?"5×5 lourd":"4×6-8",deload?"105 lb":heavy?"145-155 lb":"130-145 lb","2:00","Tirage strict. Haut du dos fort pour soutenir le bench.")]},
     {time:"8 min",title:"C. Triceps / stabilité",tag:"Assistance",kind:"accessory",
@@ -97,8 +98,8 @@ function strengthBlocks(day,week){
     {time:"8 min",title:"Warm-up force secondaire",tag:"Préparation",kind:"warmup",
      text:"Bike 3 min + air squats 2×10 + ring rows 2×8 + hip hinge drill 2×10 + ramp-up deadlift/RDL."},
     {time:"18 min",title:"A. Deadlift / hinge",tag:"Force",kind:"main",
-     exercises:[stEx("Deadlift / RDL",p.dead,p.deadLoad,heavy?"3:00":"2:30","Choisis deadlift si le dos est parfait, sinon RDL. Aucun ego lift.")]},
-    {time:"14 min",title:"B. Front squat technique lourd",tag:"Force",kind:"accessory",
+     exercises:[stEx("Deadlift",p.dead,p.deadLoad,heavy?"3:00":"2:30","Choisis deadlift si le dos est parfait, sinon RDL. Aucun ego lift.")]},
+    {time:"14 min",title:"B. Front Squat technique lourd",tag:"Force",kind:"accessory",
      exercises:[stEx("Front Squat",deload?"3×5 léger":heavy?"5×2 lourd":"4×4",deload?"135 lb":heavy?"195-205 lb":"175-190 lb","2:30","Transfert clean/thruster. Position solide.")]},
     {time:"10 min",title:"C. Carry + core",tag:"Assistance",kind:"accessory",
      exercises:[

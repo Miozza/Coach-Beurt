@@ -1,4 +1,4 @@
-## V51.52 — Cohérence décision charge
+## V51.53 — Cohérence décision charge
 
 - Corrige la cohérence entre la charge affichée dans la séance et la fenêtre `!` : la modale lit maintenant le même indice de décision généré par `CoachCharge`.
 - Déduplique l’historique affiché dans la fenêtre `!` quand la même séance existe à la fois dans `athlete_state` et dans l’historique de résultats.

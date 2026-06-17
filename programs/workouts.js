@@ -1,7 +1,7 @@
-// Coach Bertin V48.9 — séances détaillées extraites de app.js
+// Coach Bertin séances détaillées extraites de app.js
 // app.js doit rester le moteur; ce fichier contient la construction des workouts.
 
-// Coach Bertin V48.9 — moteur générique de construction des workouts
+// Coach Bertin moteur générique de construction des workouts
 // Les programmes autonomes peuvent exposer cfg.getBlocks(day, week).
 
 function ex(name,format,load,rest,note){return{name:name,format:format,load:charge(name,load||"—"),rest:rest||"—",note:note||""};}
@@ -14,7 +14,7 @@ function buildWorkout(day,week){
   var d=baseDays[day] || {label:day,base:"",focus:""};
   if(cfg && cfg.dayMeta && cfg.dayMeta[day]) d = Object.assign({}, d, cfg.dayMeta[day]);
 
-  // V48.9 — aucun fallback PPL silencieux.
+  // aucun fallback PPL silencieux.
   // Si un programme actif ne fournit pas getBlocks(), on affiche une erreur claire
   // au lieu d'inventer une séance Push/Pull/Legs générique.
   if(cfg && typeof cfg.getBlocks === "function"){
