@@ -1,19 +1,1108 @@
 {
   "movements": {
+    "Strict Press": {
+      "ranges": {
+        "hypertrophy": {
+          "currentLoad": 115,
+          "currentReps": 8,
+          "actualLoad": 115,
+          "actualReps": 8,
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 146,
+          "lastUpdated": "2026-06-15",
+          "planned": {
+            "load": 115,
+            "reps": 8,
+            "targetMin": 8,
+            "targetMax": 10,
+            "format": "4×8-10",
+            "kind": "main"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-01",
+          "load": 115,
+          "reps": 10,
+          "rpe": 8,
+          "range": "hypertrophy",
+          "status": "success",
+          "capacityLoad": 115,
+          "planned": {
+            "load": 115,
+            "reps": 10,
+            "targetMin": 10,
+            "targetMax": 10,
+            "format": "4 x 10",
+            "kind": "main"
+          },
+          "context": {
+            "rawName": "Strict Press",
+            "label": "Strict Press",
+            "equipment": "barbell",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "main",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4 x 10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-02",
+          "load": 110,
+          "reps": 9,
+          "rpe": 8,
+          "range": "hypertrophy",
+          "status": "success",
+          "capacityLoad": 110,
+          "planned": {
+            "load": 110,
+            "reps": 8,
+            "targetMin": 8,
+            "targetMax": 10,
+            "format": "3×8-10",
+            "kind": "main"
+          },
+          "context": {
+            "rawName": "Strict Press",
+            "label": "Strict Press",
+            "equipment": "barbell",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "main",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×8-10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-08",
+          "load": 115,
+          "reps": 8,
+          "rpe": 9,
+          "range": "hypertrophy",
+          "status": "hard",
+          "capacityLoad": 115,
+          "planned": {
+            "load": 115,
+            "reps": 8,
+            "targetMin": 8,
+            "targetMax": 8,
+            "format": "4×8",
+            "kind": "main"
+          },
+          "context": {
+            "rawName": "Strict Press",
+            "label": "Strict Press",
+            "equipment": "barbell",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "main",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×8",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-15",
+          "load": 115,
+          "reps": 8,
+          "rpe": 8,
+          "range": "hypertrophy",
+          "status": "success",
+          "capacityLoad": 115,
+          "planned": {
+            "load": 115,
+            "reps": 8,
+            "targetMin": 8,
+            "targetMax": 10,
+            "format": "4×8-10",
+            "kind": "main"
+          },
+          "context": {
+            "rawName": "Strict Press",
+            "label": "Strict Press",
+            "equipment": "barbell",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "main",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×8-10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-15",
+      "status": "success",
+      "upgradedAt": "2026-06-15"
+    },
+    "Lateral Raise câble": {
+      "ranges": {
+        "endurance": {
+          "currentLoad": 20,
+          "currentReps": 15,
+          "actualLoad": 20,
+          "actualReps": 19,
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 33,
+          "lastUpdated": "2026-06-15",
+          "planned": {
+            "load": 20,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "hypertrophy"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-01",
+          "load": 15,
+          "reps": 18,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 15,
+          "planned": {
+            "load": 15,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Lateral Raise câble",
+            "label": "Lateral Raise câble",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-02",
+          "load": 15,
+          "reps": 18,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 15,
+          "planned": {
+            "load": 15,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Lateral Raise câble",
+            "label": "Lateral Raise câble",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-08",
+          "load": 20,
+          "reps": 15,
+          "rpe": 9,
+          "range": "endurance",
+          "status": "hard",
+          "capacityLoad": 20,
+          "planned": {
+            "load": 20,
+            "reps": 12,
+            "targetMin": 12,
+            "targetMax": 20,
+            "format": "5×12-20",
+            "kind": "hypertrophy"
+          },
+          "context": {
+            "rawName": "Lateral Raise câble",
+            "label": "Lateral Raise câble",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "hypertrophy",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "5×12-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-15",
+          "load": 20,
+          "reps": 19,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 20,
+          "planned": {
+            "load": 20,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "hypertrophy"
+          },
+          "context": {
+            "rawName": "Lateral Raise câble",
+            "label": "Lateral Raise câble",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "hypertrophy",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-15",
+      "status": "success",
+      "upgradedAt": "2026-06-15"
+    },
+    "Rear Delt Fly câble": {
+      "ranges": {
+        "endurance": {
+          "currentLoad": 20,
+          "currentReps": 15,
+          "actualLoad": 20,
+          "actualReps": 15,
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 30,
+          "lastUpdated": "2026-06-16",
+          "planned": {
+            "load": 20,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory",
+            "context": {
+              "rawName": "Rear Delt Fly câble",
+              "label": "Rear Delt Fly câble",
+              "equipment": "cable",
+              "intents": [],
+              "primaryIntent": "",
+              "kind": "accessory",
+              "blockTitle": "C. Rear delt / posture",
+              "note": "Arrière d'épaule, sans transformer en rowing.",
+              "text": "",
+              "format": "4×15-20",
+              "day": "mardi",
+              "week": 3,
+              "isWod": false,
+              "isTechnical": false,
+              "isLight": false,
+              "isProgression": false,
+              "isRecall": false,
+              "isStrength": false,
+              "isHypertrophy": false,
+              "isRecovery": false
+            }
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-01",
+          "load": 15,
+          "reps": 18,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 15,
+          "planned": {
+            "load": 15,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Rear Delt Fly câble",
+            "label": "Rear Delt Fly câble",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-02",
+          "load": 15,
+          "reps": 15,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 15,
+          "planned": {
+            "load": 15,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Rear Delt Fly câble",
+            "label": "Rear Delt Fly câble",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-04",
+          "load": 15,
+          "reps": 18,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 15,
+          "planned": {},
+          "context": {
+            "rawName": "Rear Delt Fly câble",
+            "label": "Rear Delt Fly câble",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-09",
+          "load": 10,
+          "reps": 16,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 10,
+          "planned": {
+            "load": 20,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Rear Delt Fly câble",
+            "label": "Rear Delt Fly câble",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-16",
+          "load": 20,
+          "reps": 15,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 20,
+          "planned": {
+            "load": 20,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory",
+            "context": {
+              "rawName": "Rear Delt Fly câble",
+              "label": "Rear Delt Fly câble",
+              "equipment": "cable",
+              "intents": [],
+              "primaryIntent": "",
+              "kind": "accessory",
+              "blockTitle": "C. Rear delt / posture",
+              "note": "Arrière d'épaule, sans transformer en rowing.",
+              "text": "",
+              "format": "4×15-20",
+              "day": "mardi",
+              "week": 3,
+              "isWod": false,
+              "isTechnical": false,
+              "isLight": false,
+              "isProgression": false,
+              "isRecall": false,
+              "isStrength": false,
+              "isHypertrophy": false,
+              "isRecovery": false
+            }
+          },
+          "context": {
+            "rawName": "Rear Delt Fly câble",
+            "label": "Rear Delt Fly câble",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "C. Rear delt / posture",
+            "note": "Arrière d'épaule, sans transformer en rowing.",
+            "text": "",
+            "format": "4×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-16",
+      "status": "success",
+      "upgradedAt": "2026-06-16"
+    },
+    "Triceps Rope Pushdown": {
+      "ranges": {
+        "endurance": {
+          "currentLoad": 80,
+          "currentReps": 12,
+          "actualLoad": 80,
+          "actualReps": 16,
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 123,
+          "lastUpdated": "2026-06-08",
+          "planned": {
+            "load": 65,
+            "reps": 12,
+            "targetMin": 12,
+            "targetMax": 20,
+            "format": "3×12-20",
+            "kind": "hypertrophy"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-01",
+          "load": 70,
+          "reps": 14,
+          "rpe": 9,
+          "range": "endurance",
+          "status": "hard",
+          "capacityLoad": 70,
+          "planned": {
+            "load": 60,
+            "reps": 12,
+            "targetMin": 12,
+            "targetMax": 15,
+            "format": "4×12-15",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Triceps Rope Pushdown",
+            "label": "Triceps Rope Pushdown",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×12-15",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-02",
+          "load": 60,
+          "reps": 16,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 60,
+          "planned": {
+            "load": 60,
+            "reps": 12,
+            "targetMin": 12,
+            "targetMax": 20,
+            "format": "3×12-20",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Triceps Rope Pushdown",
+            "label": "Triceps Rope Pushdown",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×12-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-08",
+          "load": 80,
+          "reps": 16,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 80,
+          "planned": {
+            "load": 65,
+            "reps": 12,
+            "targetMin": 12,
+            "targetMax": 20,
+            "format": "3×12-20",
+            "kind": "hypertrophy"
+          },
+          "context": {
+            "rawName": "Triceps Rope Pushdown",
+            "label": "Triceps Rope Pushdown",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "hypertrophy",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×12-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-08",
+      "status": "success",
+      "upgradedAt": "2026-06-08"
+    },
+    "Face Pull": {
+      "ranges": {
+        "endurance": {
+          "currentLoad": 70,
+          "currentReps": 15,
+          "actualLoad": 70,
+          "actualReps": 18,
+          "rpe": 9,
+          "confidence": 0.7,
+          "status": "hard",
+          "estimated1RM": 112,
+          "lastUpdated": "2026-06-01",
+          "planned": {
+            "load": 60,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-01",
+          "load": 70,
+          "reps": 18,
+          "rpe": 9,
+          "range": "endurance",
+          "status": "hard",
+          "capacityLoad": 70,
+          "planned": {
+            "load": 60,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "4×15-20",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Face Pull",
+            "label": "Face Pull",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-02",
+          "load": 60,
+          "reps": 18,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 60,
+          "planned": {
+            "load": 60,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "2×15-20",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Face Pull",
+            "label": "Face Pull",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "2×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-04",
+          "load": 60,
+          "reps": 18,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 60,
+          "planned": {},
+          "context": {
+            "rawName": "Face Pull",
+            "label": "Face Pull",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-05",
+          "load": 50,
+          "reps": 18,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 50,
+          "planned": {
+            "load": 50,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "3×15-20",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Face Pull",
+            "label": "Face Pull",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-09",
+          "load": 60,
+          "reps": 15,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 60,
+          "planned": {
+            "load": 65,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "3×15-20",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Face Pull",
+            "label": "Face Pull",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-12",
+          "load": 60,
+          "reps": 18,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 60,
+          "planned": {
+            "load": 50,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "3×15-20",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Face Pull",
+            "label": "Face Pull",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-16",
+          "load": 60,
+          "reps": 20,
+          "rpe": 7.5,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 60,
+          "planned": {
+            "load": 60,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "3×15-20",
+            "kind": "accessory",
+            "context": {
+              "rawName": "Face Pull",
+              "label": "Face Pull",
+              "equipment": "cable",
+              "intents": [],
+              "primaryIntent": "",
+              "kind": "accessory",
+              "blockTitle": "C. Rear delt / posture",
+              "note": "Rotation externe, cou relâché.",
+              "text": "",
+              "format": "3×15-20",
+              "day": "mardi",
+              "week": 3,
+              "isWod": false,
+              "isTechnical": false,
+              "isLight": false,
+              "isProgression": false,
+              "isRecall": false,
+              "isStrength": false,
+              "isHypertrophy": false,
+              "isRecovery": false
+            }
+          },
+          "context": {
+            "rawName": "Face Pull",
+            "label": "Face Pull",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "C. Rear delt / posture",
+            "note": "Rotation externe, cou relâché.",
+            "text": "",
+            "format": "3×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-16",
+      "status": "success",
+      "upgradedAt": "2026-06-16"
+    },
     "Incline DB Press": {
       "ranges": {
         "hypertrophy": {
-          "currentLoad": 55,
+          "currentLoad": 60,
           "currentReps": 8,
-          "actualLoad": 55,
+          "actualLoad": 60,
           "actualReps": 8,
           "rpe": 9,
           "confidence": 0.7,
           "status": "hard",
-          "estimated1RM": 70,
-          "lastUpdated": "2026-06-08",
+          "estimated1RM": 76,
+          "lastUpdated": "2026-06-15",
           "planned": {
-            "load": 60,
+            "load": 50,
             "reps": 8,
             "targetMin": 8,
             "targetMax": 10,
@@ -38,6 +1127,28 @@
             "targetMax": 10,
             "format": "3×10",
             "kind": "main"
+          },
+          "context": {
+            "rawName": "Incline DB Press",
+            "label": "Incline DB Press",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "main",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         },
         {
@@ -55,156 +1166,93 @@
             "targetMax": 10,
             "format": "4×8-10",
             "kind": "hypertrophy"
-          }
-        }
-      ],
-      "lastUpdated": "2026-06-08",
-      "status": "hard",
-      "upgradedAt": "2026-06-08"
-    },
-    "Strict Press": {
-      "ranges": {
-        "hypertrophy": {
-          "currentLoad": 115,
-          "currentReps": 8,
-          "actualLoad": 115,
-          "actualReps": 8,
-          "rpe": 9,
-          "confidence": 0.7,
-          "status": "hard",
-          "estimated1RM": 146,
-          "lastUpdated": "2026-06-08",
-          "planned": {
-            "load": 115,
-            "reps": 8,
-            "targetMin": 8,
-            "targetMax": 8,
-            "format": "4×8",
-            "kind": "main"
-          }
-        }
-      },
-      "history": [
-        {
-          "date": "2026-06-02",
-          "load": 110,
-          "reps": 9,
-          "rpe": 8,
-          "range": "hypertrophy",
-          "status": "success",
-          "capacityLoad": 110,
-          "planned": {
-            "load": 110,
-            "reps": 8,
-            "targetMin": 8,
-            "targetMax": 10,
-            "format": "3×8-10",
-            "kind": "main"
+          },
+          "context": {
+            "rawName": "Incline DB Press",
+            "label": "Incline DB Press",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "hypertrophy",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×8-10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         },
         {
-          "date": "2026-06-08",
-          "load": 115,
+          "date": "2026-06-15",
+          "load": 60,
           "reps": 8,
           "rpe": 9,
           "range": "hypertrophy",
           "status": "hard",
-          "capacityLoad": 115,
+          "capacityLoad": 60,
           "planned": {
-            "load": 115,
+            "load": 50,
             "reps": 8,
             "targetMin": 8,
-            "targetMax": 8,
-            "format": "4×8",
-            "kind": "main"
+            "targetMax": 10,
+            "format": "4×8-10",
+            "kind": "hypertrophy"
+          },
+          "context": {
+            "rawName": "Incline DB Press",
+            "label": "Incline DB Press",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "hypertrophy",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×8-10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         }
       ],
-      "lastUpdated": "2026-06-08",
+      "lastUpdated": "2026-06-15",
       "status": "hard",
-      "upgradedAt": "2026-06-08"
-    },
-    "Lateral Raise câble bas": {
-      "ranges": {
-        "endurance": {
-          "currentLoad": 20,
-          "currentReps": 12,
-          "actualLoad": 20,
-          "actualReps": 15,
-          "rpe": 9,
-          "confidence": 0.7,
-          "status": "hard",
-          "estimated1RM": 30,
-          "lastUpdated": "2026-06-08",
-          "planned": {
-            "load": 20,
-            "reps": 12,
-            "targetMin": 12,
-            "targetMax": 20,
-            "format": "5×12-20",
-            "kind": "hypertrophy"
-          }
-        }
-      },
-      "history": [
-        {
-          "date": "2026-06-02",
-          "load": 15,
-          "reps": 18,
-          "rpe": 8,
-          "range": "endurance",
-          "status": "success",
-          "capacityLoad": 15,
-          "planned": {
-            "load": 15,
-            "reps": 15,
-            "targetMin": 15,
-            "targetMax": 20,
-            "format": "4×15-20",
-            "kind": "accessory"
-          }
-        },
-        {
-          "date": "2026-06-08",
-          "load": 20,
-          "reps": 15,
-          "rpe": 9,
-          "range": "endurance",
-          "status": "hard",
-          "capacityLoad": 20,
-          "planned": {
-            "load": 20,
-            "reps": 12,
-            "targetMin": 12,
-            "targetMax": 20,
-            "format": "5×12-20",
-            "kind": "hypertrophy"
-          }
-        }
-      ],
-      "lastUpdated": "2026-06-08",
-      "status": "hard",
-      "upgradedAt": "2026-06-08"
+      "upgradedAt": "2026-06-15"
     },
     "Overhead Rope Extension": {
       "ranges": {
         "endurance": {
-          "currentLoad": 50,
-          "currentReps": 10,
-          "actualLoad": 50,
-          "actualReps": 13,
-          "rpe": 9,
-          "confidence": 0.7,
-          "status": "hard",
-          "estimated1RM": 72,
-          "lastUpdated": "2026-06-08",
+          "currentLoad": 60,
+          "currentReps": 12,
+          "actualLoad": 60,
+          "actualReps": 15,
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 90,
+          "lastUpdated": "2026-06-12",
           "planned": {
-            "load": 75,
-            "reps": 10,
-            "targetMin": 10,
+            "load": 60,
+            "reps": 12,
+            "targetMin": 12,
             "targetMax": 15,
-            "format": "4×10-15",
-            "kind": "hypertrophy"
+            "format": "2×12-15",
+            "kind": "accessory"
           }
         },
         "hypertrophy": {
@@ -243,6 +1291,28 @@
             "targetMax": 15,
             "format": "4×10-15",
             "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Overhead Rope Extension",
+            "label": "Overhead Rope Extension",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×10-15",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         },
         {
@@ -260,6 +1330,28 @@
             "targetMax": 15,
             "format": "2×12-15",
             "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Overhead Rope Extension",
+            "label": "Overhead Rope Extension",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "2×12-15",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         },
         {
@@ -277,40 +1369,34 @@
             "targetMax": 15,
             "format": "4×10-15",
             "kind": "hypertrophy"
+          },
+          "context": {
+            "rawName": "Overhead Rope Extension",
+            "label": "Overhead Rope Extension",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "hypertrophy",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×10-15",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
-        }
-      ],
-      "lastUpdated": "2026-06-08",
-      "status": "hard",
-      "upgradedAt": "2026-06-08"
-    },
-    "Triceps Rope Pushdown": {
-      "ranges": {
-        "endurance": {
-          "currentLoad": 80,
-          "currentReps": 12,
-          "actualLoad": 80,
-          "actualReps": 16,
-          "rpe": 8,
-          "confidence": 0.65,
-          "status": "success",
-          "estimated1RM": 123,
-          "lastUpdated": "2026-06-08",
-          "planned": {
-            "load": 65,
-            "reps": 12,
-            "targetMin": 12,
-            "targetMax": 20,
-            "format": "3×12-20",
-            "kind": "hypertrophy"
-          }
-        }
-      },
-      "history": [
+        },
         {
-          "date": "2026-06-02",
+          "date": "2026-06-12",
           "load": 60,
-          "reps": 16,
+          "reps": 15,
           "rpe": 8,
           "range": "endurance",
           "status": "success",
@@ -319,52 +1405,118 @@
             "load": 60,
             "reps": 12,
             "targetMin": 12,
-            "targetMax": 20,
-            "format": "3×12-20",
+            "targetMax": 15,
+            "format": "2×12-15",
             "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Overhead Rope Extension",
+            "label": "Overhead Rope Extension",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "2×12-15",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         },
         {
-          "date": "2026-06-08",
-          "load": 80,
-          "reps": 16,
+          "date": "2026-06-15",
+          "load": 50,
+          "reps": 13,
           "rpe": 8,
           "range": "endurance",
           "status": "success",
-          "capacityLoad": 80,
+          "capacityLoad": 50,
           "planned": {
-            "load": 65,
+            "load": 50,
             "reps": 12,
             "targetMin": 12,
-            "targetMax": 20,
-            "format": "3×12-20",
+            "targetMax": 15,
+            "format": "3×12-15",
             "kind": "hypertrophy"
+          },
+          "context": {
+            "rawName": "Overhead Rope Extension",
+            "label": "Overhead Rope Extension",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "hypertrophy",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×12-15",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         }
       ],
-      "lastUpdated": "2026-06-08",
+      "lastUpdated": "2026-06-15",
       "status": "success",
-      "upgradedAt": "2026-06-08"
+      "upgradedAt": "2026-06-15"
     },
     "Barbell Row": {
       "ranges": {
         "hypertrophy": {
           "currentLoad": 165,
-          "currentReps": 10,
+          "currentReps": 8,
           "actualLoad": 165,
           "actualReps": 12,
-          "rpe": 9,
-          "confidence": 0.7,
-          "status": "hard",
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
           "estimated1RM": 231,
-          "lastUpdated": "2026-06-08",
+          "lastUpdated": "2026-06-16",
           "planned": {
-            "load": 155,
-            "reps": 10,
-            "targetMin": 10,
-            "targetMax": 10,
-            "format": "3×10",
-            "kind": "secondary"
+            "load": 165,
+            "reps": 8,
+            "targetMin": 8,
+            "targetMax": 8,
+            "format": "4×8",
+            "kind": "main",
+            "context": {
+              "rawName": "Barbell Row",
+              "label": "Barbell Row",
+              "equipment": "barbell",
+              "intents": [],
+              "primaryIntent": "",
+              "kind": "main",
+              "blockTitle": "A. Barbell Row",
+              "note": "Tirage strict, buste solide, pas de swing.",
+              "text": "",
+              "format": "4×8",
+              "day": "mardi",
+              "week": 3,
+              "isWod": false,
+              "isTechnical": false,
+              "isLight": false,
+              "isProgression": false,
+              "isRecall": false,
+              "isStrength": false,
+              "isHypertrophy": false,
+              "isRecovery": false
+            }
           }
         }
       },
@@ -384,6 +1536,28 @@
             "targetMax": 10,
             "format": "4×10",
             "kind": "main"
+          },
+          "context": {
+            "rawName": "Barbell Row",
+            "label": "Barbell Row",
+            "equipment": "barbell",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "main",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "4×10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         },
         {
@@ -394,7 +1568,29 @@
           "range": "hypertrophy",
           "status": "success",
           "capacityLoad": 115,
-          "planned": {}
+          "planned": {},
+          "context": {
+            "rawName": "Barbell Row",
+            "label": "Barbell Row",
+            "equipment": "barbell",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
         },
         {
           "date": "2026-06-08",
@@ -411,6 +1607,28 @@
             "targetMax": 10,
             "format": "3×10",
             "kind": "secondary"
+          },
+          "context": {
+            "rawName": "Barbell Row",
+            "label": "Barbell Row",
+            "equipment": "barbell",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "secondary",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         },
         {
@@ -428,32 +1646,137 @@
             "targetMax": 10,
             "format": "5×8-10",
             "kind": "main"
+          },
+          "context": {
+            "rawName": "Barbell Row",
+            "label": "Barbell Row",
+            "equipment": "barbell",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "main",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "5×8-10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-16",
+          "load": 165,
+          "reps": 12,
+          "rpe": 8,
+          "range": "hypertrophy",
+          "status": "success",
+          "capacityLoad": 165,
+          "planned": {
+            "load": 165,
+            "reps": 8,
+            "targetMin": 8,
+            "targetMax": 8,
+            "format": "4×8",
+            "kind": "main",
+            "context": {
+              "rawName": "Barbell Row",
+              "label": "Barbell Row",
+              "equipment": "barbell",
+              "intents": [],
+              "primaryIntent": "",
+              "kind": "main",
+              "blockTitle": "A. Barbell Row",
+              "note": "Tirage strict, buste solide, pas de swing.",
+              "text": "",
+              "format": "4×8",
+              "day": "mardi",
+              "week": 3,
+              "isWod": false,
+              "isTechnical": false,
+              "isLight": false,
+              "isProgression": false,
+              "isRecall": false,
+              "isStrength": false,
+              "isHypertrophy": false,
+              "isRecovery": false
+            }
+          },
+          "context": {
+            "rawName": "Barbell Row",
+            "label": "Barbell Row",
+            "equipment": "barbell",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "main",
+            "blockTitle": "A. Barbell Row",
+            "note": "Tirage strict, buste solide, pas de swing.",
+            "text": "",
+            "format": "4×8",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         }
       ],
-      "lastUpdated": "2026-06-09",
+      "lastUpdated": "2026-06-16",
       "status": "success",
-      "upgradedAt": "2026-06-09"
+      "upgradedAt": "2026-06-16"
     },
     "Cable Curl": {
       "ranges": {
         "endurance": {
-          "currentLoad": 80,
+          "currentLoad": 90,
           "currentReps": 10,
-          "actualLoad": 80,
+          "actualLoad": 90,
           "actualReps": 15,
-          "rpe": 7,
-          "confidence": 0.85,
-          "status": "upgrade_ready",
-          "estimated1RM": 120,
-          "lastUpdated": "2026-06-09",
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 135,
+          "lastUpdated": "2026-06-16",
           "planned": {
-            "load": 75,
+            "load": 80,
             "reps": 10,
             "targetMin": 10,
             "targetMax": 15,
             "format": "3×10-15",
-            "kind": "accessory"
+            "kind": "accessory",
+            "context": {
+              "rawName": "Cable Curl",
+              "label": "Cable Curl",
+              "equipment": "cable",
+              "intents": [],
+              "primaryIntent": "",
+              "kind": "accessory",
+              "blockTitle": "B. Superset dos + biceps",
+              "note": "Contrôle complet, pas d'élan du dos.",
+              "text": "",
+              "format": "3×10-15",
+              "day": "mardi",
+              "week": 3,
+              "isWod": false,
+              "isTechnical": false,
+              "isLight": false,
+              "isProgression": false,
+              "isRecall": false,
+              "isStrength": false,
+              "isHypertrophy": false,
+              "isRecovery": false
+            }
           }
         }
       },
@@ -473,6 +1796,28 @@
             "targetMax": 15,
             "format": "3×10-15",
             "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Cable Curl",
+            "label": "Cable Curl",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×10-15",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         },
         {
@@ -490,166 +1835,95 @@
             "targetMax": 15,
             "format": "3×10-15",
             "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Cable Curl",
+            "label": "Cable Curl",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×10-15",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
-        }
-      ],
-      "lastUpdated": "2026-06-09",
-      "status": "upgrade_ready",
-      "upgradedAt": "2026-06-09"
-    },
-    "Rear Delt Fly câble bas": {
-      "ranges": {
-        "endurance": {
-          "currentLoad": 15,
-          "currentReps": 18,
-          "actualLoad": 15,
-          "actualReps": 18,
-          "rpe": 8,
-          "confidence": 0.65,
-          "status": "success",
-          "estimated1RM": 24,
-          "lastUpdated": "2026-06-04",
-          "planned": {}
-        }
-      },
-      "history": [
+        },
         {
-          "date": "2026-06-02",
-          "load": 15,
+          "date": "2026-06-16",
+          "load": 90,
           "reps": 15,
           "rpe": 8,
           "range": "endurance",
           "status": "success",
-          "capacityLoad": 15,
+          "capacityLoad": 90,
           "planned": {
-            "load": 15,
-            "reps": 15,
-            "targetMin": 15,
-            "targetMax": 20,
-            "format": "4×15-20",
-            "kind": "accessory"
-          }
-        },
-        {
-          "date": "2026-06-04",
-          "load": 15,
-          "reps": 18,
-          "rpe": 8,
-          "range": "endurance",
-          "status": "success",
-          "capacityLoad": 15,
-          "planned": {}
-        },
-        {
-          "date": "2026-06-09",
-          "load": 10,
-          "reps": 16,
-          "rpe": 8,
-          "range": "endurance",
-          "status": "success",
-          "capacityLoad": 10,
-          "planned": {
-            "load": 20,
-            "reps": 15,
-            "targetMin": 15,
-            "targetMax": 20,
-            "format": "4×15-20",
-            "kind": "accessory"
-          }
-        }
-      ],
-      "lastUpdated": "2026-06-09",
-      "status": "success",
-      "upgradedAt": "2026-06-09"
-    },
-    "Face Pull": {
-      "ranges": {
-        "endurance": {
-          "currentLoad": 60,
-          "currentReps": 15,
-          "actualLoad": 60,
-          "actualReps": 15,
-          "rpe": 8,
-          "confidence": 0.65,
-          "status": "success",
-          "estimated1RM": 90,
-          "lastUpdated": "2026-06-09",
-          "planned": {
-            "load": 65,
-            "reps": 15,
-            "targetMin": 15,
-            "targetMax": 20,
-            "format": "3×15-20",
-            "kind": "accessory"
-          }
-        }
-      },
-      "history": [
-        {
-          "date": "2026-06-02",
-          "load": 60,
-          "reps": 18,
-          "rpe": 8,
-          "range": "endurance",
-          "status": "success",
-          "capacityLoad": 60,
-          "planned": {
-            "load": 60,
-            "reps": 15,
-            "targetMin": 15,
-            "targetMax": 20,
-            "format": "2×15-20",
-            "kind": "accessory"
-          }
-        },
-        {
-          "date": "2026-06-04",
-          "load": 60,
-          "reps": 18,
-          "rpe": 8,
-          "range": "endurance",
-          "status": "success",
-          "capacityLoad": 60,
-          "planned": {}
-        },
-        {
-          "date": "2026-06-05",
-          "load": 50,
-          "reps": 18,
-          "rpe": 8,
-          "range": "endurance",
-          "status": "success",
-          "capacityLoad": 50,
-          "planned": {
-            "load": 50,
-            "reps": 15,
-            "targetMin": 15,
-            "targetMax": 20,
-            "format": "3×15-20",
-            "kind": "accessory"
-          }
-        },
-        {
-          "date": "2026-06-09",
-          "load": 60,
-          "reps": 15,
-          "rpe": 8,
-          "range": "endurance",
-          "status": "success",
-          "capacityLoad": 60,
-          "planned": {
-            "load": 65,
-            "reps": 15,
-            "targetMin": 15,
-            "targetMax": 20,
-            "format": "3×15-20",
-            "kind": "accessory"
+            "load": 80,
+            "reps": 10,
+            "targetMin": 10,
+            "targetMax": 15,
+            "format": "3×10-15",
+            "kind": "accessory",
+            "context": {
+              "rawName": "Cable Curl",
+              "label": "Cable Curl",
+              "equipment": "cable",
+              "intents": [],
+              "primaryIntent": "",
+              "kind": "accessory",
+              "blockTitle": "B. Superset dos + biceps",
+              "note": "Contrôle complet, pas d'élan du dos.",
+              "text": "",
+              "format": "3×10-15",
+              "day": "mardi",
+              "week": 3,
+              "isWod": false,
+              "isTechnical": false,
+              "isLight": false,
+              "isProgression": false,
+              "isRecall": false,
+              "isStrength": false,
+              "isHypertrophy": false,
+              "isRecovery": false
+            }
+          },
+          "context": {
+            "rawName": "Cable Curl",
+            "label": "Cable Curl",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "B. Superset dos + biceps",
+            "note": "Contrôle complet, pas d'élan du dos.",
+            "text": "",
+            "format": "3×10-15",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         }
       ],
-      "lastUpdated": "2026-06-09",
+      "lastUpdated": "2026-06-16",
       "status": "success",
-      "upgradedAt": "2026-06-09"
+      "upgradedAt": "2026-06-16"
     },
     "Trap-3 Raise": {
       "ranges": {
@@ -708,6 +1982,28 @@
             "targetMax": 12,
             "format": "2×12",
             "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Trap-3 Raise",
+            "label": "Trap-3 Raise",
+            "equipment": "",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "2×12",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         },
         {
@@ -725,6 +2021,28 @@
             "targetMax": 15,
             "format": "2×12-15",
             "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Trap-3 Raise",
+            "label": "Trap-3 Raise",
+            "equipment": "",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "2×12-15",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         }
       ],
@@ -735,17 +2053,17 @@
     "Front Squat": {
       "ranges": {
         "strength": {
-          "currentLoad": 165,
+          "currentLoad": 180,
           "currentReps": 5,
-          "actualLoad": 165,
+          "actualLoad": 180,
           "actualReps": 5,
           "rpe": 8,
           "confidence": 0.65,
           "status": "success",
-          "estimated1RM": 193,
-          "lastUpdated": "2026-06-04",
+          "estimated1RM": 210,
+          "lastUpdated": "2026-06-11",
           "planned": {
-            "load": 165,
+            "load": 175,
             "reps": 5,
             "targetMin": 5,
             "targetMax": 5,
@@ -770,27 +2088,88 @@
             "targetMax": 5,
             "format": "5×5",
             "kind": "main"
+          },
+          "context": {
+            "rawName": "Front Squat",
+            "label": "Front Squat",
+            "equipment": "barbell",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "main",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "5×5",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-11",
+          "load": 180,
+          "reps": 5,
+          "rpe": 8,
+          "range": "strength",
+          "status": "success",
+          "capacityLoad": 180,
+          "planned": {
+            "load": 175,
+            "reps": 5,
+            "targetMin": 5,
+            "targetMax": 5,
+            "format": "5×5",
+            "kind": "main"
+          },
+          "context": {
+            "rawName": "Front Squat",
+            "label": "Front Squat",
+            "equipment": "barbell",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "main",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "5×5",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         }
       ],
-      "lastUpdated": "2026-06-04",
+      "lastUpdated": "2026-06-11",
       "status": "success",
-      "upgradedAt": "2026-06-04"
+      "upgradedAt": "2026-06-11"
     },
     "Bulgarian Split Squat": {
       "ranges": {
         "hypertrophy": {
-          "currentLoad": 35,
+          "currentLoad": 45,
           "currentReps": 8,
-          "actualLoad": 35,
+          "actualLoad": 45,
           "actualReps": 8,
-          "rpe": 7,
-          "confidence": 0.85,
-          "status": "upgrade_ready",
-          "estimated1RM": 44,
-          "lastUpdated": "2026-06-04",
+          "rpe": 9,
+          "confidence": 0.7,
+          "status": "hard",
+          "estimated1RM": 57,
+          "lastUpdated": "2026-06-11",
           "planned": {
-            "load": 50,
+            "load": 45,
             "reps": 8,
             "targetMin": 8,
             "targetMax": 10,
@@ -815,27 +2194,88 @@
             "targetMax": 10,
             "format": "3×8-10/jambe",
             "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Bulgarian Split Squat",
+            "label": "Bulgarian Split Squat",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×8-10/jambe",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-11",
+          "load": 45,
+          "reps": 8,
+          "rpe": 9,
+          "range": "hypertrophy",
+          "status": "hard",
+          "capacityLoad": 45,
+          "planned": {
+            "load": 45,
+            "reps": 8,
+            "targetMin": 8,
+            "targetMax": 10,
+            "format": "3×8-10/jambe",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Bulgarian Split Squat",
+            "label": "Bulgarian Split Squat",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×8-10/jambe",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         }
       ],
-      "lastUpdated": "2026-06-04",
-      "status": "upgrade_ready",
-      "upgradedAt": "2026-06-04"
+      "lastUpdated": "2026-06-11",
+      "status": "hard",
+      "upgradedAt": "2026-06-11"
     },
     "Hip Thrust": {
       "ranges": {
         "hypertrophy": {
-          "currentLoad": 185,
+          "currentLoad": 225,
           "currentReps": 10,
-          "actualLoad": 185,
+          "actualLoad": 225,
           "actualReps": 10,
-          "rpe": 7,
-          "confidence": 0.85,
-          "status": "upgrade_ready",
-          "estimated1RM": 247,
-          "lastUpdated": "2026-06-04",
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 300,
+          "lastUpdated": "2026-06-11",
           "planned": {
-            "load": 225,
+            "load": 215,
             "reps": 10,
             "targetMin": 10,
             "targetMax": 10,
@@ -860,12 +2300,73 @@
             "targetMax": 10,
             "format": "3×10",
             "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Hip Thrust",
+            "label": "Hip Thrust",
+            "equipment": "",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-11",
+          "load": 225,
+          "reps": 10,
+          "rpe": 8,
+          "range": "hypertrophy",
+          "status": "success",
+          "capacityLoad": 225,
+          "planned": {
+            "load": 215,
+            "reps": 10,
+            "targetMin": 10,
+            "targetMax": 10,
+            "format": "3×10",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Hip Thrust",
+            "label": "Hip Thrust",
+            "equipment": "",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         }
       ],
-      "lastUpdated": "2026-06-04",
-      "status": "upgrade_ready",
-      "upgradedAt": "2026-06-04"
+      "lastUpdated": "2026-06-11",
+      "status": "success",
+      "upgradedAt": "2026-06-11"
     },
     "DB RDL": {
       "ranges": {
@@ -874,11 +2375,11 @@
           "currentReps": 10,
           "actualLoad": 60,
           "actualReps": 10,
-          "rpe": 8,
-          "confidence": 0.65,
-          "status": "success",
+          "rpe": 7,
+          "confidence": 0.85,
+          "status": "upgrade_ready",
           "estimated1RM": 80,
-          "lastUpdated": "2026-06-04",
+          "lastUpdated": "2026-06-11",
           "planned": {
             "load": 60,
             "reps": 10,
@@ -905,31 +2406,92 @@
             "targetMax": 10,
             "format": "3×10",
             "kind": "accessory"
+          },
+          "context": {
+            "rawName": "DB RDL",
+            "label": "DB RDL",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
-        }
-      ],
-      "lastUpdated": "2026-06-04",
-      "status": "success",
-      "upgradedAt": "2026-06-04"
-    },
-    "DB Shoulder Press / Landmine Press": {
-      "ranges": {
-        "hypertrophy": {
-          "currentLoad": 30,
-          "currentReps": 10,
-          "actualLoad": 30,
-          "actualReps": 10,
-          "rpe": 8,
-          "confidence": 0.65,
-          "status": "success",
-          "estimated1RM": 40,
-          "lastUpdated": "2026-06-05",
+        },
+        {
+          "date": "2026-06-11",
+          "load": 60,
+          "reps": 10,
+          "rpe": 7,
+          "range": "hypertrophy",
+          "status": "upgrade_ready",
+          "capacityLoad": 60,
           "planned": {
-            "load": null,
+            "load": 60,
             "reps": 10,
             "targetMin": 10,
             "targetMax": 10,
             "format": "3×10",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "DB RDL",
+            "label": "DB RDL",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-11",
+      "status": "upgrade_ready",
+      "upgradedAt": "2026-06-11"
+    },
+    "DB Shoulder Press": {
+      "ranges": {
+        "hypertrophy": {
+          "currentLoad": 40,
+          "currentReps": 8,
+          "actualLoad": 40,
+          "actualReps": 10,
+          "rpe": 7.5,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 53,
+          "lastUpdated": "2026-06-12",
+          "planned": {
+            "load": null,
+            "reps": 8,
+            "targetMin": 8,
+            "targetMax": 10,
+            "format": "3×8-10",
             "kind": "main"
           }
         }
@@ -950,25 +2512,86 @@
             "targetMax": 10,
             "format": "3×10",
             "kind": "main"
+          },
+          "context": {
+            "rawName": "DB Shoulder Press",
+            "label": "DB Shoulder Press",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "main",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-12",
+          "load": 40,
+          "reps": 10,
+          "rpe": 7.5,
+          "range": "hypertrophy",
+          "status": "success",
+          "capacityLoad": 40,
+          "planned": {
+            "load": null,
+            "reps": 8,
+            "targetMin": 8,
+            "targetMax": 10,
+            "format": "3×8-10",
+            "kind": "main"
+          },
+          "context": {
+            "rawName": "DB Shoulder Press",
+            "label": "DB Shoulder Press",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "main",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×8-10",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         }
       ],
-      "lastUpdated": "2026-06-05",
+      "lastUpdated": "2026-06-12",
       "status": "success",
-      "upgradedAt": "2026-06-05"
+      "upgradedAt": "2026-06-12"
     },
-    "Lateral Raise haltères": {
+    "Lateral Raise DB": {
       "ranges": {
         "endurance": {
-          "currentLoad": 15,
+          "currentLoad": 20,
           "currentReps": 15,
-          "actualLoad": 15,
-          "actualReps": 15,
+          "actualLoad": 20,
+          "actualReps": 16,
           "rpe": 8,
           "confidence": 0.65,
           "status": "success",
-          "estimated1RM": 23,
-          "lastUpdated": "2026-06-05",
+          "estimated1RM": 31,
+          "lastUpdated": "2026-06-12",
           "planned": {
             "load": null,
             "reps": 15,
@@ -995,25 +2618,86 @@
             "targetMax": 20,
             "format": "3×15-20",
             "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Lateral Raise DB",
+            "label": "Lateral Raise DB",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-12",
+          "load": 20,
+          "reps": 16,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 20,
+          "planned": {
+            "load": null,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "3×15-20",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Lateral Raise DB",
+            "label": "Lateral Raise DB",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         }
       ],
-      "lastUpdated": "2026-06-05",
+      "lastUpdated": "2026-06-12",
       "status": "success",
-      "upgradedAt": "2026-06-05"
+      "upgradedAt": "2026-06-12"
     },
-    "Rear Delt Fly haltères": {
+    "Rear Delt Fly DB": {
       "ranges": {
         "endurance": {
-          "currentLoad": 10,
+          "currentLoad": 15,
           "currentReps": 15,
-          "actualLoad": 10,
-          "actualReps": 15,
+          "actualLoad": 15,
+          "actualReps": 16,
           "rpe": 8,
           "confidence": 0.65,
           "status": "success",
-          "estimated1RM": 15,
-          "lastUpdated": "2026-06-05",
+          "estimated1RM": 23,
+          "lastUpdated": "2026-06-12",
           "planned": {
             "load": null,
             "reps": 15,
@@ -1040,12 +2724,73 @@
             "targetMax": 20,
             "format": "3×15-20",
             "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Rear Delt Fly DB",
+            "label": "Rear Delt Fly DB",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-12",
+          "load": 15,
+          "reps": 16,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 15,
+          "planned": {
+            "load": null,
+            "reps": 15,
+            "targetMin": 15,
+            "targetMax": 20,
+            "format": "3×15-20",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Rear Delt Fly DB",
+            "label": "Rear Delt Fly DB",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×15-20",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         }
       ],
-      "lastUpdated": "2026-06-05",
+      "lastUpdated": "2026-06-12",
       "status": "success",
-      "upgradedAt": "2026-06-05"
+      "upgradedAt": "2026-06-12"
     },
     "Serratus Cable Punch": {
       "ranges": {
@@ -1085,6 +2830,28 @@
             "targetMax": 12,
             "format": "2×12/côté",
             "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Serratus Cable Punch",
+            "label": "Serratus Cable Punch",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "2×12/côté",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         }
       ],
@@ -1093,27 +2860,7 @@
       "upgradedAt": "2026-06-05"
     },
     "Power Clean technique": {
-      "ranges": {
-        "strength": {
-          "currentLoad": 135,
-          "currentReps": 2,
-          "actualLoad": 135,
-          "actualReps": 5,
-          "rpe": 7,
-          "confidence": 0.85,
-          "status": "upgrade_ready",
-          "estimated1RM": 158,
-          "lastUpdated": "2026-06-05",
-          "planned": {
-            "load": 115,
-            "reps": 2,
-            "targetMin": 2,
-            "targetMax": 2,
-            "format": "5×2 léger",
-            "kind": "accessory"
-          }
-        }
-      },
+      "ranges": {},
       "history": [
         {
           "date": "2026-06-05",
@@ -1121,7 +2868,7 @@
           "reps": 5,
           "rpe": 7,
           "range": "strength",
-          "status": "upgrade_ready",
+          "status": "context_logged",
           "capacityLoad": 135,
           "planned": {
             "load": 115,
@@ -1130,14 +2877,148 @@
             "targetMax": 2,
             "format": "5×2 léger",
             "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Power Clean technique",
+            "label": "Power Clean technique",
+            "equipment": "barbell",
+            "intents": [
+              "technique",
+              "light"
+            ],
+            "primaryIntent": "technique",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "5×2 léger",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": true,
+            "isLight": true,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        {
+          "date": "2026-06-12",
+          "load": 125,
+          "reps": 3,
+          "rpe": 8,
+          "range": "strength",
+          "status": "context_logged",
+          "capacityLoad": 125,
+          "planned": {
+            "load": 125,
+            "reps": 2,
+            "targetMin": 2,
+            "targetMax": 2,
+            "format": "5×2 léger",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Power Clean technique",
+            "label": "Power Clean technique",
+            "equipment": "barbell",
+            "intents": [
+              "technique",
+              "light"
+            ],
+            "primaryIntent": "technique",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "5×2 léger",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": true,
+            "isLight": true,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
           }
         }
       ],
-      "lastUpdated": "2026-06-05",
-      "status": "upgrade_ready",
-      "upgradedAt": "2026-06-05"
+      "lastUpdated": "2026-06-12",
+      "status": "success",
+      "upgradedAt": "2026-06-12"
+    },
+    "Wide-Grip Cable Upright Row": {
+      "ranges": {
+        "endurance": {
+          "currentLoad": 60,
+          "currentReps": 10,
+          "actualLoad": 60,
+          "actualReps": 20,
+          "rpe": 8,
+          "confidence": 0.65,
+          "status": "success",
+          "estimated1RM": 100,
+          "lastUpdated": "2026-06-12",
+          "planned": {
+            "load": null,
+            "reps": 10,
+            "targetMin": 10,
+            "targetMax": 15,
+            "format": "3×10-15",
+            "kind": "accessory"
+          }
+        }
+      },
+      "history": [
+        {
+          "date": "2026-06-12",
+          "load": 60,
+          "reps": 20,
+          "rpe": 8,
+          "range": "endurance",
+          "status": "success",
+          "capacityLoad": 60,
+          "planned": {
+            "load": null,
+            "reps": 10,
+            "targetMin": 10,
+            "targetMax": 15,
+            "format": "3×10-15",
+            "kind": "accessory"
+          },
+          "context": {
+            "rawName": "Wide-Grip Cable Upright Row",
+            "label": "Wide-Grip Cable Upright Row",
+            "equipment": "cable",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "",
+            "note": "",
+            "text": "",
+            "format": "3×10-15",
+            "day": "mardi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        }
+      ],
+      "lastUpdated": "2026-06-12",
+      "status": "success",
+      "upgradedAt": "2026-06-12"
     }
   },
-  "updatedAt": "2026-06-11T17:27:43.424Z",
-  "version": "V51.06"
+  "updatedAt": "2026-06-18T01:42:14.488Z",
+  "version": "V51.63"
 }
