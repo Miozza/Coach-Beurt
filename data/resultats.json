@@ -1343,5 +1343,227 @@
         "key": "Barbell Row"
       }
     ]
+  },
+  {
+    "version": "V51.63",
+    "date": "2026-06-18",
+    "time": "13:20:59",
+    "semaine": 3,
+    "jour": "jeudi",
+    "plannedDay": "jeudi",
+    "actualDate": "2026-06-18",
+    "actualDayName": "jeudi",
+    "cycle": "shoulders3d_v2",
+    "focus": "Épaules 3D v2 — Midi dense",
+    "cycleState": {
+      "version": "V51.63",
+      "updatedAt": "2026-06-18T17:20:59.735Z",
+      "activeCycle": "shoulders3d_v2",
+      "activeWeek": 3,
+      "activeDay": "jeudi",
+      "activeDays": [
+        "lundi",
+        "mardi",
+        "jeudi",
+        "vendredi"
+      ],
+      "completedDays": [
+        "mardi",
+        "jeudi"
+      ],
+      "missedDays": [],
+      "weekTransitions": [
+        {
+          "cycle": "shoulders3d",
+          "fromWeek": 2,
+          "toWeek": 3,
+          "completedDays": [
+            "lundi",
+            "mardi",
+            "jeudi",
+            "vendredi"
+          ],
+          "missedDays": [],
+          "reason": "Semaine complétée/traitée",
+          "date": "2026-06-12",
+          "actualDayName": "vendredi"
+        }
+      ],
+      "savedCycles": [
+        {
+          "uid": "cycle_1781464003542_8335c0856a11f8",
+          "id": "shoulders3d",
+          "label": "Épaules 3D + Triceps — Phase 1",
+          "week": 3,
+          "day": "vendredi",
+          "completedDays": [],
+          "missedDays": [],
+          "pausedAt": "2026-06-14T19:06:43.542Z",
+          "reason": "Remplacé par Épaules 3D v2 — Midi dense"
+        }
+      ],
+      "archivedCycles": [],
+      "focus": "Épaules 3D v2 — Midi dense",
+      "activeCycleStartDate": "2026-06-01",
+      "cycleStartedAt": "2026-06-01"
+    },
+    "resultats": {
+      "Front Squat": {
+        "load": "185",
+        "reps": "4",
+        "rpe": "8",
+        "planned": {
+          "load": 185,
+          "reps": 4,
+          "targetMin": 4,
+          "targetMax": 4,
+          "format": "5×4",
+          "kind": "main",
+          "context": {
+            "rawName": "Front Squat",
+            "label": "Front Squat",
+            "equipment": "barbell",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "main",
+            "blockTitle": "A. Front Squat",
+            "note": "Priorité jambes. RPE 7-8, dos protégé.",
+            "text": "",
+            "format": "5×4",
+            "day": "jeudi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        "status": "success",
+        "performanceRatio": 1
+      },
+      "Bulgarian Split Squat": {
+        "load": "40",
+        "reps": "8",
+        "rpe": "8",
+        "planned": {
+          "load": 45,
+          "reps": 8,
+          "targetMin": 8,
+          "targetMax": 10,
+          "format": "3×8-10/jambe",
+          "kind": "accessory",
+          "context": {
+            "rawName": "Bulgarian Split Squat",
+            "label": "Bulgarian Split Squat",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "B. Superset jambes + core",
+            "note": "Amplitude propre, genou stable.",
+            "text": "",
+            "format": "3×8-10/jambe",
+            "day": "jeudi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        "status": "success",
+        "performanceRatio": 1
+      },
+      "Dead Bug": {
+        "reps": "10",
+        "rpe": "8"
+      },
+      "Hip Thrust": {
+        "load": "225",
+        "reps": "12",
+        "rpe": "8",
+        "planned": {
+          "load": 225,
+          "reps": 8,
+          "targetMin": 8,
+          "targetMax": 10,
+          "format": "4×8-10",
+          "kind": "accessory",
+          "context": {
+            "rawName": "Hip Thrust",
+            "label": "Hip Thrust",
+            "equipment": "",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "C. Chaîne postérieure",
+            "note": "Pause en haut. Fessiers, pas lombaires.",
+            "text": "",
+            "format": "4×8-10",
+            "day": "jeudi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        "status": "success",
+        "performanceRatio": 1.5
+      },
+      "DB RDL": {
+        "load": "70",
+        "reps": "10",
+        "rpe": "8",
+        "planned": {
+          "load": 65,
+          "reps": 10,
+          "targetMin": 10,
+          "targetMax": 10,
+          "format": "3×10",
+          "kind": "accessory",
+          "context": {
+            "rawName": "DB RDL",
+            "label": "DB RDL",
+            "equipment": "db",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "C. Chaîne postérieure",
+            "note": "Ischios. Dos neutre. Aucun ego.",
+            "text": "",
+            "format": "3×10",
+            "day": "jeudi",
+            "week": 3,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          }
+        },
+        "status": "success",
+        "performanceRatio": 1
+      },
+      "wod_D. WOD jambes / engine": {
+        "result": "04:08",
+        "rpe": "9"
+      }
+    }
   }
 ]
