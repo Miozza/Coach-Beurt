@@ -65,6 +65,11 @@ body::before {
   pointer-events: none;
   z-index: 999;
 }
+body.splash-pending .topnav,
+body.splash-pending .app{
+  opacity:0;
+  visibility:hidden;
+}
 
 /* ══════════════════════════════
    TOP NAV — HUD Header
@@ -5899,7 +5904,7 @@ body.arnold-mode{
   display:flex;
   align-items:center;
   justify-content:center;
-  opacity:0;
+  opacity:1;
   visibility:visible;
   transition:opacity .45s ease,visibility .45s ease;
   pointer-events:none;
