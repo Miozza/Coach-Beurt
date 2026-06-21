@@ -1,9 +1,9 @@
 {
-  "version": "V51.67",
-  "updatedAt": "2026-06-19T23:53:28.174Z",
+  "version": "V51.79",
+  "updatedAt": "2026-06-21T01:47:32.640Z",
   "activeCycle": "shoulders3d_v2",
-  "activeWeek": 3,
-  "activeDay": "vendredi",
+  "activeWeek": 4,
+  "activeDay": "lundi",
   "activeDays": [
     "lundi",
     "mardi",
@@ -13,7 +13,8 @@
   "completedDays": [
     "mardi",
     "jeudi",
-    "vendredi"
+    "vendredi",
+    "lundi"
   ],
   "missedDays": [],
   "weekTransitions": [
