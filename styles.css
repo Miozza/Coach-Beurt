@@ -5895,13 +5895,13 @@ body.arnold-mode{
   width:100vw;
   height:100vh;
   height:100dvh;
-  background:#04060f;
+  background:transparent;
   display:flex;
   align-items:center;
   justify-content:center;
-  opacity:1;
+  opacity:0;
   visibility:visible;
-  transition:opacity .65s ease,visibility .65s ease;
+  transition:opacity .45s ease,visibility .45s ease;
   pointer-events:none;
 }
 .app-splash img{
@@ -5909,6 +5909,10 @@ body.arnold-mode{
   height:100%;
   object-fit:cover;
   display:block;
+}
+.app-splash-ready{
+  background:#04060f;
+  opacity:1;
 }
 .app-splash-hide{
   opacity:0;
