@@ -23,7 +23,19 @@ window.DEFAULT_CHARGES = {
   "Light DB Push Press": "35 lb / main",
   "Hang Power Clean": "115-135 lb",
   "KB Swings": "24 kg",
-  "DB Snatch": "50 lb"
+  "DB Snatch": "50 lb",
+  "Deadlift": "185 lb",
+  "Barbell Row": "145 lb",
+  "Dumbbell Row": "70 lb / main",
+  "Romanian Deadlift": "135 lb",
+  "DB Bench Press": "60 lb / main",
+  "DB Curl": "35 lb / main",
+  "Hammer Curl": "40 lb / main",
+  "Close-Grip Bench Press": "165 lb",
+  "Front Rack Carry": "95 lb",
+  "Cable Hip Abduction": "25 lb",
+  "Cable Pull-Through": "45 lb",
+  "Goblet Squat": "45 lb"
 };
 
 window.CHARGE_ORDER = Object.keys(window.DEFAULT_CHARGES);
