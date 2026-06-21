@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>Coach Bertin V51.53</title>
+  <title>Racine V51.82</title>
   <link rel="manifest" href="manifest.json"/>
   <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
   <link rel="apple-touch-icon-precomposed" sizes="180x180" href="./apple-touch-icon-precomposed.png">
@@ -16,13 +16,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="styles.css?v=51.53"/>
+  <link rel="stylesheet" href="styles.css?v=51.82"/>
 </head>
 <body>
 
 <!-- ═══ TOPNAV ═══ -->
 <nav class="topnav">
-  <span class="topnav-brand">CB <span class="topnav-v">V51.53</span></span><button type="button" id="syncStatusDot" class="sync-dot pending" title="Synchro non vérifiée" aria-label="Statut GitHub">◐</button>
+  <span class="topnav-brand"><span class="topnav-mark">R</span><span class="topnav-v">V51.82</span></span><button type="button" id="syncStatusDot" class="sync-dot pending" title="Synchro non vérifiée" aria-label="Statut GitHub">◐</button>
   <div class="topnav-tabs" id="mainTabs">
     <button id="trainingTab"    class="tab active">WOD</button>
     <button id="profileTab"     class="tab">PR</button>
@@ -170,7 +170,6 @@
     <h2>Actions principales</h2>
     <p class="muted">Les actions utiles au quotidien passent en premier. Les sauvegardes locales restent plus bas.</p>
     <div class="settings-action-grid">
-      <button id="openStephanieProfileBtn" class="btn-ghost">Profil Stéphanie</button>
       <button id="exportWeekBtnSettings" class="btn-ghost">Exporter la semaine en texte</button>
     </div>
   </div>
@@ -201,10 +200,11 @@
     <h2>⚡ GitHub — Sauvegarde automatique</h2>
     <p class="muted">Tes résultats sont sauvegardés dans <code>Miozza/Coach-Beurt</code> après chaque séance.</p>
     <label>Personal Access Token GitHub</label>
-    <input id="githubToken" type="password" class="input-field" placeholder="ghp_xxxxxxxxxxxxxxxx"/>
-    <p class="field-hint">Généré une fois sur GitHub → Settings → Developer settings → Tokens (classic) → repo</p>
+    <input id="githubToken" type="password" class="input-field" placeholder="github_pat_xxxxxxx"/>
+    <p class="field-hint">Utilise un fine-grained token : Settings → Developer settings → Fine-grained tokens → New token → Repository access : Coach-Beurt uniquement → Permissions : Contents = Read and Write</p>
     <div class="btn-row">
       <button id="saveTokenBtn" class="btn-accent">Sauvegarder le token</button>
+      <button id="clearTokenBtn" class="btn-danger" type="button">Retirer le token</button>
       <button id="testTokenBtn" class="btn-ghost">Tester le token GitHub</button>
       <button id="syncGithubBtn" class="btn-ghost">Synchroniser depuis GitHub</button>
     </div>
@@ -227,6 +227,23 @@
       <label class="btn-ghost file-label settings-file-label">Restaurer mes données<input id="importBackupFileSettings" type="file" accept="application/json"/></label>
     </div>
     <p class="field-hint">Format : JSON</p>
+  </div>
+
+  <div class="panel settings-profile-switch-panel">
+    <button type="button" class="settings-collapse-toggle" id="profileSwitchToggle"
+      aria-expanded="false" aria-controls="profileSwitchBody">
+      ⚙ Changer de profil
+    </button>
+    <div id="profileSwitchBody" class="settings-collapse-body" hidden>
+      <p class="muted" style="margin-bottom:12px">
+        Chaque profil a ses propres données. Revenir ici pour changer.
+      </p>
+      <div class="btn-row">
+        <button id="openStephanieProfileBtn" class="btn-ghost">Stéphanie</button>
+        <button id="openArnoldProfileBtn" class="btn-ghost">Arnold Split</button>
+        <button id="openBertinProfileBtn" class="btn-ghost">Bertin</button>
+      </div>
+    </div>
   </div>
 
 </main>
@@ -364,52 +381,63 @@
   </div>
 </main>
 
-<footer class="footer">V51.53 · Coach Bertin · WOD+ mobile-first · Vue PC · Roadmap · GitHub sync</footer>
+<footer class="footer">V51.82 · Racine · WOD+ mobile-first · Vue PC · Roadmap · GitHub sync</footer>
 </div>
 
-<script src="scripts/core/logger.js?v=51.53"></script>
-<script src="programs/index.js?v=51.53"></script>
-<script src="programs/epaules_3d.js?v=51.53"></script>
-<script src="programs/epaules_3d_v2.js?v=51.53"></script>
-<script src="programs/hypertrophy_base.js?v=51.53"></script>
-<script src="programs/force_performance.js?v=51.53"></script>
-<script src="programs/competition_peak.js?v=51.53"></script>
-<script src="programs/hypertrophie_fesse.js?v=51.53"></script>
-<script src="programs/posture_cyphose.js?v=51.53"></script>
-<script src="programs/force.js?v=51.53"></script>
-<script src="programs/heritage_225.js?v=51.53"></script>
-<script src="programs/config.js?v=51.53"></script>
-<script src="programs/workouts.js?v=51.53"></script>
-<script src="programs/tutorials.js?v=51.53"></script>
-<script src="data/charges.js?v=51.53"></script>
-<script src="programs/hypertrophie_fesse_stephanie.js?v=51.53"></script>
-<script src="scripts/app_helpers.js?v=51.53"></script>
-<script src="scripts/charge/equipement.js?v=51.53"></script>
-<script src="scripts/charge/utilitaires.js?v=51.53"></script>
-<script src="scripts/charge/mouvements.js?v=51.53"></script>
-<script src="scripts/charge/historique.js?v=51.53"></script>
-<script src="scripts/charge/rpe.js?v=51.53"></script>
-<script src="scripts/charge/suggestion.js?v=51.53"></script>
-<script src="scripts/charge/index.js?v=51.53"></script>
-<script src="scripts/view_pc.js?v=51.53"></script>
-<script src="scripts/charge_diagnostic_ui.js?v=51.53"></script>
-<script src="scripts/ui_modals.js?v=51.53"></script>
-<script src="scripts/app_navigation.js?v=51.53"></script>
-<script src="scripts/view_wodplus.js?v=51.53"></script>
-<script src="scripts/session/view.js?v=51.53"></script>
-<script src="scripts/session/timer.js?v=51.53"></script>
-<script src="scripts/session/results.js?v=51.53"></script>
-<script src="scripts/session/save.js?v=51.53"></script>
-<script src="scripts/session/index.js?v=51.53"></script>
-<script src="scripts/stephanie_mode.js?v=51.53"></script>
-<script src="app.js?v=51.53"></script>
-<script src="scripts/tms_session.js?v=51.53"></script>
+<script src="scripts/core/logger.js?v=51.82"></script>
+<script src="programs/index.js?v=51.82"></script>
+<script src="programs/epaules_3d.js?v=51.82"></script>
+<script src="programs/epaules_3d_v2.js?v=51.82"></script>
+<script src="programs/hypertrophy_base.js?v=51.82"></script>
+<script src="programs/force_performance.js?v=51.82"></script>
+<script src="programs/competition_peak.js?v=51.82"></script>
+<script src="programs/hypertrophie_fesse.js?v=51.82"></script>
+<script src="programs/posture_cyphose.js?v=51.82"></script>
+<script src="programs/force.js?v=51.82"></script>
+<script src="programs/heritage_225.js?v=51.82"></script>
+<script src="programs/arnold_split_beurt.js?v=51.82"></script>
+<script src="programs/config.js?v=51.82"></script>
+<script src="programs/workouts.js?v=51.82"></script>
+<script src="programs/tutorials.js?v=51.82"></script>
+<script src="data/charges.js?v=51.82"></script>
+<script src="programs/hypertrophie_fesse_stephanie.js?v=51.82"></script>
+<script src="programs/arnold_split_2026_adapte.js?v=51.82"></script>
+<script src="scripts/app_helpers.js?v=51.82"></script>
+<script src="scripts/state/storage.js?v=51.82"></script>
+<script src="scripts/state/index.js?v=51.82"></script>
+<script src="scripts/sync/storage.js?v=51.82"></script>
+<script src="scripts/sync/index.js?v=51.82"></script>
+<script src="scripts/charge/equipement.js?v=51.82"></script>
+<script src="scripts/charge/utilitaires.js?v=51.82"></script>
+<script src="scripts/charge/mouvements.js?v=51.82"></script>
+<script src="scripts/charge/historique.js?v=51.82"></script>
+<script src="scripts/charge/rpe.js?v=51.82"></script>
+<script src="scripts/charge/suggestion.js?v=51.82"></script>
+<script src="scripts/history/index.js?v=51.82"></script>
+  <script src="scripts/progression/index.js?v=51.82"></script>
+  <script src="scripts/summary/index.js?v=51.82"></script>
+<script src="scripts/charge/index.js?v=51.82"></script>
+<script src="scripts/view_pc.js?v=51.82"></script>
+<script src="scripts/charge_diagnostic_ui.js?v=51.82"></script>
+<script src="scripts/ui_modals.js?v=51.82"></script>
+<script src="scripts/ui/index.js?v=51.82"></script>
+<script src="scripts/app_navigation.js?v=51.82"></script>
+<script src="scripts/view_wodplus.js?v=51.82"></script>
+<script src="scripts/session/view.js?v=51.82"></script>
+<script src="scripts/session/timer.js?v=51.82"></script>
+<script src="scripts/session/results.js?v=51.82"></script>
+<script src="scripts/session/save.js?v=51.82"></script>
+<script src="scripts/session/index.js?v=51.82"></script>
+<script src="scripts/stephanie_mode.js?v=51.82"></script>
+<script src="scripts/arnold_mode.js?v=51.82"></script>
+<script src="app.js?v=51.82"></script>
+<script src="scripts/tms_session.js?v=51.82"></script>
 <script>
   setTimeout(function(){
     if (!window.APP_VERSION) {
       var box = document.createElement("div");
       box.style.cssText = "position:fixed;inset:16px;z-index:99999;background:#160b0b;color:#fff;border:1px solid #ff6b6b;border-radius:14px;padding:16px;font-family:system-ui;line-height:1.35";
-      box.innerHTML = "<strong>Erreur de chargement Coach Beurt</strong><br>app.js n’a pas démarré. Recharge la page ou efface le cache Safari.";
+      box.innerHTML = "<strong>Erreur de chargement Racine</strong><br>app.js n’a pas démarré. Recharge la page ou efface le cache Safari.";
       document.body.appendChild(box);
     }
   }, 1200);

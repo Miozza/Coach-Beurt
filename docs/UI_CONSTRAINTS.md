@@ -1,8 +1,8 @@
-# Contraintes UI Coach Beurt
+# Contraintes UI Racine
 
 ## Priorité
 
-Coach Beurt est utilisé en entraînement réel. La priorité est :
+Racine est utilisé en entraînement réel. La priorité est :
 
 1. lisibilité;
 2. rapidité d’action;

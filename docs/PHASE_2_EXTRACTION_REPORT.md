@@ -6,7 +6,7 @@ V51.37 — extraction progressive du moteur de charges hors de `app.js`.
 
 ## Objectif
 
-Extraire progressivement les fonctions de charge vers `scripts/*` sans changer le comportement visible de Coach Beurt.
+Extraire progressivement les fonctions de charge vers `scripts/*` sans changer le comportement visible de Racine.
 
 Règles respectées :
 

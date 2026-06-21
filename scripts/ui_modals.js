@@ -1,4 +1,4 @@
-// Coach Beurt V51.53
+// Coach Beurt V51.63
 // UI modals and small interactive buttons extracted from app.js.
 // No business logic here: tutorial modal + charge explanation modal only.
 // Loaded before app.js so existing global function names remain available.

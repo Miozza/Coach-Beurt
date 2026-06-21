@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
-  Coach Beurt — contrat de progression des charges.
+  Racine — contrat de progression des charges.
   Étape 6 : vérifier que la progression est protégée comme un pilier égal au choix de mouvement.
 
   Usage :

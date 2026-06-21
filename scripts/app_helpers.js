@@ -1,4 +1,4 @@
-// Coach Bertin V51.53 — Helpers applicatifs simples
+// Coach Bertin V51.63 — Helpers applicatifs simples
 // Extraction prudente depuis app.js.
 // Ces fonctions ne portent pas la logique de charges, d'historique, de cycle ou de sync GitHub.
 
@@ -58,3 +58,34 @@ function timerMeasureSampleForDisplay(text,isCountdown){
   var parts=text.split(":");
   return ((parts[0]||"0").length>=2)?"88:88":"8:88";
 }
+
+function setupGithubTokenRemovalControl(){
+  var tokenInput=$("githubToken");
+  var saveBtn=$("saveTokenBtn");
+  if(!tokenInput||!saveBtn||$("removeTokenBtn"))return;
+
+  var btn=document.createElement("button");
+  btn.id="removeTokenBtn";
+  btn.type="button";
+  btn.className="btn-danger";
+  btn.textContent="Retirer le token";
+  saveBtn.parentNode.insertBefore(btn, saveBtn.nextSibling);
+
+  btn.onclick=function(){
+    var current="";
+    try{current=localStorage.getItem("coachBertinGithubToken")||"";}catch(e){}
+    if(!current && !tokenInput.value.trim()){
+      var emptyStatus=$("tokenStatus");
+      if(emptyStatus){emptyStatus.textContent="Aucun token enregistré sur cet appareil.";emptyStatus.className="status-msg";}
+      return;
+    }
+    if(!confirm("Retirer le token GitHub de cet appareil?"))return;
+    try{localStorage.removeItem("coachBertinGithubToken");}catch(e){}
+    tokenInput.value="";
+    if(typeof writeSyncStatus==="function")writeSyncStatus("pending","Token GitHub retiré");
+    var status=$("tokenStatus");
+    if(status){status.textContent="Token retiré de cet appareil. La sauvegarde GitHub demandera un nouveau token.";status.className="status-msg ok";}
+  };
+}
+
+setupGithubTokenRemovalControl();

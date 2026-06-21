@@ -1,4 +1,4 @@
-// Coach Beurt V51.53 — session save domain
+// Coach Beurt V51.63 — session save domain
 // Sauvegarde de séance : payload, retour WOD et orchestration sauvegarde.
 
 function updateCustomChargesFromResults(results){
@@ -6,14 +6,15 @@ function updateCustomChargesFromResults(results){
 }
 
 function buildSessionPayload(results){
+  var now=new Date();
   return{
     version:APP_VERSION,
-    date:new Date().toLocaleDateString("fr-CA"),
-    time:new Date().toLocaleTimeString("fr-CA"),
+    date:now.toLocaleDateString("fr-CA"),
+    time:now.toLocaleTimeString("fr-CA"),
     semaine:state.week,
     jour:state.day,
     plannedDay:state.day,
-    actualDate:new Date().toLocaleDateString("fr-CA"),
+    actualDate:now.toLocaleDateString("fr-CA"),
     actualDayName:actualDayName(),
     cycle:state.cycle&&state.cycle.goal?state.cycle.goal:null,
     focus:focus().label,
@@ -23,6 +24,7 @@ function buildSessionPayload(results){
 }
 
 function returnFromResultsToWod(){
+  guidedResultCache = {};
   guidedResultsMode=false;
   document.body.classList.remove("guided-results-active");
   document.body.classList.remove("results-view-active");
@@ -42,6 +44,7 @@ function setupSessionSave(){
     var results=collectSessionResults();
     var hasData=Object.keys(results).length>0;
     if(!hasData){var s=$("saveStatus");if(s){s.textContent="Aucun résultat saisi.";s.className="session-note";}return;}
+    try{
     btn.disabled=true;btn.textContent="Envoi en cours...";
     results=CoachCharge.enrichSessionResults(results);
     var autoPrUpdates=detectAndApplyAutomaticPr(results,todayDateString());
@@ -58,8 +61,13 @@ function setupSessionSave(){
     // 4. Vérifier alerte deload
     checkDeloadAlert();
     // 5. Ajouter à l'historique local
-    state.history.push({date:payload.date,time:payload.time,week:state.week,day:state.day,plannedDay:state.day,actualDate:payload.actualDate,actualDayName:payload.actualDayName,cycle:payload.cycle,focus:focus().label,results:results,version:APP_VERSION});
-    save();
+    var alreadySaved=state.history.some(function(h){
+      return h.date===payload.date&&h.day===payload.jour&&h.cycle===payload.cycle;
+    });
+    if(!alreadySaved){
+      state.history.push({date:payload.date,time:payload.time,week:state.week,day:state.day,plannedDay:state.day,actualDate:payload.actualDate,actualDayName:payload.actualDayName,cycle:payload.cycle,focus:focus().label,results:results,version:APP_VERSION});
+      save();
+    }
     if(autoPrUpdates.length){ renderProfile(); renderReferences(); }
     // 6. Envoyer séance sur GitHub
     var result=await saveToGitHub(payload);
@@ -72,7 +80,6 @@ function setupSessionSave(){
     // 8. Ne pas modifier charges.js automatiquement : les charges stables ne doivent pas être écrasées par une mise à jour ou une séance.
     var s=$("saveStatus");
     if(s){s.textContent=result.msg+stateMsg;s.className="session-note"+(result.ok?" ok":" err");}
-    btn.disabled=false;btn.textContent="💾 Sauvegarder & envoyer sur GitHub";
     // 8. Construire et afficher le résumé
     var summary=buildSessionSummary(results);
     showSessionSummaryModal(summary);
@@ -81,6 +88,13 @@ function setupSessionSave(){
       if(guidedResultsMode){
         returnFromResultsToWod();
       }
+    }
+    }catch(e){
+      if(typeof coachLogError==="function")coachLogError("saveSession",e);
+      var s=$("saveStatus");
+      if(s){s.textContent="Erreur inattendue : "+(e&&e.message?e.message:String(e));s.className="session-note err";}
+    }finally{
+      btn.disabled=false;btn.textContent="💾 Sauvegarder & envoyer sur GitHub";
     }
   };
 }

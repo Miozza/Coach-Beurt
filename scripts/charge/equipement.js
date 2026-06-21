@@ -1,4 +1,4 @@
-// Coach Beurt V51.53 — extraction prudente moteur de charges.
+// Coach Beurt V51.63 — extraction prudente moteur de charges.
 // Script global volontaire : pas de ES modules, pas de changement de comportement.
 
 function defaultEquipmentLoadRules(){

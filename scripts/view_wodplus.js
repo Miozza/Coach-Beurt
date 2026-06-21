@@ -1,4 +1,4 @@
-// Coach Beurt V51.53 — WOD+ render helpers
+// Coach Beurt V51.63 — WOD+ render helpers
 // Extraction prudente depuis app.js.
 // But: alléger app.js sans changer le comportement visible de WOD+.
 // Ne contient pas le moteur de charges, l'historique, le RPE storage ou la sync GitHub.
@@ -66,13 +66,7 @@ function wodPlusStartButtonHtml(extraClass){
   return '<button type="button" class="btn-accent wodplus-start '+(extraClass||'')+'" data-action="start-guided-session">▶ Démarrer séance</button>';
 }
 function startGuidedSessionFromWodPlus(){
-  guidedLaunchSource = "wodplus";
-  guidedResultsMode = false;
-  document.body.classList.remove("guided-results-active");
-  document.body.classList.add("guided-session-active");
-  switchView("phone");
-  renderPhoneWod();
-  CoachSession.open();
+  CoachSession.openFrom("wodplus");
 }
 function setupWodPlusActions(root){
   root = root || document;

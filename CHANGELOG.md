@@ -1,4 +1,190 @@
+## V51.82 - Ajout de références de charge dans data/charges.js
+
+- Ajoute 12 mouvements à `window.DEFAULT_CHARGES` : `Deadlift` (185 lb), `Barbell Row` (145 lb), `Dumbbell Row` (70 lb / main), `Romanian Deadlift` (135 lb), `DB Bench Press` (60 lb / main), `DB Curl` (35 lb / main), `Hammer Curl` (40 lb / main), `Close-Grip Bench Press` (165 lb), `Front Rack Carry` (95 lb), `Cable Hip Abduction` (25 lb), `Cable Pull-Through` (45 lb), `Goblet Squat` (45 lb).
+- Ces mouvements vivent dans des programmes secondaires (`force_performance.js`, `hypertrophie_fesse.js`, `posture_cyphose.js`) sans charge littérale ni historique réel — ils n'avaient ni plancher numérique ni filet de sécurité avant cet ajout.
+- Valeurs fournies et ajustées directement par Bertin.
+- Exception explicite et ponctuelle à la règle de fichier protégé pour `data/charges.js` — demandée et confirmée par Bertin, à ne pas reproduire sans confirmation équivalente.
+- `config.js`, `workouts.js` et `data/resultats.json` restent protégés, non touchés.
+
+## V51.81 - Navigation de semaine sans contamination
+
+- Centralise les changements de semaine dans `setActiveWeek()` pour les flèches, les onglets de semaine et le handler de swipe désactivé.
+- Reconstruit `completedDays` et `missedDays` depuis `state.history` et `weekTransitions` quand l'utilisateur change manuellement de semaine.
+- Les semaines passées peuvent réafficher leurs jours réellement complétés, sans contaminer les semaines futures.
+- Filtre puis reconstruit le `cycle_state` reçu de GitHub selon le cycle et la semaine actifs.
+- Ajoute un garde-fou dans `dev/regression_checks.js`.
+- Aucun fichier `data/` ou `programs/` modifié.
+
+## V51.80 - Repères de charge pour DB Fly / DB Pullover
+
+- Ajoute `DB Fly` (30 lb/main) et `DB Pullover` (45 lb) dans `coachDefaultLoadSeedForMovement` (`scripts/charge/historique.js`) — seuls mouvements d'Arnold Split Beurt qui démarraient vraiment à froid.
+- Audit complet : tous les autres mouvements du programme sont déjà couverts par l'historique réel, une charge littérale dans le programme, ou `data/charges.js`.
+- Estimations de départ, pas des données mesurées — le moteur se recalibre dès la première séance loggée.
+- `data/charges.js` reste intact (protégé). Aucun changement à `programs/arnold_split_beurt.js`.
+
+## V51.79 - Corrige l'échec CI du workflow jamais audité
+
+- `.github/workflows/coach-beurt-checks.yml` n'avait jamais été vérifié lors du renommage en Racine (V51.75) : ses assertions exigeaient encore `// Coach Bertin ${version}` et `<title>Coach Bertin ${version}</title>`, faisant échouer la CI depuis V51.75. Corrigé.
+- Balayage complet du repo : corrige aussi le message d'erreur visible dans `index.html`, le commentaire d'en-tête de `service-worker.js`, les textes visibles dans les écrans Arnold/Stéphanie, le titre du rapport d'erreur, et l'export "Contexte IA" de la Vue PC.
+- Volontairement laissés tels quels : commentaires d'en-tête internes des fichiers `programs/*.js`/`scripts/*.js` (jamais affichés), et `data/charges.js` (fichier protégé).
+- Aucun changement à `manifest.json`, aux identifiants de code internes, ou au comportement fonctionnel.
+
+## V51.78 - Icône PWA : "R" métallique enraciné
+
+- Remplace les 5 fichiers d'icône par la nouvelle version choisie : lettre "R" métallique avec racines.
+- Source 1254×1254, redimensionnement direct sans marge additionnelle.
+- Vérifié par simulation de masque squircle iOS : 0% de pixels lumineux hors masque.
+- Aucun changement à `manifest.json` ni au code fonctionnel.
+
+## V51.77 - Icône PWA finale
+
+- Remplace les 5 fichiers d'icône par la version finale choisie par Bertin (source 1254×1254, déjà cadrée par l'outil de génération).
+- Redimensionnement direct, sans marge additionnelle (un essai avec marge superposée créait un double-cadre visible, abandonné).
+- Vérifié par simulation de masque squircle iOS : 0,03% de pixels lumineux hors masque, négligeable.
+- Aucun changement à `manifest.json` ni au code fonctionnel.
+
+## V51.76 - Nouvelle icône PWA Racine
+
+- Remplace les 5 fichiers d'icône (`icon-180/192/512.png`, `apple-touch-icon.png`, `apple-touch-icon-precomposed.png`) par l'illustration graine/racine lumineuse choisie par Bertin.
+- Source 838×838 recomposée sur un canevas 1024×1024 à 76% d'échelle (~12% de marge par côté), fondu doux aux bords, pour protéger les pointes de feuilles et de racines du masque arrondi iOS / zone de sécurité Android. Marge colorée en #04060f pour matcher `background_color` du manifest.
+- Rappel : icônes déjà installées sur un écran d'accueil ne se mettent pas à jour seules, il faut réinstaller.
+- Aucun changement à `manifest.json`, au nom affiché, ou au code fonctionnel.
+
+## V51.75 - Renommage du produit en Racine
+
+- Renomme le nom affiché du produit "Coach Bertin" / "Coach Beurt" → "Racine" : `<title>`, footer, manifest PWA (name/short_name), README.md, ETAT_ACTUEL.md, docs/*.md, en-tête de `app.js`.
+- Met à jour les assertions de nom dans `dev/structure_checks.js` et `dev/regression_checks.js` pour valider "Racine" au lieu de "Coach Bertin" (auraient échoué sinon contre le nouveau titre).
+- Topnav : remplace l'abréviation "CB" par un logo "R" stylisé (Orbitron 900, glow cyan).
+- Hors scope sur demande explicite : identifiants de code internes (`COACH_BERTIN_*`), clés `localStorage`, nom de cache du service worker, repos GitHub/URL, et le profil athlète `bertin` — tous inchangés.
+- Les entrées historiques du CHANGELOG (ci-dessous) ne sont pas réécrites, elles restent un registre fidèle de l'état passé.
+
+## V51.74 - Profil par défaut + scroll-to-top
+
+- `scripts/stephanie_mode.js` : ajoute `?preview=X` (X = bertin/stephanie/arnold), qui affiche un profil pour la visite en cours sans écrire dans `localStorage`. Corrige le fait qu'une simple visite de `?profile=arnold` écrasait silencieusement le profil par défaut du lien de base pour toujours. `?profile=X` garde son comportement mémorisé existant (nécessaire à l'icône PWA installée de Stéphanie).
+- `scripts/arnold_mode.js` et `scripts/stephanie_mode.js` : ajoute `window.scrollTo(0,0)` au point central de navigation (`renderArnoldSimpleApp` / `renderStephanieSimpleApp`). Aucun des deux fichiers ne gérait le scroll, donc la position restait celle de l'écran précédent en changeant de carte.
+- Aucun changement à `programs/arnold_split_beurt.js`, `data/`, `data/charges.js`, ou aux programmes protégés existants.
+
+## V51.73 - Arnold Split Beurt — retirer Deadlift du Type A
+
+- Retire le Deadlift conventionnel du Type A (Pecs+Dos) de `programs/arnold_split_beurt.js`. Dans le vrai split Arnold original (vérifié contre la source), le mouvement deadlift (Straight Leg Deadlift) vit sur le jour Jambes, jamais sur Pecs+Dos. Déjà couvert correctement par Romanian Deadlift dans le Type C.
+- Remplace par un superset DB Fly + DB Pullover (vrai mouvement du Jour 1 original, fait couché sur banc, zéro charge lombaire).
+- Nettoie les `cycleRules` qui mentionnaient encore le Deadlift conventionnel.
+- Même durée totale (~51 min). Aucun changement aux Types B et C, à la rotation A/B/C ni aux charges de départ.
+- Aucun changement à `data/`, `data/charges.js` ou aux programmes protégés existants.
+
+## V51.72 - Arnold Split Beurt — réordonner Type A pour le dos
+
+- Réordonne la séance Type A (Pecs+Dos) de `programs/arnold_split_beurt.js` : Bench Press → superset Pull-Up + Face Pull (tampon sans charge lombaire) → Deadlift, fait frais → superset Barbell Row + Incline DB Press en sous-maximal après le Deadlift.
+- Corrige le fait que Bench Press et Deadlift étaient consécutifs sans tampon, et que Barbell Row (charge lombaire) précédait directement le Deadlift.
+- Même durée totale (~53 min). Aucun changement aux Types B et C, à la rotation A/B/C ni aux charges de départ.
+- Aucun changement à `data/`, `data/charges.js` ou aux programmes protégés existants.
+
+## V51.71 - Arnold Split Beurt — supersets 60 min
+
+- Restructure les 3 types de séance (A/B/C) de `programs/arnold_split_beurt.js` en supersets pour tenir dans 60 minutes.
+- Bench Press, Back Squat et Deadlift restent seuls avec repos complet (2:00-2:30) : mouvements lourds/techniques, pas de superset par sécurité.
+- Tous les autres mouvements jumelés en paires : transition courte (0:20-0:30) entre les deux, vrai repos (1:00-1:15) après la paire avant de reprendre.
+- Durées par type : A ~53 min, B ~51 min, C ~55 min, warm-up et sortie inclus.
+- Aucun changement de rotation A/B/C, d'enregistrement dans `programs/index.js`, ni des charges corrigées en V51.70.
+- Aucun changement à `data/`, `data/charges.js` ou aux programmes protégés existants.
+
+## V51.70 - Arnold Split Beurt — correction charges S1
+
+- Corrige 4 charges de départ trop légères dans `programs/arnold_split_beurt.js` : Barbell Row 185 lb, Deadlift 250 lb, DB Shoulder Press 50 lb/main, Romanian Deadlift 140 lb — selon les repères réels donnés par Bertin.
+- Aucun changement de structure, de rotation A/B/C, ni d'enregistrement dans `programs/index.js`.
+- Aucun changement à `data/`, `data/charges.js` ou aux programmes protégés existants.
+
+## V51.69 - Arnold Split Beurt
+
+- Ajoute `programs/arnold_split_beurt.js`, un vrai programme connecté au moteur de charge (CoachCharge), distinct du mode local expérimental `Arnold Split 2026 — Adapté` qui reste inchangé.
+- Rotation continue de 3 séances (Pecs+Dos, Épaules+Bras, Jambes) sur 4 jours d'entraînement (lundi/mardi/jeudi/vendredi) : le type de séance par jour change d'une semaine à l'autre sur un cycle de 3 semaines.
+- Mouvements choisis pour maximiser la réutilisation de l'historique réel déjà dans `athleteState` (Barbell Row, Bulgarian Split Squat, Cable Curl, Face Pull, Hip Thrust, Incline DB Press, Lateral Raise câble, Rear Delt Fly câble, Triceps Rope Pushdown). Bench Press, Back Squat et Deadlift gardés classiques sur demande explicite malgré un démarrage à froid.
+- Aucun WOD, aucun conditioning. Bloc à durée ouverte, aucune fin forcée.
+- Enregistré dans `programs/index.js` (phase 0, buffer) mais volontairement absent de `gapFillers` : sélection manuelle seulement.
+- Aucun changement à `data/`, `data/charges.js` ou aux programmes protégés existants.
+
+## V51.68 - Route PC visuelle
+
+- Restaure un tableau de bord Route dans l'onglet PC avec cartes Competition, Maintenant, Timeline macrocycle et Prochaine etape.
+- Les barres de progression affichent maintenant le pourcentage directement dans la barre.
+- La Route PC lit toujours `COACH_BERTIN_MACROCYCLE.mainRoute` et `COACH_BERTIN_PROGRAM_INDEX` depuis `programs/index.js`.
+
+## V51.67 - Lisibilité iPhone modes locaux
+
+- Augmente fortement la taille du texte dans les cartes locales Stéphanie et Arnold.
+- Améliore le contraste: fonds moins noirs, textes plus clairs, métadonnées moins sombres.
+- Agrandit les boutons, champs, gear et tags pour usage tactile sur iPhone.
+- Force les actions bas de séance en une colonne sur petit écran pour éviter les boutons compressés.
+- Aucun changement aux données durables ni à `data/charges.js`.
+
+## V51.67 - Arnold Split local experimental
+
+- Ajoute `programs/arnold_split_2026_adapte.js` avec 6 cartes bodybuilding hypertrophie.
+- Ajoute `scripts/arnold_mode.js` pour afficher et sauvegarder ce programme en local, séparé de Coach Beurt et de Stéphanie.
+- Ajoute le bouton `Arnold Split expérimental` dans les réglages et le support `?profile=arnold`.
+- Réutilise le modèle mobile de cartes locales de Stéphanie sans modifier les données durables.
+- Ne modifie pas `data/`, `data/charges.js` ni les programmes protégés existants.
+
+## V51.65 - Frein RPE recent non resolu
+
+- Corrige le moteur quand une charge recente a coute RPE 9, puis qu'une seance suivante redescend sans valider plus haut.
+- Bulgarian Split Squat ne remonte plus automatiquement a 50 lb si 45 lb RPE 9 reste non resolu malgre un retour a 40 lb.
+- La modale jaune de charge lit la charge finale gardee apres frein RPE recent, pas la charge brute du programme.
+- Aucun fichier data/, data/charges.js ou programs/ modifie.
+
+## V51.64 - Garde-fous moteur de charges
+
+- Renforce le moteur de charges pour appliquer la suggestion finale apres les garde-fous deload, RPE et historique recent.
+- Corrige les diagnostics exportes pour utiliser la suggestion finale de CoachCharge et eviter les fausses alertes sur Dead Bug et les mouvements au poids du corps.
+- Ajoute des tests cibles pour deload, bodyweight, frein RPE et apprentissage DB RDL.
+
+## V51.63 - Nettoyage entree Session
+- Ajoute `CoachSession.openFrom(source)` comme entree publique pour demarrer la seance guidee.
+- WOD+ demarre la seance via `CoachSession.openFrom("wodplus")` sans passer par la vue PC.
+- PC demarre la seance via `CoachSession.openFrom("phone")` sans cliquer un autre bouton.
+- `app.js` ne porte plus le detail de demarrage de Session.
+- Ne modifie pas `data/`, `data/charges.js`, `programs/` ni `scripts/charge/`.
+
+## V51.63 - Nettoyage CoachSummary
+- Retire le fallback complet du resume dans scripts/session/results.js.
+- CoachSummary devient le seul compositeur complet du resume; Resultats garde la saisie et l affichage.
+- Ajuste les checks pour verifier CoachProgress dans CoachSummary, pas dans Resultats.
+- Ne modifie pas data/, data/charges.js, programs/ ni scripts/charge/.
+
+## V51.63 - CoachSummary minimal
+- Ajoute scripts/summary/index.js comme domaine public window.CoachSummary.
+- Deplace la composition du resume automatique de seance derriere une API reutilisable.
+- scripts/session/results.js delegue le resume a CoachSummary tout en gardant un fallback compatible.
+- Renforce dev/regression_checks.js et dev/structure_checks.js pour verrouiller cette frontiere.
+- Ne modifie pas data/, data/charges.js ni programs/.
+
+## V51.62 - CoachUI minimal
+- Ajoute scripts/ui/index.js comme domaine public window.CoachUI.
+- Garde les helpers UI existants compatibles tout en donnant une frontiere stable a app.js.
+- app.js utilise maintenant CoachUI.escapeHtml pour le rendu HTML.
+- Renforce dev/regression_checks.js et dev/structure_checks.js pour verrouiller cette frontiere.
+- Ne modifie pas data/, data/charges.js ni programs/.
+
 ## V51.53 — Cohérence décision charge
+
+## V51.62 - CoachSync minimal
+- Ajoute `scripts/sync/` comme domaine public `window.CoachSync`.
+- Deplace la lecture/ecriture du token GitHub et du statut de synchronisation hors de `app.js`.
+- Ajoute le bouton `Retirer le token` dans les reglages GitHub.
+- Renforce `dev/regression_checks.js` et `dev/structure_checks.js` pour verrouiller cette frontiere.
+- Ne modifie pas `data/`, `data/charges.js` ni `programs/`.
+
+## V51.62 - CoachState minimal
+- Ajoute `scripts/state/` comme domaine public `window.CoachState`.
+- Deplace la lecture/ecriture locale de `state` et des charges personnalisees hors de `app.js`.
+- Garde le token GitHub dans `app.js` pour ne pas melanger la future extraction `CoachSync`.
+- Renforce `dev/regression_checks.js` et `dev/structure_checks.js` pour verrouiller cette frontiere.
+- Ne modifie pas `data/`, `data/charges.js` ni `programs/`.
+
+## V51.62 - Macrocycle et garde-fous
+- Officialise l'ajout du planificateur macrocycle.
+- Rend le check anti-programme Test moins fragile.
+
 
 - Corrige la cohérence entre la charge affichée dans la séance et la fenêtre `!` : la modale lit maintenant le même indice de décision généré par `CoachCharge`.
 - Déduplique l’historique affiché dans la fenêtre `!` quand la même séance existe à la fois dans `athlete_state` et dans l’historique de résultats.
@@ -60,7 +246,7 @@
 - Ajoute `dev/structure_checks.js` pour vérifier que chaque fichier sert à quelque chose : scripts runtime chargés, scripts dev cités, docs stables référencés, assets PWA utilisés.
 - Verrouille l’interdiction de `tools/`, des rapports versionnés temporaires et des patchs runtime dans `programs/`.
 - Renforce la règle : `programs/config.js` reste configuration statique seulement.
-- Aucun changement de comportement, aucun fichier `data/`, aucun `data/charges.js` et aucun programme d’entraînement modifiés.
+- Aucun changement de comportement, aucun fichier `data/`, aucun `data/charges.js` et aucun programme d’entraînement modifié.
 
 ## V51.43 — Contrat progression des charges
 

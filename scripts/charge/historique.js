@@ -1,5 +1,5 @@
-// Coach Beurt V51.53 — extraction prudente moteur de charges.
-// Script global volontaire : pas de ES modules, pas de changement de comportement.
+// Coach Beurt - historique et signaux du moteur de charges.
+// Script global volontaire : pas de ES modules.
 
 function ensureAthleteState(){
   if(!state.athleteState)state.athleteState={movements:{},updatedAt:null,version:null};
@@ -29,7 +29,6 @@ function athleteMovementRecord(label){
       if(kn===wanted&&coachEquipmentCompatibleForAlias(label,keys[i]))return map[keys[i]];
     }
   }
-  // Match tolérant mais prudent pour les noms combinés du vendredi Épaules 3D.
   for(var k=0;k<keys.length;k++){
     var keyNorm=coachNormalizeMoveText(keys[k]);
     for(var w=0;w<wantedList.length;w++){
@@ -48,12 +47,11 @@ function coachDefaultLoadSeedForMovement(label, targetReps){
   for(var i=0;i<labels.length;i++){
     if(defaults&&defaults[labels[i]]){
       var n=parseLoad(defaults[labels[i]]);
-      if(n)return n;
+      if(n||n===0)return n;
     }
   }
   var n=coachNormalizeMoveText(labels.join(' '));
-  // Fallbacks internes : ne modifient pas data/charges.js. Ils empêchent seulement
-  // les mouvements de vendredi avec "léger/modéré" de rester sans suggestion numérique.
+  if(/weighted pull up|weighted pullup|weighted dip|weighted dips/.test(n))return 0;
   if(/db shoulder press/.test(n))return 35;
   if(/lateral raise.*(cable|poulie)/.test(n))return 30;
   if(/lateral raise.*(haltere|dumbbell|db)/.test(n))return 20;
@@ -66,9 +64,10 @@ function coachDefaultLoadSeedForMovement(label, targetReps){
   if(/face pull/.test(n))return 60;
   if(/cable curl/.test(n))return 40;
   if(/power clean technique|power clean/.test(n))return 115;
+  if(/db fly|dumbbell fly/.test(n))return 30;
+  if(/db pullover|dumbbell pullover/.test(n))return 45;
   return null;
 }
-
 
 function coachHistoryContext(row){
   if(!row)return null;
@@ -80,16 +79,92 @@ function coachHistoryContextIsLimited(row){
   return (typeof coachIsLimitedProgressionContext==='function') ? coachIsLimitedProgressionContext(ctx) : false;
 }
 
+function coachIsBodyweightExternalLoadMovement(label, context){
+  var raw=[label, context&&context.rawName, context&&context.label].filter(Boolean).join(' ');
+  var n=coachNormalizeMoveText(raw);
+  return /weighted pull up|weighted pullup|weighted dip|weighted dips/.test(n);
+}
+
+function coachHistoryRawLoadValue(row){
+  if(!row)return null;
+  var keys=['load','actualLoad','capacityLoad','externalLoad','currentLoad'];
+  for(var i=0;i<keys.length;i++){
+    if(Object.prototype.hasOwnProperty.call(row,keys[i]) && row[keys[i]]!=='' && row[keys[i]]!==null && row[keys[i]]!==undefined){
+      var parsed=parseLoad(row[keys[i]]);
+      if(parsed||parsed===0)return parsed;
+      var n=Number(row[keys[i]]);
+      if(Number.isFinite(n))return n;
+    }
+  }
+  return null;
+}
+
+function coachHistoryLoadNumber(row){
+  var v=coachHistoryRawLoadValue(row);
+  return (v||v===0)?Number(v)||0:0;
+}
+
+function coachHistoryHasValidLoad(row,label,context){
+  var v=coachHistoryRawLoadValue(row);
+  if(!(v||v===0))return false;
+  if(Number(v)>0)return true;
+  return Number(v)===0 && coachIsBodyweightExternalLoadMovement(label, context||coachHistoryContext(row));
+}
+
+function coachHistoryRepsNumber(row){return Number(row&&(row.reps||row.actualReps||row.currentReps||0))||0;}
+
+function coachHistoryRpeNumber(row){return Number(row&&row.rpe||0)||0;}
+
+function coachMovementContextKey(ctx){
+  if(!ctx)return '';
+  var bits=[
+    ctx.label||'',
+    ctx.equipment||'',
+    ctx.primaryIntent||'',
+    ctx.kind||'',
+    ctx.blockTitle||'',
+    ctx.day||''
+  ];
+  return bits.map(coachNormalizeMoveText).join('|');
+}
+
+function coachShouldPreferContextMatch(label, ctx){
+  var n=coachNormalizeMoveText((ctx&&ctx.label)||label||'');
+  if(/overhead rope extension|face pull|power clean/.test(n))return true;
+  if(ctx&&(ctx.isWod||ctx.isTechnical||ctx.isLight||ctx.isRecovery||ctx.isRecall))return true;
+  if(ctx&&Array.isArray(ctx.intents)&&ctx.intents.length)return ctx.intents.some(function(x){return /wod|technique|light|recovery|recall|progression/.test(x);});
+  return false;
+}
+
+function coachLimitedContextFamilyMatches(rowCtx,currentCtx,label){
+  var n=coachNormalizeMoveText((currentCtx&&currentCtx.label)||label||'');
+  if(!/power clean/.test(n))return false;
+  var rowLimitedSignal=!!(rowCtx&&(rowCtx.isWod||rowCtx.isTechnical||rowCtx.isLight||rowCtx.isRecovery||rowCtx.isProgression));
+  var currentLimitedSignal=!!(currentCtx&&(currentCtx.isWod||currentCtx.isTechnical||currentCtx.isLight||currentCtx.isRecovery||currentCtx.isProgression));
+  return rowLimitedSignal&&currentLimitedSignal;
+}
+
+function coachContextMatches(rowCtx, currentCtx, label){
+  if(!rowCtx||!currentCtx)return true;
+  var rowLimited=(typeof coachIsLimitedProgressionContext==='function')?coachIsLimitedProgressionContext(rowCtx):false;
+  var currentLimited=(typeof coachIsLimitedProgressionContext==='function')?coachIsLimitedProgressionContext(currentCtx):false;
+  if(rowLimited!==currentLimited)return false;
+  if(rowLimited&&currentLimited&&coachLimitedContextFamilyMatches(rowCtx,currentCtx,label))return true;
+  if(!coachShouldPreferContextMatch(label,currentCtx))return true;
+  return coachMovementContextKey(rowCtx)===coachMovementContextKey(currentCtx);
+}
+
 function coachFilterHistoryForProgression(history, context){
   var rows=Array.isArray(history)?history:[];
   if(!context || typeof coachIsLimitedProgressionContext!=='function')return rows;
+  var label=context&&context.label?context.label:'';
   var limited=coachIsLimitedProgressionContext(context);
   return rows.filter(function(row){
     var rowCtx=coachHistoryContext(row);
-    if(!rowCtx)return true; // anciennes entrées sans contexte : compatibles par transition.
+    if(!rowCtx)return true;
     var rowLimited=coachIsLimitedProgressionContext(rowCtx);
-    if(limited)return rowLimited;
-    return !rowLimited;
+    if(limited!==rowLimited)return false;
+    return coachContextMatches(rowCtx,context,label);
   });
 }
 
@@ -104,21 +179,43 @@ function latestMovementHistory(label){
   return h.length?h[h.length-1]:null;
 }
 
-function coachHistoryLoadNumber(row){return Number(row&&(row.load||row.actualLoad||row.capacityLoad||0))||0;}
-
-function coachHistoryRepsNumber(row){return Number(row&&(row.reps||row.actualReps||row.currentReps||0))||0;}
-
-function coachRecentBestControlledLoad(history, maxRpe){
+function coachRecentBestControlledLoad(history, maxRpe, label, context){
   var rows=Array.isArray(history)?history:[];
   var best=null;
   maxRpe=Number(maxRpe)||8.5;
   rows.forEach(function(r){
-    var load=coachHistoryLoadNumber(r), reps=coachHistoryRepsNumber(r), rpe=Number(r&&r.rpe||0)||0;
-    if(!load||!rpe||rpe>maxRpe)return;
+    var load=coachHistoryLoadNumber(r), reps=coachHistoryRepsNumber(r), rpe=coachHistoryRpeNumber(r);
+    if(!coachHistoryHasValidLoad(r,label,context)||!rpe||rpe>maxRpe)return;
     var score=load*100+reps-(rpe>=8.5?10:0);
     if(!best||score>best.score)best={row:r,load:load,reps:reps,rpe:rpe,score:score};
   });
   return best;
+}
+
+function coachBuildMovementHistorySignal(label, history, context, targetReps){
+  var rows=(Array.isArray(history)?history:[]).filter(function(row){return row&&coachHistoryHasValidLoad(row,label,context)&&coachHistoryRepsNumber(row);});
+  var recent=rows.slice(-4);
+  var last=recent.length?recent[recent.length-1]:null;
+  var previous=recent.length>1?recent[recent.length-2]:null;
+  var lastLoad=coachHistoryLoadNumber(last);
+  var prevLoad=coachHistoryLoadNumber(previous);
+  var lastRpe=coachHistoryRpeNumber(last);
+  var target=Number(targetReps)||coachHistoryRepsNumber(last)||0;
+  var highRpeCount=recent.filter(function(row){return coachHistoryRpeNumber(row)>=9;}).length;
+  var controlledCount=recent.filter(function(row){var reps=coachHistoryRepsNumber(row), rpe=coachHistoryRpeNumber(row);return reps&&(!target||reps>=target)&&rpe>0&&rpe<=8;}).length;
+  var stagnationCount=0;
+  if(recent.length>=3){var stableLoad=coachHistoryLoadNumber(recent[recent.length-1]);stagnationCount=recent.filter(function(row){return coachHistoryLoadNumber(row)===stableLoad;}).length;}
+  var direction='unknown';
+  if(last&&previous){direction=lastLoad>prevLoad?'up':(lastLoad<prevLoad?'down':'flat');}
+  var status='neutral';
+  var reason='Historique insuffisant pour trancher.';
+  if(lastRpe>=9.5||highRpeCount>=2){status='blocked';reason='Historique difficile : RPE eleve repete, hausse bloquee avant confirmation.';}
+  else if(stagnationCount>=3&&controlledCount===0){status='stalled';reason='Stagnation detectee : meme charge repetee sans signal facile.';}
+  else if(controlledCount>=2&&direction!=='down'){status='ready';reason='Historique controle : plusieurs references atteintes a RPE acceptable.';}
+  else if(lastRpe>=9){status='watch';reason='Derniere reference difficile : maintenir avant de monter.';}
+  else if(direction==='down'){status='watch';reason='Charge recente en baisse : verifier fatigue ou contexte avant progression.';}
+  else if(last){status='watch';reason='Historique a confirmer avant decision agressive.';}
+  return {label:label,rows:recent,last:last,previous:previous,lastLoad:lastLoad,previousLoad:prevLoad,lastRpe:lastRpe,highRpeCount:highRpeCount,controlledCount:controlledCount,stagnationCount:stagnationCount,direction:direction,status:status,reason:reason};
 }
 
 function coachMaxJumpForExercise(label,lastLoad){
@@ -164,10 +261,12 @@ function storeLoadDecisionHint(name,loadText,reason,severity,history,context){
   window.__coachLoadHints=window.__coachLoadHints||{};
   var ctx=(context&&context.label)?context:((typeof coachBuildMovementContext==='function')?coachBuildMovementContext(name,context||{}):null);
   var label=ctx&&ctx.label?ctx.label:canonicalMovementLabel(name);
-  var rows=(history||[]).slice(-5).reverse().map(function(x){return{date:x.date||"?",load:x.load||x.actualLoad||x.capacityLoad||"?",reps:x.reps||x.actualReps||x.currentReps||"?",rpe:x.rpe||"?",status:x.status||""};});
+  var rows=(history||[]).slice(-5).reverse().map(function(x){
+    var load=coachHistoryRawLoadValue(x);
+    return{date:x.date||"?",load:(load||load===0)?load:"?",reps:x.reps||x.actualReps||x.currentReps||"?",rpe:x.rpe||"?",status:x.status||""};
+  });
   var payload={name:label,load:loadText,reason:reason||"Charge prévue par le programme.",severity:severity||"ok",rows:rows};
-  // V51.40 : contexte disponible pour debug/audit futur, non affiché et non persistant.
-  if(ctx)payload.context={equipment:ctx.equipment||"",intent:ctx.primaryIntent||"",intents:ctx.intents||[],kind:ctx.kind||"",day:ctx.day||"",week:ctx.week||""};
+  if(ctx)payload.context={equipment:ctx.equipment||"",intent:ctx.primaryIntent||"",contextKey:coachMovementContextKey(ctx),intents:ctx.intents||[],kind:ctx.kind||"",blockTitle:ctx.blockTitle||"",day:ctx.day||"",week:ctx.week||""};
   var aliases=(typeof coachMovementLookupLabels==='function')?coachMovementLookupLabels(label):[label];
   aliases.forEach(function(a){ window.__coachLoadHints[coachNormalizeMoveText(a)]=payload; });
 }

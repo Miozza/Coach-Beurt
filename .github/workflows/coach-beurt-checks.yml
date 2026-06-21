@@ -1,0 +1,203 @@
+name: Coach Beurt checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validation:
+    name: Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run regression checks
+        run: node dev/regression_checks.js
+
+      - name: Guard Gear token controls
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const index = fs.readFileSync('index.html', 'utf8');
+          function assert(condition, message){
+            if(!condition){
+              console.error(message);
+              process.exitCode = 1;
+            }
+          }
+
+          assert(index.includes('id="clearTokenBtn"'), 'Gear must expose the functional clearTokenBtn button.');
+          assert(!index.includes('removeTokenBtn'), 'Legacy removeTokenBtn must not come back in Gear.');
+          const removeTokenLabels = index.match(/>Retirer le token<\/button>/g) || [];
+          assert(removeTokenLabels.length === 1, 'Gear must show exactly one Retirer le token button.');
+
+          if(process.exitCode) process.exit(process.exitCode);
+          console.log('OK Gear token controls');
+          NODE
+
+      - name: Guard version ownership
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          function read(file){ return fs.readFileSync(file, 'utf8'); }
+          function assert(condition, message){
+            if(!condition){
+              console.error(message);
+              process.exitCode = 1;
+            }
+          }
+
+          const app = read('app.js');
+          const index = read('index.html');
+          const readme = read('README.md');
+          const etat = read('ETAT_ACTUEL.md');
+          const changelog = read('CHANGELOG.md');
+          const manifest = read('manifest.json');
+          const serviceWorker = read('service-worker.js');
+          const contract = read('docs/STRUCTURE_CONTRACT.md');
+          const appNav = read('scripts/app_navigation.js');
+          const syncIndex = read('scripts/sync/index.js');
+
+          const match = app.match(/APP_VERSION\s*=\s*"(V\d+\.\d+)"/);
+          assert(!!match, 'app.js must keep APP_VERSION as the runtime version source.');
+          const version = match && match[1];
+          const cacheVersion = version ? version.slice(1) : '';
+
+          assert(app.includes(`// Racine ${version}`), 'app.js header must match APP_VERSION.');
+          assert(index.includes(`<title>Racine ${version}</title>`), 'index.html title must show the app version.');
+          assert(index.includes(`class="topnav-v">${version}</span>`), 'index.html topnav must show the app version.');
+          assert(index.includes(`<footer class="footer">${version}`), 'index.html footer must show the app version.');
+          assert(index.includes(`?v=${cacheVersion}`), 'index.html must cache-bust runtime assets with the display version.');
+          assert(readme.includes(`- Version : \`${version}\``), 'README.md must show exactly the current app version.');
+          assert(etat.includes(`Version actuelle : ${version}`), 'ETAT_ACTUEL.md must show the current app version.');
+          assert(changelog.includes(`## ${version}`), 'CHANGELOG.md must contain an entry for the current app version.');
+          assert(contract.includes('## Contrat de version'), 'STRUCTURE_CONTRACT.md must keep the visible version contract.');
+          assert(contract.includes('Fichiers qui portent la version courante'), 'Version contract must list files that own the current version.');
+          assert(contract.includes('Fichiers qui ne doivent pas porter la version courante'), 'Version contract must list files that stay de-versioned.');
+
+          assert(!/V\d+\.\d+/.test(manifest), 'manifest.json must not include the display version.');
+          assert(!/V\d+\.\d+|v\d+-\d+|\b\d+\.\d+\b/.test(serviceWorker), 'service-worker.js must stay de-versioned in no-cache mode.');
+          assert(!/Coach Beurt V\d+\.\d+/.test(appNav), 'scripts/app_navigation.js must not carry an obsolete header version.');
+          assert(!syncIndex.includes('api.version'), 'CoachSync API must not expose a duplicate version source.');
+
+          const readmeVersions = readme.match(/V\d+\.\d+/g) || [];
+          assert(readmeVersions.length === 1 && readmeVersions[0] === version, 'README.md must contain only the current version, not changelog history.');
+          const etatVersions = etat.match(/V\d+\.\d+/g) || [];
+          assert(etatVersions.every(v => v === version), 'ETAT_ACTUEL.md must not contain old version numbers.');
+
+          if(process.exitCode) process.exit(process.exitCode);
+          console.log('OK version ownership');
+          NODE
+
+      - name: Run charge engine checks
+        run: node dev/charge_engine_checks.js
+
+      - name: Run progression contract checks
+        run: node dev/progression_contract_checks.js
+
+      - name: Guard guided session entry ownership
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          function read(file){ return fs.readFileSync(file, 'utf8'); }
+          function assert(condition, message){
+            if(!condition){
+              console.error(message);
+              process.exitCode = 1;
+            }
+          }
+
+          const wodPlus = read('scripts/view_wodplus.js');
+          const pc = read('scripts/view_pc.js');
+          const app = read('app.js');
+          const appNav = read('scripts/app_navigation.js');
+          const sessionIndex = read('scripts/session/index.js');
+
+          assert(sessionIndex.includes('openFrom: function(source)'), 'CoachSession must expose openFrom(source).');
+          assert(appNav.includes('"session"'), 'Navigation must include the standalone Session view.');
+          assert(appNav.includes('var VIEW_ALIASES={phone:"pc"}'), 'Navigation must keep the legacy phone route as a PC alias.');
+          assert(appNav.includes('var VIEW_MAIN_IDS={pc:"pcView"}'), 'Navigation must use #pcView as the official PC host.');
+          assert(appNav.includes('function ensurePcViewHost()'), 'Navigation must own the PC host compatibility setup.');
+          assert(appNav.includes('view.id="pcView"'), 'The official PC host must be named #pcView.');
+          assert(appNav.includes('legacyHost.id="phoneView"'), 'The legacy #phoneView wrapper must remain internal for compatibility.');
+          assert(appNav.includes('legacyPc.classList.toggle("view-active", v==="pc")'), 'The legacy PC wrapper must mirror the active PC state for old CSS selectors.');
+          assert(sessionIndex.includes('function ensureSessionView()'), 'CoachSession must own the Session view host.');
+          assert(sessionIndex.includes("view.id = 'sessionView'"), 'Session host must use #sessionView.');
+          assert(sessionIndex.includes("document.getElementById('pcView')"), 'Session host must be inserted beside #pcView, not inside legacy #phoneView.');
+          assert(sessionIndex.includes('view.appendChild(guided)'), 'guidedSession must move into #sessionView instead of staying under PC.');
+          assert(sessionIndex.includes("switchView('session')"), 'Starting Session must activate the standalone Session view.');
+          assert(sessionIndex.includes('closeGuidedSession.__sessionViewAware'), 'Session close must be aware of the standalone Session view.');
+          assert(sessionIndex.includes("source !== 'wodplus'") && sessionIndex.includes("switchView('phone')"), 'Closing a PC-started Session must return to PC.');
+          assert(wodPlus.includes('CoachSession.openFrom("wodplus")'), 'WOD+ must start Session through CoachSession.openFrom("wodplus").');
+          assert(!wodPlus.includes('renderPhoneWod();\n  CoachSession.open();'), 'WOD+ must not route through PC/renderPhoneWod to start Session.');
+          assert(pc.includes("CoachSession.openFrom('phone')"), 'PC must start Session through CoachSession.openFrom(\'phone\').');
+          assert(!pc.includes("var b=$('sessionModeBtn');if(b)b.click();"), 'PC must not click sessionModeBtn indirectly.');
+          assert(app.includes('CoachSession.openFrom("phone")'), 'app.js must use CoachSession.openFrom("phone") for the Session button.');
+          assert(!app.includes('guidedLaunchSource="phone";guidedResultsMode=false;document.body.classList.remove("guided-results-active");document.body.classList.add("guided-session-active");CoachSession.open();'), 'app.js must not own detailed Session startup again.');
+
+          if(process.exitCode) process.exit(process.exitCode);
+          console.log('OK guided session entry ownership');
+          NODE
+
+      - name: Guard PC and Results separation
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const pc = fs.readFileSync('scripts/view_pc.js', 'utf8');
+          function assert(condition, message){
+            if(!condition){
+              console.error(message);
+              process.exitCode = 1;
+            }
+          }
+
+          assert(pc.includes("CoachSession.openFrom('phone')"), 'PC may open guided Session through CoachSession.openFrom(\'phone\').');
+          assert(!pc.includes('CoachSession.renderResults'), 'PC must not render the Results screen.');
+          assert(!pc.includes('renderSessionEntry'), 'PC must not call the Results renderer directly.');
+          assert(pc.includes('CoachCharge.suggestLoad'), 'PC must keep showing planned/suggested loads for program inspection.');
+          assert(pc.includes('pcRenderWeekTab'), 'PC must keep the week inspection tab.');
+          assert(pc.includes('pcRenderAnalysisTab'), 'PC must keep analysis tools.');
+          assert(pc.includes('pcRenderExportTab'), 'PC must keep export tools.');
+
+          if(process.exitCode) process.exit(process.exitCode);
+          console.log('OK PC / Results separation');
+          NODE
+
+      - name: Guard program index responsibility
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const src = fs.readFileSync('programs/index.js', 'utf8');
+          function assert(condition, message){
+            if(!condition){
+              console.error(message);
+              process.exitCode = 1;
+            }
+          }
+
+          assert(src.includes('COACH_BERTIN_PROGRAM_INDEX'), 'programs/index.js must keep the central program registry.');
+          assert(src.includes('COACH_BERTIN_MACROCYCLE'), 'programs/index.js may keep macro route metadata.');
+          assert(!src.includes('document.'), 'programs/index.js must not manipulate the DOM.');
+          assert(!src.includes('localStorage'), 'programs/index.js must not own UI persistence.');
+          assert(!src.includes('pcRender'), 'programs/index.js must not patch PC render functions.');
+          assert(!src.includes('pcBind'), 'programs/index.js must not patch PC bindings.');
+          assert(!src.includes('macroPhasePlannerHtml'), 'programs/index.js must not render Macrocycle UI.');
+          assert(!src.includes('installMacrocyclePcTab'), 'programs/index.js must not inject a PC tab.');
+          assert(!src.includes('data-pc-tab="macro"'), 'programs/index.js must not add the Macrocycle PC tab.');
+          assert(!src.includes('createElement("style")'), 'programs/index.js must not inject styles.');
+
+          if(process.exitCode) process.exit(process.exitCode);
+          console.log('OK program index responsibility');
+          NODE
+
+      - name: Run structure checks
+        run: node dev/structure_checks.js

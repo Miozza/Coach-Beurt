@@ -1,5 +1,97 @@
-// Coach Beurt V51.53 — extraction prudente moteur de charges.
-// Script global volontaire : pas de ES modules, pas de changement de comportement.
+// Coach Beurt - moteur de suggestions de charges.
+// Script global volontaire : pas de ES modules.
+
+function coachIsDeloadWeekOrContext(context){
+  var weekNum=Number((context&&context.week)||(state&&state.week)||0)||0;
+  if(weekNum===6)return true;
+  if(context&&(context.isRecovery||context.isLight))return true;
+  var raw=[context&&context.primaryIntent,context&&context.kind,context&&context.blockTitle,context&&context.note,context&&context.text,context&&context.format].filter(Boolean).join(' ');
+  var n=(typeof coachNormalizeMoveText==='function')?coachNormalizeMoveText(raw):String(raw||'').toLowerCase();
+  if(/deload|recuperation|recovery|reset/.test(n))return true;
+  try{
+    var wi=(typeof buildWeekInfo==='function'&&weekNum)?buildWeekInfo()[weekNum]:null;
+    var weekText=(wi&&((wi.label||'')+' '+(wi.goal||'')))||'';
+    var wn=coachNormalizeMoveText(weekText);
+    if(/deload|facile|easy|recuperation|recovery|reset/.test(wn))return true;
+  }catch(e){}
+  return false;
+}
+
+function coachIsMainLoadContext(label,context){
+  var raw=[label,context&&context.kind,context&&context.primaryIntent,context&&context.blockTitle].filter(Boolean).join(' ');
+  var n=coachNormalizeMoveText(raw);
+  if(/main|principal|prioritaire|force|strength/.test(n))return true;
+  if(/strict press|front squat|back squat|bench press|barbell row|deadlift|power clean|hip thrust/.test(coachNormalizeMoveText(label))&&!isIsolationMovement(label))return true;
+  return false;
+}
+
+function coachDeloadMultiplierForContext(label,context){
+  return coachIsMainLoadContext(label,context)?0.85:0.80;
+}
+
+function coachRecentPeakLoad(history,label,context){
+  var peak=0;
+  (Array.isArray(history)?history:[]).forEach(function(row){
+    if(!coachHistoryHasValidLoad(row,label,context))return;
+    var load=coachHistoryLoadNumber(row);
+    if(load>peak)peak=load;
+  });
+  return peak||0;
+}
+
+function coachApplyDeloadCap(suggested,label,context,history,lastLoad,bestControlled,programNum){
+  if(!coachIsDeloadWeekOrContext(context))return {value:suggested,changed:false,reason:''};
+  var base=0;
+  if(lastLoad||lastLoad===0)base=lastLoad;
+  if(!(base>0)&&bestControlled&&bestControlled.load)base=bestControlled.load;
+  if(!(base>0)&&programNum)base=programNum;
+  if(!(base>0))return {value:suggested,changed:false,reason:''};
+  var mult=coachDeloadMultiplierForContext(label,context);
+  var cap=base*mult;
+  var peak=coachRecentPeakLoad(history,label,context);
+  if(peak&&cap>=peak)cap=peak*mult;
+  var next=Math.min(Number(suggested)||0,cap);
+  if(next<suggested){
+    return {value:next,changed:true,reason:'Deload actif : charge finale reduite a environ '+Math.round(mult*100)+'% de la derniere reference fiable, sous le peak recent.'};
+  }
+  return {value:suggested,changed:false,reason:''};
+}
+
+function coachLastSetIsSimilarOrHarder(target,lastReps){
+  target=Number(target)||0;lastReps=Number(lastReps)||0;
+  if(!target||!lastReps)return true;
+  if(target>=lastReps)return true;
+  return repRange(target)===repRange(lastReps);
+}
+
+
+function coachRecentUnresolvedHighRpeBrake(history,label,context,target,suggested){
+  var rows=Array.isArray(history)?history.slice(-6):[];
+  var brake=null;
+  rows.forEach(function(row,idx){
+    if(!coachHistoryHasValidLoad(row,label,context))return;
+    var load=coachHistoryLoadNumber(row);
+    var rpe=coachHistoryRpeNumber(row);
+    var reps=coachHistoryRepsNumber(row);
+    if(!(load||load===0)||!(rpe>=8.5))return;
+    if(!coachLastSetIsSimilarOrHarder(target,reps))return;
+    if(!(Number(suggested)>load))return;
+    var resolved=false;
+    for(var j=idx+1;j<rows.length;j++){
+      var later=rows[j];
+      if(!coachHistoryHasValidLoad(later,label,context))continue;
+      var laterLoad=coachHistoryLoadNumber(later);
+      var laterRpe=coachHistoryRpeNumber(later);
+      var laterReps=coachHistoryRepsNumber(later);
+      if(laterLoad>=load&&laterRpe>0&&laterRpe<=8.5&&coachLastSetIsSimilarOrHarder(target,laterReps)){
+        resolved=true;break;
+      }
+    }
+    if(resolved)return;
+    if(!brake||load>brake.load||rpe>brake.rpe)brake={load:load,rpe:rpe,reps:reps,date:row.date||'',status:row.status||''};
+  });
+  return brake;
+}
 
 function guardedSuggestedLoadDecision(nameOrKey,currentLoad,targetReps,context){
   var moveContext=(context&&context.label)?context:((typeof coachBuildMovementContext==='function')?coachBuildMovementContext(nameOrKey,context||{}):null);
@@ -12,25 +104,28 @@ function guardedSuggestedLoadDecision(nameOrKey,currentLoad,targetReps,context){
   var hist=(typeof coachFilterHistoryForProgression==='function')?coachFilterHistoryForProgression(histAll,moveContext):histAll;
   var last=hist.length?hist[hist.length-1]:null;
   var lastLoad=coachHistoryLoadNumber(last);
-  var lastRpe=last?Number(last.rpe||0):0;
-  var bestControlled=coachRecentBestControlledLoad(hist,8.5);
+  var lastHasValidLoad=last?coachHistoryHasValidLoad(last,label,moveContext):false;
+  var lastRpe=last?coachHistoryRpeNumber(last):0;
+  var bestControlled=coachRecentBestControlledLoad(hist,8.5,label,moveContext);
+  var historySignal=(typeof coachBuildMovementHistorySignal==='function')?coachBuildMovementHistorySignal(label,hist,moveContext,target):null;
   var programNum=parseLoad(currentLoad);
   var originalText=displayLoadForEquipment(label,currentLoad);
   var contextLimited=(typeof coachIsLimitedProgressionContext==='function')?coachIsLimitedProgressionContext(moveContext):false;
   var contextLimitReason=(typeof coachContextProgressionReason==='function')?coachContextProgressionReason(moveContext):'';
-  var seedReason="Charge du programme, arrondie selon l’équipement.";
-  if(!programNum){
-    var seed=(lastLoad||((bestControlled&&bestControlled.load)||0)||coachDefaultLoadSeedForMovement(label,target));
-    if(seed){
+  var isDeload=coachIsDeloadWeekOrContext(moveContext);
+  var seedReason="Charge du programme, arrondie selon l'equipement.";
+  if(programNum===null||programNum===undefined){
+    var seed=(lastHasValidLoad?lastLoad:(((bestControlled&&bestControlled.load)||bestControlled&&bestControlled.load===0)?bestControlled.load:coachDefaultLoadSeedForMovement(label,target)));
+    if(seed||seed===0){
       programNum=seed;
-      seedReason=lastLoad
-        ? "Charge de programme non numérique : suggestion basée sur la dernière charge historique."
-        : ((bestControlled&&bestControlled.load)
-          ? "Charge de programme non numérique : suggestion basée sur l'historique contrôlé."
-          : "Charge de programme non numérique : suggestion basée sur les repères d'équipement.");
+      seedReason=lastHasValidLoad
+        ? "Charge de programme non numerique : suggestion basee sur la derniere charge historique."
+        : ((bestControlled&&(bestControlled.load||bestControlled.load===0))
+          ? "Charge de programme non numerique : suggestion basee sur l'historique controle."
+          : "Charge de programme non numerique : suggestion basee sur les reperes d'equipement.");
     }else{
-      storeLoadDecisionHint(label,originalText,"Charge non numérique et aucun historique/repère fiable trouvé.","watch",hist,moveContext);
-      return{label:label,loadText:originalText,loadNum:null,severity:"watch",reason:"Charge non numérique et aucun historique/repère fiable trouvé.",last:last,cap:cap};
+      storeLoadDecisionHint(label,originalText,"Charge non numerique et aucun historique/repere fiable trouve.","watch",hist,moveContext);
+      return{label:label,loadText:originalText,loadNum:null,severity:"watch",reason:"Charge non numerique et aucun historique/repere fiable trouve.",last:last,cap:cap};
     }
   }
   var suggested=programNum;
@@ -38,22 +133,13 @@ function guardedSuggestedLoadDecision(nameOrKey,currentLoad,targetReps,context){
   var reason=seedReason;
   var mode="nearest";
 
-  if(state&&Number(state.week)===6){
-    var deloadBase=lastLoad||((bestControlled&&bestControlled.load)||programNum);
-    var deloadCap=deloadBase?Math.min(programNum,deloadBase*0.85):programNum;
-    if(deloadCap<suggested){suggested=deloadCap;mode="down";}
-    severity="watch";
-    reason="Deload S6 : charge réduite/maintenue sous la dernière référence, pas seulement volume réduit.";
-  }
-
   if(contextLimited || isTechnicalMovement(label)){
     suggested=programNum;mode="nearest";severity=severity==="ok"?"watch":severity;
-    reason=contextLimitReason || "Mouvement technique : pas d’auto-progression comme un mouvement principal.";
+    reason=contextLimitReason || "Mouvement technique : pas d'auto-progression comme un mouvement principal.";
   }
 
-  // V51.03 : si le programme est clairement sous l'historique réel contrôlé, remonter vers la référence réelle.
-  // Exemple visé : Barbell Row 145-155 @ RPE 7-8 ne doit pas rester à 115-125.
-  if(!contextLimited && bestControlled&&bestControlled.load>suggested){
+  // Si le programme est clairement sous l'historique reel controle, remonter vers la reference reelle.
+  if(!contextLimited && !isDeload && bestControlled&&bestControlled.load>suggested){
     var gap=bestControlled.load-suggested;
     var n=coachNormalizeMoveText(label);
     var allowLiftFromHistory=false;
@@ -63,72 +149,118 @@ function guardedSuggestedLoadDecision(nameOrKey,currentLoad,targetReps,context){
       suggested=Math.min(bestControlled.load+coachMaxJumpForExercise(label,bestControlled.load), bestControlled.load+10);
       mode="nearest";
       severity=severity==="ok"?"watch":severity;
-      reason="Historique réel contrôlé détecté : "+bestControlled.load+" lb × "+bestControlled.reps+" @RPE "+bestControlled.rpe+". Le moteur évite de sous-suggérer sous une référence facile.";
+      reason="Historique reel controle detecte : "+bestControlled.load+" lb x "+bestControlled.reps+" @RPE "+bestControlled.rpe+". Le moteur evite de sous-suggerer sous une reference facile.";
     }
+  }
+
+  if(!contextLimited && !isDeload && bestControlled&&bestControlled.load>suggested&&bestControlled.rpe<=8){
+    var bestReps=Number(bestControlled.reps)||0;
+    if(!target||!bestReps||bestReps>=target||repRange(bestReps)===repRange(target)){
+      suggested=bestControlled.load;
+      mode="nearest";
+      severity=severity==="ok"?"watch":severity;
+      reason="Reference reelle plus haute validee : "+bestControlled.load+" lb x "+(bestReps||target)+" @RPE "+bestControlled.rpe+". La prochaine suggestion repart de cette charge, pas de l'ancienne suggestion.";
+    }
+  }
+
+  if(historySignal&&(historySignal.status==='blocked'||historySignal.status==='stalled')&&lastHasValidLoad&&suggested>lastLoad){
+    suggested=lastLoad;mode='down';severity='warning';
+    reason=historySignal.reason;
+  }else if(historySignal&&historySignal.status==='watch'&&suggested>programNum){
+    severity=severity==='ok'?'watch':severity;
+    reason=historySignal.reason;
   }
 
   if(last){
     var maxJump=coachMaxJumpForExercise(label,lastLoad);
     var lastReps=coachHistoryRepsNumber(last);
     var repsReached=!target || !lastReps || lastReps>=target;
-    if(lastLoad&&lastRpe<=8&&suggested>lastLoad+maxJump){
+    if(lastHasValidLoad&&lastRpe<=8&&suggested>lastLoad+maxJump){
       suggested=lastLoad+maxJump;mode="down";severity=severity==="ok"?"watch":severity;
-      reason="Progression limitée : dernière référence "+lastLoad+" lb @RPE "+lastRpe+". Saut maximal prudent +"+maxJump+" lb.";
+      reason="Progression limitee : derniere reference "+lastLoad+" lb @RPE "+lastRpe+". Saut maximal prudent +"+maxJump+" lb.";
     }
-    if(lastLoad&&lastRpe>0&&lastRpe<=7&&repsReached&&!contextLimited&&!isTechnicalMovementInContext(label,moveContext)&&Number(state&&state.week)!==6){
+    if(lastHasValidLoad&&lastRpe>0&&lastRpe<=7&&repsReached&&!contextLimited&&!isTechnicalMovementInContext(label,moveContext)&&!isDeload){
       var next=nextLoadForExercise(label,lastLoad,1,currentLoad);
       var maxAllowed=lastLoad+maxJump;
       if(next&&next>lastLoad&&next<=maxAllowed){
         if(suggested<=lastLoad){
           suggested=next;mode="up";severity=severity==="ok"?"watch":severity;
-          reason="Progression prête : dernier "+lastLoad+" lb × "+(lastReps||target)+" @RPE "+lastRpe+". Petite hausse vers la prochaine charge disponible.";
+          reason="Progression prete : dernier "+lastLoad+" lb x "+(lastReps||target)+" @RPE "+lastRpe+". Petite hausse vers la prochaine charge disponible.";
         }
       }else if(suggested<=lastLoad){
         severity=severity==="ok"?"watch":severity;
-        reason="Progression prête, mais aucune charge supérieure disponible/configurée dans le saut prudent autorisé.";
+        reason="Progression prete, mais aucune charge superieure disponible/configuree dans le saut prudent autorise.";
       }
     }
-    if(lastRpe>=9 && suggested>lastLoad){
+    if(lastHasValidLoad&&lastRpe>=9 && suggested>lastLoad){
       suggested=lastLoad;mode="down";severity="warning";
-      reason="Bloqué : dernier RPE réel "+lastRpe+" à "+lastLoad+" lb. Règle V51 : RPE ≥ 9 = aucune hausse automatique.";
-    }else if(isIsolationMovement(label)&&lastRpe>=8.5 && suggested>lastLoad){
+      reason="Bloque : dernier RPE reel "+lastRpe+" a "+lastLoad+" lb. Regle V51 : RPE >= 9 = aucune hausse automatique.";
+    }else if(lastHasValidLoad&&lastRpe>=8.5 && coachLastSetIsSimilarOrHarder(target,lastReps) && suggested>lastLoad){
       suggested=lastRpe>=9.5?Math.max(0,lastLoad-coachLoadStepForExercise(label,currentLoad)):lastLoad;mode="down";severity="warning";
-      reason="Isolation prudente : dernier RPE "+lastRpe+". Maintenir ou réduire légèrement, pas augmenter.";
-    }
-    if(/overhead rope extension/.test(coachNormalizeMoveText(label))){
-      var friday=coachIsFridayContext();
-      var easyBest=coachRecentBestControlledLoad(hist,8);
-      var maxAllowed=(lastRpe<=8)?lastLoad+5:lastLoad;
-      // Vendredi = rappel après un contexte différent. Autoriser 60-70 si une vraie référence facile existe,
-      // sans autoriser un saut de lundi lourd après press.
-      if(friday&&easyBest&&easyBest.load>=60&&easyBest.rpe<=8){
-        maxAllowed=Math.max(maxAllowed,easyBest.load);
-        if(suggested<60){suggested=Math.min(easyBest.load,70);mode="nearest";severity=severity==="ok"?"watch":severity;}
-        reason="Overhead Rope Extension vendredi : contexte rappel distinct. Référence contrôlée "+easyBest.load+" lb @RPE "+easyBest.rpe+" permise, sans forcer le lundi.";
-      }
-      if(suggested>maxAllowed){
-        suggested=maxAllowed;mode="down";severity="warning";
-        reason=(lastRpe<=8)?"Overhead Rope Extension : progression limitée à +5 lb max après RPE ≤ 8.":"Overhead Rope Extension : RPE > 8, hausse bloquée dans ce contexte.";
-      }
+      reason="Frein RPE : dernier RPE "+lastRpe+" sur une cible similaire ou plus dure. Maintenir ou reduire, pas augmenter.";
     }
   }
+
+  if(!contextLimited&&!isDeload){
+    var recentHardBrake=coachRecentUnresolvedHighRpeBrake(hist,label,moveContext,target,suggested);
+    if(recentHardBrake&&suggested>recentHardBrake.load){
+      suggested=recentHardBrake.rpe>=9.5?Math.max(0,recentHardBrake.load-coachLoadStepForExercise(label,currentLoad)):recentHardBrake.load;
+      mode="down";severity="warning";
+      reason="Frein RPE recent : "+recentHardBrake.load+" lb a deja coute RPE "+recentHardBrake.rpe+" sans reference plus haute controlee depuis. Pas de hausse automatique vers "+programNum+" lb.";
+    }
+  }
+
   if(cap&&(cap.status==="recalibrating"||cap.status==="watch"||Number(cap.confidence||1)<0.55)){
-    var capLoad=Number(cap.currentLoad||cap.actualLoad||0)||0;
-    // Ne pas laisser un cap faible écraser une référence réelle contrôlée clairement supérieure.
-    var ignoreLowCap=bestControlled&&capLoad&&bestControlled.load>=capLoad+15&&bestControlled.rpe<=8.5;
-    if(capLoad&&suggested>capLoad&&!ignoreLowCap){suggested=capLoad;mode="down";severity="warning";reason="Mouvement sous surveillance dans athlete_state : charge cappée jusqu’à confirmation.";}
-    else if(ignoreLowCap){severity=severity==="ok"?"watch":severity;reason="Cap athlete_state ignoré : historique réel contrôlé plus récent/plus fiable que le cap faible.";}
+    var capLoadRaw=(cap.currentLoad!==undefined&&cap.currentLoad!==null)?cap.currentLoad:cap.actualLoad;
+    var capLoad=parseLoad(capLoadRaw);
+    if(capLoad===null||capLoad===undefined)capLoad=Number(capLoadRaw)||0;
+    var hasCapLoad=(capLoad||capLoad===0);
+    // Ne pas laisser un cap faible ecraser une reference reelle controlee clairement superieure.
+    var ignoreLowCap=bestControlled&&hasCapLoad&&bestControlled.load>=capLoad+15&&bestControlled.rpe<=8.5;
+    if(hasCapLoad&&capLoad>0&&suggested>capLoad&&!ignoreLowCap){suggested=capLoad;mode="down";severity="warning";reason="Mouvement sous surveillance dans athlete_state : charge cappee jusqu'a confirmation.";}
+    else if(ignoreLowCap&&!isDeload){severity=severity==="ok"?"watch":severity;reason="Cap athlete_state ignore : historique reel controle plus recent/plus fiable que le cap faible.";}
   }
+
+  var deloadDecision=coachApplyDeloadCap(suggested,label,moveContext,hist,lastHasValidLoad?lastLoad:null,bestControlled,programNum);
+  if(deloadDecision.changed){
+    suggested=deloadDecision.value;
+    mode="nearest";
+    severity=severity==="critical"?severity:"watch";
+    reason=deloadDecision.reason;
+  }
+
   var rounded=roundLoadForExercise(label,suggested,mode,currentLoad);
-  if(/overhead rope extension/.test(coachNormalizeMoveText(label))&&last&&lastLoad){
-    var allowed=(lastRpe<=8)?lastLoad+5:lastLoad;
-    if(coachIsFridayContext()){
-      var eb=coachRecentBestControlledLoad(hist,8);
-      if(eb&&eb.load>=60)allowed=Math.max(allowed,eb.load);
+  // Cap de progression spécifique au mouvement (ex: Overhead Rope Extension)
+  var mvProgCap = (typeof coachGetMovementProgressionCap === "function")
+    ? coachGetMovementProgressionCap(label)
+    : null;
+
+  if (mvProgCap && last && lastHasValidLoad) {
+    var isFridayCtx = (typeof coachIsFridayContext === "function") && coachIsFridayContext();
+    var baseForCap = lastLoad;
+
+    if (mvProgCap.fridayUsesWeekBest && isFridayCtx) {
+      var eb = coachRecentBestControlledLoad(hist, 8, label, moveContext);
+      if (eb && eb.load > baseForCap && eb.rpe <= 8) baseForCap = eb.load;
     }
-    if(rounded>allowed)rounded=roundLoadForExercise(label,allowed,"down",currentLoad)||lastLoad;
+
+    var maxJumpCap = (lastRpe <= 8)
+      ? (mvProgCap.maxJumpWhenEasy || 0)
+      : (mvProgCap.maxJumpWhenHard || 0);
+
+    var cappedByMv = roundLoadForExercise(label, baseForCap + maxJumpCap, "down", currentLoad);
+    if (!cappedByMv && cappedByMv !== 0) cappedByMv = baseForCap + maxJumpCap;
+
+    if (rounded > cappedByMv) {
+      rounded = cappedByMv;
+      if (rounded > lastLoad && lastRpe >= 9) rounded = lastLoad; // sécurité RPE
+      severity = "warning";
+      reason = label + " : cap de progression +" + maxJumpCap + " lb"
+        + (isFridayCtx && mvProgCap.fridayUsesWeekBest ? " (référence semaine vendredi)" : "")
+        + ".";
+    }
   }
-  if(last&&lastRpe>=9&&rounded>lastLoad&&!(/overhead rope extension/.test(coachNormalizeMoveText(label))&&coachIsFridayContext()))rounded=roundLoadForExercise(label,lastLoad,"down",currentLoad)||lastLoad;
+  if(last&&lastHasValidLoad&&lastRpe>=9&&rounded>lastLoad&&!(mvProgCap&&coachIsFridayContext()))rounded=roundLoadForExercise(label,lastLoad,"down",currentLoad)||lastLoad;
   if(contextLimited&&rounded>programNum){
     rounded=roundLoadForExercise(label,programNum,"nearest",currentLoad)||programNum;
     severity=severity==="ok"?"watch":severity;
@@ -137,7 +269,7 @@ function guardedSuggestedLoadDecision(nameOrKey,currentLoad,targetReps,context){
   var text=(rounded===0||rounded)?rounded+" lb":originalText;
   if(severity==="warning"||severity==="critical")text += " ⚠";
   storeLoadDecisionHint(label,text,reason,severity,hist,moveContext);
-  return{label:label,loadText:text,loadNum:rounded,severity:severity,reason:reason,last:last,cap:cap};
+  return{label:label,loadText:text,loadNum:rounded,severity:severity,reason:reason,last:last,cap:cap,historySignal:historySignal};
 }
 
 function plannedMapFromSessionExercises(){
@@ -149,7 +281,8 @@ function plannedMapFromSessionExercises(){
       var plannedLoad=parseLoad(it.suggested);
       var targetMin=Number(it.targetMin)||0;
       var targetMax=Number(it.targetMax)||targetMin||0;
-      map[it.key]={name:label,load:plannedLoad,reps:targetMin||targetMax, targetMin:targetMin, targetMax:targetMax, format:it.format||"", kind:it.kind||"", context:(typeof coachBuildMovementContext==='function'?coachBuildMovementContext(it.name||it.key,{kind:it.kind,format:it.format,note:it.note,text:it.text,blockTitle:it.blockTitle,day:(state&&state.day),week:(state&&state.week)}):null)};
+      var ctx=(typeof coachBuildMovementContext==='function'?coachBuildMovementContext(it.name||it.key,{kind:it.kind,format:it.format,note:it.note,text:it.text,blockTitle:it.blockTitle,day:(state&&state.day),week:(state&&state.week)}):null);
+      map[it.key]={name:label,load:plannedLoad,reps:targetMin||targetMax, targetMin:targetMin, targetMax:targetMax, format:it.format||"", kind:it.kind||"", context:ctx, bodyweightMovement:(typeof coachIsBodyweightExternalLoadMovement==='function'?coachIsBodyweightExternalLoadMovement(label,ctx):false)};
       map[label]=map[it.key];
       map[normalizeExerciseName(label)]=map[it.key];
     });
@@ -159,14 +292,17 @@ function plannedMapFromSessionExercises(){
 
 function classifyPerformance(actual, planned){
   var load=parseLoad(actual.load), reps=Number(actual.reps)||0, rpe=Number(actual.rpe)||0;
+  var label=(planned&&planned.name)||(actual&&actual.name)||'';
+  var bodyweightMovement=!!(planned&&planned.bodyweightMovement) || (typeof coachIsBodyweightExternalLoadMovement==='function'&&coachIsBodyweightExternalLoadMovement(label,planned&&planned.context));
+  var hasLoad=(load>0)||(load===0&&bodyweightMovement);
   var targetReps=Number((planned&&planned.reps)||actual.targetMin||actual.targetMax)||reps||1;
   var ratio=targetReps?reps/targetReps:1;
   var status="logged";
-  if(load&&reps&&rpe>=9.5&&ratio<0.60)status="major_fail";
-  else if(load&&reps&&rpe>=9&&ratio<1)status="failed";
-  else if(load&&reps&&rpe<=7&&ratio>=1)status="easy_success";
-  else if(load&&reps&&rpe>=9)status="hard_success";
-  else if(load&&reps)status="success";
+  if(hasLoad&&reps&&rpe>=9.5&&ratio<0.60)status="major_fail";
+  else if(hasLoad&&reps&&rpe>=9&&ratio<1)status="failed";
+  else if(hasLoad&&reps&&rpe<=7&&ratio>=1)status="easy_success";
+  else if(hasLoad&&reps&&rpe>=9)status="hard_success";
+  else if(hasLoad&&reps)status="success";
   return {status:status,ratio:Math.round(ratio*100)/100,targetReps:targetReps};
 }
 
@@ -174,14 +310,14 @@ function enrichSessionResults(results){
   var plan=plannedMapFromSessionExercises();
   Object.keys(results||{}).forEach(function(key){
     var r=results[key];
-    if(!r||r.isWod||!r.load)return;
+    if(!r||r.isWod||r.load===undefined||r.load===null||r.load==='')return;
     var lookup=plan[key]||plan[movementLabelFromKeyOrName(key)]||plan[normalizeExerciseName(key)]||null;
     if(lookup){
-      r.planned={load:lookup.load||null,reps:lookup.reps||null,targetMin:lookup.targetMin||null,targetMax:lookup.targetMax||null,format:lookup.format||"",kind:lookup.kind||"",context:lookup.context||null};
+      r.planned={load:lookup.load||null,reps:lookup.reps||null,targetMin:lookup.targetMin||null,targetMax:lookup.targetMax||null,format:lookup.format||"",kind:lookup.kind||"",context:lookup.context||null,bodyweightMovement:lookup.bodyweightMovement||false};
       var c=classifyPerformance(r,lookup);
       r.status=c.status;r.performanceRatio=c.ratio;
-      if(c.status==="major_fail")r.coachNote="Échec majeur : niveau probablement surestimé aujourd'hui. Recalibrage requis.";
-      else if(c.status==="failed")r.coachNote="Échec partiel : ne pas monter la charge avant confirmation.";
+      if(c.status==="major_fail")r.coachNote="Echec majeur : niveau probablement surestime aujourd'hui. Recalibrage requis.";
+      else if(c.status==="failed")r.coachNote="Echec partiel : ne pas monter la charge avant confirmation.";
     }
   });
   return results;
@@ -192,16 +328,18 @@ function updateAthleteStateFromResults(results,dateStr){
   dateStr=dateStr||new Date().toLocaleDateString("fr-CA");
   Object.keys(results||{}).forEach(function(key){
     var r=results[key];
-    if(!r||r.isWod||!r.load)return;
+    if(!r||r.isWod||r.load===undefined||r.load===null||r.load==='')return;
     var load=parseLoad(r.load), reps=Number(r.reps)||0, rpe=Number(r.rpe)||0;
-    if(!load||!reps)return;
     var label=movementLabelFromKeyOrName(key);
-    var range=repRange(reps);
     var planned=r.planned||{};
     var resultContext=planned.context||((typeof coachBuildMovementContext==='function')?coachBuildMovementContext(label,{kind:planned.kind,format:planned.format,day:(state&&state.day),week:(state&&state.week)}):null);
+    var bodyweightMovement=!!planned.bodyweightMovement || (typeof coachIsBodyweightExternalLoadMovement==='function'&&coachIsBodyweightExternalLoadMovement(label,resultContext));
+    var hasValidLoad=(load>0)||(load===0&&bodyweightMovement);
+    if(!hasValidLoad||!reps)return;
+    var range=repRange(reps);
     var limitedResultContext=(typeof coachIsLimitedProgressionContext==='function')?coachIsLimitedProgressionContext(resultContext):false;
     var targetReps=Number(planned.reps||planned.targetMin)||reps;
-    var cls=classifyPerformance(r,planned);
+    var cls=classifyPerformance(r,{name:label,context:resultContext,bodyweightMovement:bodyweightMovement,reps:targetReps,targetMin:planned.targetMin,targetMax:planned.targetMax});
     var oneRM=epley1RM(load,reps);
     var capacityLoad=load;
     var confidence=0.65;
@@ -229,13 +367,17 @@ function updateAthleteStateFromResults(results,dateStr){
     var mv=ast.movements[label];
     mv.ranges=mv.ranges||{};mv.history=mv.history||[];
     var prev=mv.ranges[range]||{};
-    var shouldReplace = !prev.currentLoad || cls.status==="major_fail" || cls.status==="failed" || load>=Number(prev.currentLoad||0) || confidence>Number(prev.confidence||0);
+    var prevMissing=!(prev.currentLoad||prev.currentLoad===0);
+    var shouldReplace = prevMissing || cls.status==="major_fail" || cls.status==="failed" || load>=Number(prev.currentLoad||0) || confidence>Number(prev.confidence||0);
     if(shouldReplace && !limitedResultContext){
       mv.ranges[range]={
         currentLoad:capacityLoad,
         currentReps:targetReps,
         actualLoad:load,
         actualReps:reps,
+        externalLoad:load,
+        bodyweightMovement:bodyweightMovement,
+        hasValidLoad:true,
         rpe:rpe,
         confidence:confidence,
         status:status,
@@ -247,7 +389,7 @@ function updateAthleteStateFromResults(results,dateStr){
     mv.status=status;
     mv.upgradedAt = (cls.status==="easy_success"||cls.status==="success"||cls.status==="hard_success") ? dateStr : (mv.upgradedAt||null);
     mv.lastUpdated=dateStr;
-    mv.history.push({date:dateStr,load:load,reps:reps,rpe:rpe,range:range,status:limitedResultContext?'context_logged':status,capacityLoad:capacityLoad,planned:planned||null,context:resultContext||null});
+    mv.history.push({date:dateStr,load:load,externalLoad:load,bodyweightMovement:bodyweightMovement,hasValidLoad:true,reps:reps,rpe:rpe,range:range,status:limitedResultContext?'context_logged':status,capacityLoad:capacityLoad,planned:planned||null,context:resultContext||null});
     if(mv.history.length>12)mv.history=mv.history.slice(-12);
   });
   ast.updatedAt=nowIso();ast.version=APP_VERSION;

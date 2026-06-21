@@ -1,10 +1,25 @@
-# Contrat de structure durable — Coach Beurt
+# Contrat de structure durable — Racine
 
 ## Objectif
 
-Coach Beurt ne doit plus grossir par patchs dispersés. Chaque fichier doit avoir une responsabilité claire et servir à l’application, à la validation ou à la documentation stable.
+Racine ne doit plus grossir par patchs dispersés. Chaque fichier doit avoir une responsabilité claire et servir à l’application, à la validation ou à la documentation stable.
 
-Ce contrat vise à éviter de refaire le même ménage : noms de mouvements, logique de charges dans le mauvais fichier, dossiers temporaires, patchs runtime cachés et fichiers historiques inutiles.
+Ce contrat vise à éviter de refaire le même ménage : noms de mouvements, logique de charges dans le mauvais fichier, dossiers temporaires, patchs runtime cachés, fichiers historiques inutiles et marqueurs de version dispersés.
+
+## Consignes pour assistant IA / Codex
+
+Ces règles s’appliquent à toute intervention automatisée ou assistée sur le repo.
+
+- Travailler directement sur le repo GitHub, pas sur une copie locale, sauf demande explicite.
+- Ne jamais modifier `data/resultats.json`, `data/athlete_state.json` ou `data/cycle_state.json` sans demande explicite.
+- Ne jamais modifier `data/charges.js` sans demande explicite.
+- Ne jamais modifier `programs/` sans demande explicite.
+- Avant une modification importante, annoncer les fichiers concernés et attendre validation si le périmètre touche une zone protégée.
+- Corriger la logique runtime dans `scripts/` quand un domaine existe déjà.
+- Pour une correction UI ou séance, relire `docs/UI_CONSTRAINTS.md`.
+- Pour une correction charges ou progression, relire `docs/CHARGE_ENGINE.md`, `docs/CHARGE_CONTEXT.md` et `docs/CHARGE_PROGRESSION_CONTRACT.md`.
+- Pour une modification de version, appliquer le contrat de version ci-dessous.
+- Ne pas créer de dossier ou fichier temporaire si un fichier existant peut porter l’information durablement.
 
 ## Structure autorisée
 
@@ -26,6 +41,36 @@ RELEASE_CHECKLIST.md    procédure de livraison
 ```
 
 Le dossier `tools/` est interdit. Les fichiers de type `RELEASE_NOTES_V*`, `AUDIT_V*`, `REPORT_V*` ou autre historique versionné sont interdits.
+
+## Contrat de version
+
+Objectif : éviter de modifier vingt fichiers à chaque livraison et éviter les versions contradictoires.
+
+### Fichiers qui portent la version courante
+
+- `app.js` : source runtime avec `APP_VERSION` et l’en-tête court correspondant.
+- `index.html` : version visible dans le titre, la topnav, le footer et cache-bust `?v=`.
+- `README.md` : version courante seulement, pour lecture rapide.
+- `ETAT_ACTUEL.md` : état courant de référence et détails de version.
+- `CHANGELOG.md` : historique complet des versions.
+
+### Fichiers qui ne doivent pas porter la version courante
+
+- `scripts/*.js` hors `app.js` : les commentaires d’en-tête décrivent le domaine, pas la version.
+- `docs/*.md` hors `CHANGELOG.md`, `README.md` et `ETAT_ACTUEL.md` : les contrats restent stables et non versionnés.
+- `manifest.json` : le nom installé reste stable, sans numéro de version.
+- `service-worker.js` : le nom de cache reste stable en mode sans cache applicatif durable, sauf rupture technique volontaire.
+- `RELEASE_CHECKLIST.md` : procédure stable, pas historique de versions.
+
+Les anciens en-têtes versionnés dans un gros module ne sont pas une source de vérité. Ils ne doivent plus être mis à jour lors d’une incrémentation; ils doivent être supprimés quand le fichier est touché pour une vraie raison.
+
+### Quand incrémenter
+
+- Changement livré visible dans l’app ou correction comportementale : incrémenter le patch affiché (`Vmajor.patch`).
+- Refonte structurelle visible ou changement de frontière important, par exemple séparation durable des vues ou nouvelle architecture de navigation : incrémenter la version majeure suivante (`Vmajor+1.00`).
+- Documentation seule, contrat, garde-fou CI ou nettoyage sans changement runtime : ne pas incrémenter l’affichage, sauf décision explicite.
+
+À chaque incrémentation, mettre à jour ensemble `app.js`, `index.html`, `README.md`, `ETAT_ACTUEL.md` et `CHANGELOG.md`. Ne pas mettre à jour les en-têtes de modules juste pour suivre la version.
 
 ## Rôle de `app.js`
 
@@ -143,8 +188,8 @@ Les modules exposent des fonctions. `app.js` orchestre.
 Direction souhaitée :
 
 ```txt
-app.js → modules spécialisés
-modules → helpers/globaux nécessaires
+app.js -> modules spécialisés
+modules -> helpers/globaux nécessaires
 ```
 
 À éviter :
@@ -168,14 +213,14 @@ Un fichier est utile s’il remplit au moins une condition :
 
 Sinon, il doit être supprimé ou justifié avant livraison.
 
-## Application V51.50 — domaine charge
+## Domaine charge
 
 Le moteur de charges doit vivre dans `scripts/charge/`.
 
 Porte d’entrée publique :
 
 ```txt
-scripts/charge/index.js → window.CoachCharge
+scripts/charge/index.js -> window.CoachCharge
 ```
 
 Les anciens emplacements directs dans `scripts/` sont interdits :
@@ -197,15 +242,12 @@ Le commentaire d’en-tête de `app.js` doit toujours correspondre à `APP_VERSI
 La séance terrain doit vivre dans `scripts/session/`.
 
 ```txt
-scripts/session/index.js → window.CoachSession
+scripts/session/index.js -> window.CoachSession
 ```
 
 Hors `scripts/session/`, les appels doivent passer par `CoachSession.*` quand ils déclenchent l’ouverture de séance, le rendu des résultats ou la sauvegarde session.
 
-
-### V51.50 — Domaine session
-
-`session/` contient `view.js`, `timer.js`, `results.js`, `save.js`, `index.js`. Le timer guidé appartient à `scripts/session/timer.js`; le rendu de séance appartient à `scripts/session/view.js`.
+Le timer guidé appartient à `scripts/session/timer.js`; le rendu de séance appartient à `scripts/session/view.js`.
 
 
 ## Logger d’erreurs

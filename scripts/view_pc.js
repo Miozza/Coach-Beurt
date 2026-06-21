@@ -1,4 +1,4 @@
-// Coach Beurt V51.53 — PC export IA actions utiles
+// Coach Beurt V51.63 — PC export IA actions utiles
 // Objectif : grande vue WOD en landscape + inspection/logistique/export.
 // Lecture seule: aucune modification de programme, aucune écriture data.
 // IMPORTANT: ne pas toucher ici au mode résultats/séance guidée.
@@ -140,8 +140,8 @@ function pcSummaryCounts(rows){
 function pcCurrentDayContextLines(){
   var w=pcWorkout();
   var lines=[];
-  lines.push("Contexte Coach Beurt");
-  lines.push("- App: Coach Beurt " + (typeof APP_VERSION!=="undefined"?APP_VERSION:""));
+  lines.push("Contexte Racine");
+  lines.push("- App: Racine " + (typeof APP_VERSION!=="undefined"?APP_VERSION:""));
   lines.push("- Cycle: "+((pcFocusCfg().label)||pcCurrentCycleId()));
   lines.push("- Sélection: S"+pcCurrentWeek()+" · "+pcDisplayDayName(pcCurrentDay()));
   lines.push("- Objectif du jour: "+(w.day.base||""));
@@ -401,17 +401,55 @@ function pcRenderWeekTab(){
 }
 
 function pcRenderRoadmapTab(){
-  var r=(typeof roadmapSummary==="function")?roadmapSummary():null;
-  if(!r)return '<section class="pcx-panel"><h2>Route macro</h2><p class="pcx-muted">Roadmap non disponible.</p></section>';
-  var cls=r.status==="OK"?"ok":(r.status==="serré"?"warn":"danger");
+  var macro=window.COACH_BERTIN_MACROCYCLE||{};
+  var index=window.COACH_BERTIN_PROGRAM_INDEX||[];
+  var active=pcCurrentCycleId();
+  var mainRoute=Array.isArray(macro.mainRoute)?macro.mainRoute.slice():["shoulders3d_v2","hypertrophy_base","force_performance","competition_peak"];
+  var route=mainRoute.indexOf(active)>=0?mainRoute.slice(mainRoute.indexOf(active)):[active,"competition_peak"].filter(function(id,i,a){return id&&a.indexOf(id)===i;});
+  var rows=[], cursor=new Date(), currentWeek=pcCurrentWeek();
+  function entryFor(id){for(var i=0;i<index.length;i++){if(index[i]&&index[i].id===id)return index[i];}return null;}
+  function labelFor(id){var cfg=(window.focusConfigs&&focusConfigs[id])||{}, ent=entryFor(id)||{};return cfg.label||ent.name||id;}
+  function pct(n,d){return Math.max(0,Math.min(100,Math.round((Number(n)||0)/Math.max(1,(Number(d)||1))*100)));}
+  route.forEach(function(id,idx){
+    var cfg=(window.focusConfigs&&focusConfigs[id])||{};
+    var ent=entryFor(id)||{};
+    var total=Number(ent.durationWeeks||cfg.durationWeeks||cfg.weeks||((cfg.weekLabels&&cfg.weekLabels.length)||0)||((cfg.sets&&cfg.sets.length)||0)||6)||6;
+    var remaining=idx===0?Math.max(0,total-currentWeek+1):total;
+    var start=new Date(cursor), end=new Date(cursor);end.setDate(end.getDate()+remaining*7);cursor=end;
+    rows.push({id:id,label:labelFor(id),totalWeeks:total,remainingWeeks:remaining,start:start,end:end,current:idx===0,entry:ent});
+  });
+  var daysLeft=(typeof daysToCompetition==="function")?daysToCompetition():0;
+  var totalWeeks=rows.reduce(function(sum,r){return sum+r.remainingWeeks;},0);
+  var weeksToComp=Math.floor(daysLeft/7), margin=weeksToComp-totalWeeks;
+  var status=margin>=4?"OK":margin>=1?"serré":"trop long";
+  var cls=status==="OK"?"ok":(status==="serré"?"warn":"danger");
+  var rdCls=status==="OK"?"pcx-rd-ok":(status==="serré"?"pcx-rd-warn":"pcx-rd-danger");
+  var marginPct=pct(weeksToComp,totalWeeks);
+  var activeRow=rows[0]||{label:labelFor(active),totalWeeks:(typeof pcTotalWeeks==="function"?pcTotalWeeks():1),remainingWeeks:1,start:new Date(),end:new Date(),entry:{}};
+  var weekPct=pct(currentWeek,activeRow.totalWeeks);
+  var nextRow=rows[1]||null;
+  var branchAfter=Array.isArray(activeRow.entry&&activeRow.entry.branchAfter)?activeRow.entry.branchAfter:[];
+  var branchText=branchAfter.length>1?'<div class="pcx-rd-next-branch">Carrefour après '+pcEsc(activeRow.label)+' : '+branchAfter.map(function(id){return pcEsc(labelFor(id));}).join(' ou ')+'</div>':'';
+  var timelineTotal=rows.reduce(function(sum,r){return sum+Math.max(1,r.remainingWeeks);},0)||1;
   var html='<div class="pcx-layout"><main class="pcx-main"><section class="pcx-panel pcx-roadmap"><h2>Feuille de route macro</h2>'+
-    '<p>De maintenant jusqu’à janvier 2027. Les dates sont calculées depuis le cycle actif et les durées réelles des programmes.</p>'+
-    '<div class="pcx-roadmap-status '+cls+'"><strong>'+pcEsc(r.status.toUpperCase())+'</strong><span>Marge estimée : '+pcEsc(String(r.margin))+' semaine'+(Math.abs(r.margin)>1?'s':'')+'</span></div>'+
+    '<p>Route officielle depuis <code>programs/index.js</code>, calculée avec les durées réelles du registre macrocycle.</p>'+
+    '<div class="pcx-rd-dash">'+
+      '<article class="pcx-rd-countdown '+rdCls+'"><div class="pcx-rd-comp-label">Compétition</div><h3>'+pcEsc(COMPETITION_DATE.toLocaleDateString('fr-CA'))+'</h3><div class="pcx-rd-counters"><span class="pcx-rd-counter"><b class="pcx-rd-num">'+daysLeft+'</b><small class="pcx-rd-unit">jours</small></span><span class="pcx-rd-counter"><b class="pcx-rd-num">'+weeksToComp+'</b><small class="pcx-rd-unit">sem. dispo</small></span><span class="pcx-rd-counter"><b class="pcx-rd-num">'+(margin>=0?'+':'')+margin+'</b><small class="pcx-rd-unit">marge</small></span></div><div class="pcx-rd-margin-bar-wrap"><div class="pcx-rd-margin-bar" style="width:'+marginPct+'%"><span class="pcx-rd-bar-pct">'+marginPct+'%</span></div></div><div class="pcx-rd-margin-legend">'+pcEsc(status)+' · route estimée '+totalWeeks+' semaines</div></article>'+
+      '<article class="pcx-rd-countdown"><div class="pcx-rd-now-header"><div><div class="pcx-rd-comp-label">Maintenant</div><h3>'+pcEsc(activeRow.label)+'</h3></div><span class="pcx-rd-week-badge">S'+currentWeek+' / '+pcEsc(String(activeRow.totalWeeks))+'</span></div><div class="pcx-rd-now-day">'+pcEsc(pcDisplayDayName(pcCurrentDay()))+'</div><div class="pcx-rd-now-prog"><div class="pcx-rd-prog-bar-wrap"><div class="pcx-rd-prog-bar" style="width:'+weekPct+'%"><span class="pcx-rd-bar-pct">'+weekPct+'%</span></div></div><div class="pcx-rd-prog-legend">Progression de la phase active</div></div></article>'+
+    '</div>'+
+    '<section class="pcx-rd-timeline" aria-label="Timeline macrocycle">';
+  rows.forEach(function(row,idx){
+    var phaseCls=row.current?'pcx-rd-ph-current':(idx===rows.length-1?'pcx-rd-ph-comp':'pcx-rd-ph-future');
+    html+='<article class="pcx-rd-phase '+phaseCls+'" style="flex-grow:'+Math.max(1,row.remainingWeeks)+'"><div class="pcx-rd-phase-bar">'+(row.current?'<span class="pcx-rd-phase-active"><span class="pcx-rd-phase-dot"></span></span>':'')+'</div><div class="pcx-rd-phase-label"><strong class="pcx-rd-phase-name">'+pcEsc(row.label)+'</strong><small class="pcx-rd-phase-dates">'+pcEsc(formatRoadDate(row.start))+' → '+pcEsc(formatRoadDate(row.end))+'</small></div></article>';
+  });
+  html+='<span class="pcx-rd-comp-pin" title="Compétition">🏆</span></section>'+
+    '<section class="pcx-rd-countdown"><div class="pcx-rd-comp-label">Prochaine étape</div>'+(nextRow?'<h3 class="pcx-rd-next-name">'+pcEsc(nextRow.label)+'</h3><p class="pcx-rd-next-dates">'+pcEsc(formatRoadDate(nextRow.start))+' → '+pcEsc(formatRoadDate(nextRow.end))+'</p>':'<h3 class="pcx-rd-next-name">Dernière phase de la route</h3><p class="pcx-rd-next-dates">Aucune phase suivante dans la route active.</p>')+branchText+'</section>'+
+    '<div class="pcx-roadmap-status '+cls+'"><strong>'+pcEsc(status.toUpperCase())+'</strong><span>Marge estimée : '+(margin>=0?'+':'')+pcEsc(String(margin))+' semaine'+(Math.abs(margin)>1?'s':'')+'</span></div>'+
     '<div class="pcx-roadmap-list">';
-  r.rows.forEach(function(row){
+  rows.forEach(function(row){
     html+='<article class="pcx-roadmap-row '+(row.current?'current':'')+'"><div><strong>'+(row.current?'▶ ':'')+pcEsc(row.label)+'</strong><small>'+pcEsc(row.id)+' · durée totale '+pcEsc(String(row.totalWeeks))+' sem.</small></div><b>'+pcEsc(String(row.remainingWeeks))+' sem.</b><span>'+pcEsc(formatRoadDate(row.start))+' → '+pcEsc(formatRoadDate(row.end))+'</span></article>';
   });
-  html+='</div></section></main><aside class="pcx-side"><section class="pcx-panel"><h3>Compétition</h3><p><strong>'+pcEsc(COMPETITION_DATE.toLocaleDateString('fr-CA'))+'</strong></p><p>'+daysToCompetition()+' jours restants.</p><p>Route estimée : '+r.totalWeeks+' semaines.</p><p>Temps disponible : '+r.weeksToComp+' semaines.</p></section><section class="pcx-panel"><h3>Règle</h3><p>Les vieux <code>phaseEnd</code> statiques ne sont plus la source de vérité. La route utilise les durées des programmes.</p></section></aside></div>';
+  html+='</div></section></main><aside class="pcx-side"><section class="pcx-panel"><h3>Compétition</h3><p><strong>'+pcEsc(COMPETITION_DATE.toLocaleDateString('fr-CA'))+'</strong></p><p>'+daysLeft+' jours restants.</p><p>Route estimée : '+totalWeeks+' semaines.</p><p>Temps disponible : '+weeksToComp+' semaines.</p></section><section class="pcx-panel"><h3>Règle</h3><p>La Route PC lit <code>COACH_BERTIN_MACROCYCLE.mainRoute</code>. Les vieux <code>phaseEnd</code> statiques ne guident pas la planification.</p></section></aside></div>';
   return html;
 }
 
@@ -616,7 +654,7 @@ function pcBind(){
   if(d)d.onchange=function(){pcInspectDay=this.value;renderPhoneWod();};
   Array.prototype.forEach.call(document.querySelectorAll('[data-pc-tab]'),function(btn){btn.onclick=function(){pcActiveTab=btn.getAttribute('data-pc-tab')||'session';renderPhoneWod();};});
   Array.prototype.forEach.call(document.querySelectorAll('[data-pc-toggle-week-alerts]'),function(btn){btn.onclick=function(){pcWeekAlertsOpen=!pcWeekAlertsOpen;renderPhoneWod();};});
-  var start=$('pcStartSessionBtn');if(start)start.onclick=function(){var b=$('sessionModeBtn');if(b)b.click();};
+  var start=$('pcStartSessionBtn');if(start)start.onclick=function(){CoachSession.openFrom('phone');};
   Array.prototype.forEach.call(document.querySelectorAll('[data-pc-copy]'),function(btn){btn.onclick=function(){pcCopyText(pcPrompt(btn.getAttribute('data-pc-copy')||'full'));};});
   Array.prototype.forEach.call(document.querySelectorAll('[data-pc-copy-context]'),function(btn){btn.onclick=function(){pcCopyText(pcExportContextText());};});
   var cj=$('pcCopyJsonDay');if(cj)cj.onclick=function(){var report=pcWithSelection(function(){return typeof buildChargeDiagnosticReport==='function'?buildChargeDiagnosticReport('day'):{alerts:pcAlerts()};});pcCopyText(JSON.stringify(report,null,2));};
@@ -631,6 +669,5 @@ function renderPhoneWod(){
   pcInspectDay=pcInspectDay||((state&&state.day)||'lundi');
   var label=$('phoneDayLabel'); if(label)label.textContent=pcDisplayDayName(pcCurrentDay())+' · S'+pcCurrentWeek();
   el.innerHTML='<div class="pcx-shell">'+pcRenderTopHeader()+'<div class="pcx-content">'+pcRenderActiveTab()+'</div></div>';
-  CoachSession.renderResults();
   pcBind();
 }

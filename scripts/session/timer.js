@@ -1,4 +1,4 @@
-// Coach Beurt V51.53 — session timer domain
+// Coach Beurt V51.63 — session timer domain
 // Timer guidé AMRAP/EMOM/For Time de la vue séance.
 // Aucun changement volontaire de comportement : extraction depuis scripts/session/view.js.
 
