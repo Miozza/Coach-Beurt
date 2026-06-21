@@ -29,6 +29,7 @@ index.html              structure HTML + ordre explicite de chargement
 styles.css              interface visuelle
 manifest.json           PWA
 service-worker.js       service worker sans cache durable
+racine-splash.png       splash visuel mobile au lancement
 programs/               programmes d’entraînement seulement
 scripts/                code runtime chargé par l’app
 data/                   données et bases de charges
@@ -209,7 +210,7 @@ Un fichier est utile s’il remplit au moins une condition :
 - lu par un script de validation;
 - document stable cité dans `README.md`, `ETAT_ACTUEL.md` ou `RELEASE_CHECKLIST.md`;
 - donnée durable explicitement protégée;
-- asset PWA référencé par `index.html` ou `manifest.json`.
+- asset PWA/app référencé par `index.html` ou `manifest.json`.
 
 Sinon, il doit être supprimé ou justifié avant livraison.
 

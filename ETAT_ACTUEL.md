@@ -1,18 +1,17 @@
 # ETAT_ACTUEL.md — Racine
 
-## Dernière modification — V51.82
-### Ajout de références de charge manquantes dans data/charges.js
+## Dernière modification — V51.83
+### Splash iPhone au lancement
 
-- Ajoute 12 mouvements à `window.DEFAULT_CHARGES` dans `data/charges.js` : Deadlift, Barbell Row, Dumbbell Row, Romanian Deadlift, DB Bench Press, DB Curl, Hammer Curl, Close-Grip Bench Press, Front Rack Carry, Cable Hip Abduction, Cable Pull-Through, Goblet Squat.
-- Ces mouvements apparaissent dans des programmes secondaires (`force_performance.js`, `hypertrophie_fesse.js`, `posture_cyphose.js`) sans charge littérale ni historique réel — ils retombaient sur un texte descriptif vague ("léger", "modéré") sans plancher numérique.
-- Valeurs fournies et ajustées par Bertin directement.
-- Exception explicite et ponctuelle à la règle de fichier protégé, demandée et confirmée par Bertin.
-- Aucun autre fichier protégé touché (`config.js`, `workouts.js`, `data/resultats.json`).
-- Inclut aussi la centralisation des changements de semaine dans `setActiveWeek()` (voir CHANGELOG.md pour le détail complet de ce correctif).
+- Ajoute `racine-splash.png` comme écran de démarrage visuel.
+- Au lancement sur écran mobile/iPhone, l'image s'affiche plein écran environ 2,4 secondes puis disparaît en fondu.
+- Sur desktop/tablette large, le splash est retiré immédiatement pour ne pas gêner le travail.
+- L'écran est purement visuel : il ne modifie aucune donnée, aucun programme et aucune logique d'entraînement.
+- Aucun fichier `data/` ou `programs/` modifié.
 
 - Application : Racine.
 - Type : PWA d’entraînement personnelle, JavaScript vanilla, sans framework.
-- Version actuelle : V51.82
+- Version actuelle : V51.83
 - Date du document : 2026-06-21.
 - Repo GitHub principal : `Miozza/Coach-Beurt`.
 - Repo GitHub dev : `Miozza/Coach-Beurt-Dev`.
@@ -21,10 +20,10 @@
 
 Détails version :
 
-- `app.js` : `APP_VERSION = "V51.82"`.
-- `index.html` : titre/topnav/footer/cache-bust `51.82`.
-- `README.md` : version courante `V51.82`.
-- `ETAT_ACTUEL.md` : version courante `V51.82`.
+- `app.js` : `APP_VERSION = "V51.83"`.
+- `index.html` : titre/topnav/footer/cache-bust `51.83`.
+- `README.md` : version courante `V51.83`.
+- `ETAT_ACTUEL.md` : version courante `V51.83`.
 - `CHANGELOG.md` : historique de versions.
 - `manifest.json` : nom installé sans version.
 - `service-worker.js` : nom de cache stable sans version.
@@ -179,7 +178,7 @@ node dev/structure_checks.js --update-package
 
 Priorités à garder séparées :
 
-1. Tester V51.82 sur DEV après import.
+1. Tester V51.83 sur DEV après import.
 2. Revalider la vue séance sur iPhone.
 3. Vérifier Épaules 3D v2 S3 avec vraies données.
 4. Nettoyer seulement si un test structurel échoue.
