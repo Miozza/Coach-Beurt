@@ -21,8 +21,37 @@
 <body>
 
 <div id="appSplash" class="app-splash" aria-hidden="true">
-  <img src="racine-splash.png?v=51.83" alt="" />
+  <img id="appSplashImg" src="racine-splash.png?v=51.83" alt="" />
 </div>
+<script>
+  (function(){
+    var splash = document.getElementById("appSplash");
+    var img = document.getElementById("appSplashImg");
+    if(!splash || !img)return;
+    if(window.matchMedia && !window.matchMedia("(max-width: 760px)").matches){
+      splash.remove();
+      return;
+    }
+    var done = false;
+    function removeSplash(delay){
+      window.setTimeout(function(){
+        if(done)return;
+        done = true;
+        splash.classList.add("app-splash-hide");
+        window.setTimeout(function(){ if(splash && splash.parentNode)splash.remove(); }, 700);
+      }, delay);
+    }
+    function showSplash(){
+      if(done)return;
+      splash.classList.add("app-splash-ready");
+      removeSplash(1400);
+    }
+    img.onload = showSplash;
+    img.onerror = function(){ removeSplash(0); };
+    if(img.complete && img.naturalWidth) showSplash();
+    else removeSplash(900);
+  })();
+</script>
 
 <!-- ═══ TOPNAV ═══ -->
 <nav class="topnav">
@@ -437,18 +466,6 @@
 <script src="app.js?v=51.83"></script>
 <script src="scripts/tms_session.js?v=51.83"></script>
 <script>
-  (function(){
-    var splash = document.getElementById("appSplash");
-    if(!splash)return;
-    if(window.matchMedia && !window.matchMedia("(max-width: 760px)").matches){
-      splash.remove();
-      return;
-    }
-    window.setTimeout(function(){
-      splash.classList.add("app-splash-hide");
-      window.setTimeout(function(){ if(splash && splash.parentNode)splash.remove(); }, 800);
-    }, 2400);
-  })();
   setTimeout(function(){
     if (!window.APP_VERSION) {
       var box = document.createElement("div");
