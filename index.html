@@ -10,6 +10,7 @@
   <link rel="icon" type="image/png" sizes="180x180" href="./icon-180.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
+  <link rel="preload" as="image" href="racine-splash.png?v=51.83" fetchpriority="high"/>
   <meta name="theme-color" content="#04060f"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
@@ -18,38 +19,46 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="styles.css?v=51.83"/>
 </head>
-<body>
+<body class="splash-pending">
 
 <div id="appSplash" class="app-splash" aria-hidden="true">
-  <img id="appSplashImg" src="racine-splash.png?v=51.83" alt="" />
+  <img id="appSplashImg" src="racine-splash.png?v=51.83" alt="" fetchpriority="high" decoding="async" />
 </div>
 <script>
   (function(){
     var splash = document.getElementById("appSplash");
     var img = document.getElementById("appSplashImg");
-    if(!splash || !img)return;
-    if(window.matchMedia && !window.matchMedia("(max-width: 760px)").matches){
-      splash.remove();
+    if(!splash || !img){
+      document.body.classList.remove("splash-pending");
       return;
     }
-    var done = false;
-    function removeSplash(delay){
+    if(window.matchMedia && !window.matchMedia("(max-width: 760px)").matches){
+      splash.remove();
+      document.body.classList.remove("splash-pending");
+      return;
+    }
+    var finished = false;
+    function finishSplash(delay){
       window.setTimeout(function(){
-        if(done)return;
-        done = true;
+        if(finished)return;
+        finished = true;
         splash.classList.add("app-splash-hide");
+        document.body.classList.remove("splash-pending");
+        document.body.classList.add("splash-done");
         window.setTimeout(function(){ if(splash && splash.parentNode)splash.remove(); }, 700);
       }, delay);
     }
     function showSplash(){
-      if(done)return;
+      if(finished)return;
       splash.classList.add("app-splash-ready");
-      removeSplash(1400);
+      finishSplash(2100);
     }
     img.onload = showSplash;
-    img.onerror = function(){ removeSplash(0); };
+    img.onerror = function(){ finishSplash(0); };
     if(img.complete && img.naturalWidth) showSplash();
-    else removeSplash(900);
+    else window.setTimeout(function(){
+      if(!splash.classList.contains("app-splash-ready")) finishSplash(0);
+    }, 1200);
   })();
 </script>
 
