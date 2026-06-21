@@ -5887,3 +5887,33 @@ body.arnold-mode{
   .arnold-tags{gap:7px;}
   .arnold-tag{font-size:11px;padding:7px 9px;}
 }
+
+.app-splash{
+  position:fixed;
+  inset:0;
+  z-index:99998;
+  width:100vw;
+  height:100vh;
+  height:100dvh;
+  background:#04060f;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:1;
+  visibility:visible;
+  transition:opacity .65s ease,visibility .65s ease;
+  pointer-events:none;
+}
+.app-splash img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.app-splash-hide{
+  opacity:0;
+  visibility:hidden;
+}
+@media(min-width:761px){
+  .app-splash{display:none;}
+}

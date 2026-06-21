@@ -1,3 +1,10 @@
+## V51.83 - Splash iPhone Racine
+
+- Ajoute `racine-splash.png` comme écran de lancement visuel.
+- Sur mobile/iPhone, le splash s'affiche en plein écran environ 2,4 secondes puis disparaît en fondu.
+- Sur écran large, le splash est retiré immédiatement pour ne pas gêner l'usage bureau.
+- Aucun changement aux données durables, aux programmes ou au moteur d'entraînement.
+
 ## V51.82 - Ajout de références de charge dans data/charges.js
 
 - Ajoute 12 mouvements à `window.DEFAULT_CHARGES` : `Deadlift` (185 lb), `Barbell Row` (145 lb), `Dumbbell Row` (70 lb / main), `Romanian Deadlift` (135 lb), `DB Bench Press` (60 lb / main), `DB Curl` (35 lb / main), `Hammer Curl` (40 lb / main), `Close-Grip Bench Press` (165 lb), `Front Rack Carry` (95 lb), `Cable Hip Abduction` (25 lb), `Cable Pull-Through` (45 lb), `Goblet Squat` (45 lb).
