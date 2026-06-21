@@ -1,4 +1,4 @@
-// Coach Beurt V51.53 — session results domain
+// Coach Beurt V51.63 — session results domain
 // Résultats de séance : collecte, rendu, résumé et références.
 
 function collectSessionExercises(){
@@ -392,66 +392,91 @@ function updateRefsFromResults(results,dateStr){
   });
 }
 
+function sessionSummaryEscape(value){
+  var text=String(value==null?"":value);
+  if(typeof escHtml==='function')return escHtml(text);
+  return text.replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});
+}
+
+function sessionSummaryMovementName(key){
+  var name=key;
+  if(typeof movementLabelFromKeyOrName==='function')name=movementLabelFromKeyOrName(key);
+  else if(typeof movements!=='undefined'&&movements&&movements[key])name=movements[key].name||key;
+  if(typeof displayMovementName==='function')name=displayMovementName(name);
+  return name;
+}
+
+function previousMovementHistoryRow(name, currentLoad, currentReps, currentRpe){
+  if(window.CoachHistory && CoachHistory.previousMovementHistoryRow){
+    return CoachHistory.previousMovementHistoryRow(name, currentLoad, currentReps, currentRpe);
+  }
+  var mv=(typeof athleteMovementRecord==='function')?athleteMovementRecord(name):null;
+  var history=(mv&&Array.isArray(mv.history))?mv.history:[];
+  if(history.length<2)return null;
+  for(var i=history.length-2;i>=0;i--){
+    var row=history[i]||{};
+    var load=Number(row.load||row.actualLoad||row.capacityLoad||0)||0;
+    var reps=Number(row.reps||row.actualReps||row.currentReps||0)||0;
+    var rpe=Number(row.rpe||0)||0;
+    if(load===Number(currentLoad)&&reps===Number(currentReps)&&rpe===Number(currentRpe))continue;
+    return row;
+  }
+  return null;
+}
+
+function pushUniqueSummaryLine(list, line){
+  if(line&&list.indexOf(line)<0)list.push(line);
+}
+
 function buildSessionSummary(results){
-  var lines=[], prLines=[], totalExercises=0, rpeSum=0, rpeCount=0;
-  var autoPrLines=[];
-  Object.keys(results).forEach(function(key){
-    var r=results[key];
-    if(r.isWod||!r.load)return;
-    totalExercises++;
-    var rpe=Number(r.rpe)||8; rpeSum+=rpe; rpeCount++;
-    var load=parseLoad(r.load);
-    // Comparer avec la dernière séance
-    var mvKey=key;
-    var reps=Number(r.reps)||8;
-    var refK=refKey(mvKey,reps);
-    var prev=state.movementRefs[refK];
-    var prevLoad=prev?prev.lastActual:0;
-    var arrow="";
-    if(prevLoad&&load>prevLoad) arrow=" ↑ +"+round5(load-prevLoad)+" lb 🟢";
-    else if(prevLoad&&load<prevLoad) arrow=" ↓ "+round5(load-prevLoad)+" lb 🔴";
-    var name=movements[key]?movements[key].name:key;
-    lines.push(name+" : "+load+" lb × "+reps+(arrow?"  "+arrow:"")+(rpe?" | RPE "+rpe:""));
-    if(arrow.indexOf("↑")>=0) prLines.push(name);
-    if(r.autoPr){
-      autoPrLines.push((r.prLabel||name)+" : "+(r.prOld? r.prOld+" → ":"")+r.prNew+" lb × "+r.prReps);
-    }
-  });
-  var avgRpe = rpeCount>0 ? Math.round(rpeSum/rpeCount*10)/10 : 8;
-  var rpeSignal = avgRpe<=7?"💚 Léger":avgRpe<=8?"✅ Bon":avgRpe<=8.5?"🟡 Solide":avgRpe<=9?"🟠 Intense":"🔴 Très dur";
+  if(window.CoachSummary && CoachSummary.buildSessionSummary){
+    return CoachSummary.buildSessionSummary(results,{
+      movementName:sessionSummaryMovementName,
+      previousMovementHistoryRow:previousMovementHistoryRow,
+      parseLoad:parseLoad,
+      round5:round5,
+      progress:window.CoachProgress
+    });
+  }
   return {
-    lines: lines,
-    prLines: prLines,
-    avgRpe: avgRpe,
-    rpeSignal: rpeSignal,
-    totalExercises: totalExercises,
-    autoPrLines: autoPrLines
+    lines: [],
+    prLines: [],
+    avgRpe: 8,
+    rpeSignal: "Bon",
+    totalExercises: 0,
+    autoPrLines: [],
+    progressionLines: [],
+    watchLines: ["Resume indisponible : CoachSummary non charge."],
+    blockedLines: []
   };
 }
 
+function sessionSummarySection(title,items,emptyText){
+  var list=(items&&items.length)?items:[emptyText];
+  return '<div class="summary-section"><div class="summary-section-title">'+sessionSummaryEscape(title)+'</div>'+list.map(function(line){return '<div class="summary-line">'+sessionSummaryEscape(line)+'</div>';}).join('')+'</div>';
+}
+
 function showSessionSummaryModal(summary){
-  // Supprimer modal existant
   var existing=document.getElementById("summaryModal");
   if(existing)existing.remove();
 
   var autoPrSection = summary.autoPrLines&&summary.autoPrLines.length>0
-    ? '<div class="modal-pr">🏆 Nouveau PR automatique : '+summary.autoPrLines.join(" · ")+'</div>'
+    ? '<div class="modal-pr">Nouveau PR automatique : '+summary.autoPrLines.map(sessionSummaryEscape).join(" · ")+'</div>'
     : '';
   var prSection = summary.prLines.length>0
-    ? '<div class="modal-pr">🏆 Progression : '+summary.prLines.join(", ")+'</div>'
+    ? '<div class="modal-pr">Progression : '+summary.prLines.map(sessionSummaryEscape).join(", ")+'</div>'
     : '';
 
-  // Vérifier si on peut avancer de semaine
   var weekAdvanceHtml = "";
   if(canAdvanceWeek()){
     weekAdvanceHtml = '<div class="modal-advance">'+
-      '<p>✅ Tu as complété les '+currentDayOrder().length+' jours de la semaine '+state.week+' !</p>'+
+      '<p>Tu as complété les '+currentDayOrder().length+' jours de la semaine '+state.week+' !</p>'+
       '<button id="advanceWeekBtn" class="btn-accent" style="width:100%;margin-top:8px">Passer à S'+(state.week+1)+' →</button>'+
     '</div>';
   }
 
   var deloadHtml = state.deloadAlert
-    ? '<div class="modal-deload">⚠️ Ton RPE moyen est élevé sur plusieurs séances. Considère un deload cette semaine ou la prochaine.</div>'
+    ? '<div class="modal-deload">RPE moyen élevé sur plusieurs séances. Considère un deload cette semaine ou la prochaine.</div>'
     : '';
 
   var modal = document.createElement("div");
@@ -459,13 +484,17 @@ function showSessionSummaryModal(summary){
   modal.className = "summary-modal";
   modal.innerHTML =
     '<div class="summary-modal-inner">'+
-      '<div class="summary-modal-title">📊 Résumé de la séance</div>'+
-      '<div class="summary-modal-sub">'+currentDayLabel()+' S'+state.week+' · RPE moyen '+summary.avgRpe+' '+summary.rpeSignal+'</div>'+
+      '<div class="summary-modal-title">Résumé de la séance</div>'+
+      '<div class="summary-modal-sub">'+sessionSummaryEscape(currentDayLabel())+' S'+state.week+' · RPE moyen '+summary.avgRpe+' '+sessionSummaryEscape(summary.rpeSignal)+'</div>'+
       autoPrSection+
       prSection+
       deloadHtml+
-      '<div class="summary-lines">'+
-        summary.lines.map(function(l){return'<div class="summary-line">'+l+'</div>';}).join("")+
+      sessionSummarySection('Ce qui progresse', summary.progressionLines, 'Rien de net à monter aujourd’hui.')+
+      sessionSummarySection('À surveiller', summary.watchLines, 'Aucun signal rouge côté fatigue ou historique.')+
+      sessionSummarySection('Ce qui bloque', summary.blockedLines, 'Aucun blocage clair détecté.')+
+      '<div class="summary-lines summary-raw-lines">'+
+        '<div class="summary-section-title">Détail</div>'+
+        summary.lines.map(function(l){return'<div class="summary-line">'+sessionSummaryEscape(l)+'</div>';}).join("")+
       '</div>'+
       weekAdvanceHtml+
       '<button id="closeSummaryBtn" class="btn-ghost" style="width:100%;margin-top:12px">Fermer</button>'+
@@ -484,4 +513,5 @@ function showSessionSummaryModal(summary){
     setTimeout(function(){modal.remove();},300);
   };
 }
+
 

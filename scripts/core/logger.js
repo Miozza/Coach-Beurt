@@ -91,7 +91,7 @@
   function getReport(){
     var entries = readLog();
     var header = [
-      "Rapport erreurs Coach Beurt",
+      "Rapport erreurs Racine",
       "Version: " + (window.APP_VERSION || "unknown"),
       "Exporté: " + new Date().toISOString(),
       "Entrées: " + entries.length,

@@ -1,4 +1,4 @@
-// Coach Beurt V51.53 — extraction prudente moteur de charges.
+// Coach Beurt V51.63 — extraction prudente moteur de charges.
 // Script global volontaire : pas de ES modules, pas de changement de comportement.
 
 function normalizeExerciseName(name){return chargeKeyFromName(name).toLowerCase().replace(/[^a-z0-9à-ÿ]+/g," ").trim();}
@@ -277,4 +277,23 @@ function coachContextProgressionReason(ctx){
   if(ctx.isProgression||coachContextHasIntent(ctx,'progression'))return 'Contexte progression/scale : pas d’auto-progression comme un mouvement principal.';
   if(ctx.isRecovery||coachContextHasIntent(ctx,'recovery'))return 'Contexte récupération/deload : pas d’auto-progression comme un mouvement principal.';
   return '';
+}
+
+// V51.68 — Caps de progression par mouvement.
+// Permet au moteur de suggestion de lire des règles spécifiques sans connaître
+// les noms de mouvements individuels.
+var MOVEMENT_PROGRESSION_CAPS = {
+  "overhead rope extension": {
+    maxJumpWhenEasy: 5,      // +5 lb max si RPE <= 8
+    maxJumpWhenHard: 0,      // +0 lb si RPE > 8
+    fridayUsesWeekBest: true // vendredi : utiliser le meilleur contrôlé de la semaine
+  }
+};
+
+function coachGetMovementProgressionCap(label) {
+  var n = coachNormalizeMoveText(label);
+  for (var key in MOVEMENT_PROGRESSION_CAPS) {
+    if (n.indexOf(key) >= 0) return MOVEMENT_PROGRESSION_CAPS[key];
+  }
+  return null;
 }

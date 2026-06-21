@@ -7,8 +7,13 @@ var STEPH_STATE_KEY = "coachBeurtStephState";
 function activeLocalProfileId(){
   try{
     var params = new URLSearchParams(window.location.search||"");
+    var preview = (params.get("preview")||"").toLowerCase().trim();
+    if(preview === "stephanie" || preview === "bertin" || preview === "arnold"){
+      // Aperçu temporaire pour cette visite seulement : ne touche jamais au profil par défaut sauvegardé.
+      return preview;
+    }
     var requested = (params.get("profile")||"").toLowerCase().trim();
-    if(requested === "stephanie" || requested === "bertin"){
+    if(requested === "stephanie" || requested === "bertin" || requested === "arnold"){
       localStorage.setItem(LOCAL_PROFILE_KEY, requested);
       return requested;
     }
@@ -16,7 +21,7 @@ function activeLocalProfileId(){
   }catch(e){return "bertin";}
 }
 function switchLocalProfile(profile){
-  profile = (profile === "stephanie") ? "stephanie" : "bertin";
+  profile = (profile === "stephanie" || profile === "arnold") ? profile : "bertin";
   try{ localStorage.setItem(LOCAL_PROFILE_KEY, profile); }catch(e){}
   try{
     var url = new URL(window.location.href);
@@ -36,7 +41,20 @@ function renderBertinProfileSettings(){
   // V50.51 : le changement de profil est maintenant dans le panneau statique
   // "Profil et actions rapides" de la gear Réglages. Aucun panneau injecté.
   var btn = $("openStephanieProfileBtn");
-  if(btn)btn.onclick=function(){ switchLocalProfile("stephanie"); };
+  if(btn) btn.onclick = function(){
+    if(confirm("Passer au profil Stéphanie ?\nTes données actuelles restent sauvegardées."))
+      switchLocalProfile("stephanie");
+  };
+  var arnoldBtn = $("openArnoldProfileBtn");
+  if(arnoldBtn) arnoldBtn.onclick = function(){
+    if(confirm("Passer au profil Arnold Split ?\nTes données actuelles restent sauvegardées."))
+      switchLocalProfile("arnold");
+  };
+  var bertinBtn = $("openBertinProfileBtn");
+  if(bertinBtn) bertinBtn.onclick = function(){
+    if(confirm("Revenir au profil Bertin ?\nTes données actuelles restent sauvegardées."))
+      switchLocalProfile("bertin");
+  };
 }
 
 function stephDifficultyLabel(v){
@@ -128,16 +146,21 @@ function openStephanieSettings(){
   overlay.innerHTML =
     '<div class="steph-settings-modal">'+
       '<div class="steph-settings-head"><h3>Réglages Stéphanie</h3><button id="stephSettingsClose" class="steph-icon-btn">×</button></div>'+
-      '<p class="steph-sub">Profil local sur cet appareil. Données séparées de Coach Beurt. Rien n’est envoyé sur GitHub.</p>'+
+      '<p class="steph-sub">Profil local sur cet appareil. Données séparées de Racine. Rien n’est envoyé sur GitHub.</p>'+
       stephHistorySettingsHtml()+
-      '<div class="steph-settings-section steph-profile-section"><h4>Profil</h4><button id="stephToBertinBtn" class="steph-subtle-profile-btn">Coach Beurt</button></div>'+
+      '<div class="steph-settings-section steph-profile-section"><button type="button" class="settings-collapse-toggle" id="stephProfileSwitchToggle" aria-expanded="false" aria-controls="stephProfileSwitchBody">⚙ Changer de profil</button><div id="stephProfileSwitchBody" class="settings-collapse-body" hidden><p class="steph-sub">Chaque profil a ses propres données. Revenir ici pour changer.</p><div class="btn-row"><button id="stephToBertinBtn" class="steph-subtle-profile-btn">Bertin</button><button id="stephToArnoldBtn" class="steph-subtle-profile-btn">Arnold Split</button></div></div></div>'+
     '</div>';
   document.body.appendChild(overlay);
   var close = document.getElementById("stephSettingsClose");
   if(close)close.onclick=function(){ overlay.remove(); };
   overlay.addEventListener("click",function(e){ if(e.target===overlay)overlay.remove(); });
   var toBertin = document.getElementById("stephToBertinBtn");
-  if(toBertin)toBertin.onclick=function(){ switchLocalProfile("bertin"); };
+  if(toBertin)toBertin.onclick=function(){ if(confirm("Revenir au profil Bertin ?\nTes données actuelles restent sauvegardées."))switchLocalProfile("bertin"); };
+  var toArnold = document.getElementById("stephToArnoldBtn");
+  if(toArnold)toArnold.onclick=function(){ if(confirm("Passer au profil Arnold Split ?\nTes données actuelles restent sauvegardées."))switchLocalProfile("arnold"); };
+  var toggle = document.getElementById("stephProfileSwitchToggle");
+  var body = document.getElementById("stephProfileSwitchBody");
+  if(toggle&&body)toggle.onclick=function(){var open=toggle.getAttribute("aria-expanded")==="true";toggle.setAttribute("aria-expanded",String(!open));body.hidden=open;};
   var exp = document.getElementById("stephExportHistoryBtn");
   if(exp)exp.onclick=exportStephanieHistoryTxt;
   overlay.querySelectorAll('[data-steph-delete-history]').forEach(function(btn){
@@ -175,6 +198,7 @@ function stephSuggestionText(sessionId){
   return "Utiliser le RPE de la dernière séance pour ajuster.";
 }
 function renderStephanieSimpleApp(selectedId){
+  window.scrollTo({top:0,left:0,behavior:"auto"});
   document.body.classList.add("stephanie-mode");
   var existing=document.getElementById("stephanieApp");
   if(!existing){existing=document.createElement("div");existing.id="stephanieApp";document.body.appendChild(existing);}

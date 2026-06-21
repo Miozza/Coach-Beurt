@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /*
-  Coach Beurt — tests ciblés du moteur de charges.
-  Étape 5 : sécuriser les calculs de progression contextualisés sans changer le comportement.
+  Racine - tests cibles du moteur de charges.
 
   Usage :
     node dev/charge_engine_checks.js
@@ -64,9 +63,16 @@ const ctx = {
     athleteState: { movements: {} }
   },
   save: function(){},
-  focus: function(){ return {targetReps:{0:8,1:8,2:8,3:8,4:8,5:8}}; },
+  focus: function(){ return {label:'test cycle', targetReps:{0:8,1:8,2:8,3:8,4:8,5:8}}; },
+  buildWeekInfo: function(){ return {6:{label:'S6', goal:'Deload facile'}}; },
   weekIdx: function(){ return 2; },
-  collectSessionExercises: function(){ return []; }
+  collectSessionExercises: function(){ return []; },
+  parseTargetReps: function(format, fallback){
+    const nums = String(format || '').match(/\d+/g) || [];
+    if(!nums.length)return {min:fallback || 8, max:fallback || 8};
+    const last = Number(nums[nums.length - 1]) || fallback || 8;
+    return {min:last, max:last};
+  }
 };
 ctx.window = ctx;
 ctx.globalThis = ctx;
@@ -78,7 +84,8 @@ const loadOrder = [
   'scripts/charge/mouvements.js',
   'scripts/charge/rpe.js',
   'scripts/charge/historique.js',
-  'scripts/charge/suggestion.js'
+  'scripts/charge/suggestion.js',
+  'scripts/charge_diagnostic_ui.js'
 ];
 
 loadOrder.forEach(file => {
@@ -97,49 +104,51 @@ function resetState(){
 }
 
 try {
-  // 1. Fonctions exposées attendues.
+  // 1. Fonctions exposees attendues.
   [
     'coachBuildMovementContext',
     'coachIsLimitedProgressionContext',
     'coachContextProgressionReason',
     'coachFilterHistoryForProgression',
+    'coachBuildMovementHistorySignal',
     'guardedSuggestedLoadDecision',
     'updateAthleteStateFromResults',
     'coachMovementLookupLabels',
     'canonicalMovementLabel',
-    'coachMovementEquipmentFamily'
+    'coachMovementEquipmentFamily',
+    'buildChargeDiagnosticForExercise'
   ].forEach(name => assert(typeof ctx[name] === 'function', 'Fonction disponible : ' + name));
 
-  // 2. Alias par équipement : DB ne doit pas fusionner avec câble.
+  // 2. Alias par equipement : DB ne doit pas fusionner avec cable.
   const lateralDb = ctx.coachMovementLookupLabels('Lateral Raise DB');
   const lateralCable = ctx.coachMovementLookupLabels('Lateral Raise câble');
   const rearDb = ctx.coachMovementLookupLabels('Rear Delt Fly DB');
   const rearCable = ctx.coachMovementLookupLabels('Rear Delt Fly câble');
 
-  assert(includes(lateralDb, 'Lateral Raise haltères'), 'Lateral Raise DB lit l’ancien alias haltères.');
-  assert(notIncludes(lateralDb, 'Lateral Raise câble bas'), 'Lateral Raise DB ne lit pas l’alias câble.');
-  assert(includes(lateralCable, 'Lateral Raise câble bas'), 'Lateral Raise câble lit l’ancien alias câble bas.');
-  assert(notIncludes(lateralCable, 'Lateral Raise haltères'), 'Lateral Raise câble ne lit pas l’alias haltères.');
-  assert(includes(rearDb, 'Rear Delt Fly haltères'), 'Rear Delt Fly DB lit l’ancien alias haltères.');
-  assert(notIncludes(rearDb, 'Rear Delt Fly câble bas'), 'Rear Delt Fly DB ne lit pas l’alias câble.');
-  assert(includes(rearCable, 'Rear Delt Fly câble bas'), 'Rear Delt Fly câble lit l’ancien alias câble bas.');
-  assert(notIncludes(rearCable, 'Rear Delt Fly haltères'), 'Rear Delt Fly câble ne lit pas l’alias haltères.');
+  assert(includes(lateralDb, 'Lateral Raise haltères'), 'Lateral Raise DB lit l ancien alias halteres.');
+  assert(notIncludes(lateralDb, 'Lateral Raise câble bas'), 'Lateral Raise DB ne lit pas l alias cable.');
+  assert(includes(lateralCable, 'Lateral Raise câble bas'), 'Lateral Raise cable lit l ancien alias cable bas.');
+  assert(notIncludes(lateralCable, 'Lateral Raise haltères'), 'Lateral Raise cable ne lit pas l alias halteres.');
+  assert(includes(rearDb, 'Rear Delt Fly haltères'), 'Rear Delt Fly DB lit l ancien alias halteres.');
+  assert(notIncludes(rearDb, 'Rear Delt Fly câble bas'), 'Rear Delt Fly DB ne lit pas l alias cable.');
+  assert(includes(rearCable, 'Rear Delt Fly câble bas'), 'Rear Delt Fly cable lit l ancien alias cable bas.');
+  assert(notIncludes(rearCable, 'Rear Delt Fly haltères'), 'Rear Delt Fly cable ne lit pas l alias halteres.');
 
-  assert(ctx.coachMovementEquipmentFamily('Lateral Raise DB') === 'db', 'Équipement Lateral Raise DB = dumbbell.');
-  assert(ctx.coachMovementEquipmentFamily('Lateral Raise câble') === 'cable', 'Équipement Lateral Raise câble = cable.');
-  assert(ctx.coachMovementEquipmentFamily('Rear Delt Fly DB') === 'db', 'Équipement Rear Delt Fly DB = dumbbell.');
-  assert(ctx.coachMovementEquipmentFamily('Rear Delt Fly câble') === 'cable', 'Équipement Rear Delt Fly câble = cable.');
+  assert(ctx.coachMovementEquipmentFamily('Lateral Raise DB') === 'db', 'Equipement Lateral Raise DB = dumbbell.');
+  assert(ctx.coachMovementEquipmentFamily('Lateral Raise câble') === 'cable', 'Equipement Lateral Raise cable = cable.');
+  assert(ctx.coachMovementEquipmentFamily('Rear Delt Fly DB') === 'db', 'Equipement Rear Delt Fly DB = dumbbell.');
+  assert(ctx.coachMovementEquipmentFamily('Rear Delt Fly câble') === 'cable', 'Equipement Rear Delt Fly cable = cable.');
 
-  // 3. Contexte/intention : le nom reste simple, l’intention vit à côté.
+  // 3. Contexte/intention : le nom reste simple, l intention vit a cote.
   const pcTechnique = ctx.coachBuildMovementContext('Power Clean', { note:'technique vitesse propre', kind:'accessory', day:'vendredi', week:3 });
   const pcWod = ctx.coachBuildMovementContext('Power Clean', { kind:'wod', format:'AMRAP 8', text:'5 Power Clean + 8 Wall Balls + 10 cal Row' });
   const pcStrength = ctx.coachBuildMovementContext('Power Clean', { kind:'main', blockTitle:'Force principale' });
   assert(pcTechnique.label === 'Power Clean', 'Power Clean technique garde le nom simple Power Clean.');
-  assert(includes(pcTechnique.intents, 'technique') && ctx.coachIsLimitedProgressionContext(pcTechnique), 'Power Clean avec note technique = contexte limité.');
-  assert(includes(pcWod.intents, 'wod') && ctx.coachIsLimitedProgressionContext(pcWod), 'Power Clean en WOD = contexte limité.');
-  assert(!ctx.coachIsLimitedProgressionContext(pcStrength), 'Power Clean principal/force non limité par défaut.');
+  assert(includes(pcTechnique.intents, 'technique') && ctx.coachIsLimitedProgressionContext(pcTechnique), 'Power Clean avec note technique = contexte limite.');
+  assert(includes(pcWod.intents, 'wod') && ctx.coachIsLimitedProgressionContext(pcWod), 'Power Clean en WOD = contexte limite.');
+  assert(!ctx.coachIsLimitedProgressionContext(pcStrength), 'Power Clean principal/force non limite par defaut.');
 
-  // 4. Filtrage d’historique par contexte.
+  // 4. Filtrage d historique par contexte.
   const hist = [
     { date:'2026-01-01', load:115, reps:5, rpe:7 },
     { date:'2026-01-08', load:135, reps:5, rpe:7, context:pcTechnique },
@@ -147,12 +156,12 @@ try {
   ];
   const mainFiltered = ctx.coachFilterHistoryForProgression(hist, pcStrength);
   const techFiltered = ctx.coachFilterHistoryForProgression(hist, pcTechnique);
-  assert(mainFiltered.some(r => r.load === 115) && mainFiltered.some(r => r.load === 185), 'Historique principal garde les anciennes entrées sans contexte et les entrées principales.');
-  assert(!mainFiltered.some(r => r.load === 135), 'Historique principal exclut les entrées techniques contextualisées.');
-  assert(techFiltered.some(r => r.load === 115) && techFiltered.some(r => r.load === 135), 'Historique technique garde les anciennes entrées sans contexte et les entrées limitées.');
-  assert(!techFiltered.some(r => r.load === 185), 'Historique technique exclut les entrées principales contextualisées.');
+  assert(mainFiltered.some(r => r.load === 115) && mainFiltered.some(r => r.load === 185), 'Historique principal garde les anciennes entrees sans contexte et les entrees principales.');
+  assert(!mainFiltered.some(r => r.load === 135), 'Historique principal exclut les entrees techniques contextualisees.');
+  assert(techFiltered.some(r => r.load === 115) && techFiltered.some(r => r.load === 135), 'Historique technique garde les anciennes entrees sans contexte et les entrees limitees.');
+  assert(!techFiltered.some(r => r.load === 185), 'Historique technique exclut les entrees principales contextualisees.');
 
-  // 5. Décision de suggestion : contexte limité ne doit pas monter comme principal.
+  // 5. Decision de suggestion : contexte limite ne doit pas monter comme principal.
   resetState();
   ctx.state.athleteState.movements['Power Clean'] = {
     ranges: { strength: { currentLoad:185, actualLoad:185, currentReps:5, actualReps:5, rpe:7, confidence:0.9, status:'upgrade_ready' } },
@@ -162,21 +171,52 @@ try {
   };
   const techDecision = ctx.guardedSuggestedLoadDecision('Power Clean', '115 lb', 5, pcTechnique);
   const mainDecision = ctx.guardedSuggestedLoadDecision('Power Clean', '115 lb', 5, pcStrength);
-  assert(techDecision.loadText === '115 lb', 'Power Clean technique conserve la charge du programme, pas la référence lourde.');
-  assert(mainDecision.loadText !== '115 lb', 'Power Clean principal peut utiliser l’historique contrôlé quand le programme sous-suggère.');
+  assert(techDecision.loadText === '115 lb', 'Power Clean technique conserve la charge du programme, pas la reference lourde.');
+  assert(mainDecision.loadText !== '115 lb', 'Power Clean principal peut utiliser l historique controle quand le programme sous-suggere.');
 
-  // 6. Mise à jour athlete_state : résultat WOD/technique loggé mais ne remplace pas la capacité principale.
+  // 6. Mise a jour athlete_state : resultat WOD/technique logge mais ne remplace pas la capacite principale.
   resetState();
   ctx.state.day = 'vendredi';
   ctx.updateAthleteStateFromResults({
     'Power Clean': { load:'135 lb', reps:5, rpe:7, planned:{ reps:5, kind:'wod', format:'AMRAP 8', context:pcWod } }
   }, '2026-02-01');
   const mv = ctx.state.athleteState.movements['Power Clean'];
-  assert(mv && mv.history && mv.history.length === 1, 'Résultat Power Clean WOD ajouté à l’historique.');
-  assert(mv.history[0].status === 'context_logged', 'Résultat WOD est marqué context_logged.');
-  assert(!mv.ranges.strength, 'Résultat WOD ne remplace pas la capacité strength.');
+  assert(mv && mv.history && mv.history.length === 1, 'Resultat Power Clean WOD ajoute a l historique.');
+  assert(mv.history[0].status === 'context_logged', 'Resultat WOD est marque context_logged.');
+  assert(!mv.ranges.strength, 'Resultat WOD ne remplace pas la capacite strength.');
 
-  // 7. Cohérence décisionnelle : la charge finale doit suivre la règle expliquée.
+  // 7. Historique comme outil moteur : tendance, RPE repete et stagnation.
+  const historySignalBlocked = ctx.coachBuildMovementHistorySignal('Bench Press', [
+    { date:'2026-05-01', load:185, reps:8, rpe:9 },
+    { date:'2026-05-08', load:185, reps:8, rpe:9.5 },
+    { date:'2026-05-15', load:185, reps:7, rpe:9 }
+  ], pcStrength, 8);
+  assert(historySignalBlocked.status === 'blocked', 'Signal historique bloque deux RPE hauts ou plus.');
+  assert(historySignalBlocked.highRpeCount >= 2, 'Signal historique compte les RPE eleves recents.');
+
+  const historySignalReady = ctx.coachBuildMovementHistorySignal('Bench Press', [
+    { date:'2026-05-01', load:185, reps:8, rpe:7.5 },
+    { date:'2026-05-08', load:190, reps:8, rpe:8 },
+    { date:'2026-05-15', load:190, reps:8, rpe:7.5 }
+  ], pcStrength, 8);
+  assert(historySignalReady.status === 'ready', 'Signal historique reconnait plusieurs references controlees.');
+
+  resetState();
+  ctx.state.day = 'lundi';
+  ctx.state.athleteState.movements['Bench Press'] = {
+    ranges: { hypertrophy: { currentLoad:185, actualLoad:185, currentReps:8, actualReps:8, rpe:9.5, confidence:0.75, status:'hard' } },
+    history: [
+      { date:'2026-05-01', load:185, reps:8, rpe:9, range:'hypertrophy', status:'hard' },
+      { date:'2026-05-08', load:185, reps:8, rpe:9.5, range:'hypertrophy', status:'hard' },
+      { date:'2026-05-15', load:185, reps:7, rpe:9, range:'hypertrophy', status:'failed' }
+    ]
+  };
+  const benchCtx = ctx.coachBuildMovementContext('Bench Press', { kind:'main', blockTitle:'Force principale', format:'3x8', day:'lundi', week:3 });
+  const benchDecision = ctx.guardedSuggestedLoadDecision('Bench Press', '195 lb', 8, benchCtx);
+  assert(benchDecision.loadNum === 185, 'Le moteur utilise le signal historique pour bloquer une hausse apres RPE hauts repetes.');
+  assert(benchDecision.historySignal && benchDecision.historySignal.status === 'blocked', 'La decision expose le signal historique utilise.');
+
+  // 8. Coherence decisionnelle : la charge finale doit suivre la regle expliquee.
   resetState();
   ctx.state.day = 'jeudi';
   ctx.state.athleteState.movements['Bulgarian Split Squat'] = {
@@ -186,10 +226,10 @@ try {
       { date:'2026-06-11', load:45, reps:8, rpe:9, range:'hypertrophy', status:'hard_success' }
     ]
   };
-  const bulgarianCtx = ctx.coachBuildMovementContext('Bulgarian Split Squat', { kind:'accessory', blockTitle:'B. Superset jambes + core', format:'3×8-10/jambe', day:'jeudi', week:3 });
+  const bulgarianCtx = ctx.coachBuildMovementContext('Bulgarian Split Squat', { kind:'accessory', blockTitle:'B. Superset jambes + core', format:'3x8-10/jambe', day:'jeudi', week:3 });
   const bulgarianDecision = ctx.guardedSuggestedLoadDecision('Bulgarian Split Squat', '50 lb', 8, bulgarianCtx);
-  assert(bulgarianDecision.loadNum === 45, 'Bulgarian Split Squat RPE 9 bloque la hausse finale à 45 lb.');
-  assert(/aucune hausse automatique|Bloqué/.test(bulgarianDecision.reason), 'Bulgarian Split Squat explique le blocage RPE 9.');
+  assert(bulgarianDecision.loadNum === 45, 'Bulgarian Split Squat RPE 9 bloque la hausse finale a 45 lb.');
+  assert(/aucune hausse automatique|Bloque/.test(bulgarianDecision.reason), 'Bulgarian Split Squat explique le blocage RPE 9.');
 
   resetState();
   ctx.state.day = 'jeudi';
@@ -200,18 +240,102 @@ try {
       { date:'2026-06-11', load:60, reps:10, rpe:7, range:'hypertrophy', status:'easy_success' }
     ]
   };
-  const rdlCtx = ctx.coachBuildMovementContext('DB RDL', { kind:'accessory', blockTitle:'C. Charnière postérieure', format:'3×10', day:'jeudi', week:3 });
+  const rdlCtx = ctx.coachBuildMovementContext('DB RDL', { kind:'accessory', blockTitle:'C. Charniere posterieure', format:'3x10', day:'jeudi', week:3 });
   const rdlDecision = ctx.guardedSuggestedLoadDecision('DB RDL', '60 lb', 10, rdlCtx);
-  assert(rdlDecision.loadNum === 65, 'DB RDL 60×10 RPE 7 propose la prochaine charge disponible 65 lb.');
-  assert(/Progression prête|Petite hausse/.test(rdlDecision.reason), 'DB RDL explique la progression légère.');
-  assert(ctx.coachMovementEquipmentFamily('Bulgarian Split Squat') === 'db', 'Bulgarian Split Squat classé équipement DB, pas barre.');
+  assert(rdlDecision.loadNum === 65, 'DB RDL 60x10 RPE 7 propose la prochaine charge disponible 65 lb.');
+  assert(/Progression prete|Petite hausse/.test(rdlDecision.reason), 'DB RDL explique la progression legere.');
+  assert(ctx.coachMovementEquipmentFamily('Bulgarian Split Squat') === 'db', 'Bulgarian Split Squat classe equipement DB, pas barre.');
+
+
+  resetState();
+  ctx.state.day = 'jeudi';
+  const bulgarianRecentCtx = ctx.coachBuildMovementContext('Bulgarian Split Squat', { kind:'accessory', blockTitle:'B. Superset jambes + core', format:'3x8-10/jambe', day:'jeudi', week:3 });
+  ctx.state.athleteState.movements['Bulgarian Split Squat'] = {
+    ranges: { hypertrophy: { currentLoad:40, actualLoad:40, currentReps:8, actualReps:8, rpe:8, confidence:0.8, status:'success' } },
+    history: [
+      { date:'2026-06-04', load:35, reps:8, rpe:7, range:'hypertrophy', status:'upgrade_ready', context:bulgarianRecentCtx },
+      { date:'2026-06-11', load:45, reps:8, rpe:9, range:'hypertrophy', status:'hard', context:bulgarianRecentCtx },
+      { date:'2026-06-18', load:40, reps:8, rpe:8, range:'hypertrophy', status:'success', context:bulgarianRecentCtx }
+    ]
+  };
+  const bulgarianRecentDecision = ctx.guardedSuggestedLoadDecision('Bulgarian Split Squat', '50 lb', 8, bulgarianRecentCtx);
+  assert(bulgarianRecentDecision.loadNum === 45, 'Bulgarian Split Squat garde 45 lb quand 45 lb RPE 9 reste non resolu malgre un retour a 40 lb.');
+  assert(/Frein RPE recent/.test(bulgarianRecentDecision.reason), 'Bulgarian Split Squat explique le frein RPE recent non resolu.');
+  const bulgarianHintKey = ctx.coachNormalizeMoveText('Bulgarian Split Squat');
+  assert(ctx.__coachLoadHints[bulgarianHintKey] && ctx.__coachLoadHints[bulgarianHintKey].load === '45 lb ⚠', 'La modale ! lit la charge finale gardee 45 lb, pas la charge brute 50 lb.');
+
+  // 9. Deload : la semaine 6 reduit la suggestion finale apres apprentissage historique.
+  resetState();
+  ctx.state.week = 6;
+  ctx.state.day = 'lundi';
+  const strictCtx = ctx.coachBuildMovementContext('Strict Press', { kind:'main', blockTitle:'Force principale', format:'3x8', day:'lundi', week:6 });
+  ctx.state.athleteState.movements['Strict Press'] = {
+    ranges: { hypertrophy: { currentLoad:115, actualLoad:115, currentReps:8, actualReps:8, rpe:8, confidence:0.9, status:'success' } },
+    history: [
+      { date:'2026-06-01', load:115, reps:8, rpe:8, range:'hypertrophy', status:'success', context:strictCtx }
+    ]
+  };
+  const deloadDecision = ctx.guardedSuggestedLoadDecision('Strict Press', '125 lb', 8, strictCtx);
+  assert(deloadDecision.loadNum >= 100 && deloadDecision.loadNum <= 110, 'Deload Strict Press S6 ramene 125 lb vers 100-110 lb.');
+  assert(deloadDecision.loadNum < 115, 'Deload Strict Press reste sous le peak recent 115 lb.');
+  assert(/Deload actif/.test(deloadDecision.reason), 'Deload Strict Press explique la reduction finale.');
+
+  // 10. Poids du corps leste : 0 lb est une vraie charge externe quand reps/RPE existent.
+  resetState();
+  ctx.state.day = 'mardi';
+  const pullCtx = ctx.coachBuildMovementContext('Weighted Pull-up', { kind:'accessory', blockTitle:'Pull lourd', format:'3x8', day:'mardi', week:3 });
+  ctx.updateAthleteStateFromResults({
+    'Weighted Pull-up': { load:'0 lb', reps:8, rpe:8, planned:{ name:'Weighted Pull-up', reps:8, targetMin:8, kind:'accessory', format:'3x8', context:pullCtx, bodyweightMovement:true } }
+  }, '2026-06-01');
+  ctx.updateAthleteStateFromResults({
+    'Weighted Pull-up': { load:'0 lb', reps:8, rpe:7.5, planned:{ name:'Weighted Pull-up', reps:8, targetMin:8, kind:'accessory', format:'3x8', context:pullCtx, bodyweightMovement:true } }
+  }, '2026-06-08');
+  const pullMv = ctx.state.athleteState.movements['Weighted Pull-up'];
+  assert(pullMv && pullMv.history.length === 2, 'Weighted Pull-up 0 lb ajoute deux entrees historiques.');
+  assert(pullMv.ranges.hypertrophy && pullMv.ranges.hypertrophy.currentLoad === 0, 'Weighted Pull-up conserve externalLoad 0 lb comme charge valide.');
+  const pullSignal = ctx.coachBuildMovementHistorySignal('Weighted Pull-up', pullMv.history, pullCtx, 8);
+  assert(pullSignal.rows.length === 2, 'Weighted Pull-up 0 lb est exploitable par le signal historique.');
+  const pullDiag = ctx.buildChargeDiagnosticForExercise({name:'Weighted Pull-up', load:'0 lb', format:'3x8'}, '0 lb', {targetReps:8, kind:'accessory', blockTitle:'Pull lourd', day:'mardi', week:3});
+  assert(pullDiag.validHistoryCount >= 2, 'Diagnostic Weighted Pull-up compte 0 lb comme historique valide.');
+  assert(!pullDiag.alerts.some(a => a.code === 'data_low'), 'Diagnostic Weighted Pull-up ne crie plus donnees faibles apres historique suffisant.');
+
+  // 11. RPE brake general : RPE >= 9 bloque toute hausse, pas seulement l isolation.
+  resetState();
+  ctx.state.day = 'mercredi';
+  const inclineCtx = ctx.coachBuildMovementContext('Incline DB Press', { kind:'accessory', blockTitle:'Push volume', format:'3x8', day:'mercredi', week:3 });
+  ctx.state.athleteState.movements['Incline DB Press'] = {
+    ranges: { hypertrophy: { currentLoad:45, actualLoad:45, currentReps:8, actualReps:8, rpe:9, confidence:0.8, status:'hard_success' } },
+    history: [ { date:'2026-06-10', load:45, reps:8, rpe:9, range:'hypertrophy', status:'hard_success', context:inclineCtx } ]
+  };
+  const inclineDecision = ctx.guardedSuggestedLoadDecision('Incline DB Press', '50 lb', 8, inclineCtx);
+  assert(inclineDecision.loadNum <= 45, 'Incline DB Press RPE 9 ne monte pas au-dessus de la derniere charge reelle.');
+
+  // 12. Apprentissage : si le reel controle depasse la suggestion, il devient la reference suivante.
+  resetState();
+  ctx.state.day = 'jeudi';
+  const rdlLearnCtx = ctx.coachBuildMovementContext('DB RDL', { kind:'accessory', blockTitle:'C. Charniere posterieure', format:'3x10', day:'jeudi', week:3 });
+  ctx.state.athleteState.movements['DB RDL'] = {
+    ranges: { hypertrophy: { currentLoad:60, actualLoad:60, currentReps:10, actualReps:10, rpe:7.5, confidence:0.8, status:'success' } },
+    history: [ { date:'2026-06-01', load:60, reps:10, rpe:7.5, range:'hypertrophy', status:'success', context:rdlLearnCtx } ]
+  };
+  ctx.updateAthleteStateFromResults({
+    'DB RDL': { load:'70 lb', reps:10, rpe:8, planned:{ name:'DB RDL', load:60, reps:10, targetMin:10, kind:'accessory', format:'3x10', context:rdlLearnCtx } }
+  }, '2026-06-08');
+  const learnedRdlDecision = ctx.guardedSuggestedLoadDecision('DB RDL', '60 lb', 10, rdlLearnCtx);
+  assert(learnedRdlDecision.loadNum === 70, 'DB RDL reel 70x10 RPE 8 devient la prochaine suggestion, pas 60 lb.');
+
+  // 13. Alertes : mouvements sans charge utile ne doivent pas crier donnees faibles.
+  resetState();
+  const deadBugDiag = ctx.buildChargeDiagnosticForExercise({name:'Dead Bug', load:'', format:'3x10'}, '', {targetReps:10, kind:'accessory', blockTitle:'Core'});
+  assert(deadBugDiag.noLoadUseful === true, 'Dead Bug est reconnu comme mouvement sans charge utile.');
+  assert(!deadBugDiag.alerts.some(a => a.code === 'data_low'), 'Dead Bug ne declenche pas d alerte donnees faibles.');
 
 } catch (err) {
   fail('Erreur pendant les tests moteur : ' + (err && err.stack ? err.stack : err));
 }
 
 if(errors.length){
-  console.error('\nÉCHEC charge_engine_checks.js');
+  console.error('\nECHEC charge_engine_checks.js');
   errors.forEach(e => console.error(' - ' + e));
   process.exit(1);
 }

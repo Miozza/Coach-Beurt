@@ -1,4 +1,4 @@
-# Architecture Coach Beurt
+# Architecture Racine
 
 ## Type d’application
 
@@ -11,6 +11,31 @@ PWA personnelle d’entraînement en JavaScript vanilla, sans framework.
 - **Résultats** : saisie finale des poids/reps/RPE, séparée de PC.
 - **PC** : inspection, semaine, route, analyse, export IA. Ce n’est pas un Builder.
 - **Historique** : résultats réels sauvegardés dans les données durables.
+
+## Contrat UI
+
+Objectif : éviter qu'un écran appelle un autre écran sans propriétaire clair. Les vues peuvent partager des helpers, mais chaque rendu visible doit avoir un domaine responsable.
+
+### Identifiants de vues PC
+
+- `pcView` est le conteneur officiel de la vue PC.
+- `phoneView` est un hôte hérité conservé à l’intérieur de `pcView` pour les anciens sélecteurs CSS et appels historiques `phone*`.
+- Toute nouvelle logique PC doit viser `pcView`; `phoneView` ne doit pas redevenir une vue principale ni recevoir de nouveau comportement.
+
+- **WOD+** (`scripts/view_wodplus.js`) possède le rendu de la séance active dans l’onglet WOD : blocs, focus du jour, navigation semaine/jour courante et entrée vers la séance.
+- **PC** (`scripts/view_pc.js`) possède l’inspection multi-jours : prévisualisation d’un autre jour que le jour actif, export, diagnostics et vue large. Ses wrappers `pcDay*` sont légitimes s’ils délèguent aux fonctions de jour/semaine de `app.js`.
+- **Session guidée** (`scripts/session/view.js` et `scripts/session/timer.js`) possède le mode plein écran terrain : blocs guidés, timer AMRAP/EMOM/For Time et progression pendant l’exécution.
+- **Résultats** (`scripts/session/results.js`) possède la saisie finale : champs poids/reps/RPE, collecte de résultats, résumé affiché après sauvegarde.
+- **App** (`app.js`) choisit la vue, tient l’état courant et appelle les API publiques. Il ne doit pas redevenir propriétaire du rendu détaillé d’un écran.
+
+État actuel : certaines fonctions de rendu historiques se croisent encore entre WOD+, PC et Session. Ce contrat décrit la destination avant tout déplacement de code; il ne justifie pas une nouvelle couche ou un nouveau fichier.
+
+Règles pour les prochains changements UI :
+
+- Ne pas créer un nouveau fichier de rendu sans ajouter son propriétaire dans ce contrat.
+- Ne pas déplacer une fonction de rendu tant que son écran propriétaire n’est pas clair.
+- Ne pas mélanger une refonte UI avec une modification de `scripts/charge/`, `data/` ou `programs/`.
+- Si une vue appelle temporairement une fonction d’une autre vue, documenter ce lien avant de le nettoyer.
 
 ## Dossiers
 
@@ -76,3 +101,47 @@ Le script `dev/structure_checks.js` vérifie que les fichiers servent à quelque
 ### V51.50 — Domaine session
 
 `session/` contient `view.js`, `timer.js`, `results.js`, `save.js`, `index.js`. Le timer guidé appartient à `scripts/session/timer.js`; le rendu de séance appartient à `scripts/session/view.js`.
+
+
+## Domaine state
+
+- `scripts/state/storage.js` isole la lecture/ecriture locale du state et des charges personnalisees.
+- `scripts/state/index.js` expose `window.CoachState` comme API publique.
+- `app.js` reste responsable de fusionner les valeurs chargees avec les valeurs par defaut runtime.
+- Le token GitHub reste hors de ce domaine jusqu a l extraction `CoachSync`.
+
+
+## Domaine sync
+
+- `scripts/sync/storage.js` isole le token GitHub et le statut local de synchronisation.
+- `scripts/sync/index.js` expose `window.CoachSync` comme API publique.
+- `app.js` garde pour l instant l orchestration des appels GitHub, mais ne possede plus les cles localStorage sync.
+- Les donnees durables restent ecrites seulement par les fonctions GitHub existantes.
+
+
+## Domaine UI
+
+- scripts/ui_modals.js garde les helpers UI existants pour compatibilite.
+- scripts/ui/index.js expose window.CoachUI comme API publique.
+- app.js doit passer par CoachUI pour les helpers de rendu UI partages.
+
+
+## Domaine history
+
+- scripts/history/index.js expose window.CoachHistory comme API publique de lecture historique.
+- resultats reste le journal brut reconstructible; athlete_state reste l etat derive utilise par le moteur.
+- CoachHistory ne modifie pas les donnees durables; il transforme l historique disponible en signaux pour CoachCharge et le resume de seance.
+
+
+## Domaine progression
+
+- scripts/progression/index.js expose window.CoachProgress comme API publique de lecture progression.
+- CoachProgress classe les resultats en progression, surveillance et blocage a partir du resultat courant et de l historique precedent.
+- Il ne modifie pas les donnees durables; il sert au resume de seance et aux futurs affichages intelligents.
+
+
+## Domaine summary
+
+- scripts/summary/index.js expose window.CoachSummary comme API publique du resume automatique.
+- CoachSummary compose les lignes de seance, PR automatiques, progression, surveillance et blocage a partir des signaux CoachProgress et CoachHistory.
+- Il ne modifie pas les donnees durables; il rend le resume reutilisable hors de la vue Resultats.

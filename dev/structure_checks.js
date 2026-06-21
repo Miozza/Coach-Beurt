@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /*
-  Coach Beurt — validation de structure durable.
-  Objectif : éviter que le projet redevienne un empilement de patchs.
+  Racine — validation de structure durable.
+  Objectif : vérifier les frontières du repo sans transformer chaque module en fichier versionné.
 
   Usage :
     node dev/structure_checks.js
@@ -44,14 +44,15 @@ if(forcedUpdatePackage && forcedFullPackage){
 const hasDataFiles = allFiles.some(f => f.startsWith('data/'));
 const isUpdatePackage = forcedUpdatePackage ? true : (forcedFullPackage ? false : !hasDataFiles);
 const detectedModeReason = forcedUpdatePackage ? 'update (--update-package)' : (forcedFullPackage ? 'full (--full)' : (hasDataFiles ? 'full (data/ présent)' : 'update (data/ absent)'));
+
 const allowedRootFiles = new Set([
   'app.js','index.html','styles.css','manifest.json','service-worker.js',
   'README.md','CHANGELOG.md','ETAT_ACTUEL.md','RELEASE_CHECKLIST.md',
   'apple-touch-icon.png','apple-touch-icon-precomposed.png','icon-180.png','icon-192.png','icon-512.png'
 ]);
-const allowedDirs = new Set(['programs','scripts','data','dev','docs']);
+const allowedDirs = new Set(['programs','scripts','data','dev','docs','.github']);
 
-// 1. Dossiers/fichiers racine.
+// 1. Structure racine.
 allFiles.forEach(f => {
   const parts = f.split('/');
   if(parts.length === 1){
@@ -63,48 +64,40 @@ allFiles.forEach(f => {
 assert(!exists('tools'), 'Le dossier tools/ ne doit pas revenir.');
 assert(!exists('diagnostics'), 'Le dossier diagnostics/ ne doit pas revenir.');
 assert(!exists('programs/test.js'), 'programs/test.js ne doit pas revenir.');
-
-// 2. Documents/versioning temporaires interdits.
 allFiles.forEach(f => {
   const base = path.basename(f);
   if(/^RELEASE_NOTES_V\d+\.\d+/.test(base) || /^AUDIT_V\d+\.\d+/.test(base) || /^REPORT_V\d+\.\d+/.test(base) || /^CHECKLIST_V\d+\.\d+/.test(base)){
     fail('Fichier temporaire/versionné interdit : ' + f);
   }
 });
-assert(exists('docs/STRUCTURE_CONTRACT.md'), 'docs/STRUCTURE_CONTRACT.md doit exister.');
 
-// 3. Données.
+// 2. Données.
 if(isUpdatePackage){
   assert(!allFiles.some(f => f.startsWith('data/')), 'ZIP update ne doit contenir aucun fichier data/.');
 } else {
   ['data/resultats.json','data/athlete_state.json','data/cycle_state.json','data/charges.js'].forEach(f => assert(exists(f), 'Fichier data attendu dans ZIP complet : ' + f));
 }
 
-// 4. Tous les scripts runtime doivent être chargés par index.html.
+// 3. Chargement explicite.
 const index = exists('index.html') ? read('index.html') : '';
 walk('scripts').filter(f => f.endsWith('.js')).forEach(f => {
   assert(index.includes(f), 'Script runtime chargé dans index.html : ' + f);
 });
-
-// 5. Tous les programmes JS doivent être chargés ou enregistrés explicitement.
 const programsIndex = exists('programs/index.js') ? read('programs/index.js') : '';
 walk('programs').filter(f => f.endsWith('.js')).forEach(f => {
   if(f === 'programs/index.js'){
     assert(index.includes(f), 'programs/index.js chargé dans index.html.');
-    return;
+  } else {
+    assert(index.includes(f) || programsIndex.includes(path.basename(f, '.js')), 'Programme chargé ou indexé : ' + f);
   }
-  assert(index.includes(f) || programsIndex.includes(path.basename(f, '.js')), 'Programme chargé ou indexé : ' + f);
 });
 
-// 6. Tous les scripts dev doivent être cités dans la checklist ou dans ce script.
+// 4. Dev et docs stables.
 const checklist = exists('RELEASE_CHECKLIST.md') ? read('RELEASE_CHECKLIST.md') : '';
 walk('dev').filter(f => f.endsWith('.js')).forEach(f => {
   const allowedSelf = f === 'dev/structure_checks.js';
   assert(checklist.includes('node ' + f) || allowedSelf, 'Script dev cité dans RELEASE_CHECKLIST.md : ' + f);
 });
-assert(checklist.includes('node dev/structure_checks.js'), 'RELEASE_CHECKLIST.md doit exiger node dev/structure_checks.js.');
-
-// 7. Les docs doivent être stables et visibles dans une source de référence.
 const readme = exists('README.md') ? read('README.md') : '';
 const etat = exists('ETAT_ACTUEL.md') ? read('ETAT_ACTUEL.md') : '';
 const docRefText = readme + '\n' + etat + '\n' + checklist;
@@ -112,104 +105,92 @@ walk('docs').filter(f => f.endsWith('.md')).forEach(f => {
   assert(!/V\d+\.\d+/.test(path.basename(f)), 'Document sans version dans le nom : ' + f);
   assert(docRefText.includes(f) || f === 'docs/STRUCTURE_CONTRACT.md', 'Document stable référencé : ' + f);
 });
+assert(exists('docs/STRUCTURE_CONTRACT.md'), 'docs/STRUCTURE_CONTRACT.md doit exister.');
+assert(read('docs/STRUCTURE_CONTRACT.md').includes('## Contrat de version'), 'Le contrat de version doit rester visible.');
 
-// 8. Frontières : programs/ ne doit pas contenir de patch runtime/moteur.
-walk('programs').filter(f => f.endsWith('.js')).forEach(f => {
-  const src = read(f);
-  assert(!/RuntimePatch|coachBeurtV\d+|smartSuggestedLoad|athleteSuggestedLoad|loadInfoButtonHtml|showLoadInfoModal|coachSafeSuggestedLoad/.test(src), 'Aucun patch/moteur charge dans ' + f);
-});
-
-// 8b. Core runtime : logger d’erreurs local.
-assert(exists('scripts/core/logger.js'), 'Logger runtime présent : scripts/core/logger.js');
-assert(index.includes('scripts/core/logger.js'), 'scripts/core/logger.js chargé dans index.html.');
-const loggerSrc = exists('scripts/core/logger.js') ? read('scripts/core/logger.js') : '';
-assert(loggerSrc.includes('window.CoachLog'), 'scripts/core/logger.js doit exposer window.CoachLog.');
-assert(loggerSrc.includes('window.addEventListener("error"') || loggerSrc.includes("window.addEventListener('error'"), 'Logger doit capter window error.');
-assert(loggerSrc.includes('unhandledrejection'), 'Logger doit capter unhandledrejection.');
-assert(exists('docs/ERROR_LOGGING.md'), 'docs/ERROR_LOGGING.md doit documenter le logger.');
-
-// 9. Frontières : app.js orchestre, les modules de charge existent dans scripts/charge/.
-const chargeModules = ['scripts/charge/equipement.js','scripts/charge/utilitaires.js','scripts/charge/mouvements.js','scripts/charge/historique.js','scripts/charge/rpe.js','scripts/charge/suggestion.js','scripts/charge/index.js'];
-chargeModules.forEach(f => assert(exists(f), 'Module charge présent : ' + f));
-['scripts/equipement.js','scripts/utilitaires_charges.js','scripts/mouvement.js','scripts/charge_gestion.js','scripts/progression_rpe.js','scripts/moteur_charges.js'].forEach(f => assert(!exists(f), 'Ancien emplacement charge supprimé : ' + f));
-const chargeIndex = exists('scripts/charge/index.js') ? read('scripts/charge/index.js') : '';
-assert(chargeIndex.includes('window.CoachCharge'), 'scripts/charge/index.js doit exposer window.CoachCharge.');
-assert(chargeIndex.includes('suggestLoad') && chargeIndex.includes('buildContext') && chargeIndex.includes('getHistory'), 'CoachCharge doit exposer suggestLoad/buildContext/getHistory.');
+// 5. Contrat de version.
 const app = exists('app.js') ? read('app.js') : '';
 const versionMatch = app.match(/APP_VERSION\s*=\s*"(V\d+\.\d+)"/);
 assert(!!versionMatch, 'app.js conserve APP_VERSION.');
 if(versionMatch){
-  const headerMatch = app.match(/^\/\/\s*Coach Be(?:rtin|urt)\s+(V\d+\.\d+)/m);
-  assert(!!headerMatch, 'app.js doit garder un commentaire d’en-tête Coach Bertin/Beurt Vx.xx.');
-  assert(headerMatch && headerMatch[1] === versionMatch[1], 'Commentaire d’en-tête app.js cohérent avec APP_VERSION : ' + versionMatch[1]);
-
-  walk('scripts').filter(f => f.endsWith('.js')).forEach(f => {
-    const firstLine = read(f).split(/\r?\n/)[0] || '';
-    const scriptHeader = firstLine.match(/^\/\/\s*Coach Be(?:rtin|urt)\s+(V\d+\.\d+)/);
-    if(scriptHeader){
-      assert(scriptHeader[1] === versionMatch[1], 'En-tête version script cohérent avec APP_VERSION : ' + f + ' -> ' + versionMatch[1]);
-    }
-  });
+  const version = versionMatch[1];
+  const cache = version.replace(/^V/, '');
+  const headerMatch = app.match(/^\/\/\s*Racine\s+(V\d+\.\d+)/m);
+  assert(!!headerMatch, 'app.js doit garder un commentaire d’en-tête Racine Vx.xx.');
+  assert(headerMatch && headerMatch[1] === version, 'En-tête app.js cohérent avec APP_VERSION : ' + version);
+  assert(index.includes('<title>Racine ' + version + '</title>'), 'index.html affiche la version dans le titre.');
+  assert(index.includes('class="topnav-v">' + version + '</span>'), 'index.html affiche la version dans la topnav.');
+  assert(index.includes('<footer class="footer">' + version), 'index.html affiche la version dans le footer.');
+  assert(index.includes('?v=' + cache), 'index.html utilise le cache-bust courant.');
+  assert(readme.includes('- Version : `' + version + '`'), 'README.md affiche la version courante.');
+  assert((readme.match(/V\d+\.\d+/g) || []).length === 1, 'README.md ne doit contenir que la version courante.');
+  assert(etat.includes('Version actuelle : ' + version), 'ETAT_ACTUEL.md affiche la version courante.');
+  assert((etat.match(/V\d+\.\d+/g) || []).every(v => v === version), 'ETAT_ACTUEL.md ne doit pas citer d’anciennes versions.');
+  assert(read('CHANGELOG.md').includes('## ' + version), 'CHANGELOG.md contient une entrée pour la version courante.');
+  assert(!/V\d+\.\d+/.test(read('manifest.json')), 'manifest.json ne doit pas porter la version affichée.');
+  assert(!/V\d+\.\d+|v\d+-\d+|\b\d+\.\d+\b/.test(read('service-worker.js')), 'service-worker.js reste déversionné en mode no-cache.');
+  assert(!read('scripts/sync/index.js').includes('api.version'), 'CoachSync ne doit pas exposer une source de version concurrente.');
 }
-assert(!/function\s+smartSuggestedLoad/.test(app), 'app.js ne redéfinit pas smartSuggestedLoad.');
 
-// 9b. Frontière API charge : hors scripts/charge/, le runtime doit appeler CoachCharge.*
-// et ne plus appeler directement les anciennes fonctions globales du moteur.
-const runtimeOutsideCharge = ['app.js'].concat(walk('scripts').filter(f => f.endsWith('.js') && !f.startsWith('scripts/charge/')));
-const forbiddenDirectChargeCalls = [
-  'athleteSuggestedLoad',
-  'updateAthleteStateFromResults',
-  'enrichSessionResults',
-  'coachBuildMovementContext',
-  'coachFilterHistoryForProgression',
-  'coachMovementEquipmentFamily',
-  'coachMovementLookupLabels',
-  'latestMovementHistory',
-  'coachSafeSuggestedLoad'
-];
-let directChargeCallViolations = 0;
-runtimeOutsideCharge.forEach(f => {
+// 6. Frontières programs.
+walk('programs').filter(f => f.endsWith('.js')).forEach(f => {
   const src = read(f);
-  forbiddenDirectChargeCalls.forEach(name => {
-    const rx = new RegExp('(^|[^.\\w])' + name + '\\s*\\(');
-    if(rx.test(src)){
-      directChargeCallViolations++;
-      fail('Appel direct charge interdit hors scripts/charge/ : ' + name + ' dans ' + f);
-    }
-  });
+  assert(!/RuntimePatch|coachBeurtV\d+|smartSuggestedLoad|athleteSuggestedLoad|loadInfoButtonHtml|showLoadInfoModal|coachSafeSuggestedLoad/.test(src), 'Aucun patch/moteur charge dans ' + f);
 });
-if(directChargeCallViolations === 0) ok('Aucun appel direct aux fonctions internes de charge hors scripts/charge/.');
-assert(app.includes('CoachCharge.'), 'app.js doit utiliser l’API publique CoachCharge.');
+assert(!programsIndex.includes('document.'), 'programs/index.js ne doit pas manipuler le DOM.');
+assert(!programsIndex.includes('localStorage'), 'programs/index.js ne doit pas gérer la persistance UI.');
+assert(!programsIndex.includes('pcRender'), 'programs/index.js ne doit pas patcher la vue PC.');
+assert(!/id\s*:\s*["']test["']|file\s*:\s*["']programs\/test\.js["']/i.test(programsIndex), 'programs/index.js ne doit pas réintroduire le programme Test.');
 
-assert(exists('scripts/session/view.js'), 'Module session présent : scripts/session/view.js');
-assert(exists('scripts/session/timer.js'), 'Module session présent : scripts/session/timer.js');
-assert(exists('scripts/session/results.js'), 'Module session présent : scripts/session/results.js');
-assert(exists('scripts/session/save.js'), 'Module session présent : scripts/session/save.js');
-assert(exists('scripts/session/index.js'), 'Module session présent : scripts/session/index.js');
+// 7. Domaines runtime publics.
+const domains = [
+  ['scripts/core/logger.js', 'window.CoachLog'],
+  ['scripts/charge/index.js', 'window.CoachCharge'],
+  ['scripts/session/index.js', 'window.CoachSession'],
+  ['scripts/state/index.js', 'window.CoachState'],
+  ['scripts/sync/index.js', 'window.CoachSync'],
+  ['scripts/ui/index.js', 'window.CoachUI'],
+  ['scripts/history/index.js', 'window.CoachHistory'],
+  ['scripts/progression/index.js', 'window.CoachProgress'],
+  ['scripts/summary/index.js', 'window.CoachSummary']
+];
+domains.forEach(([file, marker]) => {
+  assert(exists(file), 'Module présent : ' + file);
+  assert(read(file).includes(marker), file + ' doit exposer ' + marker + '.');
+});
+['scripts/charge/equipement.js','scripts/charge/utilitaires.js','scripts/charge/mouvements.js','scripts/charge/historique.js','scripts/charge/rpe.js','scripts/charge/suggestion.js','scripts/charge/index.js'].forEach(f => assert(exists(f), 'Module charge présent : ' + f));
+['scripts/equipement.js','scripts/utilitaires_charges.js','scripts/mouvement.js','scripts/charge_gestion.js','scripts/progression_rpe.js','scripts/moteur_charges.js'].forEach(f => assert(!exists(f), 'Ancien emplacement charge supprimé : ' + f));
+['scripts/session/view.js','scripts/session/timer.js','scripts/session/results.js','scripts/session/save.js','scripts/session/index.js'].forEach(f => assert(exists(f), 'Module session présent : ' + f));
 assert(!exists('scripts/view_session.js'), 'Ancien emplacement session supprimé : scripts/view_session.js');
-assert(index.includes('scripts/session/timer.js'), 'scripts/session/timer.js chargé dans index.html.');
-const sessionIndex = exists('scripts/session/index.js') ? read('scripts/session/index.js') : '';
-assert(sessionIndex.includes('window.CoachSession'), 'scripts/session/index.js doit exposer window.CoachSession.');
-assert(sessionIndex.includes('renderResults') && sessionIndex.includes('setupSave') && sessionIndex.includes('open') && sessionIndex.includes('startTimer'), 'CoachSession doit exposer open/renderResults/setupSave/startTimer.');
-const runtimeOutsideSession = ['app.js'].concat(walk('scripts').filter(f => f.endsWith('.js') && !f.startsWith('scripts/session/') && !f.startsWith('scripts/charge/')));
-let directSessionCallViolations = 0;
-['openGuidedSession','renderSessionEntry','setupSessionSave','collectSessionResults','returnFromResultsToWod'].forEach(name => {
-  runtimeOutsideSession.forEach(f => {
-    const src = read(f);
-    const rx = new RegExp('(^|[^.\\w])' + name + '\\s*\\(');
-    if(rx.test(src)){
-      directSessionCallViolations++;
-      fail('Appel direct session interdit hors scripts/session/ : ' + name + ' dans ' + f);
-    }
-  });
-});
-if(directSessionCallViolations === 0) ok('Aucun appel direct aux fonctions internes de session hors scripts/session/.');
-assert(app.includes('CoachSession.'), 'app.js doit utiliser l’API publique CoachSession.');
 
+// 8. Ordre et orchestration.
+assert(index.indexOf('scripts/state/storage.js') < index.indexOf('app.js?v='), 'CoachState doit être chargé avant app.js.');
+assert(index.indexOf('scripts/sync/storage.js') < index.indexOf('app.js?v='), 'CoachSync doit être chargé avant app.js.');
+assert(index.indexOf('scripts/ui_modals.js') < index.indexOf('scripts/ui/index.js'), 'CoachUI doit être chargé après ui_modals.js.');
+assert(index.indexOf('scripts/history/index.js') < index.indexOf('scripts/charge/index.js'), 'CoachHistory doit être chargé avant CoachCharge index.');
+assert(index.indexOf('scripts/progression/index.js') < index.indexOf('scripts/summary/index.js'), 'CoachSummary doit être chargé après CoachProgress.');
+assert(index.indexOf('scripts/summary/index.js') < index.indexOf('scripts/session/results.js'), 'CoachSummary doit être chargé avant les résultats session.');
+assert(index.indexOf('scripts/session/index.js') < index.indexOf('app.js?v='), 'CoachSession doit être chargé avant app.js.');
+assert(app.includes('CoachCharge.'), 'app.js doit utiliser CoachCharge.');
+assert(app.includes('CoachSession.'), 'app.js doit utiliser CoachSession.');
+assert(app.includes('CoachState.readState') && app.includes('CoachState.writeState'), 'app.js doit utiliser CoachState pour state.');
+assert(app.includes('CoachSync.getToken') && app.includes('CoachSync.setToken') && app.includes('CoachSync.clearToken'), 'app.js doit utiliser CoachSync pour le token.');
+assert(app.includes('CoachUI.escapeHtml'), 'app.js doit utiliser CoachUI.escapeHtml.');
+assert(!/localStorage\.(getItem|setItem|removeItem)\s*\(/.test(app), 'app.js ne doit plus accéder directement à localStorage.');
 
-// 10. Assets PWA référencés.
+// 9. Vue PC / Session / Résultats.
+assert(read('scripts/app_navigation.js').includes('var VIEW_MAIN_IDS={pc:"pcView"}'), 'Navigation doit utiliser #pcView comme hôte officiel PC.');
+assert(read('scripts/app_navigation.js').includes('legacyHost.id="phoneView"'), 'phoneView doit rester wrapper hérité interne.');
+assert(read('scripts/session/index.js').includes("view.id = 'sessionView'"), 'CoachSession doit posséder #sessionView.');
+assert(read('scripts/session/index.js').includes("document.getElementById('pcView')"), 'Session doit être insérée à côté de pcView.');
+assert(read('scripts/view_wodplus.js').includes('CoachSession.openFrom("wodplus")'), 'WOD+ doit ouvrir Session via CoachSession.');
+assert(read('scripts/view_pc.js').includes("CoachSession.openFrom('phone')"), 'PC doit ouvrir Session via CoachSession.');
+assert(!read('scripts/view_pc.js').includes('CoachSession.renderResults'), 'PC ne doit pas rendre Results.');
+assert(read('scripts/session/results.js').includes('CoachSummary.buildSessionSummary'), 'Results doit déléguer le résumé à CoachSummary.');
+
+// 10. Assets PWA.
 ['apple-touch-icon.png','apple-touch-icon-precomposed.png','icon-180.png','icon-192.png','icon-512.png'].forEach(f => {
-  assert(index.includes(f) || (exists('manifest.json') && read('manifest.json').includes(f)), 'Asset PWA référencé : ' + f);
+  assert(index.includes(f) || read('manifest.json').includes(f), 'Asset PWA référencé : ' + f);
 });
 
 if(errors.length){

@@ -1,4 +1,4 @@
-// Coach Beurt V51.53 — session view domain
+// Coach Beurt V51.63 — session view domain
 // Vue PC pleine largeur : 1 bloc = 1 page. Le WOD a son gros timer dédié.
 
 var guidedSessionState = { blocks: [], index: 0 };
@@ -286,6 +286,14 @@ function buildGuidedSessionBlocks(){
   return blocks;
 }
 
+function openGuidedSessionFrom(source){
+  guidedLaunchSource = source === "wodplus" ? "wodplus" : "phone";
+  guidedResultsMode = false;
+  document.body.classList.remove("guided-results-active");
+  document.body.classList.add("guided-session-active");
+  openGuidedSession();
+}
+
 function openGuidedSession(){
   resumeAudio();
   // Démarrer une séance active automatiquement le maintien de l’écran.
@@ -321,6 +329,7 @@ function finishGuidedSession(){
   if(guidedWakeLockAuto){ releaseWakeLock(); }
   guidedWakeLockAuto=false;
   document.body.classList.remove("guided-session-active");
+  guidedResultCache = {};
   guidedResultsMode = true;
   switchView("results");
   setTimeout(function(){

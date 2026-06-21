@@ -1,5 +1,5 @@
-// Coach Bertin V51.53
-var APP_VERSION = "V51.53";
+// Racine V51.82
+var APP_VERSION = "V51.82";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -91,7 +91,6 @@ var KEY       = "coachBertinState";       // clé stable : ne change plus avec l
 var LEGACY_KEYS = ["coachBertinV46", "coachBertinV43", "coachBertinV41"];
 var CHARGE_KEY= "coachBertinCustomCharges";
 var LEGACY_CHARGE_KEYS = ["coachBertinCustomChargesV46"];
-var TOKEN_KEY = "coachBertinGithubToken";
 var ALL_DAYS = ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"];
 var DEFAULT_PROGRAM_DAYS = ["lundi","mardi","jeudi","vendredi"];
 var DAYS_ORDER = DEFAULT_PROGRAM_DAYS; // compatibilité ancienne logique; utiliser currentDayOrder() pour l’affichage.
@@ -125,6 +124,43 @@ function ensureCurrentDay(){
 }
 function isDayCompleted(day){ return (state.completedDays||[]).indexOf(day)>=0; }
 function isDayMissed(day){ return (state.missedDays||[]).some(function(x){return x&&x.day===day&&Number(x.week)===Number(state.week)&&x.cycle===activeProgramId();}); }
+function addUniqueDay(list, day){
+  if(day && list.indexOf(day)<0)list.push(day);
+}
+function buildWeekTrackingForWeek(wk, cycle){
+  wk=Number(wk)||Number(state.week)||1;
+  cycle=cycle||activeProgramId();
+  var validDays=currentDayOrder(), completed=[], missed=[];
+  function addCompleted(day){if(validDays.indexOf(day)>=0)addUniqueDay(completed,day);}
+  (state.weekTransitions||[]).forEach(function(t){
+    if(!t||Number(t.fromWeek)!==wk||t.cycle!==cycle)return;
+    (t.completedDays||[]).forEach(addCompleted);
+    (t.missedDays||[]).forEach(function(x){
+      if(x&&Number(x.week)===wk&&x.cycle===cycle&&validDays.indexOf(x.day)>=0)missed.push(x);
+    });
+  });
+  (state.history||[]).forEach(function(s){
+    var sw=Number(s&&((s.week!==undefined?s.week:s.semaine)));
+    if(sw!==wk)return;
+    var day=(s&&s.day)||(s&&s.jour);
+    addCompleted(day);
+  });
+  return {completedDays:completed,missedDays:missed};
+}
+function applyWeekTrackingForWeek(wk){
+  var tracking=buildWeekTrackingForWeek(wk,activeProgramId());
+  state.completedDays=tracking.completedDays;
+  state.missedDays=tracking.missedDays;
+}
+function setActiveWeek(wk, opts){
+  opts=opts||{};
+  var next=Math.max(1,Math.min(totalWeeks(),Number(wk)||Number(state.week)||1));
+  if(next===Number(state.week))return false;
+  state.week=next;
+  if(!opts.keepTracking)applyWeekTrackingForWeek(next);
+  state.cycleState=buildCycleStatePayload();
+  return true;
+}
 function treatedDays(){
   return currentDayOrder().filter(function(d){ return isDayCompleted(d) || isDayMissed(d); });
 }
@@ -201,8 +237,8 @@ function cycleDateSummaryHtml(){
   var day=dayFromDateIfProgramDay(todayIsoDate());
   var dayTxt=day?dayLabel(day):"jour manuel";
   return '<div style="margin-top:10px;padding:10px;background:rgba(255,255,255,.04);border-radius:10px">'+
-    '<strong>Date de départ confirmée :</strong> '+escapeHtml(start)+'<br>'+ 
-    '<small style="color:var(--muted)">Aujourd’hui = S'+wk+' · '+escapeHtml(dayTxt)+'. Cette date ne modifie pas les charges ni l’historique.</small></div>';
+    '<strong>Date de départ confirmée :</strong> '+CoachUI.escapeHtml(start)+'<br>'+ 
+    '<small style="color:var(--muted)">Aujourd’hui = S'+wk+' · '+CoachUI.escapeHtml(dayTxt)+'. Cette date ne modifie pas les charges ni l’historique.</small></div>';
 }
 
 // ─── Références pré-chargées ─────────────────────────────────────────────────
@@ -259,9 +295,9 @@ var customCharges = {};
 
 function load(){
   try{
-    var found = findFirstStored([KEY].concat(LEGACY_KEYS));
-    if(found&&found.raw){
-      var p = JSON.parse(found.raw);
+    var found = CoachState.readState();
+    var p = found && found.data;
+    if(p){
       state = Object.assign(state, p);
       state.profile      = Object.assign(copy(defaultProfile), p.profile||{});
       state.cycle        = Object.assign({goal:"shoulders3d"}, p.cycle||{});
@@ -277,24 +313,25 @@ function load(){
       state.athleteState = p.athleteState || { movements:{}, updatedAt:null, version:null };
       state.cycleState   = p.cycleState || null;
       state.activeCycleStartDate = p.activeCycleStartDate || (state.cycleState&&state.cycleState.activeCycleStartDate) || (state.cycleState&&state.cycleState.cycleStartedAt?String(state.cycleState.cycleStartedAt).slice(0,10):null);
-      // Migration douce vers la clé stable, sans effacer les anciennes clés.
-      if(found.key!==KEY)save();
+      // Migration douce vers la cle stable, sans effacer les anciennes cles.
+      if(found.migrated)save();
     }
-  }catch(e){}
+  }catch(e){coachLogError("load",e);}
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+function save(){try{CoachState.writeState(state);}catch(e){coachLogError("save",e);}}
 
 function loadCustomCharges(){
   try{
-    var found = findFirstStored([CHARGE_KEY].concat(LEGACY_CHARGE_KEYS));
-    customCharges = found&&found.raw ? JSON.parse(found.raw) : {};
-    if(found&&found.key!==CHARGE_KEY)saveCustomCharges();
+    var found = CoachState.readCustomCharges();
+    customCharges = found&&found.data ? found.data : {};
+    if(found&&found.migrated)saveCustomCharges();
   }catch(e){customCharges={};}
 }
-function saveCustomCharges(){try{localStorage.setItem(CHARGE_KEY,JSON.stringify(customCharges));}catch(e){}}
+function saveCustomCharges(){try{CoachState.writeCustomCharges(customCharges);}catch(e){}}
 
-function getToken(){return localStorage.getItem(TOKEN_KEY)||"";}
-function setToken(t){localStorage.setItem(TOKEN_KEY,t.trim());}
+function getToken(){return CoachSync.getToken();}
+function setToken(t){return CoachSync.setToken(t);}
+function clearToken(){return CoachSync.clearToken();}
 
 function buildCycleStatePayload(){
   return {
@@ -318,13 +355,20 @@ function applyCycleStatePayload(cycleData){
   if(!cycleData||typeof cycleData!=="object")return;
   state.cycleState=cycleData;
   if(cycleData.activeCycle)state.cycle={goal:cycleData.activeCycle};
-  if(cycleData.activeWeek)state.week=Number(cycleData.activeWeek)||state.week;
+  if(cycleData.activeWeek)state.week=Math.max(1,Math.min(totalWeeks(),Number(cycleData.activeWeek)||state.week));
   if(cycleData.activeDay)state.day=cycleData.activeDay;
-  if(Array.isArray(cycleData.completedDays))state.completedDays=cycleData.completedDays;
-  if(Array.isArray(cycleData.missedDays))state.missedDays=cycleData.missedDays;
   if(Array.isArray(cycleData.weekTransitions))state.weekTransitions=cycleData.weekTransitions;
   if(Array.isArray(cycleData.savedCycles))state.savedCycles=cycleData.savedCycles;
   if(Array.isArray(cycleData.archivedCycles))state.archivedCycles=cycleData.archivedCycles;
+  if(Array.isArray(cycleData.completedDays)){
+    var validDays=currentDayOrder();
+    state.completedDays=cycleData.completedDays.filter(function(day){return validDays.indexOf(day)>=0;});
+  }
+  if(Array.isArray(cycleData.missedDays)){
+    var cycle=activeProgramId(), week=Number(state.week);
+    state.missedDays=cycleData.missedDays.filter(function(x){return x&&Number(x.week)===week&&x.cycle===cycle;});
+  }
+  applyWeekTrackingForWeek(state.week);
   if(cycleData.activeCycleStartDate)state.activeCycleStartDate=String(cycleData.activeCycleStartDate).slice(0,10);
   else if(cycleData.cycleStartedAt)state.activeCycleStartDate=String(cycleData.cycleStartedAt).slice(0,10);
   if(!focusConfigs[state.cycle.goal]){
@@ -763,12 +807,11 @@ function parseCapSeconds(text, fallbackMin){
   if(!min || min < 1) min = 8;
   return Math.max(60, Math.round(min * 60));
 }
+var _timeOptionsCache = null;
 function buildTimeOptions(expectedSec){
   // V51.18 : For Time = liste complète 00:00 → 60:00, à la seconde.
   // L’objectif/cap détecté reste présélectionné, sans réduire la plage disponible.
-  var arr = [];
-  for(var sec = 0; sec <= 3600; sec += 1) arr.push(sec);
-  return arr;
+  if(_timeOptionsCache) return _timeOptionsCache; var arr=[]; for(var sec=0;sec<=3600;sec+=1)arr.push(sec); _timeOptionsCache=arr; return arr;
 }
 function normalizeForTimeGoalSeconds(expectedSec){
   expectedSec = Math.round(Number(expectedSec || 0));
@@ -1012,22 +1055,10 @@ async function saveChargesToGitHub(token){
 
 
 // ─── Statut sync GitHub discret ─────────────────────────────────────────────
-var SYNC_STATUS_KEY = "coachBeurt.syncStatus";
-function syncStatusDefault(){return {state:getToken()?"pending":"missing",message:getToken()?"Sync non vérifiée":"Token absent",lastOk:null,lastTry:null};}
-function readSyncStatus(){
-  try{
-    var raw=localStorage.getItem(SYNC_STATUS_KEY);
-    if(raw){return Object.assign(syncStatusDefault(), JSON.parse(raw)||{});}
-  }catch(e){}
-  return syncStatusDefault();
-}
+function syncStatusDefault(){return CoachSync.defaultStatus();}
+function readSyncStatus(){return CoachSync.readStatus();}
 function writeSyncStatus(stateName,message){
-  var st=readSyncStatus();
-  st.state=stateName||st.state||"pending";
-  st.message=message||st.message||"";
-  st.lastTry=nowIso();
-  if(st.state==="ok")st.lastOk=st.lastTry;
-  try{localStorage.setItem(SYNC_STATUS_KEY,JSON.stringify(st));}catch(e){}
+  var st=CoachSync.writeStatus(stateName,message);
   renderSyncStatusIndicator();
   return st;
 }
@@ -1245,8 +1276,8 @@ function setupSwipeNav(){
   // les swipes sont désactivés; seuls les boutons restent actifs.
   // Flèches semaine
   var wp=$("weekPrev"),wn=$("weekNext");
-  if(wp)wp.onclick=function(){if(state.week>1){state.week--;save();render();}};
-  if(wn)wn.onclick=function(){if(state.week<totalWeeks()){state.week++;save();render();}};
+  if(wp)wp.onclick=function(){if(setActiveWeek(Number(state.week)-1)){save();render();}};
+  if(wn)wn.onclick=function(){if(setActiveWeek(Number(state.week)+1)){save();render();}};
   // Flèches jour
   var dp=$("dayPrev"),dn=$("dayNext");
   if(dp)dp.onclick=function(){var days=currentDayOrder(),i=days.indexOf(state.day);if(i>0){state.day=days[i-1];save();render();}};
@@ -1257,8 +1288,8 @@ function setupSwipeNav(){
   if(pdn)pdn.onclick=function(){var days=currentDayOrder(),i=days.indexOf(state.day);if(i<days.length-1){state.day=days[i+1];save();renderPhoneWod();}};
   // Swipe vue entraînement : horizontal = semaine, vertical = jour
   setupSwipeGesture($("trainingView"),function(dir){
-    if(dir==="left"&&state.week<totalWeeks()){state.week++;save();render();}
-    else if(dir==="right"&&state.week>1){state.week--;save();render();}
+    if(dir==="left"){if(setActiveWeek(Number(state.week)+1)){save();render();}}
+    else if(dir==="right"){if(setActiveWeek(Number(state.week)-1)){save();render();}}
     else if(dir==="up"){var days=currentDayOrder(),i=days.indexOf(state.day);if(i<days.length-1){state.day=days[i+1];save();render();}}
     else if(dir==="down"){var days=currentDayOrder(),i=days.indexOf(state.day);if(i>0){state.day=days[i-1];save();render();}}
   });
@@ -1356,7 +1387,7 @@ function renderWeeks(){
       b.className="tab"+(wk===state.week?" active":" secondary");
       // Marquer les semaines complétées
       if(wk<state.week)b.style.opacity="0.6";
-      b.onclick=function(){state.week=wk;save();render();};
+      b.onclick=function(){if(setActiveWeek(wk)){save();render();}};
       w.appendChild(b);
     })(k);
   }
@@ -1490,20 +1521,20 @@ function programDetailsHtml(cfg){
     return m.label||d;
   }).join(' · ');
   var draftHtml = cfg.draft ? '<div class="draft-cycle-warning">⚠️ Brouillon futur — À retravailler lorsque le projet sera activé.</div>' : '';
-  return '<strong>'+escapeHtml(cfg.label)+'</strong>'+(cfg.status?' <span class="draft-pill">'+escapeHtml(cfg.status)+'</span>':'')+'<br>'+escapeHtml(cfg.impact||'')+draftHtml+
-    '<br><br><strong>Jours :</strong> '+escapeHtml(days)+
-    '<br><strong>Structure :</strong> '+escapeHtml((cfg.sets&&cfg.sets.length)?cfg.sets.join(" → "):"non définie")+
-    '<br><strong>Repos :</strong> '+escapeHtml(cfg.rest||'—')+targetHtml;
+  return '<strong>'+CoachUI.escapeHtml(cfg.label)+'</strong>'+(cfg.status?' <span class="draft-pill">'+CoachUI.escapeHtml(cfg.status)+'</span>':'')+'<br>'+CoachUI.escapeHtml(cfg.impact||'')+draftHtml+
+    '<br><br><strong>Jours :</strong> '+CoachUI.escapeHtml(days)+
+    '<br><strong>Structure :</strong> '+CoachUI.escapeHtml((cfg.sets&&cfg.sets.length)?cfg.sets.join(" → "):"non définie")+
+    '<br><strong>Repos :</strong> '+CoachUI.escapeHtml(cfg.rest||'—')+targetHtml;
 }
 function previewBlockHtml(block){
   if(!block)return '';
   var html='<div style="margin-top:8px;padding:10px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.03)">'+
-    '<div style="font-weight:800">'+escapeHtml(block.title||'Bloc')+' <small style="color:var(--muted)">'+escapeHtml(block.time||'')+'</small></div>';
-  if(block.text)html+='<div style="margin-top:5px;color:var(--muted);font-size:12px;line-height:1.35">'+escapeHtml(block.text)+'</div>';
+    '<div style="font-weight:800">'+CoachUI.escapeHtml(block.title||'Bloc')+' <small style="color:var(--muted)">'+CoachUI.escapeHtml(block.time||'')+'</small></div>';
+  if(block.text)html+='<div style="margin-top:5px;color:var(--muted);font-size:12px;line-height:1.35">'+CoachUI.escapeHtml(block.text)+'</div>';
   if(block.exercises&&block.exercises.length){
     html+='<div style="margin-top:6px">';
     block.exercises.forEach(function(e){
-      html+='<div style="font-size:12px;margin-top:4px"><strong>'+escapeHtml(e.name||'')+'</strong> · '+escapeHtml(e.format||'')+' · '+escapeHtml(e.load||'')+(e.note?' <span style="color:var(--muted)">— '+escapeHtml(e.note)+'</span>':'')+'</div>';
+      html+='<div style="font-size:12px;margin-top:4px"><strong>'+CoachUI.escapeHtml(e.name||'')+'</strong> · '+CoachUI.escapeHtml(e.format||'')+' · '+CoachUI.escapeHtml(e.load||'')+(e.note?' <span style="color:var(--muted)">— '+CoachUI.escapeHtml(e.note)+'</span>':'')+'</div>';
     });
     html+='</div>';
   }
@@ -1521,12 +1552,12 @@ function renderProgramPreviewHtml(){
   html+='<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">';
   for(var w=1;w<=weeks;w++)html+='<button type="button" class="tab'+(w===previewCycleWeek?' active':' secondary')+' preview-week-btn" data-week="'+w+'">S'+w+'</button>';
   html+='</div><div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">';
-  days.forEach(function(d){html+='<button type="button" class="tab'+(d===previewCycleDay?' active':' secondary')+' preview-day-btn" data-day="'+d+'">'+escapeHtml(previewDayLabel(d))+'</button>';});
+  days.forEach(function(d){html+='<button type="button" class="tab'+(d===previewCycleDay?' active':' secondary')+' preview-day-btn" data-day="'+d+'">'+CoachUI.escapeHtml(previewDayLabel(d))+'</button>';});
   html+='</div>';
   var blocks=[];
   try{blocks=(typeof cfg.getBlocks==='function')?(cfg.getBlocks(previewCycleDay,previewCycleWeek)||[]):[];}catch(e){blocks=[{title:'Erreur aperçu',time:'—',text:e&&e.message?e.message:String(e),kind:'error'}];}
   if(!blocks.length)blocks=[{title:'Séance manquante',time:'—',text:'Ce programme déclare '+previewDayLabel(previewCycleDay)+', mais ne retourne aucun bloc.',kind:'error'}];
-  html+='<div style="margin-top:10px"><strong>'+escapeHtml((cfg.weekLabels&&cfg.weekLabels[previewCycleWeek-1])||('S'+previewCycleWeek))+' · '+escapeHtml(previewDayLabel(previewCycleDay))+'</strong></div>';
+  html+='<div style="margin-top:10px"><strong>'+CoachUI.escapeHtml((cfg.weekLabels&&cfg.weekLabels[previewCycleWeek-1])||('S'+previewCycleWeek))+' · '+CoachUI.escapeHtml(previewDayLabel(previewCycleDay))+'</strong></div>';
   blocks.forEach(function(b){html+=previewBlockHtml(b);});
   html+='</div>';
   return html;
@@ -1540,20 +1571,20 @@ function cycleStatusLabel(c){
 }
 function cycleSmallMeta(c){
   var parts=[];
-  parts.push('S'+escapeHtml(c.week||1));
-  parts.push(escapeHtml(dayLabel(c.day)));
-  if(c.completedDays&&c.completedDays.length)parts.push(escapeHtml(c.completedDays.length+' fait'+(c.completedDays.length>1?'s':'')));
-  if(c.missedDays&&c.missedDays.length)parts.push(escapeHtml(c.missedDays.length+' manqué'+(c.missedDays.length>1?'s':'')));
-  if(c.archivedAt)parts.push('archivé '+escapeHtml(String(c.archivedAt).slice(0,10)));
-  else if(c.pausedAt)parts.push('pause '+escapeHtml(String(c.pausedAt).slice(0,10)));
-  if(c.reason)parts.push(escapeHtml(c.reason));
+  parts.push('S'+CoachUI.escapeHtml(c.week||1));
+  parts.push(CoachUI.escapeHtml(dayLabel(c.day)));
+  if(c.completedDays&&c.completedDays.length)parts.push(CoachUI.escapeHtml(c.completedDays.length+' fait'+(c.completedDays.length>1?'s':'')));
+  if(c.missedDays&&c.missedDays.length)parts.push(CoachUI.escapeHtml(c.missedDays.length+' manqué'+(c.missedDays.length>1?'s':'')));
+  if(c.archivedAt)parts.push('archivé '+CoachUI.escapeHtml(String(c.archivedAt).slice(0,10)));
+  else if(c.pausedAt)parts.push('pause '+CoachUI.escapeHtml(String(c.pausedAt).slice(0,10)));
+  if(c.reason)parts.push(CoachUI.escapeHtml(c.reason));
   return parts.join(' · ');
 }
 function renderCycleCard(c, idx, type){
   var cls=(c&&c.status)==='abandoned'?'border:1px solid rgba(239,68,68,.35);background:rgba(239,68,68,.06)':'border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03)';
   var html='<div style="margin-top:8px;padding:10px;'+cls+';border-radius:10px">'+
-    '<strong>'+escapeHtml((c&&c.label)||((c&&c.id)||'Cycle'))+'</strong>'+
-    (type==='archived'?' <span class="draft-pill">'+escapeHtml(cycleStatusLabel(c))+'</span>':'')+
+    '<strong>'+CoachUI.escapeHtml((c&&c.label)||((c&&c.id)||'Cycle'))+'</strong>'+
+    (type==='archived'?' <span class="draft-pill">'+CoachUI.escapeHtml(cycleStatusLabel(c))+'</span>':'')+
     '<br><small>'+cycleSmallMeta(c||{})+'</small><br>';
   if(type==='saved'){
     html+='<button type="button" class="btn-ghost resume-cycle-btn" data-idx="'+idx+'">Reprendre</button> '+
@@ -1588,9 +1619,9 @@ function renderRoadmapCycleHtml(){
   var r=roadmapSummary();
   var cls=r.status==="OK"?"ok":(r.status==="serré"?"warn":"danger");
   var html='<div class="roadmap-card"><div><strong>Route vers janvier 2027</strong><br><small>Calcul dynamique : durée des phases restantes, pas les vieux phaseEnd statiques.</small></div>'+
-    '<div class="roadmap-status '+cls+'">'+escapeHtml(r.status.toUpperCase())+' · marge '+escapeHtml(String(r.margin))+' sem.</div>'+
+    '<div class="roadmap-status '+cls+'">'+CoachUI.escapeHtml(r.status.toUpperCase())+' · marge '+CoachUI.escapeHtml(String(r.margin))+' sem.</div>'+
     '<div class="roadmap-list">';
-  r.rows.forEach(function(row){html+='<div class="roadmap-row"><span>'+(row.current?'▶ ':'')+escapeHtml(row.label)+'</span><b>'+escapeHtml(String(row.remainingWeeks))+' sem.</b><small>'+formatRoadDate(row.start)+' → '+formatRoadDate(row.end)+'</small></div>';});
+  r.rows.forEach(function(row){html+='<div class="roadmap-row"><span>'+(row.current?'▶ ':'')+CoachUI.escapeHtml(row.label)+'</span><b>'+CoachUI.escapeHtml(String(row.remainingWeeks))+' sem.</b><small>'+formatRoadDate(row.start)+' → '+formatRoadDate(row.end)+'</small></div>';});
   html+='</div><p class="muted">Compétition : '+COMPETITION_DATE.toLocaleDateString('fr-CA')+' · '+daysToCompetition()+' jours restants · route estimée '+r.totalWeeks+' semaines.</p></div>';
   return html;
 }
@@ -1598,9 +1629,9 @@ function renderRoadmapCycleHtml(){
 function renderFocusDetails(){
   var fd=$("focusDetails");if(!fd)return;
   var id=previewProgramId(), cfg=focusConfigs[id];
-  var activeHtml='<div style="margin-bottom:10px;padding:10px;background:rgba(34,197,94,.08);border-radius:10px"><strong>Cycle actif :</strong> '+escapeHtml((focus()&&focus().label)||activeProgramId())+' · S'+state.week+' · '+escapeHtml(dayLabel(state.day))+'</div>';
+  var activeHtml='<div style="margin-bottom:10px;padding:10px;background:rgba(34,197,94,.08);border-radius:10px"><strong>Cycle actif :</strong> '+CoachUI.escapeHtml((focus()&&focus().label)||activeProgramId())+' · S'+state.week+' · '+CoachUI.escapeHtml(dayLabel(state.day))+'</div>';
   var previewHtml=(id!==activeProgramId())?'<div style="margin-bottom:10px;padding:10px;background:rgba(245,158,11,.10);border-radius:10px"><strong>Aperçu seulement.</strong> Rien ne change tant que tu ne démarres pas ce programme.</div>':'<div style="margin-bottom:10px;padding:10px;background:rgba(255,255,255,.04);border-radius:10px"><strong>Aperçu du cycle actif.</strong></div>';
-  var missingHtml=state.missingCycle?'<div class="draft-cycle-warning">⚠️ Programme absent détecté : '+escapeHtml(state.missingCycle.id)+'. L’app est revenue au premier programme disponible sans effacer la trace.</div>':'';
+  var missingHtml=state.missingCycle?'<div class="draft-cycle-warning">⚠️ Programme absent détecté : '+CoachUI.escapeHtml(state.missingCycle.id)+'. L’app est revenue au premier programme disponible sans effacer la trace.</div>':'';
   fd.innerHTML=missingHtml+activeHtml+cycleDateSummaryHtml()+previewHtml+programDetailsHtml(cfg)+renderRoadmapCycleHtml()+renderProgramPreviewHtml()+renderSavedCyclesHtml();
   Array.prototype.forEach.call(fd.querySelectorAll('.preview-week-btn'),function(btn){btn.onclick=function(){previewCycleWeek=Number(btn.getAttribute('data-week'))||1;renderFocusDetails();};});
   Array.prototype.forEach.call(fd.querySelectorAll('.preview-day-btn'),function(btn){btn.onclick=function(){previewCycleDay=btn.getAttribute('data-day')||previewCycleDay;renderFocusDetails();};});
@@ -2127,10 +2158,26 @@ function setupSettingsSave(){
     var s=$("tokenStatus");writeSyncStatus("pending","Token sauvegardé, test GitHub à faire");
     if(s){s.textContent="✅ Token sauvegardé localement. Clique Tester le token pour valider GitHub.";s.className="status-msg ok";}
   };
+  var clearBtn=$("clearTokenBtn");
+  if(clearBtn)clearBtn.onclick=function(){
+    clearToken();
+    var inp=$("githubToken");if(inp)inp.value="";
+    writeSyncStatus("missing","Token GitHub retiré");
+    var s=$("tokenStatus");if(s){s.textContent="Token GitHub retiré de cet appareil.";s.className="status-msg ok";}
+  };
   var testBtn=$("testTokenBtn");
   if(testBtn)testBtn.onclick=function(){testGithubToken();};
   var syncBtn=$("syncGithubBtn");
   if(syncBtn)syncBtn.onclick=function(){syncHistoryFromGitHub(false);};
+  var toggle = document.getElementById("profileSwitchToggle");
+  var body = document.getElementById("profileSwitchBody");
+  if(toggle && body){
+    toggle.onclick = function(){
+      var open = toggle.getAttribute("aria-expanded") === "true";
+      toggle.setAttribute("aria-expanded", String(!open));
+      body.hidden = open;
+    };
+  }
 }
 
 // ─── Export texte ─────────────────────────────────────────────────────────────
@@ -2177,7 +2224,7 @@ function bind(){
   var pvb=$("phoneViewBtn");if(pvb)pvb.onclick=function(){switchView("phone");};
   var btb=$("backTrainingBtn");if(btb)btb.onclick=function(){switchView("training");};
   var fs=$("fullscreenBtn");if(fs)fs.onclick=function(){var el=document.documentElement,fn=el.requestFullscreen||el.webkitRequestFullscreen;if(fn)try{fn.call(el);}catch(e){}};
-  var smb=$("sessionModeBtn");if(smb)smb.onclick=function(){guidedLaunchSource="phone";guidedResultsMode=false;document.body.classList.remove("guided-results-active");document.body.classList.add("guided-session-active");CoachSession.open();};
+  var smb=$("sessionModeBtn");if(smb)smb.onclick=function(){CoachSession.openFrom("phone");};
   var wl=$("wakeLockBtn");if(wl)wl.onclick=function(){if(wakeLockWanted||wakeLock)releaseWakeLock();else requestWakeLock();};
   var wpl=$("wodPlusWakeBtn");if(wpl)wpl.onclick=function(){if(wakeLockWanted||wakeLock)releaseWakeLock();else requestWakeLock();};
   var wpt=$("wodPlusTmsBtn");if(wpt)wpt.onclick=function(){
@@ -2250,8 +2297,11 @@ CoachSession.setupSave();
 startGlobalClock();
 
 renderProfileSwitchButton();
-if(activeLocalProfileId()==="stephanie"){
+var activeProfile = activeLocalProfileId();
+if(activeProfile==="stephanie"){
   renderStephanieSimpleApp();
+} else if(activeProfile==="arnold"){
+  renderArnoldSimpleApp();
 } else {
   render();
   switchView("training");

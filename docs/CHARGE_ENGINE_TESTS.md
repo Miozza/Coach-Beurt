@@ -2,7 +2,7 @@
 
 ## But
 
-Depuis V51.42, Coach Beurt possède un test de validation ciblé pour le moteur de charges extrait.
+Depuis V51.42, Racine possède un test de validation ciblé pour le moteur de charges extrait.
 
 Commande :
 

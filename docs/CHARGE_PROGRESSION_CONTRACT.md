@@ -1,4 +1,4 @@
-# Contrat de progression des charges — Coach Beurt
+# Contrat de progression des charges — Racine
 
 ## Objectif
 

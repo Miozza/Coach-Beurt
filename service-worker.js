@@ -1,7 +1,7 @@
-// Coach Bertin V51.53 — Service worker reset
-// Objectif : casser les vieux caches iPhone/PWA et laisser le réseau servir les nouveaux fichiers.
+// Racine — Service worker sans cache applicatif durable.
+// Objectif : laisser le réseau servir les nouveaux fichiers et nettoyer les vieux caches.
 
-const CACHE_NAME = "coach-bertin-v51-53-no-cache";
+const CACHE_NAME = "coach-bertin-no-cache";
 
 self.addEventListener("install", event => {
   self.skipWaiting();
@@ -15,9 +15,10 @@ self.addEventListener("activate", event => {
   );
 });
 
-// Pas de stratégie cache ici volontairement.
-// Le navigateur recharge les fichiers depuis GitHub Pages.
+// Pas de cache applicatif ici volontairement.
+// Les lectures repassent par le réseau; les écritures/sync GitHub restent intactes.
 
 self.addEventListener("fetch", event => {
-  // Réseau direct. Aucun cache applicatif.
+  if(event.request.method !== "GET") return;
+  event.respondWith(fetch(event.request, { cache: "reload" }));
 });

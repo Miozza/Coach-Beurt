@@ -1,4 +1,4 @@
-# ERROR_LOGGING.md — Journal d’erreurs Coach Beurt
+# ERROR_LOGGING.md — Journal d’erreurs Racine
 
 ## Objectif
 

@@ -1,10 +1,24 @@
-// Coach Beurt V51.53
 // Diagnostic de charges lecture seule : commentaires de cycle, alertes, export JSON.
 // Ne modifie pas les charges actives, l'historique, le cycle ou les fichiers data/.
 
+function chargeDiagNormalize(s){
+  if(typeof coachNormalizeMoveText==='function')return coachNormalizeMoveText(s);
+  return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+}
 function chargeDiagNumber(v){
-  var n=parseLoad ? parseLoad(v) : Number(String(v||'').match(/\d+(?:\.\d+)?/)||0);
-  return Number(n)||0;
+  var n=(typeof parseLoad==='function') ? parseLoad(v) : Number(String(v||'').match(/\d+(?:\.\d+)?/)||0);
+  return (n||n===0)?Number(n)||0:0;
+}
+function chargeDiagRawLoad(row){
+  if(!row)return null;
+  var keys=['load','actualLoad','capacityLoad','externalLoad','currentLoad'];
+  for(var i=0;i<keys.length;i++){
+    if(Object.prototype.hasOwnProperty.call(row,keys[i])&&row[keys[i]]!==''&&row[keys[i]]!==null&&row[keys[i]]!==undefined){
+      var n=(typeof parseLoad==='function')?parseLoad(row[keys[i]]):Number(row[keys[i]]);
+      if(n||n===0)return Number(n)||0;
+    }
+  }
+  return null;
 }
 function chargeDiagRepRange(reps){
   reps=Number(reps)||0;
@@ -29,13 +43,37 @@ function chargeDiagRangeCap(label,targetReps){
   var range=chargeDiagRepRange(targetReps||8);
   return mv.ranges[range]||null;
 }
-function chargeDiagRecentBest(rows){
+function chargeDiagNoLoadUseful(label,exercise){
+  var raw=[label,exercise&&exercise.name,exercise&&exercise.format,exercise&&exercise.note].filter(Boolean).join(' ');
+  var n=chargeDiagNormalize(raw);
+  return /dead bug|sit up|situp|scap push up|scapular push up|band external rotation|external rotation band|mobilite|mobility|wall slide|stretch|respiration|breathing/.test(n);
+}
+function chargeDiagIsBodyweightExternal(label,context){
+  if(typeof coachIsBodyweightExternalLoadMovement==='function')return coachIsBodyweightExternalLoadMovement(label,context);
+  var n=chargeDiagNormalize(label);
+  return /weighted pull up|weighted pullup|weighted dip|weighted dips/.test(n);
+}
+function chargeDiagHasValidHistory(row,label,context){
+  var load=chargeDiagRawLoad(row);
+  if(!(load||load===0))return false;
+  var reps=Number(row&&(row.reps||row.actualReps||row.currentReps||0))||0;
+  var rpe=Number(row&&row.rpe||0)||0;
+  if(load>0)return reps>0;
+  return load===0 && chargeDiagIsBodyweightExternal(label,context) && reps>0 && rpe>0;
+}
+function chargeDiagContextMatches(row,currentContext,label){
+  var rowCtx=(typeof coachHistoryContext==='function')?coachHistoryContext(row):(row&&(row.context||(row.planned&&row.planned.context)));
+  if(!rowCtx||!currentContext)return true;
+  if(typeof coachContextMatches==='function')return coachContextMatches(rowCtx,currentContext,label);
+  return true;
+}
+function chargeDiagRecentBest(rows,label,context){
   var best=null;
   (rows||[]).forEach(function(r){
-    var load=Number(r.load||r.actualLoad||r.capacityLoad||0)||0;
+    if(!chargeDiagHasValidHistory(r,label,context))return;
+    var load=chargeDiagRawLoad(r);
     var reps=Number(r.reps||r.actualReps||r.currentReps||0)||0;
     var rpe=Number(r.rpe||0)||0;
-    if(!load)return;
     var score=load*100+reps-(rpe>=9?25:0);
     if(!best||score>best.score)best={load:load,reps:reps,rpe:rpe,status:r.status||'',date:r.date||'',score:score};
   });
@@ -48,14 +86,18 @@ function buildChargeDiagnosticForExercise(exercise, shownLoad, context){
   var label=chargeDiagLabel(exercise);
   var parsed=(typeof parseTargetReps==='function')?parseTargetReps(exercise.format||'', context.targetReps||10):{min:context.targetReps||10,max:context.targetReps||10};
   var targetReps=Number(context.targetReps||parsed.min||parsed.max||8)||8;
+  var diagContext=(typeof coachBuildMovementContext==='function')?coachBuildMovementContext(label,{kind:context.kind||context.blockKind||'',blockTitle:context.blockTitle||'',note:exercise.note||context.note||'',text:context.text||'',format:exercise.format||context.format||'',day:context.day||(state&&state.day),week:context.week||(state&&state.week)}):null;
   var shown=String(shownLoad||exercise.load||'').trim();
   var programLoad=String(exercise.load||context.programLoad||'').trim();
   var shownNum=chargeDiagNumber(shown);
   var programNum=chargeDiagNumber(programLoad);
   var rows=chargeDiagHistory(label);
-  var recent=rows.length?rows[rows.length-1]:null;
-  var recentBest=chargeDiagRecentBest(rows);
+  var sameContextRows=rows.filter(function(row){return chargeDiagContextMatches(row,diagContext,label);});
+  var validRows=sameContextRows.filter(function(row){return chargeDiagHasValidHistory(row,label,diagContext);});
+  var recent=validRows.length?validRows[validRows.length-1]:null;
+  var recentBest=chargeDiagRecentBest(validRows,label,diagContext);
   var cap=chargeDiagRangeCap(label,targetReps);
+  var noLoadUseful=chargeDiagNoLoadUseful(label,exercise);
   var alerts=[];
   var severity='ok';
 
@@ -66,35 +108,35 @@ function buildChargeDiagnosticForExercise(exercise, shownLoad, context){
     else if(level==='watch'&&severity==='ok')severity='watch';
   }
 
-  if(!rows.length){
-    add('data_low','watch','Données faibles','Aucun historique exploitable trouvé pour ce mouvement. La charge vient surtout du programme ou des références de base.');
+  if(!noLoadUseful&&validRows.length<2){
+    add('data_low','watch','Donnees faibles','Historique exploitable insuffisant pour ce mouvement dans ce contexte. La charge vient surtout du programme ou des references de base.');
   }
   if(shown.indexOf('⚠')>=0){
-    add('active_warning','warning','Avertissement actif','Le moteur affiche déjà un triangle. La charge est probablement cappée ou sous surveillance.');
+    add('active_warning','warning','Avertissement actif','Le moteur affiche deja un triangle. La charge est probablement cappee ou sous surveillance.');
   }
   if(recentBest&&shownNum){
     var gap=recentBest.load-shownNum;
     if(gap>=25 && recentBest.rpe && recentBest.rpe<=8.5){
-      add('suspect_too_low','critical','Charge probablement trop basse','Historique récent : '+recentBest.load+' lb × '+recentBest.reps+' @ RPE '+recentBest.rpe+'. Charge affichée : '+shown+'. Écart : '+gap+' lb.');
+      add('suspect_too_low','critical','Charge probablement trop basse','Historique recent : '+recentBest.load+' lb x '+recentBest.reps+' @ RPE '+recentBest.rpe+'. Charge affichee : '+shown+'. Ecart : '+gap+' lb.');
     }else if(gap>=15 && recentBest.rpe && recentBest.rpe<=8){
-      add('maybe_too_low','watch','Charge possiblement basse','Historique récent au-dessus de la suggestion avec RPE contrôlé. À surveiller, pas nécessairement une erreur si la baisse est volontaire.');
+      add('maybe_too_low','watch','Charge possiblement basse','Historique recent au-dessus de la suggestion avec RPE controle. A surveiller, pas necessairement une erreur si la baisse est volontaire.');
     }
   }
   if(recent&&shownNum){
-    var lastLoad=Number(recent.load||recent.actualLoad||recent.capacityLoad||0)||0;
+    var lastLoad=chargeDiagRawLoad(recent);
     var lastRpe=Number(recent.rpe||0)||0;
     if(lastRpe>=9 && shownNum>lastLoad){
-      add('suspect_too_high','critical','Progression bloquée attendue','Dernière donnée RPE '+lastRpe+' à '+lastLoad+' lb. Règle V51 : la prochaine suggestion ne doit jamais augmenter.');
+      add('suspect_too_high','critical','Progression bloquee attendue','Derniere donnee RPE '+lastRpe+' a '+lastLoad+' lb. Regle V51 : la prochaine suggestion ne doit jamais augmenter.');
     }
     if(typeof isIsolationMovement==='function'&&isIsolationMovement(label)&&lastRpe>=8.5&&shownNum>lastLoad){
-      add('isolation_too_high','warning','Isolation trop agressive','Mouvement d’isolation avec RPE '+lastRpe+'. La suggestion devrait maintenir ou réduire légèrement.');
+      add('isolation_too_high','warning','Isolation trop agressive','Mouvement d isolation avec RPE '+lastRpe+'. La suggestion devrait maintenir ou reduire legerement.');
     }
     if(label==='Overhead Rope Extension'&&lastLoad){
       var fridayCtx=(state&&String(state.day||'').toLowerCase()==='vendredi');
       var maxAllowed=(lastRpe<=8)?lastLoad+5:lastLoad;
       if(fridayCtx&&recentBest&&recentBest.load>=60&&recentBest.rpe<=8)maxAllowed=Math.max(maxAllowed,recentBest.load);
       if(shownNum>maxAllowed){
-        add('overhead_rope_jump','critical','Saut Overhead Rope Extension bloqué','Dernière référence '+lastLoad+' lb @ RPE '+lastRpe+'. Progression max +5 lb seulement si RPE ≤ 8.');
+        add('overhead_rope_jump','critical','Saut Overhead Rope Extension bloque','Derniere reference '+lastLoad+' lb @ RPE '+lastRpe+'. Progression max +5 lb seulement si RPE <= 8.');
       }
     }
   }
@@ -103,17 +145,18 @@ function buildChargeDiagnosticForExercise(exercise, shownLoad, context){
   }
   if(cap&&cap.status){
     if(cap.status==='recalibrating'||cap.status==='watch'){
-      add('recalibration','watch','Mouvement sous surveillance','athlete_state indique '+cap.status+'. Le moteur devrait rester prudent jusqu’à confirmation.');
+      add('recalibration','watch','Mouvement sous surveillance','athlete_state indique '+cap.status+'. Le moteur devrait rester prudent jusqu a confirmation.');
     }
     if(cap.status==='upgrade_ready'){
-      add('upgrade_ready','watch','Progression possible','Dernière référence facile ou réussie avec marge. Une petite progression peut être logique.');
+      add('upgrade_ready','watch','Progression possible','Derniere reference facile ou reussie avec marge. Une petite progression peut etre logique.');
     }
     if(cap.status==='hard'){
-      add('hard_recent','watch','RPE haut récent','Dernière référence difficile. Maintien ou légère baisse peut être logique.');
+      var capRecent=recent&&Number(recent.rpe||0)>=8.5;
+      if(capRecent)add('hard_recent','watch','RPE haut recent','Derniere reference difficile dans ce contexte. Maintien ou legere baisse peut etre logique.');
     }
   }
-  if(programNum&&shownNum&&Math.abs(shownNum-programNum)>=20 && !alerts.some(function(a){return a.code==='suspect_too_low'||a.code==='suspect_too_high';})){
-    add('far_from_program','watch','Écart important avec le programme','La charge affichée est loin de la charge prévue. Ce n’est pas forcément une erreur, mais ça mérite vérification.');
+  if(!noLoadUseful&&programNum&&shownNum&&Math.abs(shownNum-programNum)>=20 && !alerts.some(function(a){return a.code==='suspect_too_low'||a.code==='suspect_too_high';})){
+    add('far_from_program','watch','Ecart important avec le programme','La charge affichee est loin de la charge prevue. Ce n est pas forcement une erreur, mais ca merite verification.');
   }
 
   var cycleComment='';
@@ -126,10 +169,10 @@ function buildChargeDiagnosticForExercise(exercise, shownLoad, context){
     cycleComment='S'+wk+' '+day+' — '+((cfg&&cfg.label)||'cycle actif')+(wg?' · '+wg:'');
   }catch(e){ cycleComment='Cycle actif non disponible.'; }
 
-  var summary='Charge cohérente avec les données disponibles.';
-  if(severity==='critical')summary='Alerte forte : la charge affichée semble incohérente avec l’historique récent.';
-  else if(severity==='warning')summary='Avertissement : la charge mérite une vérification avant exécution.';
-  else if(severity==='watch')summary='À surveiller : données faibles, contexte différent ou ajustement prudent. Pas nécessairement une erreur.';
+  var summary='Charge coherente avec les donnees disponibles.';
+  if(severity==='critical')summary='Alerte forte : la charge affichee semble incoherente avec l historique recent.';
+  else if(severity==='warning')summary='Avertissement : la charge merite une verification avant execution.';
+  else if(severity==='watch')summary='A surveiller : donnees faibles, contexte different ou ajustement prudent. Pas necessairement une erreur.';
 
   return {
     name:name,
@@ -146,9 +189,11 @@ function buildChargeDiagnosticForExercise(exercise, shownLoad, context){
     summary:summary,
     cycleComment:cycleComment,
     alerts:alerts,
+    validHistoryCount:validRows.length,
+    noLoadUseful:noLoadUseful,
     recentBest:recentBest?{date:recentBest.date,load:recentBest.load,reps:recentBest.reps,rpe:recentBest.rpe,status:recentBest.status}:null,
     cap:cap||null,
-    recentHistory:rows.slice(-5).reverse()
+    recentHistory:validRows.slice(-5).reverse()
   };
 }
 function collectChargeDiagnosticsForDay(day,week){
@@ -161,7 +206,7 @@ function collectChargeDiagnosticsForDay(day,week){
         var parsed=parseTargetReps(e.format,10);
         var target=parsed.min||parsed.max||10;
         var shown=CoachCharge.suggestLoad(e.name,e.load,target,{kind:b.kind,blockTitle:b.title,note:e.note,text:b.text,format:e.format,day:day,week:week});
-        var d=buildChargeDiagnosticForExercise(e,shown,{blockTitle:b.title,blockIndex:bi+1,exerciseIndex:ei,targetReps:target});
+        var d=buildChargeDiagnosticForExercise(e,shown,{blockTitle:b.title,blockIndex:bi+1,exerciseIndex:ei,targetReps:target,kind:b.kind,day:day,week:week});
         if(d){d.blockTitle=b.title;d.blockIndex=bi+1;d.exerciseIndex=ei;rows.push(d);}
       });
     }else if(b.progress&&b.progress.length){
@@ -169,7 +214,7 @@ function collectChargeDiagnosticsForDay(day,week){
         var reps=targetReps(j,b.kind),fmt=setScheme(b.kind,j),base=suggestLoad(mvKey,progressionPct(j),reps);
         var mv=movements[mvKey]||{name:mvKey};
         var shown=lbForExercise(mv.name, roundLoadForExercise(mv.name, base, 'nearest'));
-        var d=buildChargeDiagnosticForExercise({name:mv.name,load:shown,format:fmt},shown,{blockTitle:b.title,blockIndex:bi+1,exerciseIndex:j,targetReps:reps});
+        var d=buildChargeDiagnosticForExercise({name:mv.name,load:shown,format:fmt},shown,{blockTitle:b.title,blockIndex:bi+1,exerciseIndex:j,targetReps:reps,kind:b.kind,day:day,week:week});
         if(d){d.blockTitle=b.title;d.blockIndex=bi+1;d.exerciseIndex=j;d.progressKey=mvKey;rows.push(d);}
       });
     }
@@ -203,10 +248,10 @@ function chargeDiagnosticCycleComment(rows){
   var crit=rows.filter(function(r){return r.severity==='critical';}).length;
   var warn=rows.filter(function(r){return r.severity==='warning';}).length;
   var watch=rows.filter(function(r){return r.severity==='watch';}).length;
-  if(crit)return 'Alerte : au moins une charge semble aberrante par rapport à l’historique. Ne pas corriger automatiquement sans vérifier le mouvement.';
-  if(warn)return 'Séance globalement utilisable, mais certaines charges méritent une vérification avant exécution.';
-  if(watch)return 'Séance cohérente, avec quelques mouvements à surveiller à cause du RPE ou du manque de données.';
-  return 'Aucune aberration évidente détectée dans les charges de cette sélection.';
+  if(crit)return 'Alerte : au moins une charge semble aberrante par rapport a l historique. Ne pas corriger automatiquement sans verifier le mouvement.';
+  if(warn)return 'Seance globalement utilisable, mais certaines charges meritent une verification avant execution.';
+  if(watch)return 'Seance coherente, avec quelques mouvements a surveiller a cause du RPE ou du manque de donnees.';
+  return 'Aucune aberration evidente detectee dans les charges de cette selection.';
 }
 function renderChargeDiagnosticPanel(){
   var box=$('chargeDiagnosticOutput'); if(!box)return;
@@ -215,7 +260,7 @@ function renderChargeDiagnosticPanel(){
   var flags=rows.filter(function(r){return r.severity!=='ok';});
   var html='<div class="system-tag" style="margin-bottom:10px">Lecture seule · aucune correction automatique</div>'+
     '<p class="muted">'+escapeHtml(report.cycleComment)+'</p>'+
-    '<p><strong>'+rows.length+'</strong> mouvements analysés · <strong>'+report.summary.critical+'</strong> critiques · <strong>'+report.summary.warning+'</strong> avertissements · <strong>'+report.summary.watch+'</strong> à surveiller.</p>';
+    '<p><strong>'+rows.length+'</strong> mouvements analyses · <strong>'+report.summary.critical+'</strong> critiques · <strong>'+report.summary.warning+'</strong> avertissements · <strong>'+report.summary.watch+'</strong> a surveiller.</p>';
   if(flags.length){
     html+='<div class="history-list">'+flags.map(function(r){
       var icon=r.severity==='critical'?'⚠️':(r.severity==='warning'?'⚠':'•');
@@ -223,7 +268,7 @@ function renderChargeDiagnosticPanel(){
       return '<div class="history-item"><strong>'+icon+' '+escapeHtml(r.name)+'</strong><br><small>'+escapeHtml(r.blockTitle||'')+' · '+escapeHtml(r.shownLoad||'—')+' · '+escapeHtml(r.summary)+'</small>'+(first?'<p class="muted">'+escapeHtml(first.detail)+'</p>':'')+'</div>';
     }).join('')+'</div>';
   }else{
-    html+='<p class="muted">Aucune alerte pour la séance affichée.</p>';
+    html+='<p class="muted">Aucune alerte pour la seance affichee.</p>';
   }
   box.innerHTML=html;
 }
@@ -236,7 +281,7 @@ function copyChargeDiagnostic(scope){
   var report=buildChargeDiagnosticReport(scope||'day');
   var txt=JSON.stringify(report,null,2);
   if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(function(){alert('Diagnostic copié.');}).catch(function(){download('coach-beurt-charge-diagnostic.json',txt);});
+    navigator.clipboard.writeText(txt).then(function(){alert('Diagnostic copie.');}).catch(function(){download('coach-beurt-charge-diagnostic.json',txt);});
   }else{
     download('coach-beurt-charge-diagnostic.json',txt);
   }

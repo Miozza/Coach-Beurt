@@ -2,7 +2,7 @@
 
 ## But
 
-Depuis V51.40, Coach Beurt prépare une séparation entre le nom affiché du mouvement et son intention réelle.
+Depuis V51.40, Racine prépare une séparation entre le nom affiché du mouvement et son intention réelle.
 
 Règle :
 

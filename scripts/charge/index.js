@@ -1,5 +1,5 @@
 /*
-  Coach Beurt — API publique moteur de charges.
+  Coach Beurt V51.62 — API publique moteur de charges.
   Ce fichier ne contient pas la logique profonde : il expose une seule porte d'entrée stable.
   Les fonctions historiques restent exposées globalement pour compatibilité avec app.js.
 */
@@ -15,8 +15,9 @@
     roundLoad: typeof roundLoadForExercise === 'function' ? roundLoadForExercise : null,
     nextLoad: typeof nextLoadForExercise === 'function' ? nextLoadForExercise : null,
     displayLoad: typeof displayLoadForEquipment === 'function' ? displayLoadForEquipment : null,
-    getHistory: typeof latestMovementHistory === 'function' ? latestMovementHistory : null,
-    filterHistory: typeof coachFilterHistoryForProgression === 'function' ? coachFilterHistoryForProgression : null,
+    getHistory: window.CoachHistory && CoachHistory.getLatestMovementHistory ? CoachHistory.getLatestMovementHistory : (typeof latestMovementHistory === 'function' ? latestMovementHistory : null),
+    buildHistorySignal: window.CoachHistory && CoachHistory.buildMovementHistorySignal ? CoachHistory.buildMovementHistorySignal : (typeof coachBuildMovementHistorySignal === 'function' ? coachBuildMovementHistorySignal : null),
+    filterHistory: window.CoachHistory && CoachHistory.filterForProgression ? CoachHistory.filterForProgression : (typeof coachFilterHistoryForProgression === 'function' ? coachFilterHistoryForProgression : null),
     suggestLoad: window.coachSafeSuggestedLoad || (typeof athleteSuggestedLoad === 'function' ? athleteSuggestedLoad : null),
     enrichSessionResults: typeof enrichSessionResults === 'function' ? enrichSessionResults : null,
     updateAthleteStateFromResults: typeof updateAthleteStateFromResults === 'function' ? updateAthleteStateFromResults : null
