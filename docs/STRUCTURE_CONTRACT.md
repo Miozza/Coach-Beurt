@@ -29,7 +29,7 @@ index.html              structure HTML + ordre explicite de chargement
 styles.css              interface visuelle
 manifest.json           PWA
 service-worker.js       service worker sans cache durable
-racine-splash.png       splash visuel mobile au lancement
+racine-splash.webp      splash visuel mobile au lancement
 programs/               programmes d’entraînement seulement
 scripts/                code runtime chargé par l’app
 data/                   données et bases de charges

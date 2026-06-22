@@ -1,9 +1,11 @@
 # ETAT_ACTUEL.md — Racine
 
-## Dernière modification — V51.83
-### Splash iPhone au lancement
+## Dernière modification — V51.84
+### Splash mobile plus léger et fiable
 
-- Ajoute `racine-splash.png` comme écran de démarrage visuel.
+- Remplace l'écran de démarrage visuel par une image `webp` (~200 Ko, contre 2,5 Mo) pour un chargement fiable sur réseau mobile.
+- Le délai de secours passe de 1,2 s à 3 s pour laisser le temps au réseau de livrer l'image avant d'abandonner l'affichage.
+- Le service worker autorise le cache HTTP normal pour l'image du splash (au lieu de forcer un re-téléchargement réseau à chaque ouverture).
 - Au lancement sur écran mobile/iPhone, l'image s'affiche plein écran environ 2,4 secondes puis disparaît en fondu.
 - Sur desktop/tablette large, le splash est retiré immédiatement pour ne pas gêner le travail.
 - L'écran est purement visuel : il ne modifie aucune donnée, aucun programme et aucune logique d'entraînement.
@@ -11,8 +13,8 @@
 
 - Application : Racine.
 - Type : PWA d’entraînement personnelle, JavaScript vanilla, sans framework.
-- Version actuelle : V51.83
-- Date du document : 2026-06-21.
+- Version actuelle : V51.84
+- Date du document : 2026-06-22.
 - Repo GitHub principal : `Miozza/Coach-Beurt`.
 - Repo GitHub dev : `Miozza/Coach-Beurt-Dev`.
 - Objectif macro déclaré : compétition CrossFit autour du `2027-01-15`.
@@ -20,10 +22,10 @@
 
 Détails version :
 
-- `app.js` : `APP_VERSION = "V51.83"`.
-- `index.html` : titre/topnav/footer/cache-bust `51.83`.
-- `README.md` : version courante `V51.83`.
-- `ETAT_ACTUEL.md` : version courante `V51.83`.
+- `app.js` : `APP_VERSION = "V51.84"`.
+- `index.html` : titre/topnav/footer/cache-bust `51.84`.
+- `README.md` : version courante `V51.84`.
+- `ETAT_ACTUEL.md` : version courante `V51.84`.
 - `CHANGELOG.md` : historique de versions.
 - `manifest.json` : nom installé sans version.
 - `service-worker.js` : nom de cache stable sans version.
@@ -178,7 +180,7 @@ node dev/structure_checks.js --update-package
 
 Priorités à garder séparées :
 
-1. Tester V51.83 sur DEV après import.
+1. Tester V51.84 sur DEV après import.
 2. Revalider la vue séance sur iPhone.
 3. Vérifier Épaules 3D v2 S3 avec vraies données.
 4. Nettoyer seulement si un test structurel échoue.

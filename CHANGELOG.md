@@ -1,3 +1,10 @@
+## V51.84 - Splash mobile plus léger et fiable
+
+- Remplace `racine-splash.png` (2,5 Mo) par `racine-splash.webp` (~200 Ko) pour un chargement fiable sur réseau mobile.
+- Augmente le délai de secours du splash (1,2 s → 3 s) pour éviter qu'il disparaisse sans s'afficher sur connexion lente.
+- Le service worker laisse désormais le cache HTTP normal gérer l'image du splash, au lieu de forcer un re-téléchargement réseau à chaque ouverture.
+- Aucun changement aux données durables, aux programmes ou au moteur d'entraînement.
+
 ## V51.83 - Splash iPhone Racine
 
 - Ajoute `racine-splash.png` comme écran de lancement visuel.

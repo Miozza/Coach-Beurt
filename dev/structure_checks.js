@@ -49,7 +49,7 @@ const allowedRootFiles = new Set([
   'app.js','index.html','styles.css','manifest.json','service-worker.js',
   'README.md','CHANGELOG.md','ETAT_ACTUEL.md','RELEASE_CHECKLIST.md',
   'apple-touch-icon.png','apple-touch-icon-precomposed.png','icon-180.png','icon-192.png','icon-512.png',
-  'racine-splash.png'
+  'racine-splash.webp'
 ]);
 const allowedDirs = new Set(['programs','scripts','data','dev','docs','.github']);
 
@@ -190,7 +190,7 @@ assert(!read('scripts/view_pc.js').includes('CoachSession.renderResults'), 'PC n
 assert(read('scripts/session/results.js').includes('CoachSummary.buildSessionSummary'), 'Results doit déléguer le résumé à CoachSummary.');
 
 // 10. Assets PWA.
-['apple-touch-icon.png','apple-touch-icon-precomposed.png','icon-180.png','icon-192.png','icon-512.png','racine-splash.png'].forEach(f => {
+['apple-touch-icon.png','apple-touch-icon-precomposed.png','icon-180.png','icon-192.png','icon-512.png','racine-splash.webp'].forEach(f => {
   assert(index.includes(f) || read('manifest.json').includes(f), 'Asset PWA référencé : ' + f);
 });
 
