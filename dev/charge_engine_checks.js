@@ -310,6 +310,22 @@ try {
   const inclineDecision = ctx.guardedSuggestedLoadDecision('Incline DB Press', '50 lb', 8, inclineCtx);
   assert(inclineDecision.loadNum <= 45, 'Incline DB Press RPE 9 ne monte pas au-dessus de la derniere charge reelle.');
 
+  // 11b. Plancher historique : le programme ne doit pas faire redescendre la suggestion sous le dernier poids reellement reussi.
+  resetState();
+  ctx.state.day = 'lundi';
+  const inclineFloorCtx = ctx.coachBuildMovementContext('Incline DB Press', { kind:'hypertrophy', blockTitle:'B. Superset support', text:"Peu de transition, beaucoup de travail utile.", format:'4x8', day:'lundi', week:4 });
+  ctx.state.athleteState.movements['Incline DB Press'] = {
+    ranges: { hypertrophy: { currentLoad:60, actualLoad:60, currentReps:8, actualReps:8, rpe:9, confidence:0.8, status:'hard' } },
+    history: [
+      { date:'2026-06-01', load:50, reps:8, rpe:8, range:'hypertrophy', status:'success', context:inclineFloorCtx },
+      { date:'2026-06-08', load:55, reps:8, rpe:9, range:'hypertrophy', status:'hard', context:inclineFloorCtx },
+      { date:'2026-06-15', load:60, reps:8, rpe:9, range:'hypertrophy', status:'hard', context:inclineFloorCtx }
+    ]
+  };
+  const inclineFloorDecision = ctx.guardedSuggestedLoadDecision('Incline DB Press', '55 lb', 8, inclineFloorCtx);
+  assert(inclineFloorDecision.loadNum === 60, 'Incline DB Press garde le plancher 60 lb reellement souleve (reps atteintes, pas un echec) malgre un programme a 55 lb.');
+  assert(/Plancher historique/.test(inclineFloorDecision.reason), 'Incline DB Press explique le plancher historique applique.');
+
   // 12. Apprentissage : si le reel controle depasse la suggestion, il devient la reference suivante.
   resetState();
   ctx.state.day = 'jeudi';

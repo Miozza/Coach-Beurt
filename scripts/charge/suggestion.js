@@ -210,6 +210,15 @@ function guardedSuggestedLoadDecision(nameOrKey,currentLoad,targetReps,context){
     }
   }
 
+  if(last&&lastHasValidLoad&&!contextLimited&&!isDeload&&!isTechnicalMovementInContext(label,moveContext)&&repsReached&&suggested<lastLoad){
+    var lastStatusLower=String(last.status||'').toLowerCase();
+    var lastWasFailure=/fail|recalibrat|watch/.test(lastStatusLower);
+    if(!lastWasFailure){
+      suggested=lastLoad;mode="nearest";severity=severity==="ok"?"watch":severity;
+      reason="Plancher historique : dernier "+lastLoad+" lb x "+(lastReps||target)+" @RPE "+lastRpe+" reussi (pas un echec). Le moteur ne redescend pas sous cette reference sans signal d'echec.";
+    }
+  }
+
   if(cap&&(cap.status==="recalibrating"||cap.status==="watch"||Number(cap.confidence||1)<0.55)){
     var capLoadRaw=(cap.currentLoad!==undefined&&cap.currentLoad!==null)?cap.currentLoad:cap.actualLoad;
     var capLoad=parseLoad(capLoadRaw);

@@ -1,3 +1,11 @@
+## V51.86 - Plancher historique pour la suggestion de charge
+
+- Ajoute un plancher dans `guardedSuggestedLoadDecision` (`scripts/charge/suggestion.js`) : la suggestion ne descend plus sous le dernier poids réellement complété (reps atteintes, statut différent d'échec/recalibrage), même quand la table de charge fixe du programme est plus basse et même après le frein RPE récent générique.
+- Corrige un cas vu en usage réel : Incline DB Press suggéré à 55 lb alors que l'historique montrait 60 lb x 8 @RPE 9 réussi plus récemment, avec la raison neutre « Charge du programme, arrondie selon l'équipement » qui ne reflétait pas l'historique réel.
+- Le plancher reste désactivé en contexte limité (WOD/technique), en semaine de déload, et pour les mouvements techniques, pour ne pas masquer un vrai signal d'échec ou de récupération.
+- Ajoute un nouveau cas de test dans `dev/charge_engine_checks.js` reproduisant ce scénario.
+- Aucun fichier `data/` ni `programs/` modifié.
+
 ## V51.85 - Correction faux positif "technique" sur supersets
 
 - Corrige `coachExtractMovementIntent` (`scripts/charge/mouvements.js`) : le mot « transition » déclenchait à tort l'intention « technique » dès qu'il apparaissait dans le texte d'un bloc, y compris dans des phrases purement descriptives sur le rythme d'un superset (ex. « Peu de transition, beaucoup de travail utile »).
