@@ -1,17 +1,17 @@
 # ETAT_ACTUEL.md — Racine
 
-## Dernière modification — V51.85
-### Correction moteur de charges : faux positif « technique » sur supersets
+## Dernière modification — V51.86
+### Correction moteur de charges : plancher historique manquant
 
-- Bug : plusieurs mouvements en superset (ex. Incline DB Press, Lateral Raise câble, Barbell Row) recevaient une charge suggérée plus basse que l'historique réel, parfois bien en dessous du dernier poids réellement soulevé.
-- Cause : `coachExtractMovementIntent` (`scripts/charge/mouvements.js`) détectait l'intention « technique » dès que le mot « transition » apparaissait n'importe où dans le texte du bloc, y compris dans une phrase purement descriptive comme « Peu de transition, beaucoup de travail utile ». Ce texte de bloc est partagé par tous les exercices du superset.
-- Effet : le contexte était classé comme « limité » (pas d'auto-progression), donc le moteur ignorait l'historique réel et retombait sur la charge fixe du programme.
-- Correctif : retrait du mot-clé générique « transition » de la détection d'intention technique. Les vrais blocs de technique/skill restent détectés via les mots « technique », « skill », « drill », etc.
-- Portée : correction logique seule dans `scripts/charge/mouvements.js`. Aucun fichier `programs/` ni `data/` modifié.
+- Bug : la charge suggérée pouvait retomber sous le dernier poids réellement soulevé avec succès (ex. Incline DB Press suggéré à 55 lb alors que l'historique montrait 60 lb x 8 @RPE 9 réussi plus récemment).
+- Cause : `guardedSuggestedLoadDecision` (`scripts/charge/suggestion.js`) n'avait aucune règle empêchant la suggestion de redescendre sous le dernier poids réellement complété (reps atteintes, pas un échec) quand la table de charge fixe du programme était déjà plus basse. Les freins RPE existants étaient asymétriques : ils plafonnaient une hausse, mais ne remontaient jamais une suggestion déjà trop basse.
+- Effet : le moteur affichait une charge inférieure à la capacité prouvée, avec la raison neutre « Charge du programme, arrondie selon l'équipement », sans aucun signal d'échec ni de déload pour justifier ce recul.
+- Correctif : ajout d'un plancher dans `guardedSuggestedLoadDecision` — si le dernier set historique a atteint ses reps et n'est pas marqué échec/recalibrage, la suggestion ne descend pas sous ce poids, même après le frein RPE récent générique. Le plancher reste désactivé en contexte limité, en semaine de déload, et pour les mouvements techniques.
+- Portée : correction logique seule dans `scripts/charge/suggestion.js`, plus un nouveau cas de test dans `dev/charge_engine_checks.js`. Aucun fichier `programs/` ni `data/` modifié.
 
 - Application : Racine.
 - Type : PWA d’entraînement personnelle, JavaScript vanilla, sans framework.
-- Version actuelle : V51.85
+- Version actuelle : V51.86
 - Date du document : 2026-06-22.
 - Repo GitHub principal : `Miozza/Coach-Beurt`.
 - Repo GitHub dev : `Miozza/Coach-Beurt-Dev`.
@@ -20,10 +20,10 @@
 
 Détails version :
 
-- `app.js` : `APP_VERSION = "V51.85"`.
-- `index.html` : titre/topnav/footer/cache-bust `51.85`.
-- `README.md` : version courante `V51.85`.
-- `ETAT_ACTUEL.md` : version courante `V51.85`.
+- `app.js` : `APP_VERSION = "V51.86"`.
+- `index.html` : titre/topnav/footer/cache-bust `51.86`.
+- `README.md` : version courante `V51.86`.
+- `ETAT_ACTUEL.md` : version courante `V51.86`.
 - `CHANGELOG.md` : historique de versions.
 - `manifest.json` : nom installé sans version.
 - `service-worker.js` : nom de cache stable sans version.
@@ -178,9 +178,9 @@ node dev/structure_checks.js --update-package
 
 Priorités à garder séparées :
 
-1. Tester V51.85 sur DEV après import.
+1. Tester V51.86 sur DEV après import.
 2. Revalider la vue séance sur iPhone.
-3. Surveiller d'autres faux positifs de contexte limité sur les blocs superset (suite du correctif V51.85).
+3. Surveiller d'autres écarts charge suggérée / historique réel sur d'autres mouvements que Incline DB Press (suite du correctif V51.86).
 4. Nettoyer seulement si un test structurel échoue.
 5. Future migration possible vers `scripts/charge/`, mais uniquement dans une version dédiée.
 
