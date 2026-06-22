@@ -1,3 +1,10 @@
+## V51.85 - Correction faux positif "technique" sur supersets
+
+- Corrige `coachExtractMovementIntent` (`scripts/charge/mouvements.js`) : le mot « transition » déclenchait à tort l'intention « technique » dès qu'il apparaissait dans le texte d'un bloc, y compris dans des phrases purement descriptives sur le rythme d'un superset (ex. « Peu de transition, beaucoup de travail utile »).
+- Ce texte de bloc est partagé par tous les exercices du superset, donc le faux positif bloquait l'auto-progression de plusieurs mouvements à la fois (ex. Incline DB Press, Lateral Raise câble, Barbell Row) et retombait sur la charge fixe du programme au lieu de l'historique réel.
+- Retire uniquement le mot-clé générique « transition » de la détection ; les blocs réellement techniques restent détectés via « technique », « skill », « drill », « primer », etc.
+- Aucun fichier `data/` ni `programs/` modifié.
+
 ## V51.84 - Splash mobile plus léger et fiable
 
 - Remplace `racine-splash.png` (2,5 Mo) par `racine-splash.webp` (~200 Ko) pour un chargement fiable sur réseau mobile.
