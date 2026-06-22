@@ -17,8 +17,11 @@ self.addEventListener("activate", event => {
 
 // Pas de cache applicatif ici volontairement.
 // Les lectures repassent par le réseau; les écritures/sync GitHub restent intactes.
+// Exception : le splash de lancement garde le cache HTTP normal du navigateur
+// pour ne pas re-télécharger l'image à chaque ouverture.
 
 self.addEventListener("fetch", event => {
   if(event.request.method !== "GET") return;
-  event.respondWith(fetch(event.request, { cache: "reload" }));
+  var isSplashImage = event.request.url.indexOf("racine-splash.webp") !== -1;
+  event.respondWith(fetch(event.request, isSplashImage ? {} : { cache: "reload" }));
 });
