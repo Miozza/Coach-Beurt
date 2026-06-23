@@ -291,7 +291,7 @@ function plannedMapFromSessionExercises(){
       var targetMin=Number(it.targetMin)||0;
       var targetMax=Number(it.targetMax)||targetMin||0;
       var ctx=(typeof coachBuildMovementContext==='function'?coachBuildMovementContext(it.name||it.key,{kind:it.kind,format:it.format,note:it.note,text:it.text,blockTitle:it.blockTitle,day:(state&&state.day),week:(state&&state.week)}):null);
-      map[it.key]={name:label,load:plannedLoad,reps:targetMin||targetMax, targetMin:targetMin, targetMax:targetMax, format:it.format||"", kind:it.kind||"", context:ctx, bodyweightMovement:(typeof coachIsBodyweightExternalLoadMovement==='function'?coachIsBodyweightExternalLoadMovement(label,ctx):false)};
+      map[it.key]={name:label,load:plannedLoad,reps:targetMin||targetMax, targetMin:targetMin, targetMax:targetMax, format:it.format||"", kind:it.kind||"", context:ctx, bodyweightMovement:!!it.bodyweightMovement||(typeof coachIsBodyweightExternalLoadMovement==='function'?coachIsBodyweightExternalLoadMovement(label,ctx):false)};
       map[label]=map[it.key];
       map[normalizeExerciseName(label)]=map[it.key];
     });
@@ -319,8 +319,10 @@ function enrichSessionResults(results){
   var plan=plannedMapFromSessionExercises();
   Object.keys(results||{}).forEach(function(key){
     var r=results[key];
-    if(!r||r.isWod||r.load===undefined||r.load===null||r.load==='')return;
+    if(!r||r.isWod)return;
     var lookup=plan[key]||plan[movementLabelFromKeyOrName(key)]||plan[normalizeExerciseName(key)]||null;
+    var hasLoadValue=!(r.load===undefined||r.load===null||r.load==='');
+    if(!hasLoadValue&&!(lookup&&lookup.bodyweightMovement))return;
     if(lookup){
       r.planned={load:lookup.load||null,reps:lookup.reps||null,targetMin:lookup.targetMin||null,targetMax:lookup.targetMax||null,format:lookup.format||"",kind:lookup.kind||"",context:lookup.context||null,bodyweightMovement:lookup.bodyweightMovement||false};
       var c=classifyPerformance(r,lookup);
@@ -337,13 +339,13 @@ function updateAthleteStateFromResults(results,dateStr){
   dateStr=dateStr||new Date().toLocaleDateString("fr-CA");
   Object.keys(results||{}).forEach(function(key){
     var r=results[key];
-    if(!r||r.isWod||r.load===undefined||r.load===null||r.load==='')return;
+    if(!r||r.isWod)return;
     var load=parseLoad(r.load), reps=Number(r.reps)||0, rpe=Number(r.rpe)||0;
     var label=movementLabelFromKeyOrName(key);
     var planned=r.planned||{};
     var resultContext=planned.context||((typeof coachBuildMovementContext==='function')?coachBuildMovementContext(label,{kind:planned.kind,format:planned.format,day:(state&&state.day),week:(state&&state.week)}):null);
     var bodyweightMovement=!!planned.bodyweightMovement || (typeof coachIsBodyweightExternalLoadMovement==='function'&&coachIsBodyweightExternalLoadMovement(label,resultContext));
-    var hasValidLoad=(load>0)||(load===0&&bodyweightMovement);
+    var hasValidLoad=(load>0)||bodyweightMovement;
     if(!hasValidLoad||!reps)return;
     var range=repRange(reps);
     var limitedResultContext=(typeof coachIsLimitedProgressionContext==='function')?coachIsLimitedProgressionContext(resultContext):false;
