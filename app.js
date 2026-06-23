@@ -1,5 +1,5 @@
-// Racine V51.86
-var APP_VERSION = "V51.86";
+// Racine V51.87
+var APP_VERSION = "V51.87";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";

@@ -1,3 +1,14 @@
+## V51.87 - Ajout du programme Strict Muscle-Up Personnel
+
+- Ajoute `programs/strict_muscle_up_personnel.js` : cycle personnel de 12 semaines, 4 jours fixes (lundi/mardi/jeudi/vendredi, ~60 min chacun), pour passer d'une base solide en strict pull-up/dip à un strict ring muscle-up propre puis un transfert bar muscle-up sans douleur d'épaule.
+- 3 blocs de 4 semaines : S1-4 base/tissus/amplitude/stabilité, S5-8 force spécifique/transition/contrôle profond, S9-12 intégration/tentatives contrôlées/transfert bar. S4 et S8 = deload + validation, S12 = test conditionnel jamais obligatoire.
+- Construit progressivement false grip, support aux anneaux, turnout, ring dip profond sans pincement, négatives contrôlées, MU assisté en bande puis assistance minimale — variété chaque semaine (angle de tirage, assistance, tempo, amplitude, accessoire triceps, exercice scapulaire, conditionnement).
+- Conserve un vrai stimulus jambes et conditionnement chaque semaine, plus un maintien poussée léger — ce n'est pas un programme 100% haut du corps.
+- Règles de douleur/validation en texte descriptif (`cycleRules`, `dayIntentions`, notes de bloc) : aucun mécanisme de suivi de douleur n'existe dans l'app, donc rien n'a été ajouté côté moteur.
+- Ajouté au catalogue (`programs/index.js`, phase 0, `macroRole:"buffer"`) et chargé dans `index.html`, sans activation : `data/cycle_state.json` n'a pas été modifié, le cycle actif (Épaules 3D v2) continue normalement.
+- Ajoute `dev/strict_muscle_up_personnel_checks.js` pour valider la structure du cycle (12 semaines, 4 jours, validations, jambes/conditionnement chaque semaine, test conditionnel, variation semaine à semaine).
+- Aucun fichier `data/` ni autre fichier `programs/` modifié.
+
 ## V51.86 - Plancher historique pour la suggestion de charge
 
 - Ajoute un plancher dans `guardedSuggestedLoadDecision` (`scripts/charge/suggestion.js`) : la suggestion ne descend plus sous le dernier poids réellement complété (reps atteintes, statut différent d'échec/recalibrage), même quand la table de charge fixe du programme est plus basse et même après le frein RPE récent générique.
