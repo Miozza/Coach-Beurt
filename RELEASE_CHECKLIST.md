@@ -58,6 +58,7 @@ node dev/regression_checks.js
 node dev/charge_engine_checks.js
 node dev/progression_contract_checks.js
 node dev/structure_checks.js
+node dev/strict_muscle_up_personnel_checks.js
 ```
 
 Pour un dossier update sans donnees durables :
@@ -67,6 +68,7 @@ node dev/regression_checks.js --update-package
 node dev/charge_engine_checks.js
 node dev/progression_contract_checks.js
 node dev/structure_checks.js --update-package
+node dev/strict_muscle_up_personnel_checks.js
 ```
 
 Les checks GitHub Actions doivent rester verts sur `main`.

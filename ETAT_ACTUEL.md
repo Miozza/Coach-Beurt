@@ -1,18 +1,18 @@
 # ETAT_ACTUEL.md — Racine
 
-## Dernière modification — V51.86
-### Correction moteur de charges : plancher historique manquant
+## Dernière modification — V51.87
+### Ajout du programme Strict Muscle-Up Personnel (12 semaines)
 
-- Bug : la charge suggérée pouvait retomber sous le dernier poids réellement soulevé avec succès (ex. Incline DB Press suggéré à 55 lb alors que l'historique montrait 60 lb x 8 @RPE 9 réussi plus récemment).
-- Cause : `guardedSuggestedLoadDecision` (`scripts/charge/suggestion.js`) n'avait aucune règle empêchant la suggestion de redescendre sous le dernier poids réellement complété (reps atteintes, pas un échec) quand la table de charge fixe du programme était déjà plus basse. Les freins RPE existants étaient asymétriques : ils plafonnaient une hausse, mais ne remontaient jamais une suggestion déjà trop basse.
-- Effet : le moteur affichait une charge inférieure à la capacité prouvée, avec la raison neutre « Charge du programme, arrondie selon l'équipement », sans aucun signal d'échec ni de déload pour justifier ce recul.
-- Correctif : ajout d'un plancher dans `guardedSuggestedLoadDecision` — si le dernier set historique a atteint ses reps et n'est pas marqué échec/recalibrage, la suggestion ne descend pas sous ce poids, même après le frein RPE récent générique. Le plancher reste désactivé en contexte limité, en semaine de déload, et pour les mouvements techniques.
-- Portée : correction logique seule dans `scripts/charge/suggestion.js`, plus un nouveau cas de test dans `dev/charge_engine_checks.js`. Aucun fichier `programs/` ni `data/` modifié.
+- Nouveau cycle personnel de 12 semaines : `programs/strict_muscle_up_personnel.js`, ajouté au catalogue (`programs/index.js`, id `strict_muscle_up_personnel`, phase 0, `macroRole:"buffer"`) et chargé dans `index.html`.
+- Objectif : strict ring muscle-up propre, puis transfert bar muscle-up sans douleur d'épaule, sans sacrifier les jambes ni le conditionnement.
+- 4 jours fixes (lundi, mardi, jeudi, vendredi), ~60 min chacun, 3 blocs de 4 semaines (S1-4 base/tissus, S5-8 force spécifique/transition, S9-12 intégration/transfert). S4 et S8 = deload + validation. S12 = test conditionnel, jamais obligatoire.
+- Validations et règles douleur/fatigue en texte descriptif (`cycleRules`, `dayIntentions`, notes de bloc) — aucun mécanisme de suivi dans l'app, donc rien n'a été ajouté côté moteur.
+- Portée : nouveau fichier programme + entrée catalogue + script `index.html`. Aucune activation : `data/cycle_state.json` n'a pas été touché, le cycle actif (Épaules 3D v2) continue normalement. Aucun fichier `data/` modifié.
 
 - Application : Racine.
 - Type : PWA d’entraînement personnelle, JavaScript vanilla, sans framework.
-- Version actuelle : V51.86
-- Date du document : 2026-06-22.
+- Version actuelle : V51.87
+- Date du document : 2026-06-23.
 - Repo GitHub principal : `Miozza/Coach-Beurt`.
 - Repo GitHub dev : `Miozza/Coach-Beurt-Dev`.
 - Objectif macro déclaré : compétition CrossFit autour du `2027-01-15`.
@@ -20,10 +20,10 @@
 
 Détails version :
 
-- `app.js` : `APP_VERSION = "V51.86"`.
-- `index.html` : titre/topnav/footer/cache-bust `51.86`.
-- `README.md` : version courante `V51.86`.
-- `ETAT_ACTUEL.md` : version courante `V51.86`.
+- `app.js` : `APP_VERSION = "V51.87"`.
+- `index.html` : titre/topnav/footer/cache-bust `51.87`.
+- `README.md` : version courante `V51.87`.
+- `ETAT_ACTUEL.md` : version courante `V51.87`.
 - `CHANGELOG.md` : historique de versions.
 - `manifest.json` : nom installé sans version.
 - `service-worker.js` : nom de cache stable sans version.
@@ -178,10 +178,11 @@ node dev/structure_checks.js --update-package
 
 Priorités à garder séparées :
 
-1. Tester V51.86 sur DEV après import.
+1. Tester la version courante sur DEV après import.
 2. Revalider la vue séance sur iPhone.
-3. Surveiller d'autres écarts charge suggérée / historique réel sur d'autres mouvements que Incline DB Press (suite du correctif V51.86).
-4. Nettoyer seulement si un test structurel échoue.
+3. Surveiller d'autres écarts charge suggérée / historique réel sur d'autres mouvements.
+4. Tester sur le terrain le programme Strict Muscle-Up Personnel (false grip, ring dip, transition) avant de s'y fier pour la progression réelle.
+5. Nettoyer seulement si un test structurel échoue.
 5. Future migration possible vers `scripts/charge/`, mais uniquement dans une version dédiée.
 
 ## Note récente — WOD+ source unique charge

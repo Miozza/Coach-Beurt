@@ -18,7 +18,8 @@
     { id: "posture",            file: "programs/posture_cyphose.js",     name: "Posture / Cyphose",                        phase: 0, macroRole: "buffer",      macroStatus: "tampon", durationWeeks: 4, minWeeks: 2, maxWeeks: 4, fillsGap: ["posture", "récupération", "mobilité"] },
     { id: "strength",           file: "programs/force.js",               name: "Force classique",                          phase: 0, macroRole: "buffer",      macroStatus: "tampon force", durationWeeks: 4, minWeeks: 3, maxWeeks: 5, fillsGap: ["force", "technique"] },
     { id: "heritage225",        file: "programs/heritage_225.js",        name: "Héritage 225",                              phase: 0, macroRole: "branch",      macroStatus: "branche après phase 3", durationWeeks: 12, minWeeks: 10, maxWeeks: 14, branchFrom: "force_performance" },
-    { id: "arnold_split_beurt", file: "programs/arnold_split_beurt.js",  name: "Arnold Split Beurt — Hors-saison hypertrophie", phase: 0, macroRole: "buffer", macroStatus: "bloc hors-saison, durée ouverte", durationWeeks: 8, minWeeks: 4, maxWeeks: 16, fillsGap: ["hors-saison", "hypertrophie", "bodybuilding", "pause crossfit"] }
+    { id: "arnold_split_beurt", file: "programs/arnold_split_beurt.js",  name: "Arnold Split Beurt — Hors-saison hypertrophie", phase: 0, macroRole: "buffer", macroStatus: "bloc hors-saison, durée ouverte", durationWeeks: 8, minWeeks: 4, maxWeeks: 16, fillsGap: ["hors-saison", "hypertrophie", "bodybuilding", "pause crossfit"] },
+    { id: "strict_muscle_up_personnel", file: "programs/strict_muscle_up_personnel.js", name: "Strict Muscle-Up Personnel", phase: 0, macroRole: "buffer", macroStatus: "spécialité gymnastique personnelle, 12 semaines fixes", durationWeeks: 12, minWeeks: 12, maxWeeks: 12, fillsGap: ["muscle-up", "gymnastique", "anneaux", "skill"] }
   ];
 
   window.COACH_BERTIN_MACROCYCLE = {
