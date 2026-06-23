@@ -569,6 +569,503 @@ window.COACH_BERTIN_TUTORIALS = {
       "Tourner le tronc."
     ],
     "cue": "Angle naturel, épaule qui glisse."
+  },
+
+  // ── Strict Muscle-Up Personnel — mouvements spécifiques au cycle anneaux ──
+
+  "False Grip Hang": {
+    "goal": "Construire la tolérance à la prise false grip, base de tout le travail aux anneaux pour le muscle-up.",
+    "setup": [
+      "Anneaux à hauteur de poitrine ou plus haut.",
+      "Poignet plié, le dessus de la main contre l’anneau.",
+      "Épaules basses avant de décoller les pieds."
+    ],
+    "execution": [
+      "Suspends-toi en gardant le poignet plié sous la main.",
+      "Garde les épaules engagées, pas juste suspendu mollement.",
+      "Descends dès que le poignet ou l’avant-bras chauffe trop."
+    ],
+    "mistakes": [
+      "Garder les pieds au sol pour tricher tout le temps.",
+      "Laisser le poignet se déplier sous la fatigue.",
+      "Forcer dans une douleur de poignet ou de coude."
+    ],
+    "cue": "Le dessus de la main pousse dans l’anneau, pas juste accroché."
+  },
+  "Ring Support Hold": {
+    "goal": "Stabilité scapulaire aux anneaux — la base avant tout travail de dip ou de transition.",
+    "setup": [
+      "Bras tendus, anneaux près du corps.",
+      "Épaules basses, hanches sous les épaules.",
+      "Regard neutre, corps gainé."
+    ],
+    "execution": [
+      "Pousse les anneaux vers le bas et légèrement vers l’extérieur.",
+      "Garde les hanches alignées sous les épaules.",
+      "Respire calmement sans hausser les épaules."
+    ],
+    "mistakes": [
+      "Hausser les épaules vers les oreilles.",
+      "Laisser les hanches partir devant ou derrière.",
+      "Cambrer le bas du dos pour tenir plus longtemps."
+    ],
+    "cue": "Épaules basses, hanches sous toi, anneaux stables."
+  },
+  "Ring Turnout Support": {
+    "goal": "Apprendre la rotation des mains/coudes (turnout) nécessaire pour sortir du muscle-up sans douleur.",
+    "setup": [
+      "Départ en ring support classique.",
+      "Pieds peuvent toucher légèrement le sol au début.",
+      "Coudes prêts à tourner vers l’extérieur."
+    ],
+    "execution": [
+      "Tourne les mains et les coudes vers l’extérieur sans hausser les épaules.",
+      "Garde le tronc gainé pendant la rotation.",
+      "Réduis l’assistance des pieds progressivement au fil des semaines."
+    ],
+    "mistakes": [
+      "Pincement à l’épaule = arrête immédiatement.",
+      "Tourner seulement les mains sans les coudes (chicken wing).",
+      "Aller plus vite que ce que l’épaule tolère."
+    ],
+    "cue": "Coudes et mains tournent ensemble, épaules restent basses."
+  },
+  "Ring Dip": {
+    "goal": "Force et profondeur de poussée aux anneaux — pièce maîtresse du strict ring muscle-up.",
+    "setup": [
+      "Ring support stable avant de descendre.",
+      "Anneaux légèrement tournés vers l’extérieur en bas si toléré.",
+      "Bande d’assistance ajustée selon la semaine si besoin."
+    ],
+    "execution": [
+      "Descends contrôlé jusqu’à la profondeur tolérée sans pincement.",
+      "Pousse en gardant les anneaux près du corps.",
+      "Verrouille les coudes en haut sans hyperextension brusque."
+    ],
+    "mistakes": [
+      "Forcer la profondeur malgré un pincement à l’épaule.",
+      "Laisser les anneaux s’écarter du corps en descente.",
+      "Rebondir en bas au lieu de contrôler."
+    ],
+    "cue": "Profondeur que l’épaule accepte, jamais plus."
+  },
+  "Dip Eccentric": {
+    "goal": "Construire le contrôle de la descente (négative) du ring dip avant de chercher des reps complètes.",
+    "setup": [
+      "Pars du haut, bras tendus, anneaux stables.",
+      "Décide du temps de descente cible avant de commencer.",
+      "Bande ou aide pour remonter si nécessaire."
+    ],
+    "execution": [
+      "Descends lentement sur le temps cible, sans à-coup.",
+      "Garde les anneaux près du corps toute la descente.",
+      "Remonte avec assistance ou recommence du haut."
+    ],
+    "mistakes": [
+      "Accélérer dans la deuxième moitié de la descente.",
+      "Laisser les épaules monter vers les oreilles.",
+      "Ignorer une douleur qui apparaît seulement en bas."
+    ],
+    "cue": "Même vitesse du haut jusqu’en bas, contrôlée."
+  },
+  "Low Ring Transition": {
+    "goal": "Isoler la rotation poignet/coude de la transition du muscle-up sans le tirage complet, pieds au sol pour limiter le risque.",
+    "setup": [
+      "Anneaux bas, pieds au sol.",
+      "Position proche de celle d’une transition de muscle-up.",
+      "Élan minimal — c’est un drill technique, pas une explosion."
+    ],
+    "execution": [
+      "Utilise les jambes pour assister le mouvement et isoler la rotation des mains/coudes.",
+      "Coudes et poignets tournent ensemble vers l’avant.",
+      "Termine en position basse de dip, pas besoin d’aller plus haut."
+    ],
+    "mistakes": [
+      "Chicken wing — un coude part en arrière pendant que l’autre tourne.",
+      "Utiliser trop d’élan des jambes pour compenser une mauvaise rotation.",
+      "Forcer une amplitude complète avant d’avoir le critère de validation."
+    ],
+    "cue": "Coudes qui tournent ensemble, sans chicken wing."
+  },
+  "Seated Strict MU Transition": {
+    "goal": "Isoler la rotation du poignet pendant la transition, assis pour retirer la composante de tirage.",
+    "setup": [
+      "Assis sur une box à la hauteur de la transition.",
+      "Mains en position de transition sur les anneaux ou la barre.",
+      "Tronc gainé, pas besoin de force de tirage ici."
+    ],
+    "execution": [
+      "Tourne les poignets et les coudes ensemble vers l’avant.",
+      "Garde les épaules basses pendant la rotation.",
+      "Répète lentement, qualité avant vitesse."
+    ],
+    "mistakes": [
+      "Aider avec les jambes au lieu d’isoler la rotation.",
+      "Tourner seulement les poignets sans les coudes.",
+      "Précipiter le mouvement."
+    ],
+    "cue": "Isole la rotation, rien d’autre ne bouge."
+  },
+  "Slow Negative Muscle-up": {
+    "goal": "Apprendre le chemin complet du haut vers la transition vers le bas, en contrôle total, avant les tentatives complètes.",
+    "setup": [
+      "Pars du haut du muscle-up (support ou aide pour y arriver).",
+      "Décide du rythme cible avant de commencer.",
+      "Zéro tentative complète vers le haut ce jour-là."
+    ],
+    "execution": [
+      "Descends du support vers la transition lentement.",
+      "Continue la descente jusqu’au bas du dip en contrôle.",
+      "Arrête immédiatement si l’épaule pince à un point du trajet."
+    ],
+    "mistakes": [
+      "Laisser tomber rapidement dans la portion transition.",
+      "Sauter la phase basse du dip.",
+      "Continuer si une douleur apparaît à un point précis du trajet."
+    ],
+    "cue": "Même contrôle du haut jusqu’en bas, sans accélération."
+  },
+  "Band-Assisted Strict Ring MU": {
+    "goal": "Pratiquer le mouvement complet du strict ring muscle-up avec une assistance qui retire juste assez de charge pour rester strict.",
+    "setup": [
+      "Bande fixée au-dessus des anneaux selon la force de bande de la semaine.",
+      "Pied ou genou dans la bande, position de départ stricte.",
+      "Aucun élan — c’est un strict muscle-up assisté, pas un kip."
+    ],
+    "execution": [
+      "Tire et tourne en un mouvement continu et contrôlé.",
+      "Laisse la bande absorber juste ce qu’il faut, pas plus.",
+      "Termine en lockout dip stable en haut."
+    ],
+    "mistakes": [
+      "Kip ou élan des jambes pour compenser.",
+      "Bande trop forte qui rend le mouvement vide de sens.",
+      "Continuer si la transition redevient un chicken wing sous fatigue."
+    ],
+    "cue": "Strict du début à la fin, la bande aide, ne fait pas le travail."
+  },
+  "Slow Negative MU + Band-Assisted Strict Ring MU": {
+    "goal": "Combiner négative complète et muscle-up assisté dans la même séance pour consolider le mouvement complet en sécurité.",
+    "setup": [
+      "Commence par la négative (voir Slow Negative Muscle-up).",
+      "Passe ensuite à la version assistée par bande.",
+      "Repos complet entre les deux parties."
+    ],
+    "execution": [
+      "Négative : descente complète et contrôlée du haut vers le bas.",
+      "Assisté : montée stricte avec la bande, transition propre.",
+      "Arrête la portion assistée si la négative de la semaine n’était pas propre."
+    ],
+    "mistakes": [
+      "Sauter la négative pour aller direct à l’assisté.",
+      "Forcer l’assisté malgré une douleur pendant la négative.",
+      "Mélanger les deux dans le même mouvement au lieu de les séparer."
+    ],
+    "cue": "D’abord le contrôle vers le bas, ensuite l’assistance vers le haut."
+  },
+  "Strict Ring MU": {
+    "goal": "Le strict ring muscle-up complet — l’objectif final du cycle, jamais forcé avant les critères validés.",
+    "setup": [
+      "Tous les prérequis du cycle doivent être propres : false grip, support, dip profond, transition sans chicken wing.",
+      "Zéro douleur la semaine précédente.",
+      "Assistance minimale ou spot léger seulement si autorisé cette semaine."
+    ],
+    "execution": [
+      "Tire strict jusqu’à la transition.",
+      "Tourne les coudes/poignets ensemble, sans élan.",
+      "Termine en lockout dip stable et contrôlé."
+    ],
+    "mistakes": [
+      "Tenter une rep complète sans les prérequis validés.",
+      "Kip ou élan pour compenser un manque de force.",
+      "Continuer après une douleur pendant ou après la tentative."
+    ],
+    "cue": "Si un prérequis n’est pas propre, retourne au drill — pas de tentative ce jour-là."
+  },
+  "Bar Muscle-up Transition Drill": {
+    "goal": "Préparer le transfert du strict ring MU vers la barre, au sol d’abord, sans tentative complète.",
+    "setup": [
+      "Au sol ou sur une surface basse, jamais directement en tentative à la barre.",
+      "Position simulant la transition de bar MU.",
+      "Seulement si le strict ring MU est propre cette semaine et la précédente."
+    ],
+    "execution": [
+      "Pratique la transition lente type « jumping transition » au sol.",
+      "Coudes hauts, poignets qui tournent par-dessus la barre.",
+      "Reste lent et contrôlé, ce n’est pas une tentative explosive."
+    ],
+    "mistakes": [
+      "Sauter directement à une tentative complète à la barre.",
+      "Utiliser un kip pour « sentir » le mouvement.",
+      "Continuer si la semaine précédente n’était pas zéro douleur."
+    ],
+    "cue": "Le sol d’abord, la barre seulement quand le ring MU est acquis."
+  },
+  "Ring Row False Grip": {
+    "goal": "Renforcer la prise false grip sous tension tirée, sans fatiguer le tirage principal de la séance.",
+    "setup": [
+      "Anneaux à hauteur moyenne.",
+      "Prise false grip avant de commencer à tirer.",
+      "Pieds avancés pour ajuster l’angle/la charge."
+    ],
+    "execution": [
+      "Tire la poitrine vers les anneaux en gardant la prise false grip.",
+      "Garde le corps gainé, pas de cassure de hanche.",
+      "Descends contrôlé sans relâcher la prise."
+    ],
+    "mistakes": [
+      "Perdre la prise false grip en cours de série.",
+      "Casser les hanches pour tricher l’amplitude.",
+      "Aller trop lourd au point de sacrifier la prise."
+    ],
+    "cue": "La prise false grip tient du début à la fin de la série."
+  },
+  "Weighted Strict Pull-up": {
+    "goal": "Force de tirage strict chargée — le tirage qui transfère le plus vers le muscle-up.",
+    "setup": [
+      "Lest fixé à la ceinture ou au harnais.",
+      "Départ en dead hang, épaules engagées.",
+      "Prise solide, poignet neutre."
+    ],
+    "execution": [
+      "Tire strict jusqu’au menton ou plus haut sans kip.",
+      "Garde le tronc gainé, pas de balancement.",
+      "Descends contrôlé jusqu’à l’extension complète."
+    ],
+    "mistakes": [
+      "Kip ou élan pour aider la charge.",
+      "Raccourcir l’amplitude en haut ou en bas.",
+      "Ajouter du lest avant que la technique soit propre."
+    ],
+    "cue": "Strict et complet, le lest ne change pas la technique."
+  },
+  "Chest-to-Sternum Pull-up": {
+    "goal": "Travailler le contrôle du haut du tirage, utile pour la transition vers le muscle-up.",
+    "setup": [
+      "Prise pull-up classique, légèrement plus large si besoin.",
+      "Départ en dead hang.",
+      "Pense à engager les omoplates avant de tirer."
+    ],
+    "execution": [
+      "Tire jusqu’à ce que le sternum approche la barre.",
+      "Garde les coudes qui descendent vers les hanches, pas vers l’arrière.",
+      "Contrôle la descente, pas de chute libre."
+    ],
+    "mistakes": [
+      "Tirer seulement jusqu’au menton (amplitude incomplète).",
+      "Cambrer le dos pour gagner les derniers centimètres.",
+      "Kip ou élan pour atteindre la poitrine."
+    ],
+    "cue": "Omoplates engagées avant de tirer, sternum vers la barre."
+  },
+  "External Rotation Band": {
+    "goal": "Activer les rotateurs externes pour préparer l’épaule aux dips et transitions aux anneaux.",
+    "setup": [
+      "Élastique fixé à hauteur de coude.",
+      "Coude collé aux côtes, plié à 90 degrés.",
+      "Position debout, épaule basse."
+    ],
+    "execution": [
+      "Tourne la main vers l’extérieur en gardant le coude collé.",
+      "Garde l’épaule basse, pas de haussement.",
+      "Reviens lentement en contrôle."
+    ],
+    "mistakes": [
+      "Décoller le coude des côtes.",
+      "Utiliser un élastique trop fort qui force une compensation.",
+      "Hausser l’épaule pour finir le mouvement."
+    ],
+    "cue": "Coude collé, seule la main tourne."
+  },
+  "Back Squat": {
+    "goal": "Force de base des jambes, stimulus réel chaque semaine même en cycle muscle-up.",
+    "setup": [
+      "Barre sur le haut du dos, pieds largeur d’épaules.",
+      "Gainage et respiration avant de descendre.",
+      "Regard neutre, poitrine haute."
+    ],
+    "execution": [
+      "Descends en gardant le torse droit et les genoux alignés.",
+      "Pousse le sol pour remonter, talons stables.",
+      "Garde la même vitesse de descente à chaque rep."
+    ],
+    "mistakes": [
+      "Genoux qui rentrent vers l’intérieur.",
+      "Dos qui arrondit en bas.",
+      "Talons qui décollent."
+    ],
+    "cue": "Pousse le sol, torse fier, genoux stables."
+  },
+  "RDL": {
+    "goal": "Chaîne postérieure — ischios et fessiers, sans solliciter les épaules.",
+    "setup": [
+      "Barre ou haltères proches des cuisses.",
+      "Genoux légèrement fléchis, dos neutre.",
+      "Gainage avant de descendre."
+    ],
+    "execution": [
+      "Pousse les hanches vers l’arrière en gardant la charge proche des jambes.",
+      "Descends jusqu’à l’étirement des ischios sans arrondir le dos.",
+      "Remonte en poussant les hanches vers l’avant."
+    ],
+    "mistakes": [
+      "Arrondir le bas du dos.",
+      "Plier trop les genoux (ça devient un squat).",
+      "Laisser la charge s’éloigner des jambes."
+    ],
+    "cue": "Hanches en arrière, charge collée aux jambes, dos neutre."
+  },
+  "Hip Thrust": {
+    "goal": "Fessiers sans charger le dos — bon complément quand les épaules sont déjà sollicitées.",
+    "setup": [
+      "Haut du dos sur un banc, genoux pliés.",
+      "Barre ou charge sur les hanches, protégée.",
+      "Pieds sous les genoux."
+    ],
+    "execution": [
+      "Pousse dans les talons.",
+      "Monte les hanches jusqu’à l’alignement genoux-hanches-épaules.",
+      "Pause en haut, descends contrôlé."
+    ],
+    "mistakes": [
+      "Cambrer le bas du dos en haut au lieu de serrer les fessiers.",
+      "Pieds trop loin ou trop proches.",
+      "Remonter trop vite sans pause."
+    ],
+    "cue": "Fessiers serrés en haut, pas le bas du dos."
+  },
+  "Step-up": {
+    "goal": "Force unilatérale des jambes, stabilité du genou, sans fatiguer le haut du corps.",
+    "setup": [
+      "Box à une hauteur qui garde le contrôle.",
+      "Charge en main ou au dos selon la séance.",
+      "Pied complètement posé sur la box avant de pousser."
+    ],
+    "execution": [
+      "Pousse dans le pied sur la box, pas d’élan avec la jambe arrière.",
+      "Monte jusqu’à l’extension complète sans verrouiller brusquement.",
+      "Descends contrôlé du même côté."
+    ],
+    "mistakes": [
+      "Sauter avec la jambe arrière pour aider.",
+      "Genou qui rentre vers l’intérieur en montant.",
+      "Descendre en chute libre."
+    ],
+    "cue": "La jambe sur la box fait tout le travail."
+  },
+  "Bench Press": {
+    "goal": "Maintien du volume de poussée horizontale pendant un cycle à priorité tirage/anneaux.",
+    "setup": [
+      "Omoplates serrées contre le banc.",
+      "Pieds stables au sol.",
+      "Barre au-dessus de la ligne des mamelons."
+    ],
+    "execution": [
+      "Descends contrôlé jusqu’à toucher légèrement la poitrine.",
+      "Pousse droit vers le haut, coudes pas complètement écartés.",
+      "Garde les omoplates serrées toute la série."
+    ],
+    "mistakes": [
+      "Rebondir la barre sur la poitrine.",
+      "Décoller les fesses ou les omoplates du banc.",
+      "Aller à l’échec pendant une semaine de maintien."
+    ],
+    "cue": "Omoplates serrées, trajectoire droite, jamais d’échec en maintenance."
+  },
+  "DB Press": {
+    "goal": "Volume de poussée overhead léger avec haltères, plus doux pour l’épaule que la barre.",
+    "setup": [
+      "Haltères aux épaules, poignets empilés.",
+      "Cage basse, gainage léger.",
+      "Charge légère à modérée — c’est du maintien, pas de la force max."
+    ],
+    "execution": [
+      "Presse verticalement en laissant les omoplates bouger naturellement.",
+      "Contrôle la descente sur le tempo prévu.",
+      "Garde les épaules loin des oreilles."
+    ],
+    "mistakes": [
+      "Cambrer pour finir la répétition.",
+      "Cogner les haltères en haut.",
+      "Aller lourd un jour où les anneaux sont déjà sollicités."
+    ],
+    "cue": "Presse contrôlée, tempo respecté, pas d’ego."
+  },
+  "Push-up": {
+    "goal": "Poussée horizontale au poids du corps, utile en maintien léger ou en tempo contrôlé.",
+    "setup": [
+      "Mains sous les épaules, corps gainé en planche.",
+      "Coudes pas complètement écartés du corps.",
+      "Tête neutre, regard légèrement devant."
+    ],
+    "execution": [
+      "Descends en gardant le corps droit comme une planche.",
+      "Touche légèrement le sol avec la poitrine.",
+      "Pousse en gardant le gainage jusqu’en haut."
+    ],
+    "mistakes": [
+      "Hanches qui tombent ou qui montent trop.",
+      "Coudes complètement écartés à 90 degrés.",
+      "Amplitude coupée en haut ou en bas."
+    ],
+    "cue": "Corps en planche du début à la fin, amplitude complète."
+  },
+  "Overhead Cable Extension": {
+    "goal": "Étirement et force de la longue portion du triceps, utile vu le travail de dip aux anneaux.",
+    "setup": [
+      "Câble réglé bas, dos au point d’ancrage.",
+      "Coudes pointés vers le haut près de la tête.",
+      "Cage basse, gainage léger."
+    ],
+    "execution": [
+      "Étends les coudes vers le haut sans les écarter.",
+      "Contrôle le retour pour garder la tension.",
+      "Garde les coudes fixes, seul l’avant-bras bouge."
+    ],
+    "mistakes": [
+      "Écarter les coudes en s’étendant.",
+      "Cambrer le bas du dos.",
+      "Couper l’amplitude en haut."
+    ],
+    "cue": "Coudes fixes près de la tête, extension complète."
+  },
+  "Cable Pressdown": {
+    "goal": "Force du triceps sans irriter les coudes déjà sollicités par les dips.",
+    "setup": [
+      "Câble haut, coudes près du corps.",
+      "Poitrine stable, légère flexion du tronc.",
+      "Poignets neutres."
+    ],
+    "execution": [
+      "Pousse vers le bas jusqu’à l’extension complète.",
+      "Garde les coudes fixes contre les côtes.",
+      "Remonte contrôlé sans bouger les coudes."
+    ],
+    "mistakes": [
+      "Avancer les coudes pendant le mouvement.",
+      "Utiliser le poids du corps pour pousser.",
+      "Couper l’amplitude en bas."
+    ],
+    "cue": "Coudes collés aux côtes, extension complète et propre."
+  },
+  "Triceps Long Head Stretch": {
+    "goal": "Détendre la longue portion du triceps, souvent raide à cause du volume de dip aux anneaux.",
+    "setup": [
+      "Bras levé, coude plié derrière la tête.",
+      "Main opposée qui guide doucement le coude.",
+      "Respiration lente."
+    ],
+    "execution": [
+      "Amène doucement le coude vers l’arrière de la tête.",
+      "Tiens la position sans rebondir.",
+      "Relâche si ça pince plutôt qu’étirer."
+    ],
+    "mistakes": [
+      "Forcer dans une douleur d’épaule plutôt qu’un étirement.",
+      "Cambrer le dos pour gagner de l’amplitude.",
+      "Rebondir au lieu de tenir."
+    ],
+    "cue": "Étirement senti dans le triceps, pas dans l’épaule."
   }
 };
 

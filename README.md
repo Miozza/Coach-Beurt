@@ -4,7 +4,7 @@ Racine est une PWA personnelle d’entraînement en JavaScript vanilla, sans fra
 
 ## État courant
 
-- Version : `V51.87`
+- Version : `V51.88`
 - Source courte de vérité : `ETAT_ACTUEL.md`
 - Historique des changements : `CHANGELOG.md`
 - Checklist de livraison : `RELEASE_CHECKLIST.md`

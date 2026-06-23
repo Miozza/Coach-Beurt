@@ -212,7 +212,7 @@ window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
     rest: "0:30-2:00 selon bloc",
     tag: "muscle-up",
     versionDate: "2026-06-23",
-    versionLabel: "V51.87 — Strict Muscle-Up Personnel, cycle de 12 semaines",
+    versionLabel: "V51.88 — Tutoriels manquants + bloc conditioning court corrigé",
     cycleRules: rules(),
 
     dayIntentions: {
@@ -259,7 +259,7 @@ window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
             smuExFixed("Hollow Hold", deload?"2×20 sec":"3×20-30 sec", "poids du corps", "0:45 après C2", "Contrôle tronc utile pour la transition.")
           ]},
         {time:"5 min", title:"D. Conditioning court", tag:"Conditioning", kind:"wod",
-          text:condA+" 8 min, RPE 6-7, conversationnel. "+note},
+          text:condA+" 5 min, RPE 6-7, conversationnel."},
         {time:"3 min", title:"E. Mobilité", tag:"Mobilité", kind:"mobility",
           text:"Lat stretch 45 sec/côté + pec stretch 45 sec/côté + respiration."}
       ];
