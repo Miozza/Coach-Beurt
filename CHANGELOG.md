@@ -1,3 +1,9 @@
+## V51.88 - Corrections séance guidée du programme Strict Muscle-Up Personnel
+
+- Ajoute 26 nouvelles fiches dans `programs/tutorials.js` (false grip, ring support/turnout, ring dip, transitions, négatives, MU assisté en bande, accessoires force/jambes) : le bouton « ? » de la séance guidée trouve désormais un tutoriel pour tous les 39 noms d'exercice du cycle (31 n'avaient aucune fiche correspondante).
+- Corrige le bloc lundi « D. Conditioning court » de `programs/strict_muscle_up_personnel.js` : le texte annonçait 8 min alors que le minuteur de la séance guidée est réglé sur 5 min, et une note de mission générique en fin de texte masquait la consigne réelle. Le texte annonce maintenant 5 min, sans la note, aligné sur le pattern des blocs conditioning mardi/jeudi du même programme.
+- Aucun fichier `data/` modifié. Seuls `programs/strict_muscle_up_personnel.js` et `programs/tutorials.js` touchés.
+
 ## V51.87 - Ajout du programme Strict Muscle-Up Personnel
 
 - Ajoute `programs/strict_muscle_up_personnel.js` : cycle personnel de 12 semaines, 4 jours fixes (lundi/mardi/jeudi/vendredi, ~60 min chacun), pour passer d'une base solide en strict pull-up/dip à un strict ring muscle-up propre puis un transfert bar muscle-up sans douleur d'épaule.

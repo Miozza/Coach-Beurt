@@ -1,17 +1,15 @@
 # ETAT_ACTUEL.md — Racine
 
-## Dernière modification — V51.87
-### Ajout du programme Strict Muscle-Up Personnel (12 semaines)
+## Dernière modification — V51.88
+### Corrections séance guidée du programme Strict Muscle-Up Personnel
 
-- Nouveau cycle personnel de 12 semaines : `programs/strict_muscle_up_personnel.js`, ajouté au catalogue (`programs/index.js`, id `strict_muscle_up_personnel`, phase 0, `macroRole:"buffer"`) et chargé dans `index.html`.
-- Objectif : strict ring muscle-up propre, puis transfert bar muscle-up sans douleur d'épaule, sans sacrifier les jambes ni le conditionnement.
-- 4 jours fixes (lundi, mardi, jeudi, vendredi), ~60 min chacun, 3 blocs de 4 semaines (S1-4 base/tissus, S5-8 force spécifique/transition, S9-12 intégration/transfert). S4 et S8 = deload + validation. S12 = test conditionnel, jamais obligatoire.
-- Validations et règles douleur/fatigue en texte descriptif (`cycleRules`, `dayIntentions`, notes de bloc) — aucun mécanisme de suivi dans l'app, donc rien n'a été ajouté côté moteur.
-- Portée : nouveau fichier programme + entrée catalogue + script `index.html`. Aucune activation : `data/cycle_state.json` n'a pas été touché, le cycle actif (Épaules 3D v2) continue normalement. Aucun fichier `data/` modifié.
+- Ajoute 26 nouvelles fiches dans `programs/tutorials.js` (false grip, ring support/turnout, ring dip, transitions, négatives, MU assisté en bande, accessoires force/jambes) pour que le bouton « ? » de la séance guidée trouve un tutoriel pour chaque mouvement introduit par le cycle (31 noms d'exercice sur 39 n'avaient aucune fiche correspondante).
+- Corrige le bloc lundi « D. Conditioning court » de `programs/strict_muscle_up_personnel.js` : le texte annonçait 8 min alors que le minuteur de la séance guidée était réglé sur 5 min, et une note de mission générique ajoutée en fin de texte masquait la consigne réelle. Le texte correspond maintenant au minuteur, alignée sur le pattern des blocs conditioning mardi/jeudi du même programme.
+- Portée : `programs/strict_muscle_up_personnel.js` et `programs/tutorials.js` uniquement. Aucun fichier `data/` modifié.
 
 - Application : Racine.
 - Type : PWA d’entraînement personnelle, JavaScript vanilla, sans framework.
-- Version actuelle : V51.87
+- Version actuelle : V51.88
 - Date du document : 2026-06-23.
 - Repo GitHub principal : `Miozza/Coach-Beurt`.
 - Repo GitHub dev : `Miozza/Coach-Beurt-Dev`.
@@ -20,10 +18,10 @@
 
 Détails version :
 
-- `app.js` : `APP_VERSION = "V51.87"`.
-- `index.html` : titre/topnav/footer/cache-bust `51.87`.
-- `README.md` : version courante `V51.87`.
-- `ETAT_ACTUEL.md` : version courante `V51.87`.
+- `app.js` : `APP_VERSION = "V51.88"`.
+- `index.html` : titre/topnav/footer/cache-bust `51.88`.
+- `README.md` : version courante `V51.88`.
+- `ETAT_ACTUEL.md` : version courante `V51.88`.
 - `CHANGELOG.md` : historique de versions.
 - `manifest.json` : nom installé sans version.
 - `service-worker.js` : nom de cache stable sans version.
