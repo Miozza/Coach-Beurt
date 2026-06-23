@@ -47,35 +47,24 @@ const expectedDays = ['lundi', 'mardi', 'jeudi', 'vendredi'];
 if(!program){
   fail('window.COACH_BERTIN_PROGRAMS.strict_muscle_up_personnel doit exister après chargement.');
 } else {
-  // 1. 12 semaines.
   assert(Array.isArray(program.weekLabels) && program.weekLabels.length === 12, '12 semaines présentes (weekLabels.length === 12).');
   assert(Array.isArray(program.weekGoals) && program.weekGoals.length === 12, '12 objectifs hebdomadaires présents (weekGoals.length === 12).');
-
-  // 2. 4 jours fixes.
   assert(Array.isArray(program.days) && program.days.length === 4 && expectedDays.every(d => program.days.indexOf(d) !== -1), '4 jours fixes présents : lundi, mardi, jeudi, vendredi.');
-
-  // 3. cycleRules est un tableau littéral (pas une fonction — évite le bug .length sur fonction de heritage_225.js).
   assert(Array.isArray(program.cycleRules) && program.cycleRules.length > 0, 'cycleRules est un tableau non vide.');
   const rulesText = (program.cycleRules || []).join(' \n ');
-
-  // 4. Validations obligatoires mentionnées.
   assert(/[Vv]alidation/.test(rulesText), 'Les règles mentionnent explicitement la validation des critères.');
   assert(/[Ss]emaines? 4 et 8/.test(rulesText), 'Les règles désignent les semaines 4 et 8 comme deload + validation.');
-
-  // 5. Règles douleur/fatigue.
   assert(/douleur/i.test(rulesText), 'Les règles mentionnent la douleur.');
   assert(/0-2\/10/.test(rulesText) && /2\/10/.test(rulesText), 'Les règles donnent un seuil de douleur chiffré (0-2/10).');
   assert(/fatigue/i.test(rulesText), 'Les règles mentionnent la fatigue.');
   assert(/kipping/i.test(rulesText), 'Les règles interdisent explicitement le kipping.');
   assert(/chicken wing/i.test(rulesText), 'Les règles interdisent explicitement le chicken wing.');
-
-  // 6. Test S12 conditionnel, jamais obligatoire.
   assert(/[Ss]emaine 12/.test(rulesText) && /jamais obligatoire/i.test(rulesText), 'Les règles précisent que le test S12 est conditionnel, jamais obligatoire.');
 
-  // Parcourt les 12 semaines x 4 jours pour collecter blocs, noms d'exercices, tags.
   const perWeekSerialized = {};
   expectedDays.forEach(day => { perWeekSerialized[day] = []; });
   const exerciseNames = [];
+  const assistedExercises = [];
   const allBlocksText = [];
   let week12Text = '';
 
@@ -94,19 +83,20 @@ if(!program){
       allBlocksText.push(serialized);
       if(week === 12) week12Text += serialized;
       blocks.forEach(b => {
-        (b.exercises || []).forEach(e => { if(e && e.name) exerciseNames.push(e.name); });
+        (b.exercises || []).forEach(e => {
+          if(e && e.name) exerciseNames.push(e.name);
+          if(e && e.assistance) assistedExercises.push(e);
+        });
       });
     });
   }
   const wholeCycleText = allBlocksText.join(' ');
 
-  // 7. Travail technique obligatoire présent dans le cycle.
   assert(/Ring Dip/.test(wholeCycleText), 'Le ring dip apparaît dans le cycle.');
   assert(/False Grip/.test(wholeCycleText), 'Le false grip apparaît dans le cycle.');
   assert(/Transition/.test(wholeCycleText), 'Le travail de transition apparaît dans le cycle.');
   assert(/Scap|scapula/i.test(wholeCycleText), 'Le travail scapulaire apparaît dans le cycle.');
 
-  // 8. Jambes réelles chaque semaine.
   for(let week = 1; week <= 12; week++){
     let hasLegs = false;
     expectedDays.forEach(day => {
@@ -115,7 +105,6 @@ if(!program){
     assert(hasLegs, 'Semaine ' + week + ' contient un stimulus jambes réel (tag Jambes).');
   }
 
-  // 9. Conditioning chaque semaine.
   for(let week = 1; week <= 12; week++){
     let hasCond = false;
     expectedDays.forEach(day => {
@@ -124,13 +113,24 @@ if(!program){
     assert(hasCond, 'Semaine ' + week + ' contient du conditioning.');
   }
 
-  // 10. Pas de kipping imposé par un nom d'exercice (les notes peuvent l'interdire, jamais le prescrire).
   assert(!exerciseNames.some(n => /kip/i.test(n)), 'Aucun exercice nommé n\'impose de kipping.');
 
-  // 11. Test S12 conditionnel visible dans le contenu réel de la séance.
+  const forbiddenNameContext = /\b(léger|légère|lourd|lourde|modéré|modérée|tempo|technique|assisté|assistée|bande forte|bande moyenne|bande légère|assistance minimale)\b/i;
+  assert(!exerciseNames.some(n => forbiddenNameContext.test(n)), 'Les noms de mouvements restent stables; intention et assistance sont séparées.');
+  assert(!exerciseNames.some(n => /\s\+\s/.test(n)), 'Un nom d’exercice ne combine jamais deux mouvements avec +.');
+  assert(exerciseNames.includes('Bench Press'), 'Le maintien bench utilise le nom canonique Bench Press.');
+  assert(!exerciseNames.includes('Bench Press léger'), 'Bench Press léger ne peut pas devenir une clé historique.');
+
+  assert(assistedExercises.length > 0, 'Le cycle expose des exercices avec assistance structurée.');
+  assert(assistedExercises.every(e => e.assistance.type && e.assistance.level), 'Chaque assistance contient un type et un niveau.');
+  assert(assistedExercises.every(e => /poids du corps/i.test(e.load || '')), 'Les exercices assistés gardent une charge externe cohérente et l’assistance séparée.');
+  const resultsSource = read('scripts/session/results.js');
+  const suggestionSource = read('scripts/charge/suggestion.js');
+  assert(/assistanceLevel/.test(resultsSource), 'La saisie de résultats permet de noter l’assistance réellement utilisée.');
+  assert(/plannedLevel/.test(suggestionSource), 'L’historique distingue assistance prévue et assistance réellement utilisée.');
+
   assert(/[Tt]est conditionnel/.test(week12Text), 'Le contenu de la semaine 12 affiche un test conditionnel, pas une obligation.');
 
-  // 12. Variation semaine à semaine : aucune semaine consécutive identique, pour chaque jour.
   expectedDays.forEach(day => {
     const series = perWeekSerialized[day];
     let identicalPair = null;
@@ -140,11 +140,9 @@ if(!program){
     assert(!identicalPair, 'Aucune répétition identique entre deux semaines consécutives pour ' + day + (identicalPair ? ' (trouvé : ' + identicalPair + ')' : '') + '.');
   });
 
-  // 13. getWodText fonctionne pour au moins une semaine/jour de chaque type.
   assert(typeof program.getWodText('lundi', 1) === 'string' && program.getWodText('lundi', 1).length > 0, 'getWodText retourne un texte WOD exploitable.');
 }
 
-// 14. Entrée catalogue cohérente (12 semaines fixes, fichier correct).
 const catalog = ctx.window.COACH_BERTIN_PROGRAM_INDEX;
 if(!Array.isArray(catalog)){
   fail('programs/index.js doit définir window.COACH_BERTIN_PROGRAM_INDEX.');
@@ -157,11 +155,9 @@ if(!Array.isArray(catalog)){
   }
 }
 
-// 15. index.html charge bien le script du programme.
 const indexHtml = read('index.html');
 assert(/programs\/strict_muscle_up_personnel\.js/.test(indexHtml), 'index.html charge programs/strict_muscle_up_personnel.js.');
 
-// 16. Aucune activation automatique : data/cycle_state.json ne doit pas être modifié pour pointer sur ce cycle.
 try {
   const cycleState = JSON.parse(read('data/cycle_state.json'));
   assert(cycleState.activeCycle !== 'strict_muscle_up_personnel', 'data/cycle_state.json n\'active pas automatiquement strict_muscle_up_personnel (catalogue seulement).');
