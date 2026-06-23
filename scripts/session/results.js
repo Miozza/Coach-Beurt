@@ -10,7 +10,8 @@ function collectSessionExercises(){
       b.exercises.forEach(function(e){
         var parsed = parseTargetReps(e.format, 10);
         items.push({key:e.name.replace(/^[A-Z][0-9]?\.\s*/,"").trim(),name:e.name,
-          suggested:CoachCharge.suggestLoad(e.name,e.load,parsed.min||parsed.max,{kind:b.kind,blockTitle:b.title,note:e.note,text:b.text,format:e.format,day:state.day,week:state.week}),format:e.format,targetMin:parsed.min,targetMax:parsed.max,kind:b.kind,blockTitle:b.title,note:e.note||"",text:b.text||"",isWod:false});
+          suggested:CoachCharge.suggestLoad(e.name,e.load,parsed.min||parsed.max,{kind:b.kind,blockTitle:b.title,note:e.note,text:b.text,format:e.format,day:state.day,week:state.week}),format:e.format,targetMin:parsed.min,targetMax:parsed.max,kind:b.kind,blockTitle:b.title,note:e.note||"",text:b.text||"",isWod:false,
+          bodyweightMovement:/poids du corps/i.test(e.load||"")});
       });
     } else if(b.progress&&b.progress.length){
       b.progress.forEach(function(mvKey,j){
@@ -370,7 +371,9 @@ function updateRefsFromResults(results,dateStr){
   Object.keys(results||{}).forEach(function(key){
     var r=results[key];
     var load=parseLoad(r.load),reps=Number(r.reps)||0;
-    if(!load||!reps)return;
+    var bodyweightMovement=!!(r.planned&&r.planned.bodyweightMovement);
+    if((!load&&!bodyweightMovement)||!reps)return;
+    load=load||0;
     var mvKey=resolveMovementKey(key);
     if(!mvKey)return;
     var refK=refKey(mvKey,reps);
