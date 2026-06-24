@@ -1,16 +1,19 @@
 {
   "version": "V51.94",
-  "updatedAt": "2026-06-24T12:52:20.325Z",
-  "activeCycle": "shoulders3d",
-  "activeWeek": 3,
-  "activeDay": "vendredi",
+  "updatedAt": "2026-06-24T12:53:02.108Z",
+  "activeCycle": "shoulders3d_v2",
+  "activeWeek": 4,
+  "activeDay": "mardi",
   "activeDays": [
     "lundi",
     "mardi",
     "jeudi",
     "vendredi"
   ],
-  "completedDays": [],
+  "completedDays": [
+    "lundi",
+    "mardi"
+  ],
   "missedDays": [],
   "weekTransitions": [
     {
@@ -31,23 +34,20 @@
   ],
   "savedCycles": [
     {
-      "uid": "cycle_1782305540312_2af7405e695c2",
-      "id": "shoulders3d_v2",
-      "label": "Épaules 3D v2 — Midi dense",
-      "week": 4,
-      "day": "mardi",
-      "completedDays": [
-        "lundi",
-        "mardi"
-      ],
+      "uid": "cycle_1782305582101_133d77fbc207d8",
+      "id": "shoulders3d",
+      "label": "Épaules 3D + Triceps — Phase 1",
+      "week": 6,
+      "day": "vendredi",
+      "completedDays": [],
       "missedDays": [],
       "activeCycleStartDate": "2026-06-01",
-      "pausedAt": "2026-06-24T12:52:20.312Z",
+      "pausedAt": "2026-06-24T12:53:02.101Z",
       "reason": "Mis en pause par reprise d’un autre cycle"
     }
   ],
   "archivedCycles": [],
-  "focus": "Épaules 3D + Triceps — Phase 1",
+  "focus": "Épaules 3D v2 — Midi dense",
   "activeCycleStartDate": "2026-06-01",
   "cycleStartedAt": "2026-06-01"
 }
