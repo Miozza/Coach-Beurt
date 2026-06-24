@@ -1,15 +1,16 @@
 # ETAT_ACTUEL.md — Racine
 
-## Dernière modification — V51.90
-### Correction carrés complétés au changement de cycle
+## Dernière modification — V51.92
+### Correction définitive carrés complétés au changement de cycle
 
-- Corrige `buildWeekTrackingForWeek` (`app.js`) : la reconstruction des jours complétés filtrait par semaine mais pas par cycle. En démarrant un nouveau programme à S1, les séances d'un ancien cycle à S1 marquaient tous les jours comme complétés → 4 carrés verts, "0 jour à traiter".
-- Ajoute un filtre cycle : si l'entrée history porte un champ `cycle` différent du cycle actif, elle est ignorée. Rétrocompatible : les entrées sans champ `cycle` passent toujours.
+- Corrige `applyCycleStatePayload` (`app.js`) : la fonction appliquait correctement `completedDays: []` depuis le payload GitHub, puis appelait immédiatement `applyWeekTrackingForWeek` qui recalculait les jours depuis l'historique et écrasait le résultat correct.
+- Fix : `applyWeekTrackingForWeek` n'est plus appelé quand le payload fournit un `completedDays` explicite — le payload GitHub fait foi.
+- Les corrections précédentes (filtre cycle dans `buildWeekTrackingForWeek`) restent en place comme défense en profondeur.
 - Aucun fichier `data/`, `data/charges.js` ni `programs/` modifié.
 
 - Application : Racine.
 - Type : PWA d’entraînement personnelle, JavaScript vanilla, sans framework.
-- Version actuelle : V51.90
+- Version actuelle : V51.92
 - Date du document : 2026-06-23.
 - Repo GitHub principal : `Miozza/Coach-Beurt`.
 - Repo GitHub dev : `Miozza/Coach-Beurt-Dev`.
@@ -18,10 +19,10 @@
 
 Détails version :
 
-- `app.js` : `APP_VERSION = "V51.90"`.
-- `index.html` : titre/topnav/footer/cache-bust `51.90`.
-- `README.md` : version courante `V51.90`.
-- `ETAT_ACTUEL.md` : version courante `V51.90`.
+- `app.js` : `APP_VERSION = "V51.92"`.
+- `index.html` : titre/topnav/footer/cache-bust `51.92`.
+- `README.md` : version courante `V51.92`.
+- `ETAT_ACTUEL.md` : version courante `V51.92`.
 - `CHANGELOG.md` : historique de versions.
 - `manifest.json` : nom installé sans version.
 - `service-worker.js` : nom de cache stable sans version.

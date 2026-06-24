@@ -1,3 +1,15 @@
+## V51.92 - Correction définitive carrés complétés au changement de cycle
+
+- Corrige `applyCycleStatePayload` (`app.js`) : la fonction appliquait
+  correctement `completedDays: []` depuis le payload GitHub, puis appelait
+  immédiatement `applyWeekTrackingForWeek` qui recalculait les jours depuis
+  l'historique et écrasait le résultat correct.
+- Fix : `applyWeekTrackingForWeek` n'est plus appelé quand le payload fournit
+  un `completedDays` explicite — le payload GitHub fait foi.
+- Les versions V51.90 et V51.91 (filtre cycle dans buildWeekTrackingForWeek)
+  restent en place comme défense en profondeur.
+- Aucun fichier `data/`, `data/charges.js` ni `programs/` modifié.
+
 ## V51.90 - Correction carrés complétés au changement de cycle
 
 - Corrige `buildWeekTrackingForWeek` (`app.js`) : la reconstruction des jours complétés filtrait par semaine mais pas par cycle. En démarrant un nouveau programme à S1, les séances d'un ancien cycle à S1 marquaient tous les jours comme complétés → 4 carrés verts, "0 jour à traiter".

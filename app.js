@@ -1,5 +1,5 @@
-// Racine V51.90
-var APP_VERSION = "V51.90";
+// Racine V51.92
+var APP_VERSION = "V51.92";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -130,10 +130,12 @@ function addUniqueDay(list, day){
 function buildWeekTrackingForWeek(wk, cycle){
   wk=Number(wk)||Number(state.week)||1;
   cycle=cycle||activeProgramId();
+  var cycleStart=cycleStartDateForActive();
   var validDays=currentDayOrder(), completed=[], missed=[];
   function addCompleted(day){if(validDays.indexOf(day)>=0)addUniqueDay(completed,day);}
   (state.weekTransitions||[]).forEach(function(t){
     if(!t||Number(t.fromWeek)!==wk||t.cycle!==cycle)return;
+    if(cycleStart && t.date && t.date<cycleStart)return;
     (t.completedDays||[]).forEach(addCompleted);
     (t.missedDays||[]).forEach(function(x){
       if(x&&Number(x.week)===wk&&x.cycle===cycle&&validDays.indexOf(x.day)>=0)missed.push(x);
@@ -144,6 +146,8 @@ function buildWeekTrackingForWeek(wk, cycle){
     if(sw!==wk)return;
     var sCycle=s&&(s.cycle||(s.cycleState&&s.cycleState.activeCycle));
     if(sCycle && sCycle!==cycle) return;
+    var sDate=s&&s.date;
+    if(cycleStart && sDate && sDate<cycleStart) return;
     var day=(s&&s.day)||(s&&s.jour);
     addCompleted(day);
   });
@@ -370,7 +374,9 @@ function applyCycleStatePayload(cycleData){
     var cycle=activeProgramId(), week=Number(state.week);
     state.missedDays=cycleData.missedDays.filter(function(x){return x&&Number(x.week)===week&&x.cycle===cycle;});
   }
-  applyWeekTrackingForWeek(state.week);
+  if(!Array.isArray(cycleData.completedDays)){
+    applyWeekTrackingForWeek(state.week);
+  }
   if(cycleData.activeCycleStartDate)state.activeCycleStartDate=String(cycleData.activeCycleStartDate).slice(0,10);
   else if(cycleData.cycleStartedAt)state.activeCycleStartDate=String(cycleData.cycleStartedAt).slice(0,10);
   if(!focusConfigs[state.cycle.goal]){
