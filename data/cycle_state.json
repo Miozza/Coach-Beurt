@@ -1,16 +1,18 @@
 {
-  "version": "V51.92",
-  "updatedAt": "2026-06-24T01:31:33.226Z",
+  "version": "V51.93",
+  "updatedAt": "2026-06-24T01:35:24.992Z",
   "activeCycle": "strict_muscle_up_personnel",
-  "activeWeek": 5,
-  "activeDay": "vendredi",
+  "activeWeek": 1,
+  "activeDay": "lundi",
   "activeDays": [
     "lundi",
     "mardi",
     "jeudi",
     "vendredi"
   ],
-  "completedDays": [],
+  "completedDays": [
+    "lundi"
+  ],
   "missedDays": [],
   "weekTransitions": [
     {
