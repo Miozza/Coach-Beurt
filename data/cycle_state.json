@@ -1,9 +1,9 @@
 {
   "version": "V51.92",
-  "updatedAt": "2026-06-24T01:31:25.084Z",
+  "updatedAt": "2026-06-24T01:31:33.226Z",
   "activeCycle": "strict_muscle_up_personnel",
-  "activeWeek": 1,
-  "activeDay": "mardi",
+  "activeWeek": 5,
+  "activeDay": "vendredi",
   "activeDays": [
     "lundi",
     "mardi",
@@ -57,16 +57,16 @@
       "reason": "Mis en pause par reprise d’un autre cycle"
     },
     {
-      "uid": "cycle_1782264685071_fd693b0f420ea",
+      "uid": "cycle_1782264693214_7935c2938abe",
       "id": "strict_muscle_up_personnel",
       "label": "Strict Muscle-Up Personnel",
-      "week": 5,
-      "day": "vendredi",
+      "week": 1,
+      "day": "mardi",
       "completedDays": [],
       "missedDays": [],
       "activeCycleStartDate": "2026-06-23",
-      "pausedAt": "2026-06-24T01:31:25.071Z",
-      "reason": "Remplacé par Strict Muscle-Up Personnel"
+      "pausedAt": "2026-06-24T01:31:33.214Z",
+      "reason": "Mis en pause par reprise d’un autre cycle"
     }
   ],
   "archivedCycles": [],
