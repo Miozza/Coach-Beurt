@@ -1335,6 +1335,13 @@ label {
 .history-row   { display: flex; justify-content: space-between; font-size: 12px; }
 .history-row .mv  { color: var(--text2); }
 .history-row .val { color: var(--cyan); font-weight: 700; font-family: var(--font-hud); }
+.history-note {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 2px;
+  font-style: italic;
+}
 
 /* Charge grid */
 .charge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 10px; }
