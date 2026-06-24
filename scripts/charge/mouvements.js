@@ -26,7 +26,6 @@ function canonicalMovementLabel(nameOrKey){
   var raw=chargeKeyFromName(nameOrKey||"");
   var n=coachNormalizeMoveText(raw);
   if(!n)return "Mouvement";
-  // Séparer les mouvements ambigus : aucun mapping partiel entre deux options.
   if(n.indexOf("weighted pull up ring row lourd")>=0 || n.indexOf("weighted pull up ring row")>=0)return "Weighted Pull-up / Ring Row lourd";
   if(n.indexOf("ring row lourd")>=0)return "Ring Row lourd";
   if(n.indexOf("ring row strict")>=0 || n.indexOf("ring rows strict")>=0)return "Ring Row";
@@ -69,7 +68,6 @@ function canonicalMovementLabel(nameOrKey){
 }
 
 function athleteMoveId(nameOrKey){return canonicalMovementLabel(nameOrKey);}
-
 function movementLabelFromKeyOrName(key){return canonicalMovementLabel(key);}
 
 function coachMovementLookupLabels(nameOrKey){
@@ -79,92 +77,33 @@ function coachMovementLookupLabels(nameOrKey){
   var list=[];
   function add(x){x=String(x||"").trim();if(x&&list.indexOf(x)===-1)list.push(x);}
   add(canonical);add(raw);
-  // V51.34 : les noms de mouvements affichés restent simples, mais les anciens noms
-  // avec préfixe de sous-bloc ou intention restent lisibles pour préserver l’historique.
   ["A1. ","A2. ","B1. ","B2. ","B3. ","C1. ","C2. ","C3. ","D1. ","D2. "].forEach(function(prefix){
     add(prefix+canonical);
     if(raw && raw!==canonical)add(prefix+raw);
   });
-
-  // Aliases officiels anti-régression : prudents par équipement.
-  // Règle V51.30 : DB ≠ câble ≠ machine ≠ barre ≠ poids du corps.
-  // Un alias peut rapprocher des noms seulement si la logique de charge est compatible.
-  if(/db shoulder press landmine press/.test(n)){
-    add("DB Shoulder Press / Landmine Press");
-  }else if(/db shoulder press/.test(n)){
-    add("DB Shoulder Press");
-    add("DB Shoulder Press / Landmine Press"); // ancien nom ambigu conservé pour transition historique, pas pour Landmine Press.
-  }else if(/landmine press/.test(n)){
-    add("Landmine Press");
-  }
-  if(/overhead rope extension/.test(n)){
-    add("Overhead Rope Extension");
-    add("Overhead Rope Extension — rappel vendredi"); // ancien nom possible dans historique, jamais affiché.
-  }
-  if(/pull up/.test(n) && !/weighted/.test(n) && !/chest to bar/.test(n)){
-    add("Pull-Up");
-    add("Pull-Up technique"); // ancien nom possible dans historique, jamais affiché.
-  }
-  if(/knee raise/.test(n)){
-    add("Knee Raise");
-    add("Hanging Knee Raise progression"); // ancien nom possible dans historique, jamais affiché.
-    add("Hanging Knee Raise");
-  }
+  if(/db shoulder press landmine press/.test(n)){add("DB Shoulder Press / Landmine Press");}
+  else if(/db shoulder press/.test(n)){add("DB Shoulder Press");add("DB Shoulder Press / Landmine Press");}
+  else if(/landmine press/.test(n)){add("Landmine Press");}
+  if(/overhead rope extension/.test(n)){add("Overhead Rope Extension");add("Overhead Rope Extension — rappel vendredi");}
+  if(/pull up/.test(n) && !/weighted/.test(n) && !/chest to bar/.test(n)){add("Pull-Up");add("Pull-Up technique");}
+  if(/knee raise/.test(n)){add("Knee Raise");add("Hanging Knee Raise progression");add("Hanging Knee Raise");}
   if(/lateral raise/.test(n)){
-    if(/cable|cable bas|poulie/.test(n)){
-      add("Lateral Raise câble");
-      add("Lateral Raise câble bas");
-    }else if(/haltere|halteres|dumbbell|db/.test(n)){
-      add("Lateral Raise DB");
-      add("Lateral Raise haltères");
-    }else if(/machine/.test(n)){
-      add("Lateral Raise machine");
-    }else{
-      add("Lateral Raise");
-    }
+    if(/cable|cable bas|poulie/.test(n)){add("Lateral Raise câble");add("Lateral Raise câble bas");}
+    else if(/haltere|halteres|dumbbell|db/.test(n)){add("Lateral Raise DB");add("Lateral Raise haltères");}
+    else if(/machine/.test(n)){add("Lateral Raise machine");}else{add("Lateral Raise");}
   }
   if(/rear delt fly/.test(n)){
-    if(/cable|cable bas|poulie/.test(n)){
-      add("Rear Delt Fly câble");
-      add("Rear Delt Fly câble bas");
-    }else if(/haltere|halteres|dumbbell|db/.test(n)){
-      add("Rear Delt Fly DB");
-      add("Rear Delt Fly haltères");
-    }else if(/machine/.test(n)){
-      add("Rear Delt Fly machine");
-    }else{
-      add("Rear Delt Fly");
-    }
+    if(/cable|cable bas|poulie/.test(n)){add("Rear Delt Fly câble");add("Rear Delt Fly câble bas");}
+    else if(/haltere|halteres|dumbbell|db/.test(n)){add("Rear Delt Fly DB");add("Rear Delt Fly haltères");}
+    else if(/machine/.test(n)){add("Rear Delt Fly machine");}else{add("Rear Delt Fly");}
   }
-  if(/wide grip cable upright row|upright row/.test(n)){
-    add("Wide-Grip Cable Upright Row");
-    add("Cable Upright Row");
-    add("Upright Row");
-  }
+  if(/wide grip cable upright row|upright row/.test(n)){add("Wide-Grip Cable Upright Row");add("Cable Upright Row");add("Upright Row");}
   if(/face pull/.test(n))add("Face Pull");
   if(/cable curl/.test(n))add("Cable Curl");
-  if(/cable hip abduction|cable band hip abduction|cable band abduction|cable ou band hip abduction/.test(n)){
-    add("Cable Hip Abduction");
-    add("Cable/Band Hip Abduction");
-    add("Cable/Band Abduction");
-    add("Cable ou Band Hip Abduction");
-  }
-  if(/db reverse lunge/.test(n)){
-    add("DB Reverse Lunge");
-    add("DB Reverse Lunge ou Step-up");
-  }
-  if(/db rdl/.test(n)){
-    add("DB RDL");
-    add("DB RDL ou Barbell RDL");
-  }
-  if(/hip thrust/.test(n)){
-    add("Hip Thrust");
-    add("Hip Thrust Pump");
-    add("Hip Thrust Tempo");
-    add("Hip Thrust léger");
-    add("B1. Hip Thrust");
-    add("C1. Hip Thrust");
-  }
+  if(/cable hip abduction|cable band hip abduction|cable band abduction|cable ou band hip abduction/.test(n)){add("Cable Hip Abduction");add("Cable/Band Hip Abduction");add("Cable/Band Abduction");add("Cable ou Band Hip Abduction");}
+  if(/db reverse lunge/.test(n)){add("DB Reverse Lunge");add("DB Reverse Lunge ou Step-up");}
+  if(/db rdl/.test(n)){add("DB RDL");add("DB RDL ou Barbell RDL");}
+  if(/hip thrust/.test(n)){add("Hip Thrust");add("Hip Thrust Pump");add("Hip Thrust Tempo");add("Hip Thrust léger");add("B1. Hip Thrust");add("C1. Hip Thrust");}
   if(/goblet squat/.test(n)){add("Goblet Squat");add("Goblet Squat Tempo");add("B1. Goblet Squat Tempo");}
   if(/ring row/.test(n)){add("Ring Row");add("Ring Row Strict");}
   if(/step up|step\-up/.test(n)){add("Step-Up");add("Step-Up haut contrôlé");add("DB Step-up");}
@@ -173,25 +112,12 @@ function coachMovementLookupLabels(nameOrKey){
   if(/frog pump|frog bridge/.test(n)){add("Frog Bridge");add("Frog Pump");add("Frog Pumps");}
   if(/bike/.test(n)){add("Bike");add("Bike facile");}
   if(/transition/.test(n)){add("Transitions");add("Primer transitions");add("Wall Ball to Burpee Transitions");add("Wall Ball + Burpee");}
-  if(/power clean technique|clean technique/.test(n)){
-    add("Power Clean technique");
-    add("Power Clean");
-  }else if(/power clean wod/.test(n)){
-    add("Power Clean WOD");
-    add("Power Clean");
-  }else if(/power clean/.test(n)){
-    add("Power Clean");
-    add("Power Clean technique"); // ancien nom possible dans historique, filtré par contexte quand disponible.
-    add("Power Clean WOD");
-  }
+  if(/power clean technique|clean technique/.test(n)){add("Power Clean technique");add("Power Clean");}
+  else if(/power clean wod/.test(n)){add("Power Clean WOD");add("Power Clean");}
+  else if(/power clean/.test(n)){add("Power Clean");add("Power Clean technique");add("Power Clean WOD");}
   return list;
 }
 
-// V51.40 — contexte mouvement/intention.
-// Objectif : garder les noms de mouvements simples, mais transporter l'intention
-// séparément pour les futures décisions du moteur.
-// Cette étape ne change pas la suggestion de charge : le contexte est collecté
-// et exposé, mais les règles de progression existantes restent inchangées.
 function coachTextIncludesAny(text, words){
   var n=coachNormalizeMoveText(text);
   return (words||[]).some(function(w){return n.indexOf(coachNormalizeMoveText(w))>=0;});
@@ -217,7 +143,8 @@ function coachBuildMovementContext(nameOrKey, opts){
   opts=opts||{};
   var raw=String(nameOrKey||opts.name||opts.key||'').trim();
   var label=canonicalMovementLabel(raw);
-  var textParts=[raw,label,opts.kind,opts.blockKind,opts.blockTitle,opts.title,opts.note,opts.text,opts.format].filter(Boolean);
+  var assistance=opts.assistance||null;
+  var textParts=[raw,label,opts.kind,opts.blockKind,opts.blockTitle,opts.title,opts.note,opts.text,opts.format,opts.intent,opts.tempo,opts.variation,assistance&&assistance.type,assistance&&assistance.level].filter(Boolean);
   var intents=coachExtractMovementIntent(textParts);
   var kind=String(opts.kind||opts.blockKind||'').toLowerCase();
   if(kind==='wod'&&intents.indexOf('wod')===-1)intents.push('wod');
@@ -234,6 +161,10 @@ function coachBuildMovementContext(nameOrKey, opts){
     note:opts.note||'',
     text:opts.text||'',
     format:opts.format||'',
+    intent:opts.intent||'',
+    assistance:assistance,
+    tempo:opts.tempo||'',
+    variation:opts.variation||'',
     day:opts.day||(window.state&&state.day)||'',
     week:opts.week||(window.state&&state.week)||'',
     isWod:intents.indexOf('wod')>=0,
@@ -257,10 +188,6 @@ function coachMovementContextSummary(ctx){
   return bits.join(' · ');
 }
 
-
-
-// V51.41 — helpers de contexte utilisés par le moteur de progression.
-// Le nom reste simple; les décisions prudentes lisent maintenant l'intention séparée.
 function coachContextHasIntent(ctx,intent){
   return !!(ctx&&Array.isArray(ctx.intents)&&ctx.intents.indexOf(intent)>=0);
 }
@@ -279,14 +206,11 @@ function coachContextProgressionReason(ctx){
   return '';
 }
 
-// V51.68 — Caps de progression par mouvement.
-// Permet au moteur de suggestion de lire des règles spécifiques sans connaître
-// les noms de mouvements individuels.
 var MOVEMENT_PROGRESSION_CAPS = {
   "overhead rope extension": {
-    maxJumpWhenEasy: 5,      // +5 lb max si RPE <= 8
-    maxJumpWhenHard: 0,      // +0 lb si RPE > 8
-    fridayUsesWeekBest: true // vendredi : utiliser le meilleur contrôlé de la semaine
+    maxJumpWhenEasy: 5,
+    maxJumpWhenHard: 0,
+    fridayUsesWeekBest: true
   }
 };
 
