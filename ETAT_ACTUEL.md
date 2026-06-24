@@ -1,15 +1,15 @@
 # ETAT_ACTUEL.md — Racine
 
-## Dernière modification — V51.88
-### Corrections séance guidée du programme Strict Muscle-Up Personnel
+## Dernière modification — V51.90
+### Correction carrés complétés au changement de cycle
 
-- Ajoute 26 nouvelles fiches dans `programs/tutorials.js` (false grip, ring support/turnout, ring dip, transitions, négatives, MU assisté en bande, accessoires force/jambes) pour que le bouton « ? » de la séance guidée trouve un tutoriel pour chaque mouvement introduit par le cycle (31 noms d'exercice sur 39 n'avaient aucune fiche correspondante).
-- Corrige le bloc lundi « D. Conditioning court » de `programs/strict_muscle_up_personnel.js` : le texte annonçait 8 min alors que le minuteur de la séance guidée était réglé sur 5 min, et une note de mission générique ajoutée en fin de texte masquait la consigne réelle. Le texte correspond maintenant au minuteur, alignée sur le pattern des blocs conditioning mardi/jeudi du même programme.
-- Portée : `programs/strict_muscle_up_personnel.js` et `programs/tutorials.js` uniquement. Aucun fichier `data/` modifié.
+- Corrige `buildWeekTrackingForWeek` (`app.js`) : la reconstruction des jours complétés filtrait par semaine mais pas par cycle. En démarrant un nouveau programme à S1, les séances d'un ancien cycle à S1 marquaient tous les jours comme complétés → 4 carrés verts, "0 jour à traiter".
+- Ajoute un filtre cycle : si l'entrée history porte un champ `cycle` différent du cycle actif, elle est ignorée. Rétrocompatible : les entrées sans champ `cycle` passent toujours.
+- Aucun fichier `data/`, `data/charges.js` ni `programs/` modifié.
 
 - Application : Racine.
 - Type : PWA d’entraînement personnelle, JavaScript vanilla, sans framework.
-- Version actuelle : V51.88
+- Version actuelle : V51.90
 - Date du document : 2026-06-23.
 - Repo GitHub principal : `Miozza/Coach-Beurt`.
 - Repo GitHub dev : `Miozza/Coach-Beurt-Dev`.
@@ -18,10 +18,10 @@
 
 Détails version :
 
-- `app.js` : `APP_VERSION = "V51.88"`.
-- `index.html` : titre/topnav/footer/cache-bust `51.88`.
-- `README.md` : version courante `V51.88`.
-- `ETAT_ACTUEL.md` : version courante `V51.88`.
+- `app.js` : `APP_VERSION = "V51.90"`.
+- `index.html` : titre/topnav/footer/cache-bust `51.90`.
+- `README.md` : version courante `V51.90`.
+- `ETAT_ACTUEL.md` : version courante `V51.90`.
 - `CHANGELOG.md` : historique de versions.
 - `manifest.json` : nom installé sans version.
 - `service-worker.js` : nom de cache stable sans version.

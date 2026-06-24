@@ -1,3 +1,9 @@
+## V51.90 - Correction carrés complétés au changement de cycle
+
+- Corrige `buildWeekTrackingForWeek` (`app.js`) : la reconstruction des jours complétés filtrait par semaine mais pas par cycle. En démarrant un nouveau programme à S1, les séances d'un ancien cycle à S1 marquaient tous les jours comme complétés → 4 carrés verts, "0 jour à traiter".
+- Ajoute un filtre cycle : si l'entrée history porte un champ `cycle` différent du cycle actif, elle est ignorée. Rétrocompatible : les entrées sans champ `cycle` passent toujours.
+- Aucun fichier `data/`, `data/charges.js` ni `programs/` modifié.
+
 ## V51.88 - Corrections séance guidée du programme Strict Muscle-Up Personnel
 
 - Ajoute 26 nouvelles fiches dans `programs/tutorials.js` (false grip, ring support/turnout, ring dip, transitions, négatives, MU assisté en bande, accessoires force/jambes) : le bouton « ? » de la séance guidée trouve désormais un tutoriel pour tous les 39 noms d'exercice du cycle (31 n'avaient aucune fiche correspondante).

@@ -1,5 +1,5 @@
-// Racine V51.88
-var APP_VERSION = "V51.88";
+// Racine V51.90
+var APP_VERSION = "V51.90";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -142,6 +142,8 @@ function buildWeekTrackingForWeek(wk, cycle){
   (state.history||[]).forEach(function(s){
     var sw=Number(s&&((s.week!==undefined?s.week:s.semaine)));
     if(sw!==wk)return;
+    var sCycle=s&&(s.cycle||(s.cycleState&&s.cycleState.activeCycle));
+    if(sCycle && sCycle!==cycle) return;
     var day=(s&&s.day)||(s&&s.jour);
     addCompleted(day);
   });
