@@ -1,8 +1,8 @@
 {
-  "version": "V51.90",
-  "updatedAt": "2026-06-24T01:06:24.455Z",
-  "activeCycle": "strict_muscle_up_personnel",
-  "activeWeek": 1,
+  "version": "V51.92",
+  "updatedAt": "2026-06-24T01:21:38.937Z",
+  "activeCycle": "shoulders3d_v2",
+  "activeWeek": 4,
   "activeDay": "mardi",
   "activeDays": [
     "lundi",
@@ -10,7 +10,10 @@
     "jeudi",
     "vendredi"
   ],
-  "completedDays": [],
+  "completedDays": [
+    "lundi",
+    "mardi"
+  ],
   "missedDays": [],
   "weekTransitions": [
     {
@@ -42,23 +45,20 @@
       "reason": "Remplacé par Épaules 3D v2 — Midi dense"
     },
     {
-      "uid": "cycle_1782263184443_b18550b978fe6",
-      "id": "shoulders3d_v2",
-      "label": "Épaules 3D v2 — Midi dense",
-      "week": 4,
-      "day": "mardi",
-      "completedDays": [
-        "lundi",
-        "mardi"
-      ],
+      "uid": "cycle_1782264098930_9962189d2b9fd8",
+      "id": "strict_muscle_up_personnel",
+      "label": "Strict Muscle-Up Personnel",
+      "week": 5,
+      "day": "vendredi",
+      "completedDays": [],
       "missedDays": [],
-      "activeCycleStartDate": "2026-06-01",
-      "pausedAt": "2026-06-24T01:06:24.443Z",
-      "reason": "Remplacé par Strict Muscle-Up Personnel"
+      "activeCycleStartDate": "2026-06-23",
+      "pausedAt": "2026-06-24T01:21:38.930Z",
+      "reason": "Mis en pause par reprise d’un autre cycle"
     }
   ],
   "archivedCycles": [],
-  "focus": "Strict Muscle-Up Personnel",
-  "activeCycleStartDate": "2026-06-23",
-  "cycleStartedAt": "2026-06-23"
+  "focus": "Épaules 3D v2 — Midi dense",
+  "activeCycleStartDate": "2026-06-01",
+  "cycleStartedAt": "2026-06-01"
 }
