@@ -2414,5 +2414,293 @@
         "key": "Barbell Row"
       }
     ]
+  },
+  {
+    "version": "V51.93",
+    "date": "2026-06-23",
+    "time": "21 h 35 min 23 s",
+    "semaine": 1,
+    "jour": "lundi",
+    "plannedDay": "lundi",
+    "actualDate": "2026-06-23",
+    "actualDayName": "mardi",
+    "cycle": "strict_muscle_up_personnel",
+    "focus": "Strict Muscle-Up Personnel",
+    "cycleState": {
+      "version": "V51.93",
+      "updatedAt": "2026-06-24T01:35:23.955Z",
+      "activeCycle": "strict_muscle_up_personnel",
+      "activeWeek": 1,
+      "activeDay": "lundi",
+      "activeDays": [
+        "lundi",
+        "mardi",
+        "jeudi",
+        "vendredi"
+      ],
+      "completedDays": [
+        "lundi"
+      ],
+      "missedDays": [],
+      "weekTransitions": [
+        {
+          "cycle": "shoulders3d",
+          "fromWeek": 2,
+          "toWeek": 3,
+          "completedDays": [
+            "lundi",
+            "mardi",
+            "jeudi",
+            "vendredi"
+          ],
+          "missedDays": [],
+          "reason": "Semaine complétée/traitée",
+          "date": "2026-06-12",
+          "actualDayName": "vendredi"
+        }
+      ],
+      "savedCycles": [
+        {
+          "uid": "cycle_1781464003542_8335c0856a11f8",
+          "id": "shoulders3d",
+          "label": "Épaules 3D + Triceps — Phase 1",
+          "week": 3,
+          "day": "vendredi",
+          "completedDays": [],
+          "missedDays": [],
+          "pausedAt": "2026-06-14T19:06:43.542Z",
+          "reason": "Remplacé par Épaules 3D v2 — Midi dense"
+        },
+        {
+          "uid": "cycle_1782264680721_3d5c7978e7d88",
+          "id": "shoulders3d_v2",
+          "label": "Épaules 3D v2 — Midi dense",
+          "week": 4,
+          "day": "mardi",
+          "completedDays": [
+            "lundi",
+            "mardi"
+          ],
+          "missedDays": [],
+          "activeCycleStartDate": "2026-06-01",
+          "pausedAt": "2026-06-24T01:31:20.721Z",
+          "reason": "Mis en pause par reprise d’un autre cycle"
+        },
+        {
+          "uid": "cycle_1782264693214_7935c2938abe",
+          "id": "strict_muscle_up_personnel",
+          "label": "Strict Muscle-Up Personnel",
+          "week": 1,
+          "day": "mardi",
+          "completedDays": [],
+          "missedDays": [],
+          "activeCycleStartDate": "2026-06-23",
+          "pausedAt": "2026-06-24T01:31:33.214Z",
+          "reason": "Mis en pause par reprise d’un autre cycle"
+        }
+      ],
+      "archivedCycles": [],
+      "focus": "Strict Muscle-Up Personnel",
+      "activeCycleStartDate": "2026-06-23",
+      "cycleStartedAt": "2026-06-23"
+    },
+    "resultats": {
+      "Weighted Strict Pull-up": {
+        "reps": "6",
+        "rpe": "8",
+        "planned": {
+          "load": null,
+          "reps": 6,
+          "targetMin": 6,
+          "targetMax": 6,
+          "format": "4×6",
+          "kind": "main",
+          "context": {
+            "rawName": "Weighted Strict Pull-up",
+            "label": "Weighted Strict Pull-up",
+            "equipment": "bodyweight",
+            "intents": [
+              "technique"
+            ],
+            "primaryIntent": "technique",
+            "kind": "main",
+            "blockTitle": "A. Tirage strict priorité",
+            "note": "Repère technique. ROM complète, strict, aucun kip.",
+            "text": "",
+            "format": "4×6",
+            "intent": "",
+            "assistance": null,
+            "tempo": "",
+            "variation": "",
+            "day": "lundi",
+            "week": 1,
+            "isWod": false,
+            "isTechnical": true,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          },
+          "intent": "",
+          "assistance": null,
+          "tempo": "",
+          "variation": "",
+          "assistedMovement": false,
+          "bodyweightMovement": true
+        },
+        "status": "logged",
+        "performanceRatio": 1
+      },
+      "Front Squat": {
+        "load": "165",
+        "reps": "6",
+        "rpe": "8",
+        "planned": {
+          "load": 165,
+          "reps": 6,
+          "targetMin": 6,
+          "targetMax": 6,
+          "format": "4×6",
+          "kind": "main",
+          "context": {
+            "rawName": "Front Squat",
+            "label": "Front Squat",
+            "equipment": "barbell",
+            "intents": [
+              "technique"
+            ],
+            "primaryIntent": "technique",
+            "kind": "main",
+            "blockTitle": "B. Jambes priorité",
+            "note": "Technique propre, aucun échec.",
+            "text": "",
+            "format": "4×6",
+            "intent": "",
+            "assistance": null,
+            "tempo": "",
+            "variation": "",
+            "day": "lundi",
+            "week": 1,
+            "isWod": false,
+            "isTechnical": true,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          },
+          "intent": "",
+          "assistance": null,
+          "tempo": "",
+          "variation": "",
+          "assistedMovement": false,
+          "bodyweightMovement": false
+        },
+        "status": "success",
+        "performanceRatio": 1
+      },
+      "Ring Row False Grip": {
+        "reps": "9",
+        "rpe": "8",
+        "planned": {
+          "load": null,
+          "reps": 8,
+          "targetMin": 8,
+          "targetMax": 10,
+          "format": "3×8-10",
+          "kind": "accessory",
+          "context": {
+            "rawName": "Ring Row False Grip",
+            "label": "Ring Row False Grip",
+            "equipment": "bodyweight",
+            "intents": [
+              "light",
+              "strength"
+            ],
+            "primaryIntent": "light",
+            "kind": "accessory",
+            "blockTitle": "C. Superset grip + tronc",
+            "note": "Renforce la prise sans fatiguer le tirage principal.",
+            "text": "",
+            "format": "3×8-10",
+            "intent": "light",
+            "assistance": null,
+            "tempo": "",
+            "variation": "",
+            "day": "lundi",
+            "week": 1,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": true,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": true,
+            "isHypertrophy": false,
+            "isRecovery": false
+          },
+          "intent": "light",
+          "assistance": null,
+          "tempo": "",
+          "variation": "",
+          "assistedMovement": false,
+          "bodyweightMovement": true
+        },
+        "status": "logged",
+        "performanceRatio": 1.13
+      },
+      "Hollow Hold": {
+        "reps": "25",
+        "rpe": "8",
+        "planned": {
+          "load": null,
+          "reps": 20,
+          "targetMin": 20,
+          "targetMax": 30,
+          "format": "3×20-30 sec",
+          "kind": "accessory",
+          "context": {
+            "rawName": "Hollow Hold",
+            "label": "Hollow Hold",
+            "equipment": "",
+            "intents": [],
+            "primaryIntent": "",
+            "kind": "accessory",
+            "blockTitle": "C. Superset grip + tronc",
+            "note": "Contrôle tronc utile pour la transition.",
+            "text": "",
+            "format": "3×20-30 sec",
+            "intent": "",
+            "assistance": null,
+            "tempo": "",
+            "variation": "",
+            "day": "lundi",
+            "week": 1,
+            "isWod": false,
+            "isTechnical": false,
+            "isLight": false,
+            "isProgression": false,
+            "isRecall": false,
+            "isStrength": false,
+            "isHypertrophy": false,
+            "isRecovery": false
+          },
+          "intent": "",
+          "assistance": null,
+          "tempo": "",
+          "variation": "",
+          "assistedMovement": false,
+          "bodyweightMovement": true
+        },
+        "status": "logged",
+        "performanceRatio": 1.25
+      },
+      "wod_D. Conditioning court": {
+        "rpe": "8",
+        "note": "hlkajsdhflkajshdflkajshdflkajshdflkjashdfkljhasdlkfjhasldkfjhlaskdhflkasdjhflaksjdfhlkasjdhflkasjdhfksdfsdaa"
+      }
+    }
   }
 ]
