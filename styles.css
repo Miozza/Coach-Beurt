@@ -5926,3 +5926,23 @@ body.arnold-mode{
 @media(min-width:761px){
   .app-splash{display:none;}
 }
+
+/* ═══════════════════════════════════════════
+   V51.93 — Conditioning cardio sans structure parsée
+   ═══════════════════════════════════════════ */
+.guided-wod-cardio-name {
+  font-family: var(--font-hud);
+  font-size: clamp(32px, 9vw, 54px);
+  font-weight: 900;
+  color: var(--cyan);
+  text-align: center;
+  padding: 8px 0 4px;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+}
+.sf-cardio-result {
+  font-size: clamp(24px, 7vw, 36px) !important;
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: .02em;
+}

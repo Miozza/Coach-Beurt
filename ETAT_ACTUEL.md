@@ -1,17 +1,17 @@
 # ETAT_ACTUEL.md — Racine
 
-## Dernière modification — V51.92
-### Correction définitive carrés complétés au changement de cycle
+## Dernière modification — V51.93
+### Conditioning cardio lisible en séance + résultat Distance/Calories
 
-- Corrige `applyCycleStatePayload` (`app.js`) : la fonction appliquait correctement `completedDays: []` depuis le payload GitHub, puis appelait immédiatement `applyWeekTrackingForWeek` qui recalculait les jours depuis l'historique et écrasait le résultat correct.
-- Fix : `applyWeekTrackingForWeek` n'est plus appelé quand le payload fournit un `completedDays` explicite — le payload GitHub fait foi.
-- Les corrections précédentes (filtre cycle dans `buildWeekTrackingForWeek`) restent en place comme défense en profondeur.
+- Vue séance guidée : quand un bloc Conditioning ne contient qu'un effort cardio chronométré (Row, Ski Erg, Air Bike — ex. "Row facile 5 min"), le nom de la machine s'affiche désormais en gros texte cyan, à la même taille que le titre du bloc.
+- Vue Résultats : ces mêmes blocs cardio obtiennent un champ de saisie dédié (Distance en mètres pour Row/Rameur, Calories pour Ski Erg/Air Bike/Bike) en plus du RPE.
+- Détection : `guidedDetectCardioMachine()` dans `view.js`, drapeaux `isCardio/cardioMetric/cardioUnit` dans `collectSessionExercises()` de `results.js`.
 - Aucun fichier `data/`, `data/charges.js` ni `programs/` modifié.
 
 - Application : Racine.
 - Type : PWA d’entraînement personnelle, JavaScript vanilla, sans framework.
-- Version actuelle : V51.92
-- Date du document : 2026-06-23.
+- Version actuelle : V51.93
+- Date du document : 2026-06-24.
 - Repo GitHub principal : `Miozza/Coach-Beurt`.
 - Repo GitHub dev : `Miozza/Coach-Beurt-Dev`.
 - Objectif macro déclaré : compétition CrossFit autour du `2027-01-15`.
@@ -19,10 +19,10 @@
 
 Détails version :
 
-- `app.js` : `APP_VERSION = "V51.92"`.
-- `index.html` : titre/topnav/footer/cache-bust `51.92`.
-- `README.md` : version courante `V51.92`.
-- `ETAT_ACTUEL.md` : version courante `V51.92`.
+- `app.js` : `APP_VERSION = "V51.93"`.
+- `index.html` : titre/topnav/footer/cache-bust `51.93`.
+- `README.md` : version courante `V51.93`.
+- `ETAT_ACTUEL.md` : version courante `V51.93`.
 - `CHANGELOG.md` : historique de versions.
 - `manifest.json` : nom installé sans version.
 - `service-worker.js` : nom de cache stable sans version.

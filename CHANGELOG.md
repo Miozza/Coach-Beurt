@@ -1,3 +1,10 @@
+## V51.93 — Conditioning cardio lisible en séance + résultat Distance/Calories
+
+- Vue séance guidée : quand un bloc Conditioning ne contient qu'un effort cardio chronométré (Row, Ski Erg, Air Bike — ex. "Row facile 5 min"), le nom de la machine s'affiche désormais en gros texte cyan, à la même taille que le titre du bloc. Le texte n'était plus visible (fulltext masqué par design, tuiles WOD vides car pas de structure AMRAP/EMOM/ForTime parsée).
+- Vue Résultats : ces mêmes blocs cardio obtiennent un champ de saisie dédié (Distance en mètres pour Row/Rameur, Calories pour Ski Erg/Air Bike/Bike) en plus du RPE — au lieu de n'avoir que RPE.
+- Détection : `guidedDetectCardioMachine()` dans `view.js`, drapeaux `isCardio/cardioMetric/cardioUnit` dans `collectSessionExercises()` de `results.js`.
+- Portée : `scripts/session/view.js`, `scripts/session/results.js`, `styles.css`. Aucun fichier `data/`, aucun programme, aucune logique moteur de charges modifiés.
+
 ## V51.92 - Correction définitive carrés complétés au changement de cycle
 
 - Corrige `applyCycleStatePayload` (`app.js`) : la fonction appliquait
