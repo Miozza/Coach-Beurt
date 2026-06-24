@@ -1,16 +1,15 @@
 # ETAT_ACTUEL.md — Racine
 
-## Dernière modification — V51.93
-### Conditioning cardio lisible en séance + résultat Distance/Calories
+## Dernière modification — V51.94
+### Historique : ligne visible pour résultats sans load/result + note affichée
 
-- Vue séance guidée : quand un bloc Conditioning ne contient qu'un effort cardio chronométré (Row, Ski Erg, Air Bike — ex. "Row facile 5 min"), le nom de la machine s'affiche désormais en gros texte cyan, à la même taille que le titre du bloc.
-- Vue Résultats : ces mêmes blocs cardio obtiennent un champ de saisie dédié (Distance en mètres pour Row/Rameur, Calories pour Ski Erg/Air Bike/Bike) en plus du RPE.
-- Détection : `guidedDetectCardioMachine()` dans `view.js`, drapeaux `isCardio/cardioMetric/cardioUnit` dans `collectSessionExercises()` de `results.js`.
+- Corrige `renderHistory()` (`app.js`) : une entrée de résultat avec seulement `rpe` (sans `load` ni `result`, ex. EMOM récent) n'était pas affichée du tout dans l'historique.
+- La note (`note`) saisie en séance s'affiche désormais sous la valeur dans l'historique.
 - Aucun fichier `data/`, `data/charges.js` ni `programs/` modifié.
 
 - Application : Racine.
 - Type : PWA d’entraînement personnelle, JavaScript vanilla, sans framework.
-- Version actuelle : V51.93
+- Version actuelle : V51.94
 - Date du document : 2026-06-24.
 - Repo GitHub principal : `Miozza/Coach-Beurt`.
 - Repo GitHub dev : `Miozza/Coach-Beurt-Dev`.
@@ -19,10 +18,10 @@
 
 Détails version :
 
-- `app.js` : `APP_VERSION = "V51.93"`.
-- `index.html` : titre/topnav/footer/cache-bust `51.93`.
-- `README.md` : version courante `V51.93`.
-- `ETAT_ACTUEL.md` : version courante `V51.93`.
+- `app.js` : `APP_VERSION = "V51.94"`.
+- `index.html` : titre/topnav/footer/cache-bust `51.94`.
+- `README.md` : version courante `V51.94`.
+- `ETAT_ACTUEL.md` : version courante `V51.94`.
 - `CHANGELOG.md` : historique de versions.
 - `manifest.json` : nom installé sans version.
 - `service-worker.js` : nom de cache stable sans version.

@@ -1,3 +1,9 @@
+## V51.94 — Historique : ligne visible pour résultats sans load/result + note affichée
+
+- Corrige `renderHistory()` (`app.js`) : la condition `if(r.load||r.result)` cachait toute entrée n'ayant que `rpe` (ex. EMOM récent sans `result`) — la ligne n'apparaissait pas dans l'historique malgré un résultat saisi.
+- La note (`note`) saisie en séance s'affiche désormais sous la valeur dans l'historique (`.history-note`).
+- Portée : `app.js`, `styles.css`. Aucun fichier `data/`, aucun programme, aucune logique moteur de charges modifiés.
+
 ## V51.93 — Conditioning cardio lisible en séance + résultat Distance/Calories
 
 - Vue séance guidée : quand un bloc Conditioning ne contient qu'un effort cardio chronométré (Row, Ski Erg, Air Bike — ex. "Row facile 5 min"), le nom de la machine s'affiche désormais en gros texte cyan, à la même taille que le titre du bloc. Le texte n'était plus visible (fulltext masqué par design, tuiles WOD vides car pas de structure AMRAP/EMOM/ForTime parsée).
