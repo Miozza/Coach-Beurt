@@ -17,8 +17,23 @@ window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
   function isTestWeek(week){ return week===12; }
   function ridx(week,n){ return (wk(week)-1)%n; }
 
-  function smuEx(name,format,load,rest,note){ return {name:name, format:format, load:charge(name,load||"—"), rest:rest||"—", note:note||""}; }
-  function smuExFixed(name,format,load,rest,note){ return {name:name, format:format, load:load||"—", rest:rest||"—", note:note||""}; }
+  function smuMeta(meta){
+    meta=meta||{};
+    return {
+      intent:meta.intent||"",
+      assistance:meta.assistance||null,
+      tempo:meta.tempo||"",
+      variation:meta.variation||""
+    };
+  }
+  function smuEx(name,format,load,rest,note,meta){
+    var exercise={name:name, format:format, load:charge(name,load||"—"), rest:rest||"—", note:note||""};
+    return Object.assign(exercise,smuMeta(meta));
+  }
+  function smuExFixed(name,format,load,rest,note,meta){
+    var exercise={name:name, format:format, load:load||"—", rest:rest||"—", note:note||""};
+    return Object.assign(exercise,smuMeta(meta));
+  }
 
   var weekLabels = [
     "S1 Fondations", "S2 Fondations", "S3 Fondations", "S4 Deload + Validation",
@@ -47,14 +62,28 @@ window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
     return "Bloc 3 — Intégration/tentatives contrôlées/transfert bar : seulement si les feux sont verts.";
   }
 
-  // ── Rotation (variété, pas progression de fond) ──────────────────────────
   var LEG_A = ["Front Squat","Back Squat","Bulgarian Split Squat","RDL"];
   var LEG_B = ["Hip Thrust","Step-up","RDL"];
-  var SCAP_EX = ["Scap Pull-up","Serratus Wall Slide","Scap Push-up","Trap-3 Raise","External Rotation Band"];
-  var TRI_EX = ["Overhead Cable Extension","Cable Pressdown","Triceps Long Head Stretch + Pressdown léger"];
+  var SCAP_EX = [
+    {name:"Scap Pull-up",defaultLoad:"poids du corps"},
+    {name:"Serratus Wall Slide",defaultLoad:"poids du corps"},
+    {name:"Scap Push-up",defaultLoad:"poids du corps"},
+    {name:"Trap-3 Raise",defaultLoad:"10 lb / main"},
+    {name:"External Rotation Band",defaultLoad:"10 lb"}
+  ];
+  var TRI_EX = [
+    {name:"Overhead Cable Extension", defaultLoad:"50 lb"},
+    {name:"Cable Pressdown", defaultLoad:"60 lb"},
+    {name:"Cable Pressdown", defaultLoad:"50 lb", variation:"long-head stretch first"}
+  ];
   var COND_A = ["Row facile","Ski Erg facile","Air Bike facile"];
   var COND_B = ["Row intervalles courts","Ski Erg intervalles courts","Air Bike intervalles courts"];
-  var PUSH_MAINT = ["Bench Press léger","Strict Press technique léger","DB Press tempo","Push-up tempo"];
+  var PUSH_MAINT = [
+    {name:"Bench Press", defaultLoad:"185 lb", intent:"light", note:"Maintien léger/modéré à RPE 6-7."},
+    {name:"Strict Press", defaultLoad:"95 lb", intent:"technique", note:"Technique légère à RPE 6, sans fatigue résiduelle."},
+    {name:"DB Bench Press", defaultLoad:"50 lb / main", intent:"light", tempo:"3-1-1", note:"Tempo contrôlé, RPE 6-7."},
+    {name:"Push-up", defaultLoad:"poids du corps", intent:"light", tempo:"3-1-1", note:"Tempo contrôlé, arrêter avec 3 reps en réserve."}
+  ];
   var METCON = [
     {f:"AMRAP 8", t:"10 cal row + 8 box step-up + 10 sit-up. RPE 7-8, rien d'overhead lourd."},
     {f:"EMOM 10", t:"min 1 = 12 cal ski erg ; min 2 = 8 KB swing léger. Pas de pression overhead."},
@@ -77,12 +106,11 @@ window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
     return {format:"3×8", load:"RPE 7"};
   }
 
-  // ── Progression de fond (le vrai cœur du cycle) ──────────────────────────
   function pullPlan(week){
     week=wk(week);
     if(week===1) return {name:"Weighted Strict Pull-up", format:"4×6", load:"poids du corps", note:"Repère technique. ROM complète, strict, aucun kip."};
     if(week===2) return {name:"Chest-to-Sternum Pull-up", format:"4×5", load:"poids du corps", note:"Contrôle du haut, omoplates engagées avant de tirer."};
-    if(week===3) return {name:"High Ring Row False Grip lourd", format:"4×8", load:"RPE 7-8", note:"False grip sous tension tirée, pieds avancés pour charger."};
+    if(week===3) return {name:"High Ring Row False Grip", format:"4×8", load:"poids du corps", intent:"strength", note:"RPE 7-8. False grip sous tension tirée, pieds avancés pour charger."};
     if(week===4) return {name:"Weighted Strict Pull-up", format:"3×5 léger", load:"poids du corps", note:"Deload. Qualité seulement."};
     if(week===5) return {name:"Weighted Strict Pull-up", format:"5×5", load:"+10-15 lb", note:"Force spécifique. Stop si l'amplitude raccourcit."};
     if(week===6) return {name:"Chest-to-Sternum Pull-up", format:"5×4", load:"poids du corps", note:"Tempo 3 s à la descente, contrôle total."};
@@ -132,16 +160,16 @@ window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
   }
   function dipPlan(week){
     week=wk(week);
-    if(week===1) return {format:"4×5", load:"bande forte (assisté)", note:"ROM partielle contrôlée. Zéro pincement à l'épaule."};
-    if(week===2) return {format:"4×5", load:"bande moyenne (assisté)", note:"Ajoute un peu de profondeur."};
-    if(week===3) return {format:"4×6", load:"bande légère (assisté)", note:"Vise la profondeur complète, contrôlée."};
-    if(week===4) return {format:"Validation : 2 reps propres", load:"bande légère", note:"Profondeur acceptable, aucun pincement."};
-    if(week===5) return {format:"3-4 reps strict + 3×4 assisté", load:"poids du corps / bande légère", note:"Premières reps strict sans bande."};
+    if(week===1) return {format:"4×5", load:"poids du corps", assistance:{type:"band",level:"strong"}, note:"Bande forte. ROM partielle contrôlée. Zéro pincement à l'épaule."};
+    if(week===2) return {format:"4×5", load:"poids du corps", assistance:{type:"band",level:"medium"}, note:"Bande moyenne. Ajoute un peu de profondeur."};
+    if(week===3) return {format:"4×6", load:"poids du corps", assistance:{type:"band",level:"light"}, note:"Bande légère. Vise la profondeur complète, contrôlée."};
+    if(week===4) return {format:"Validation : 2 reps propres", load:"poids du corps", assistance:{type:"band",level:"light"}, note:"Bande légère. Profondeur acceptable, aucun pincement."};
+    if(week===5) return {format:"3-4 reps strict + 3×4 assisté", load:"poids du corps", assistance:{type:"band",level:"light",optional:true}, note:"Premières reps strictes sans bande, puis bande légère pour le volume."};
     if(week===6) return {format:"4-5 reps strict", load:"poids du corps", note:"Tempo 2 sec à la descente."};
     if(week===7) return {format:"5-6 reps strict", load:"poids du corps", note:"Pause 2 sec en bas, lockout propre en haut."};
     if(week===8) return {format:"Validation : 5-6 reps strict propres", load:"poids du corps", note:"Profondeur stable, zéro douleur."};
     if(week===9) return {format:"6-8 reps strict", load:"poids du corps", note:"Retrouver le niveau dip classique, mais aux anneaux."};
-    if(week===10) return {format:"6-8 reps + 1-2 lestées légères", load:"poids du corps / léger lest", note:"Seulement si zéro douleur."};
+    if(week===10) return {format:"6-8 reps + 1-2 lestées", load:"poids du corps", variation:"optional external load", note:"Ajouter un léger lest concret suggéré par le moteur seulement si zéro douleur."};
     if(week===11) return {format:"5-6 reps", load:"poids du corps", note:"Maintenance — la priorité va à la transition/MU."};
     return {format:"5-6 reps de consolidation", load:"poids du corps", note:"Qualité avant quantité cette semaine."};
   }
@@ -159,18 +187,18 @@ window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
   }
   function transPlan(week){
     week=wk(week);
-    if(week===1) return {name:"Low Ring Transition (pieds au sol)", format:"4×3", note:"Focus coude/poignet qui tournent ensemble. Aucune tentative complète."};
-    if(week===2) return {name:"Low Ring Transition (pieds au sol)", format:"4×4", note:"Amplitude un peu plus grande, toujours assisté par le sol."};
-    if(week===3) return {name:"Seated Strict MU Transition (assis sur box)", format:"4×4", note:"Isoler la rotation du poignet sans le tirage complet."};
-    if(week===4) return {name:"Low Ring Transition", format:"Validation : 3 reps propres", note:"Sans chicken wing. C'est le critère qui débloque le bloc 2."};
-    if(week===5) return {name:"Slow Negative Muscle-up", format:"3×2", note:"Du haut vers la transition vers le bas, entièrement contrôlé."};
-    if(week===6) return {name:"Slow Negative MU + Band-Assisted Strict Ring MU (bande forte)", format:"3×3 négative + 2×1 assisté", note:"Première rep de MU assisté de la semaine."};
-    if(week===7) return {name:"Band-Assisted Strict Ring MU (bande moyenne)", format:"3×2", note:"Réduit l'assistance, garde le mouvement strict."};
-    if(week===8) return {name:"Slow Negative MU + Band-Assisted Strict Ring MU", format:"Validation : négative complète + 1 rep assistée bande moyenne", note:"Zéro douleur pendant ou le lendemain. Débloque le bloc 3."};
-    if(week===9) return {name:"Band-Assisted Strict Ring MU (bande légère)", format:"3×2-3", note:"Tentatives contrôlées, arrêt immédiat si douleur."};
-    if(week===10) return {name:"Strict Ring MU (assistance minimale)", format:"3×1-2", note:"Tentatives contrôlées avec spot léger possible, seulement si la semaine précédente était propre."};
-    if(week===11) return {name:"Strict Ring MU (assistance minimale)", format:"3×2-3", note:"Vise sans bande si prêt, sinon reste assisté léger."};
-    return {name:"Strict Ring MU", format:"Test conditionnel", note:"1) minimal-assisté propre, 2) complet si prêt, 3) jamais si critères non remplis — voir cycleRules."};
+    if(week===1) return {name:"Low Ring Transition", format:"4×3", assistance:{type:"feet",level:"floor"}, note:"Pieds au sol. Focus coude/poignet qui tournent ensemble. Aucune tentative complète."};
+    if(week===2) return {name:"Low Ring Transition", format:"4×4", assistance:{type:"feet",level:"floor"}, note:"Pieds au sol. Amplitude un peu plus grande."};
+    if(week===3) return {name:"Seated Strict MU Transition", format:"4×4", assistance:{type:"box",level:"seated"}, note:"Assis sur box. Isoler la rotation du poignet sans le tirage complet."};
+    if(week===4) return {name:"Low Ring Transition", format:"Validation : 3 reps propres", assistance:{type:"feet",level:"floor"}, note:"Sans chicken wing. C'est le critère qui débloque le bloc 2."};
+    if(week===5) return {name:"Slow Negative Muscle-Up", format:"3×2", note:"Du haut vers la transition vers le bas, entièrement contrôlé."};
+    if(week===6) return {name:"Strict Ring Muscle-Up", format:"2×1", assistance:{type:"band",level:"strong"}, note:"Après 3×3 Slow Negative Muscle-Up dans le même bloc. Première exposition assistée, bande forte."};
+    if(week===7) return {name:"Strict Ring Muscle-Up", format:"3×2", assistance:{type:"band",level:"medium"}, note:"Bande moyenne. Réduis l'assistance, garde le mouvement strict."};
+    if(week===8) return {name:"Strict Ring Muscle-Up", format:"Validation : 1 rep propre", assistance:{type:"band",level:"medium"}, note:"Après une négative complète. Zéro douleur pendant ou le lendemain. Débloque le bloc 3."};
+    if(week===9) return {name:"Strict Ring Muscle-Up", format:"3×2-3", assistance:{type:"band",level:"light"}, note:"Bande légère. Tentatives contrôlées, arrêt immédiat si douleur."};
+    if(week===10) return {name:"Strict Ring Muscle-Up", format:"3×1-2", assistance:{type:"spot",level:"minimal",optional:true}, note:"Spot minimal possible, seulement si la semaine précédente était propre."};
+    if(week===11) return {name:"Strict Ring Muscle-Up", format:"3×2-3", assistance:{type:"band_or_spot",level:"minimal",optional:true}, note:"Vise sans assistance si prêt; sinon assistance minimale."};
+    return {name:"Strict Ring Muscle-Up", format:"Test conditionnel", note:"1) minimal-assisté propre, 2) complet si prêt, 3) jamais si critères non remplis — voir cycleRules."};
   }
   function barmuPlan(week){
     week=wk(week);
@@ -212,7 +240,7 @@ window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
     rest: "0:30-2:00 selon bloc",
     tag: "muscle-up",
     versionDate: "2026-06-23",
-    versionLabel: "V51.88 — Tutoriels manquants + bloc conditioning court corrigé",
+    versionLabel: "V51.89 — Identités stables, charges concrètes et assistance historisée",
     cycleRules: rules(),
 
     dayIntentions: {
@@ -250,12 +278,12 @@ window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
         {time:"6 min", title:"Échauffement tirage + jambes", tag:"Préparation", kind:"warmup",
           text:"Row facile 2 min + band pull-apart 15 + scap push-up 8 + goblet squat léger 10."},
         {time:"18 min", title:"A. Tirage strict priorité", tag:"Force", kind:"main",
-          exercises:[smuEx(pull.name, pull.format, pull.load, "2:00", pull.note)]},
+          exercises:[smuEx(pull.name, pull.format, pull.load, "2:00", pull.note,{intent:pull.intent})]},
         {time:"16 min", title:"B. Jambes priorité", tag:"Jambes", kind:"main",
           exercises:[smuEx(legA, legAf.format, legAf.load, "2:00", legAf.note||"Stimulus jambes réel — ce cycle ne sacrifie pas le bas du corps.")]},
         {time:"12 min", title:"C. Superset grip + tronc", tag:"Accessoire", kind:"accessory",
           exercises:[
-            smuExFixed("Ring Row False Grip légère", deload?"2×8":"3×8-10", "poids du corps", "0:30 avant C2", "Renforce la prise sans fatiguer le tirage principal."),
+            smuExFixed("Ring Row False Grip", deload?"2×8":"3×8-10", "poids du corps", "0:30 avant C2", "Renforce la prise sans fatiguer le tirage principal.",{intent:"light"}),
             smuExFixed("Hollow Hold", deload?"2×20 sec":"3×20-30 sec", "poids du corps", "0:45 après C2", "Contrôle tronc utile pour la transition.")
           ]},
         {time:"5 min", title:"D. Conditioning court", tag:"Conditioning", kind:"wod",
@@ -277,10 +305,10 @@ window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
           text:"Drill de stabilité scapulaire et turnout. Skill, pas force.",
           exercises:[
             smuExFixed("Ring Turnout Support", turn.format, "poids du corps", "0:45 avant B2", turn.note),
-            smuExFixed(scap, deload?"2×10":"3×10-15", "léger", "0:45 après B2", "Rotation externe/scapula — varie chaque semaine pour éviter la monotonie.")
+            smuEx(scap.name, deload?"2×10":"3×10-15", scap.defaultLoad, "0:45 après B2", "Rotation externe/scapula — varie chaque semaine pour éviter la monotonie.",{intent:deload?"recovery":"technique"})
           ]},
         {time:"12 min", title:"C. Maintien poussée légère", tag:"Poussée", kind:"hypertrophy",
-          exercises:[smuEx(pushMaint, deload?"2×8":"3×8-10", "léger/modéré", "1:00", "Maintien seulement — pas de volume lourd cette semaine.")]},
+          exercises:[smuEx(pushMaint.name, deload?"2×8":"3×8-10", pushMaint.defaultLoad, "1:00", pushMaint.note+" Maintien seulement — pas de volume lourd cette semaine.",{intent:pushMaint.intent,tempo:pushMaint.tempo})]},
         {time:"8 min", title:"D. Conditioning", tag:"Conditioning", kind:"wod",
           text:condB+" 8 min, RPE 7. Aucun mouvement d'épaule sollicitant le dip/transition."},
         {time:"4 min", title:"E. Mobilité", tag:"Mobilité", kind:"mobility",
@@ -292,11 +320,11 @@ window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
           text:"Row facile 2 min + scap push-up 10 + active hang léger 2×10 sec + band external rotation 10/côté."},
         {time:"16 min", title:"A. Ring dip profond", tag:"Skill", kind:"main",
           text:"Priorité de la séance. Arrêter immédiatement si pincement ou douleur à l'épaule.",
-          exercises:[smuExFixed("Ring Dip", dip.format, dip.load, "1:30-2:00", dip.note)]},
+          exercises:[smuExFixed("Ring Dip", dip.format, dip.load, "1:30-2:00", dip.note,{assistance:dip.assistance,variation:dip.variation})]},
         {time:"14 min", title:"B. Superset négative + triceps long", tag:"Accessoire", kind:"accessory",
           exercises:[
             smuExFixed("Dip Eccentric", dipNeg.format, "poids du corps", "0:45 avant B2", dipNeg.note),
-            smuEx(tri, deload?"2×10":"3×10-15", "modéré", "1:00 après B2", "Triceps long head — varie chaque semaine.")
+            smuEx(tri.name, deload?"2×10":"3×10-15", tri.defaultLoad, "1:00 après B2", "Triceps long head — varie chaque semaine.",{intent:"hypertrophy",variation:tri.variation})
           ]},
         {time:"14 min", title:"C. Jambes secondaire + chaîne postérieure", tag:"Jambes", kind:"accessory",
           exercises:[smuEx(legB, legBf.format, legBf.load, "1:00", "Jambes réelles, jamais sautées même en semaine MU chargée.")]},
@@ -306,7 +334,6 @@ window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
           text:"Triceps overhead stretch 1 min/côté + lat stretch 1 min/côté."}
       ];
 
-      // vendredi
       var blockB = barmu
         ? {time:"12 min", title:"B. Transfert bar muscle-up", tag:"Transfert", kind:"accessory",
             text:"Conditionnel — uniquement si la semaine précédente était propre et sans douleur. Sinon : drill seulement, aucune tentative.",
@@ -315,7 +342,7 @@ window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
             text:"Bloc technique. Pas encore de travail bar — priorité au strict ring MU.",
             exercises:[
               smuExFixed("False Grip Hang", "2×20 sec", "poids du corps", "0:45 avant B2", "Maintenance courte."),
-              smuExFixed(scap, "2×10", "léger", "0:45 après B2", "Maintenance scapulaire.")
+              smuEx(scap.name, "2×10", scap.defaultLoad, "0:45 après B2", "Maintenance scapulaire.",{intent:"light"})
             ]};
 
       return [
@@ -323,7 +350,12 @@ window.COACH_BERTIN_PROGRAMS = window.COACH_BERTIN_PROGRAMS || {};
           text:"Row facile 2 min + active hang 2×10 sec + ring support 2×10 sec + scap push-up 8."},
         {time:"18 min", title:"A. Transition stricte", tag:"Skill", kind:"main",
           text:"Cœur de la séance. "+(test?"Test conditionnel — voir cycleRules avant de tenter.":"Aucune tentative complète sans validation de la semaine."),
-          exercises:[smuExFixed(trans.name, trans.format, "poids du corps / assistance", "2:00", trans.note)]},
+          exercises:(week===6||week===8)
+            ? [
+                smuExFixed("Slow Negative Muscle-Up",week===6?"3×3":"Validation : 1 négative complète","poids du corps","1:30","Contrôle complet avant le travail assisté.",{intent:"technique",tempo:"slow eccentric"}),
+                smuExFixed(trans.name,trans.format,"poids du corps","2:00",trans.note,{intent:"progression",assistance:trans.assistance})
+              ]
+            : [smuExFixed(trans.name, trans.format, "poids du corps", "2:00", trans.note,{intent:test?"test":"progression",assistance:trans.assistance})]},
         blockB,
         {time:"16 min", title:"C. Metcon contrôlé", tag:"Conditioning", kind:"wod",
           text:metcon.f+" : "+metcon.t},
