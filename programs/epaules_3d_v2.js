@@ -9,7 +9,7 @@ window.COACH_BERTIN_PROGRAMS.shoulders3d_v2 = {
   phase: 1,
   phaseName: "Spécialisation efficace",
   phaseEnd: "transition depuis Épaules 3D",
-  nextPhase: "hypertrophy_base",
+  nextPhase: "shoulders3d_press225_phase2",
   impact: "Même objectif que Épaules 3D : épaules rondes, triceps solides, overhead stable et posture protégée. Version plus efficace pour le midi : un mouvement prioritaire, un bloc support, un WOD fonte court obligatoire et un mini-reset.",
   days: ["lundi", "mardi", "jeudi", "vendredi"],
   weekLabels: ["S1 Base", "S2 Technique", "S3 Volume", "S4 Surcharge", "S5 Intensité", "S6 Deload"],

@@ -9,7 +9,7 @@ window.COACH_BERTIN_PROGRAMS.shoulders3d = {
   phase: 1,
   phaseName: "Esthétique / Récupération",
   phaseEnd: "fin août 2025",
-  nextPhase: "hypertrophy_base",
+  nextPhase: "shoulders3d_press225_phase2",
   impact: "Spécialisation épaules rondes et triceps avec récupération locale protégée. Lundi = push/latéral/triceps, mardi = pull/rear delt/biceps, jeudi = jambes/core sans épaules, vendredi = épaules complètes avec angles différents + power clean technique léger après les épaules.",
   days: ["lundi", "mardi", "jeudi", "vendredi"],
   weekLabels: ["S1 Base","S2 Technique","S3 Volume","S4 Surcharge","S5 Intensité","S6 Deload"],

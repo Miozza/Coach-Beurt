@@ -11,7 +11,8 @@
   window.COACH_BERTIN_PROGRAM_INDEX = [
     { id: "shoulders3d_v2",     file: "programs/epaules_3d_v2.js",       name: "Phase 1 — Épaules 3D v2 — Midi dense",     phase: 1, macroRole: "main",        macroStatus: "principal", durationWeeks: 6, minWeeks: 4, maxWeeks: 8 },
     { id: "shoulders3d",        file: "programs/epaules_3d.js",          name: "Phase 1 — Épaules 3D + Triceps",          phase: 1, macroRole: "alternate",   macroStatus: "ancienne version", durationWeeks: 6, minWeeks: 4, maxWeeks: 8 },
-    { id: "hypertrophy_base",   file: "programs/hypertrophy_base.js",    name: "Phase 2 — Hypertrophie / Force Base",      phase: 2, macroRole: "main",        macroStatus: "principal", durationWeeks: 6, minWeeks: 5, maxWeeks: 8 },
+    { id: "shoulders3d_press225_phase2", file: "programs/epaules_3d_press225_phase2.js", name: "Phase 2 — Épaules 3D + Press 225", phase: 2, macroRole: "main", macroStatus: "principal", durationWeeks: 6, minWeeks: 6, maxWeeks: 8 },
+    { id: "hypertrophy_base",   file: "programs/hypertrophy_base.js",    name: "Phase 2 — Hypertrophie / Force Base",      phase: 2, macroRole: "alternate",   macroStatus: "ancienne phase 2", durationWeeks: 6, minWeeks: 5, maxWeeks: 8 },
     { id: "force_performance",  file: "programs/force_performance.js",   name: "Phase 3 — Force + Résistance musculaire",  phase: 3, macroRole: "main",        macroStatus: "carrefour", durationWeeks: 6, minWeeks: 5, maxWeeks: 8, branchAfter: ["competition_peak", "heritage225"] },
     { id: "competition_peak",   file: "programs/competition_peak.js",    name: "Phase 4 — Compétition CrossFit Peak",      phase: 4, macroRole: "main",        macroStatus: "objectif principal", durationWeeks: 8, minWeeks: 7, maxWeeks: 9 },
     { id: "hypertrophie_fesse", file: "programs/hypertrophie_fesse.js",  name: "Hypertrophie Fessiers — 4 semaines",       phase: 0, macroRole: "alternative", macroStatus: "comble un creux", durationWeeks: 4, minWeeks: 3, maxWeeks: 5, fillsGap: ["hypertrophie", "point faible", "variation"] },
@@ -26,9 +27,9 @@
     targetLabel: "Compétition janvier 2027",
     targetDate: "2027-01-15",
     preferredPhase1: "shoulders3d_v2",
-    mainRoute: ["shoulders3d_v2", "hypertrophy_base", "force_performance", "competition_peak"],
+    mainRoute: ["shoulders3d_v2", "shoulders3d_press225_phase2", "force_performance", "competition_peak"],
     phase1Alternates: ["shoulders3d"],
-    branchRoutes: { heritage225: ["shoulders3d_v2", "hypertrophy_base", "force_performance", "heritage225"] },
+    branchRoutes: { heritage225: ["shoulders3d_v2", "shoulders3d_press225_phase2", "force_performance", "heritage225"] },
     gapFillers: ["hypertrophie_fesse", "posture", "strength"],
     branchAfterPhase3: ["competition_peak", "heritage225"]
   };

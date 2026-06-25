@@ -404,7 +404,7 @@ function pcRenderRoadmapTab(){
   var macro=window.COACH_BERTIN_MACROCYCLE||{};
   var index=window.COACH_BERTIN_PROGRAM_INDEX||[];
   var active=pcCurrentCycleId();
-  var mainRoute=Array.isArray(macro.mainRoute)?macro.mainRoute.slice():["shoulders3d_v2","hypertrophy_base","force_performance","competition_peak"];
+  var mainRoute=Array.isArray(macro.mainRoute)?macro.mainRoute.slice():["shoulders3d_v2","shoulders3d_press225_phase2","force_performance","competition_peak"];
   var route=mainRoute.indexOf(active)>=0?mainRoute.slice(mainRoute.indexOf(active)):[active,"competition_peak"].filter(function(id,i,a){return id&&a.indexOf(id)===i;});
   var rows=[], cursor=new Date(), currentWeek=pcCurrentWeek();
   function entryFor(id){for(var i=0;i<index.length;i++){if(index[i]&&index[i].id===id)return index[i];}return null;}

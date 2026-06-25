@@ -1,5 +1,5 @@
-// Racine V51.94
-var APP_VERSION = "V51.94";
+// Racine V51.95
+var APP_VERSION = "V51.95";
 var GITHUB_OWNER = "Miozza";
 var GITHUB_REPO  = "Coach-Beurt";
 var GITHUB_FILE  = "data/resultats.json";
@@ -17,7 +17,7 @@ var CYCLE_STATE_FILE   = "data/cycle_state.json";
 var COMPETITION_DATE = new Date("2027-01-15");
 var PHASE_TARGETS = {
   1: { bench:null, backSquat:null, note:"Épaules saines, posture améliorée, récupération post-compétition." },
-  2: { bench:285,  backSquat:260,  note:"Bench 285 lb, Back squat 260 lb x5, RDL et hip thrust solides." },
+  2: { bench:285,  backSquat:260,  note:"Pont vers Press 225 : overhead plus fort, bench maintenu/progressé, épaules 3D, dos/biceps et jambes solides." },
   3: { bench:300,  backSquat:285,  note:"Bench 300 lb, Back squat 285 lb, tolérer 75 reps squats compétition." },
   4: { bench:null, backSquat:null, note:"Performance Open CrossFit janvier 2027. Benchmarks, synchro, peaking." }
 };
@@ -1354,7 +1354,7 @@ function programWeeks(id){
   return Number(cfg.durationWeeks||cfg.weeks||((cfg.weekLabels&&cfg.weekLabels.length)||0)||((cfg.sets&&cfg.sets.length)||0)||0)||0;
 }
 function roadmapProgramOrder(activeId){
-  var compRoute=["shoulders3d","hypertrophy_base","force_performance","competition_peak"];
+  var compRoute=["shoulders3d_v2","shoulders3d_press225_phase2","force_performance","competition_peak"];
   if(activeId==="heritage225")return ["heritage225"];
   if(compRoute.indexOf(activeId)>=0)return compRoute.slice(compRoute.indexOf(activeId));
   return [activeId,"competition_peak"].filter(function(id,i,a){return id&&a.indexOf(id)===i;});

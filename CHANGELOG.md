@@ -1,3 +1,12 @@
+## V51.95 — Ajout Phase 2 Épaules 3D + Press 225
+
+- Ajoute `programs/epaules_3d_press225_phase2.js` : nouveau cycle Phase 2 varié sur 6 semaines, 4 jours fixes, 60 minutes max, metcon court chaque jour.
+- Branche le cycle dans `programs/index.js` comme Phase 2 principale; `hypertrophy_base` reste disponible comme ancienne Phase 2 alternative.
+- Met à jour `programs/epaules_3d_v2.js` et `programs/epaules_3d.js` pour pointer vers la nouvelle Phase 2.
+- Met à jour la route macro de l'app et de la vue PC : Épaules 3D v2 → Épaules 3D + Press 225 → Force/Performance → Compétition.
+- Heritage 225 reste une branche future après Force/Performance; il n'est pas activé automatiquement.
+- Portée : `programs/`, `index.html`, `app.js`, `scripts/view_pc.js`, documentation. Aucun fichier `data/` ni `data/charges.js` modifié.
+
 ## V51.94 — Historique : ligne visible pour résultats sans load/result + note affichée
 
 - Corrige `renderHistory()` (`app.js`) : la condition `if(r.load||r.result)` cachait toute entrée n'ayant que `rpe` (ex. EMOM récent sans `result`) — la ligne n'apparaissait pas dans l'historique malgré un résultat saisi.

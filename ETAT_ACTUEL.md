@@ -1,15 +1,17 @@
 # ETAT_ACTUEL.md — Racine
 
-## Dernière modification — V51.94
-### Historique : ligne visible pour résultats sans load/result + note affichée
+## Dernière modification — V51.95
+### Ajout Phase 2 — Épaules 3D + Press 225
 
-- Corrige `renderHistory()` (`app.js`) : une entrée de résultat avec seulement `rpe` (sans `load` ni `result`, ex. EMOM récent) n'était pas affichée du tout dans l'historique.
-- La note (`note`) saisie en séance s'affiche désormais sous la valeur dans l'historique.
-- Aucun fichier `data/`, `data/charges.js` ni `programs/` modifié.
+- Ajoute `programs/epaules_3d_press225_phase2.js` : nouveau cycle Phase 2 varié sur 6 semaines, 4 jours/semaine, 60 minutes max, metcon court chaque jour.
+- Branche le nouveau cycle dans la sélection officielle comme Phase 2 principale.
+- L’ancienne Phase 2 `hypertrophy_base` reste disponible comme alternative; `heritage_225` reste une branche future, non activée automatiquement.
+- Met à jour la route macro : Phase 1 Épaules 3D v2 → Phase 2 Épaules 3D + Press 225 → Force/Performance → Compétition.
+- Aucun fichier `data/` ni `data/charges.js` modifié.
 
 - Application : Racine.
 - Type : PWA d’entraînement personnelle, JavaScript vanilla, sans framework.
-- Version actuelle : V51.94
+- Version actuelle : V51.95
 - Date du document : 2026-06-24.
 - Repo GitHub principal : `Miozza/Coach-Beurt`.
 - Repo GitHub dev : `Miozza/Coach-Beurt-Dev`.
@@ -18,10 +20,10 @@
 
 Détails version :
 
-- `app.js` : `APP_VERSION = "V51.94"`.
-- `index.html` : titre/topnav/footer/cache-bust `51.94`.
-- `README.md` : version courante `V51.94`.
-- `ETAT_ACTUEL.md` : version courante `V51.94`.
+- `app.js` : `APP_VERSION = "V51.95"`.
+- `index.html` : titre/topnav/footer/cache-bust `51.95`.
+- `README.md` : version courante `V51.95`.
+- `ETAT_ACTUEL.md` : version courante `V51.95`.
 - `CHANGELOG.md` : historique de versions.
 - `manifest.json` : nom installé sans version.
 - `service-worker.js` : nom de cache stable sans version.
@@ -81,6 +83,7 @@ Les programmes restaurés et actifs doivent rester présents :
 
 - `programs/epaules_3d.js` — Phase 1, Épaules 3D + Triceps.
 - `programs/epaules_3d_v2.js` — Épaules 3D v2 — Midi dense.
+- `programs/epaules_3d_press225_phase2.js` — Phase 2, Épaules 3D + Press 225.
 - `programs/hypertrophy_base.js` — Phase 2, Hypertrophie / Force Base.
 - `programs/force_performance.js` — Phase 3, Force + Résistance musculaire.
 - `programs/competition_peak.js` — Phase 4, Compétition CrossFit Peak.
